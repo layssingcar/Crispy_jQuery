@@ -186,4 +186,25 @@ gradle-app.setting
 # Java heap dump
 *.hprof
 
+
+### STS ###
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
 # End of https://www.toptal.com/developers/gitignore/api/java,eclipse,gradle,windows,macos
