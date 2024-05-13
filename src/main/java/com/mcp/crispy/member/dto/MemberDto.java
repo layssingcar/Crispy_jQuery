@@ -16,7 +16,5 @@ public class MemberDto {
 	private String userPw;
 	private String userName;
 	private Role role;
-	private String OJe;
-	
-	
+
 }
