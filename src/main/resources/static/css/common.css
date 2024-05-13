@@ -49,7 +49,7 @@ nav {
 	height: 65px;
 }
 
-.main>div {
+.crispy-container>div {
 	max-width: 1300px;
 	max-height: 1000px;
 }
