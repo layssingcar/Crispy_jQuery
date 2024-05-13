@@ -1,11 +1,18 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+  <th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
 </head>
 <body>
-파이널 플젝 세팅
-ㅎㅇ
+
+<main>
+<aside th:replace="~{layout/sidebar :: sidebar}"></aside>
+<div class="main">
+<nav th:replace="~{layout/navbar :: navbar}"></nav>
+<div>
+</div>
+<footer th:replace="~{layout/footer :: footer}"></footer>
+</div>
+</main>
 </body>
 </html>
