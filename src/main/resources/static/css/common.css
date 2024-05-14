@@ -28,4 +28,3 @@ button {
 .form-check-input:checked {
 	background-color: var(--main-color) !important;
 	border-color: var(--main-color) !important;
-}
