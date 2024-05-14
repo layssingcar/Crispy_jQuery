@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
+    <link href="/css/login.css" rel="stylesheet">
+</head>
+<body>
+<div class="container login-container my-3 main">
+    <a class="nav-header" href="/"><img src="/img/crispy.png"></a>
+    <div class="my-3">
+        <form class="login-form" th:action="@{/employee/login}" method="post">
+            <div th:if="${param.error}">
+                <div class="alert alert-danger">
+                    사용자 ID 또는 비밀번호를 확인해주세요.
+                </div>
+            </div>
+            <div class="mb-3 login-input">
+                <label class="form-label" th:for="id">사용자 ID</label>
+                <input class="form-control" name="username" placeholder="아이디를 입력하세요" type="text">
+            </div>
+            <div class="mb-3 login-input">
+                <label class="form-label" th:for="password">비밀번호</label>
+                <input class="form-control" name="password" placeholder="비밀번호를 입력하세요" type="password">
+            </div>
+            <div class="form-check mb-4">
+                <input type="checkbox" id="remember-me" name="remember-me"/>
+                <label for="remember-me">자동 로그인</label>
+            </div>
+            <button type="submit">로그인</button>
+            <ul class="find-wrap" id="find-wrap">
+                <li><a class="find-text" href="/crispy/employee/find/username">아이디 찾기</a></li>
+                <li><a class="find-text" href="/crispy/employee/find/password">비밀번호 찾기</a></li>
+                <li><a class="find-text" href="/crispy/employee/signup">회원가입</a></li>
+            </ul>
+        </form>
+    </div>
+</div>
+</body>
+</html>
