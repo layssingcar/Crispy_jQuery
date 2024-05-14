@@ -1,0 +1,78 @@
+.member-profile {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    border-radius: 15px;
+    background-color: #fff;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.form-control {
+    margin-top: 0 !important;
+}
+
+
+.signup-container {
+    width: 100%;
+    max-width: 500px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 80px 20px 20px 20px;
+}
+
+.info-wrap, .img-wrap {
+    width: 100%; /* 내부 랩의 너비를 부모와 같게 설정 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.info-wrap input {
+    width: 200px;
+}
+
+.info-wrap div {
+    margin-top: 10px;
+}
+
+.employee-position {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.employee-position div {
+    margin-top: 10px;
+}
+
+.franchise-place {
+    width: 200px;
+}
+
+.employee-role {
+    width: 200px;
+    display: flex;
+    align-items: center;
+}
+
+.form-control, .btn {
+    width: 100%; /* 모든 입력 필드와 버튼의 너비를 균일하게 설정 */
+    margin-top: 10px; /* 상단 여백 추가 */
+}
+
+.btn {
+    align-self: center; /* 버튼을 자체적으로 중앙에 배치 */
+}
+
+.signup-form img {
+    width: 100px;
+    height: 100px;
+}

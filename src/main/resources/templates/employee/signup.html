@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:insert="~{layout/header :: header('회원가입')}"></th:block>
+    <link href="/css/signup.css" rel="stylesheet">
+    <link href="/css/profile.css" rel="stylesheet">
+</head>
+<body>
+    <div class="member-profile">
+        <div class="container my-3 signup-container">
+            <form class="signup-form" id="signup" method="post" enctype="multipart/form-data" autocomplete="off">
+                <div class="img-wrap employee-profile">
+                    <img src="/img/anonymous.png" class="profile-img" data-src="/img/anonymous.png">
+                    <div id="update-img">등록</div>
+                    <input type="file" id="signup-file-input" name="profileImage" class="form-control file-input">
+                </div>
+                <div class="info-wrap">
+                    <div>
+                        <label for="signup-empId" class="form-label">직원 아이디</label>
+                        <input type="text" id="signup-empId" name="empId" class="form-control" placeholder="아이디"
+                               autocomplete="on">
+                        <div class="error-message" id="empId-error" style="display: none;"></div>
+                    </div>
+                    <div>
+                        <label for="signup-empPw" class="form-label">비밀번호</label>
+                        <input type="password" id="signup-empPw" name="empPw" class="form-control" placeholder="비밀번호">
+                        <div class="error-message" id="empPw-error" style="display: none;"></div>
+                    </div>
+                    <div>
+                        <label for="signup-confirmPassword" class="form-label">비밀번호 확인</label>
+                        <input type="password" id="signup-confirmPassword" name="confirmPassword" class="form-control"
+                               placeholder="비밀번호 확인">
+                        <div class="error-message" id="confirmPassword-error" style="display: none;"></div>
+                    </div>
+                    <div>
+                        <label for="signup-empName" class="form-label">닉네임</label>
+                        <input type="text" id="signup-empName" name="empName" class="form-control" placeholder="닉네임"
+                               autocomplete="on">
+                        <div class="error-message" id="empName-error" style="display: none;"></div>
+                    </div>
+                    <div class="verify mt-0">
+                        <div>
+                            <label for="signup-empEmail" class="form-label">이메일</label>
+                            <input type="email" id="signup-empEmail" name="empEmail" class="form-control email" placeholder="이메일"
+                                   autocomplete="on">
+                            <div class="error-message" id="empEmail-error" style="display: none;"></div>
+                        </div>
+                        <div class="mt-0">
+                            <button class="btn email-validate-btn" th:data-action="signup" type="button">인증번호 받기</button>
+                        </div>
+                    </div>
+                    <div class="mb-3" id="verifyCode-div" style="display:block;">
+                        <div class="verify-code mt-0">
+                            <div>
+                                <input class="form-control" id="signup-verifyCode" placeholder="인증번호"
+                                       type="text">
+                                <div class="error-message" id="verifyCode-error" style="display: none"></div>
+                            </div>
+                            <div class="mt-0">
+                                <button class="btn" id="checkVerificationCode" type="button">확인</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-0">
+                        <label for="empPhone" class="form-label">휴대전화</label>
+                        <input type="text" class="form-control" id="empPhone" placeholder="- 제외하고 입력해주세요.">
+                    </div>
+                    <button type="button" class="btn mt-4" id="btn-signup">회원가입</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
