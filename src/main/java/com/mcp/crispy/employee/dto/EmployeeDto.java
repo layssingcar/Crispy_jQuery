@@ -9,12 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class MemberDto {
-
-	private int userNo;
-	private String userEmail;
-	private String userPw;
-	private String userName;
-	private Role role;
+public class EmployeeDto {
 
 }
