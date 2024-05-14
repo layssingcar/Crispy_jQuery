@@ -60,8 +60,7 @@ main {
 
 main>div {
 	display: flex;
-	width: 500px;
-	/* max-width: 1300px; */
+	max-width: 1300px;
 	height: 100%;
 }
 
