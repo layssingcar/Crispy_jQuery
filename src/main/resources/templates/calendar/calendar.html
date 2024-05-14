@@ -3,6 +3,34 @@
 <head>
     <th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
     <!-- 특정 페이지 css -->
+  <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+  <style>
+    #calendar{
+       margin-left: 25%;
+       color: black !important; 
+       font-size:medium !important;
+    }
+    .fc-col-header a{
+      color:#000000 !important; 
+    }
+    .fc-scrollgrid-sync-inner a{
+      color:#000000 !important; 
+      text-decoration: none !important;
+    }
+    .fc-day-sat a{ 
+        color:#0000FF !important; 
+    }
+    .fc-day-sun a{ 
+        color:#FF0000 !important; 
+    }
+    .fc-toolbar-title{
+      padding-right: 160px;
+    }
+    .form-group{
+      margin-bottom: 10px;
+    }
+  </style>      
+  
 </head>
 <body>
 
@@ -12,10 +40,195 @@
         <nav th:replace="~{layout/navbar :: navbar}"></nav>
         <div>
             <!-- 내부 내용 -->
+    <div id='calendar'></div>
+    <!-- Modal -->
+    <form id="form-modal">
+      <div class="modal fade insertModal" id="myModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+          
+            <!-- Modal Header -->
+            <div class="modal-header"><h4 class="modal-title">일정 등록</h4></div>
+            
+            <!-- Modal body -->
+            <div class="modal-body">
+              <div class="form-group">
+                <label for="sch-title">제목:</label>
+                <input type="textbox" class="form-control" placeholder="" id="sch-title" >
+              </div>
+              <div class="form-group">
+                <label for="sch-content">내용:</label>
+                <input type="textbox" class="form-control" placeholder="" id="sch-content">
+              </div>
+              <div class="form-group">
+                <label for="allDay">종일여부:</label>
+                  <label for="allDayTrue">&nbsp;예</label>
+                  <input type="radio" value="true" name="allDay" id="allDayTrue" checked="checked">
+                  <label for="allDayFalse">&nbsp;아니오</label>
+                  <input type="radio" value="false" name="allDay" id="allDayFalse">
+              </div>
+              <div class="form-group-start">
+                <label for="start">시작시간:</label>
+                <select class="form-control" id="start" onchange="">
+                  <option value="09:00">09:00</option>
+                  <option value="09:30">09:30</option>
+                  <option value="10:00">10:00</option>
+  
+                  <option value="10:30">10:30</option>
+                  <option value="11:00">11:00</option>
+                  <option value="11:30">11:30</option>
+                  <option value="12:00">12:00</option>
+                  <option value="12:30">12:30</option>
+                  <option value="13:00">13:00</option>
+                  <option value="13:30">13:30</option>
+                  <option value="14:00">14:00</option>
+                  <option value="14:30">14:30</option>
+                  <option value="15:00">15:00</option>
+                  <option value="15:30">15:30</option>
+                  <option value="16:00">16:00</option>
+                  <option value="16:30">16:30</option>
+                  <option value="17:00">17:00</option>
+                  <option value="17:30">17:30</option>
+                  <option value="18:00">18:00</option>
+                  <option value="18:30">18:30</option>
+                </select>
+              </div>
+              <div class="form-group-end">
+                <label for="end">종료시간:</label>
+                <select class="form-control" id="end">
+                  <option value="09:30">09:30</option>
+                  <option value="10:00">10:00</option>
+                  <option value="10:30">10:30</option>
+                  <option value="11:00">11:00</option>
+                  <option value="11:30">11:30</option>
+                  <option value="12:00">12:00</option>
+                  <option value="12:30">12:30</option>
+                  <option value="13:00">13:00</option>
+                  <option value="13:30">13:30</option>
+                  <option value="14:00">14:00</option>
+                  <option value="14:30">14:30</option>
+                  <option value="15:00">15:00</option>
+                  <option value="15:30">15:30</option>
+                  <option value="16:00">16:00</option>
+                  <option value="16:30">16:30</option>
+                  <option value="17:00">17:00</option>
+                  <option value="17:30">17:30</option>
+                  <option value="18:00">18:00</option>
+                  <option value="18:30">18:30</option>
+                  <option value="19:00">19:00</option>
+                </select>
+              </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer"><button type="button" class="btn btn-primary float-right insertBtn" id="shce-insert" onclick="fnRegistSchedule();">등록</button></div>         
+          </div>
+        </div>
+      </div>
+    </form>
         </div>
         <footer th:replace="~{layout/footer :: footer}"></footer>
     </div>
     <!-- 특정 JS -->
+   <script>
+
+      ////////////////////////     모달 설정
+      $("#myModal").on("hidden.bs.modal", function () {
+        $(".form-group-start").hide();
+        $(".form-group-end").hide();
+        $("#form-modal")[0].reset();
+      });
+
+      const fnShowStartEnd = ()=>{
+        $(".form-group-start").hide();
+        $(".form-group-end").hide();
+        $("input:radio[name=allDay]").click(()=>{
+          if($("input:radio[name=allDay]:checked").val() =='false') {
+            $(".form-group-start").show();
+            $(".form-group-end").show();
+          }
+          else{
+            $(".form-group-start").hide();
+            $(".form-group-end").hide();
+          }
+        })
+      }
+
+      fnShowStartEnd();
+
+      const fntest = ()=>{    // 고른 시간 이후의 시간대만 표시되도록 하는 함수
+        var index = $("#start option").index($("#start option:selected")); // 내가 고른 셀렉트의 인덱스
+        var maxsize = $("#start option").length;
+
+        for(var i = index + 1; i < maxsize; i++)
+        {
+          var newOption = $('<option>').attr('value', $("#start option:eq(" + i + ")").val()).text($("#start option:eq(" + i + ")").val());
+          $("#end").append(newOption);
+        }
+      }
+
+
+      ////////////////////////     캘린더 설정
+      let startDt, endDt;
+      const calendarEl = document.getElementById('calendar');
+      const calendarHeader = {
+        left: 'prev,next today',          
+        center: 'title',
+        right:''        
+      }
+
+      const calendarOpt = {
+        headerToolbar: calendarHeader,
+        initialView: 'dayGridMonth',
+        selectable:true,    // 달력 날짜 드래그
+        locale:'kr',      // 달력 언어 설정
+        editable:true,
+        navLinks:true,
+        dayMaxEventRows:true
+      }
+
+      const calendar = new FullCalendar.Calendar(calendarEl, calendarOpt);
+      calendar.render();
+
+      calendar.on("eventAdd", ()=>{
+        alert('일정을 등록했다!');
+      });
+
+      calendar.on("eventClick", (info)=>{
+        alert('일정 제목:'+ info.event.title);
+        alert('일정 시작:'+ info.event.start);
+        alert('일정 종료:'+ info.event.end);
+      });
+
+      calendar.on("select", (info)=>{
+        $('#myModal').modal('show');
+        startDt = new Date(info.startStr.substr(0, 4), info.startStr.substr(5, 2)-1, info.startStr.substr(8, 2));
+        endDt = new Date(info.endStr.substr(0, 4), info.endStr.substr(5, 2)-1, info.endStr.substr(8, 2));
+      });
+
+      function fnRegistSchedule(){
+        console.log($("input:radio[name=allDay]:checked").val());
+        if($("input:radio[name=allDay]:checked").val() == 'true'){
+          let schedule = {
+              title: $("#sch-title").val(),
+              allDay: true, 
+              start: startDt
+          };
+          calendar.addEvent(schedule);
+        }
+        else{
+          endDt.setDate(endDt.getDate()-1);
+          let schedule = {
+              title: $("#sch-title").val(),
+              allDay: false, 
+              start: startDt,
+              end: endDt
+            };
+            calendar.addEvent(schedule);
+          }
+        calendar.unselect();
+      };
+
+    </script>
 </main>
 </body>
 </html>
