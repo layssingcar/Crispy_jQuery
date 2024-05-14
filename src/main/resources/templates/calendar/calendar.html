@@ -29,8 +29,34 @@
     .form-group{
       margin-bottom: 10px;
     }
+    .modal-content{
+    font-size:18px !important; 
+    }
+    .modal-content input{
+    font-size:14px !important; 
+    }
+    .form-check-label{
+    margin-top:2px;
+    }
+    .form-control{
+    font-size:14px !important;
+    }
+	.form-control option{
+	font-size:14px !important; 
+	}
+	.btn-outline-primary{
+	border-color: var(--main-color) !important;	
+	color: #000 !important;
+	}
+	
+    .btn-group input:checked + label {
+      background-color: var(--main-color) !important;
+      color: #fff !important;
+    }
+    #shce-insert{
+    font-size: 18px !important;
+    }
   </style>      
-  
 </head>
 <body>
 
@@ -48,24 +74,53 @@
           <div class="modal-content">
           
             <!-- Modal Header -->
-            <div class="modal-header"><h4 class="modal-title">일정 등록</h4></div>
+            <div class="modal-header"><h2 class="modal-title">일정 등록</h2></div>
             
             <!-- Modal body -->
             <div class="modal-body">
               <div class="form-group">
                 <label for="sch-title">제목:</label>
-                <input type="textbox" class="form-control" placeholder="" id="sch-title" >
+                <input type="textbox" class="form-control" id="sch-title" >
               </div>
               <div class="form-group">
                 <label for="sch-content">내용:</label>
-                <input type="textbox" class="form-control" placeholder="" id="sch-content">
+                <input type="textbox" class="form-control" id="sch-content">
               </div>
               <div class="form-group">
-                <label for="allDay">종일여부:</label>
-                  <label for="allDayTrue">&nbsp;예</label>
-                  <input type="radio" value="true" name="allDay" id="allDayTrue" checked="checked">
-                  <label for="allDayFalse">&nbsp;아니오</label>
-                  <input type="radio" value="false" name="allDay" id="allDayFalse">
+                <label for="allDay">일정구분:&nbsp;</label>
+				 <div class="form-check form-check-inline">
+				  <input class="form-check-input" type="radio" name="inlineRadioOptions1" id="radio-notice" value="notice" checked>
+				  <label class="form-check-label" for="radio-notice">공지</label>
+				</div>
+				<div class="form-check form-check-inline">
+				  <input class="form-check-input" type="radio" name="inlineRadioOptions1" id="radio-vac" value="vac">
+				  <label class="form-check-label" for="radio-vac">휴가</label>
+				</div>
+              </div>
+              <div class="form-group">
+			    <label>휴가구분:&nbsp;&nbsp;</label>
+				<div class="btn-group btn-group-lg" role="group" aria-label="Basic radio toggle button group">
+				  <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+				  <label class="btn btn-outline-primary" for="btnradio1">오전</label>
+				
+				  <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+				  <label class="btn btn-outline-primary" for="btnradio2">오후</label>
+				</div>
+              </div>
+              <div class="form-group">
+                <label for="allDay">휴가 종류:&nbsp;</label>
+				 <div class="form-check form-check-inline">
+				  <input class="form-check-input" type="radio" name="inlineRadioOptions2" id="vac-all" value="all" checked>
+				  <label class="form-check-label" for="vac-all">연차</label>
+				</div>
+				<div class="form-check form-check-inline">
+				  <input class="form-check-input" type="radio" name="inlineRadioOptions2" id="vac-half" value="half">
+				  <label class="form-check-label" for="vac-half">반차</label>
+				</div>
+				<div class="form-check form-check-inline">
+				  <input class="form-check-input" type="radio" name="inlineRadioOptions2" id="vac-quat" value="quat">
+				  <label class="form-check-label" for="vac-quat">반반차</label>
+				</div>
               </div>
               <div class="form-group-start">
                 <label for="start">시작시간:</label>
@@ -73,7 +128,6 @@
                   <option value="09:00">09:00</option>
                   <option value="09:30">09:30</option>
                   <option value="10:00">10:00</option>
-  
                   <option value="10:30">10:30</option>
                   <option value="11:00">11:00</option>
                   <option value="11:30">11:30</option>
@@ -89,8 +143,6 @@
                   <option value="16:30">16:30</option>
                   <option value="17:00">17:00</option>
                   <option value="17:30">17:30</option>
-                  <option value="18:00">18:00</option>
-                  <option value="18:30">18:30</option>
                 </select>
               </div>
               <div class="form-group-end">
@@ -114,8 +166,6 @@
                   <option value="17:00">17:00</option>
                   <option value="17:30">17:30</option>
                   <option value="18:00">18:00</option>
-                  <option value="18:30">18:30</option>
-                  <option value="19:00">19:00</option>
                 </select>
               </div>
             </div>
@@ -130,15 +180,14 @@
     </div>
     <!-- 특정 JS -->
    <script>
-
       ////////////////////////     모달 설정
-      $("#myModal").on("hidden.bs.modal", function () {
-        $(".form-group-start").hide();
-        $(".form-group-end").hide();
+	 $("#myModal").on("hidden.bs.modal", function () {
+/*         $(".form-group-start").hide();
+        $(".form-group-end").hide(); */
         $("#form-modal")[0].reset();
       });
 
-      const fnShowStartEnd = ()=>{
+/*       const fnShowStartEnd = ()=>{
         $(".form-group-start").hide();
         $(".form-group-end").hide();
         $("input:radio[name=allDay]").click(()=>{
@@ -151,21 +200,17 @@
             $(".form-group-end").hide();
           }
         })
-      }
-
-      fnShowStartEnd();
+      } */
 
       const fntest = ()=>{    // 고른 시간 이후의 시간대만 표시되도록 하는 함수
         var index = $("#start option").index($("#start option:selected")); // 내가 고른 셀렉트의 인덱스
         var maxsize = $("#start option").length;
-
         for(var i = index + 1; i < maxsize; i++)
         {
           var newOption = $('<option>').attr('value', $("#start option:eq(" + i + ")").val()).text($("#start option:eq(" + i + ")").val());
           $("#end").append(newOption);
         }
       }
-
 
       ////////////////////////     캘린더 설정
       let startDt, endDt;
@@ -189,6 +234,7 @@
       const calendar = new FullCalendar.Calendar(calendarEl, calendarOpt);
       calendar.render();
 
+      ////////////////////////		캘린더 기능
       calendar.on("eventAdd", ()=>{
         alert('일정을 등록했다!');
       });
@@ -211,12 +257,12 @@
           let schedule = {
               title: $("#sch-title").val(),
               allDay: true, 
-              start: startDt
+              start: startDt,
+              end : endDt
           };
           calendar.addEvent(schedule);
         }
         else{
-          endDt.setDate(endDt.getDate()-1);
           let schedule = {
               title: $("#sch-title").val(),
               allDay: false, 
