@@ -17,15 +17,15 @@ main {
     display: flex;
     justify-content: center;
     flex-grow: 1;
-    /* max-width: 1300px; */
-    /* max-height: 1000px; */
+/*     max-width: 1300px; */
+/*     max-height: 1000px; */
 }
 
-main>div {
-    display: flex;
-    max-width: 1300px;
-    height: 100%;
-}
+/* main>div { */
+/*     display: flex; */
+/*     max-width: 1300px; */
+/*     height: 100%; */
+/* }  */
 
 footer {
     position: relative; /* 기존의 position: fixed;를 relative로 변경 */

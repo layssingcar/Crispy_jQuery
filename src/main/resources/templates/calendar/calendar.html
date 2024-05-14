@@ -3,12 +3,23 @@
 <head>
     <th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
     <!-- 특정 페이지 css -->
-  <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
   <style>
+  	.mainarea{
+  	width:100%;
+  	height: 100%;
+  	}
+  
     #calendar{
-       margin-left: 25%;
-       color: black !important; 
-       font-size:medium !important;
+      margin: 10px auto;
+      position: absolute; /* 절대 위치 지정을 위해 position 속성을 사용합니다. */
+      top: 50%; /* 상단을 화면의 50% 지점으로 설정합니다. */
+      left: 50%; /* 좌측을 화면의 50% 지점으로 설정합니다. */
+      transform: translate(-30%, -50%); /* 요소를 수평 및 수직으로 이동하여 중앙에 정렬합니다. */
+      width: 90%; /* 화면 너비의 90%로 설정합니다. */
+      max-width: 950px; /* 최대 너비를 800px로 제한합니다. */
+      color: black !important; 
+      font-size:medium !important;
     }
     .fc-col-header a{
       color:#000000 !important; 
@@ -56,16 +67,17 @@
     #shce-insert{
     font-size: 18px !important;
     }
-  </style>      
+  </style>          
 </head>
 <body>
 
-<main>
+<div class="crispy-container">
     <aside th:replace="~{layout/sidebar :: sidebar}"></aside>
-    <div class="crispy-container">
-        <nav th:replace="~{layout/navbar :: navbar}"></nav>
-        <div>
-            <!-- 내부 내용 -->
+    <div>
+        <header th:replace="~{layout/navbar :: navbar}"></header>
+        <main>
+            <div class="mainarea">
+                <!-- 내부 내용 -->
     <div id='calendar'></div>
     <!-- Modal -->
     <form id="form-modal">
@@ -174,12 +186,13 @@
           </div>
         </div>
       </div>
-    </form>
-        </div>
+    </form>                
+            </div>
+        </main>
         <footer th:replace="~{layout/footer :: footer}"></footer>
     </div>
     <!-- 특정 JS -->
-   <script>
+ <script>
       ////////////////////////     모달 설정
 	 $("#myModal").on("hidden.bs.modal", function () {
 /*         $(".form-group-start").hide();
@@ -274,7 +287,7 @@
         calendar.unselect();
       };
 
-    </script>
-</main>
+    </script>    
+</div>
 </body>
 </html>
