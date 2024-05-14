@@ -6,16 +6,18 @@
 </head>
 <body>
 
-<main>
+<div class="crispy-container">
   <aside th:replace="~{layout/sidebar :: sidebar}"></aside>
-  <div class="crispy-container">
-    <nav th:replace="~{layout/navbar :: navbar}"></nav>
-    <div>
-      <!-- 내부 내용 -->
-    </div>
+  <div>
+    <header th:replace="~{layout/navbar :: navbar}"></header>
+    <main>
+      <div>
+        <!-- 내부 내용 -->
+      </div>
+    </main>
     <footer th:replace="~{layout/footer :: footer}"></footer>
   </div>
   <!-- 특정 JS -->
-</main>
+</div>
 </body>
 </html>
