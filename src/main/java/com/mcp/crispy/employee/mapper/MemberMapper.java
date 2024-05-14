@@ -1,8 +1,8 @@
-package com.mcp.crispy.member.mapper;
+package com.mcp.crispy.employee.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.mcp.crispy.member.dto.MemberDto;
+import com.mcp.crispy.employee.dto.MemberDto;
 
 
 @Mapper

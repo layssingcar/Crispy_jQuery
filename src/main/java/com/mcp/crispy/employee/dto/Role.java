@@ -1,4 +1,4 @@
-package com.mcp.crispy.member.dto;
+package com.mcp.crispy.employee.dto;
 
 import lombok.Getter;
 
