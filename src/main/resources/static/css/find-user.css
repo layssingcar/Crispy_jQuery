@@ -1,0 +1,91 @@
+.form-control {
+    width: 250px;
+    box-sizing: border-box;
+    margin: 0;
+}
+
+.verify-email {
+    display: flex;
+}
+
+.find-container {
+    padding-top: 30px; /* 내용을 위로 조금 더 올립니다 */
+    padding-bottom: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    width: 100%;
+    margin: auto;
+    max-width: 500px;
+}
+
+.find-header {
+    color: var(--main-color);
+}
+
+.find-header h1 {
+    text-align: center;
+    margin-bottom: 50px;
+    font-size: 3rem;
+}
+
+.find-emp-id {
+    flex-direction: column;
+    align-items: center;
+}
+
+.find-emp-id label,
+.find-emp-id input,
+.find-emp-id button{
+    font-size: 1.3rem;
+}
+
+.find-btn {
+    width: 100%;
+    font-size: 1.3rem;
+}
+
+.container.my-3 {
+     /* 자동으로 마진을 설정하여 중앙 정렬 */
+}
+
+form {
+    width: 100%; /* 폼의 너비를 최대로 설정 */
+}
+
+.email-wrap {
+    display: flex;
+}
+
+.find-result {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-size: 1.5rem;
+}
+
+.find-result h4 {
+    text-align: center;
+}
+
+.result-to-login{
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-size: 1.5rem;
+    padding: 10px;
+    background-color: var(--main-color);
+}
+
+.find-result-info {
+    display: flex;
+    justify-content: space-between;
+}
+
+.result-to-find-password {
+    text-align: center;
+    margin-top: 30px;
+}
