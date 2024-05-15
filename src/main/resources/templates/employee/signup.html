@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <th:block th:insert="~{layout/header :: header('회원가입')}"></th:block>
-    <link href="/css/signup.css" rel="stylesheet">
+    <link href="/css/employee/signup.css" rel="stylesheet">
     <link href="/css/profile.css" rel="stylesheet">
 </head>
 <body>
@@ -41,15 +41,15 @@
                     <div class="verify mt-0">
                         <div>
                             <label for="signup-empEmail" class="form-label">이메일</label>
-                            <input type="email" id="signup-empEmail" name="empEmail" class="form-control email" placeholder="이메일"
+                            <input type="email" id="signup-empEmail" name="empEmail" class="form-control" placeholder="이메일"
                                    autocomplete="on">
                             <div class="error-message" id="empEmail-error" style="display: none;"></div>
                         </div>
                         <div class="mt-0">
-                            <button class="btn email-validate-btn" th:data-action="signup" type="button">인증번호 받기</button>
+                            <button class="btn email-validate-btn ms-3" th:data-action="signup" type="button">인증번호 받기</button>
                         </div>
                     </div>
-                    <div class="mb-3" id="verifyCode-div" style="display:block;">
+                    <div id="verifyCode-div" style="display:none;">
                         <div class="verify-code mt-0">
                             <div>
                                 <input class="form-control" id="signup-verifyCode" placeholder="인증번호"
@@ -57,11 +57,11 @@
                                 <div class="error-message" id="verifyCode-error" style="display: none"></div>
                             </div>
                             <div class="mt-0">
-                                <button class="btn" id="checkVerificationCode" type="button">확인</button>
+                                <button class="btn ms-3" id="checkVerificationCode" type="button">확인</button>
                             </div>
                         </div>
                     </div>
-                    <div class="mt-0">
+                    <div>
                         <label for="empPhone" class="form-label">휴대전화</label>
                         <input type="text" class="form-control" id="empPhone" placeholder="- 제외하고 입력해주세요.">
                     </div>

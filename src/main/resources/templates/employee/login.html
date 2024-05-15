@@ -4,12 +4,12 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
-    <link href="/css/login.css" rel="stylesheet">
+    <link href="/css/employee/login.css" rel="stylesheet">
 </head>
 <body>
-<div class="container login-container my-3 main">
-    <a class="nav-header" href="/"><img src="/img/crispy.png"></a>
-    <div class="my-3">
+<div class="container my-3 main">
+    <div class="my-3 login-container">
+        <a class="nav-header" href="/"><img src="/img/crispy.png"></a>
         <form class="login-form" th:action="@{/employee/login}" method="post">
             <div th:if="${param.error}">
                 <div class="alert alert-danger">
