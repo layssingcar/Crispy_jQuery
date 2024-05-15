@@ -28,9 +28,19 @@ public class EmployeeController {
 		return "employee/find-password";
 	}
 
+	@GetMapping("/change/password")
+	public String changePassword() {
+		return "employee/change-password";
+	}
+
 	@GetMapping("/find/username/result")
 	public String findUsernameResult() {
 		return "employee/find-username-result";
+	}
+
+	@GetMapping("/mypage")
+	public String getEmployee() {
+		return "employee/employee";
 	}
 
 }
