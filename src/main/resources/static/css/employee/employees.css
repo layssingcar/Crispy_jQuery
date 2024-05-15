@@ -1,0 +1,59 @@
+.employees-container {
+    width: 100%;
+}
+
+.btn {
+    color: #fff;
+}
+.btn-employee-register {
+    font-size: 1.5rem;
+    padding: 5px 25px 5px 25px;
+    border-radius: 30px;
+    background-color: var(--main-color);
+}
+
+.btn-approve-registration {
+    margin-left: 10px;
+    font-size: 1.5rem;
+    padding: 5px 25px 5px 25px;
+    border-radius: 30px;
+}
+
+.employee-register {
+    display: flex;
+    margin-bottom: 20px;
+    align-items: flex-start;
+}
+
+.employee-search{
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    margin-bottom: 20px; /* 적절한 마진으로 요소 간 공간 조정 */
+}
+
+.employee-search, .employee-register {
+    margin-top: 10px; /* 상단 여백 추가 */
+}
+
+.search-input {
+    max-width: 500px;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+table td {
+    padding: 10px !important;
+    width: 120px;
+}
+
+.no-column {}
+
+.id-column {
+    width: 150px; /* 아이디 열의 너비를 150px로 설정 */
+}
+
+table {
+    text-align: center;
+}

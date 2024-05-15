@@ -22,7 +22,6 @@ main {
 }
 
 main>div {
-    display: flex;
     max-width: 1300px;
     height: 100%;
 }

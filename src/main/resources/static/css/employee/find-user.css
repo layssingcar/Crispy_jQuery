@@ -19,8 +19,18 @@
     width: 100%;
     margin: auto;
     max-width: 500px;
+    background-color: #fff;
 }
 
+.find-form {
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.btn {
+    color: #fff;
+}
 .find-header {
     color: var(--main-color);
 }
@@ -39,7 +49,7 @@
 .find-emp-id label,
 .find-emp-id input,
 .find-emp-id button{
-    font-size: 1.3rem;
+    font-size: 1.4rem;
 }
 
 .find-btn {
@@ -69,6 +79,12 @@ form {
 
 .find-result h4 {
     text-align: center;
+}
+
+.find-result-form {
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .result-to-login{
