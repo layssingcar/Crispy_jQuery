@@ -1,29 +1,33 @@
 <header class="navbar navbar-expand-lg" th:fragment="navbar">
-        <div class="container-fluid">
-            <ul class="navbar-nav ms-auto flex-row">
-                <li class="nav-item">
-                    <div class="nav-profile-ui">
-                        <img src="/img/anonymous.png" id="nav-profile-img"
-                             class="nav-img">
-                            <div class="nav-welcome">
-                                <span>반갑습니다.</span>
-                            </div>
-                        <div class="my-menu-content">
-                            <ul class="my-menu-list">
-                                <li class="my-menu-item" id="my-profile">
-                                    <div class="my-menu-info">
-                                        <a href="/">내 프로필</a>
-                                    </div>
-                                </li>
-                                <hr>
-                                <li class="my-menu-item"><a class="my-menu-logout"
-                                                            href="/dokky/signout" onclick="logoutClicked()"> <i
-                                        class="fa-solid fa-arrow-right-from-bracket"></i> <span>로그아웃</span>
-                                </a></li>
-                            </ul>
-                        </div>
+    <div class="container-fluid">
+        <ul class="navbar-nav ms-auto flex-row">
+            <li class="nav-item">
+                <i class="fa-solid fa-bell me-3"></i>
+            </li>
+            <li class="nav-item">
+                <div class="nav-profile-ui">
+                    <img src="/img/anonymous.png" id="nav-profile-img" class="nav-img">
+                    <div class="nav-welcome">
+                        <span>반갑습니다.</span>
                     </div>
-                </li>
-            </ul>
-        </div>
+                    <div class="my-menu-content">
+                        <ul class="my-menu-list">
+                            <li class="my-menu-item" id="my-profile">
+                                <div class="my-menu-info">
+                                    <a href="/">내 프로필</a>
+                                </div>
+                            </li>
+                            <hr>
+                            <li class="my-menu-item">
+                                <a class="my-menu-logout" href="crispy/employee/logout">
+                                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                                    <span>로그아웃</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
 </header>
