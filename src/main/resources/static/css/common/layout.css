@@ -13,6 +13,7 @@ aside {
     flex-direction: column;
     justify-content: space-between;
 }
+
 main {
     display: flex;
     justify-content: center;
@@ -24,6 +25,7 @@ main {
 main>div {
     max-width: 1300px;
     height: 100%;
+    margin-top: 30px;
 }
 
 footer {
@@ -40,15 +42,6 @@ footer {
     margin-top: 15px;
 }
 
-footer > div {
+footer>div {
     margin-top: 10px;
-}
-
-@font-face {
-    font-family: 'GmarketSansMedium';
-    src:
-            url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff')
-            format('woff');
-    font-weight: normal;
-    font-style: normal;
 }
