@@ -7,19 +7,23 @@
   <style>
   	.mainarea{
   	width:100%;
-  	height: 100%;
+  	height:100%;
+  	border:2px black solid;
   	}
-  
+  	#calendarOpt{
+  	width:500px;
+  	height:750px;
+  	border:2px black solid;
+  	margin: auto 10px;
+  	}
     #calendar{
-      margin: 10px auto;
-      position: absolute; /* 절대 위치 지정을 위해 position 속성을 사용합니다. */
-      top: 50%; /* 상단을 화면의 50% 지점으로 설정합니다. */
-      left: 50%; /* 좌측을 화면의 50% 지점으로 설정합니다. */
-      transform: translate(-30%, -50%); /* 요소를 수평 및 수직으로 이동하여 중앙에 정렬합니다. */
-      width: 90%; /* 화면 너비의 90%로 설정합니다. */
-      max-width: 950px; /* 최대 너비를 800px로 제한합니다. */
-      color: black !important; 
-      font-size:medium !important;
+    width:1000px;
+    height:750px;
+    margin: auto 10px;
+    position: relative;
+    color: black !important; 
+    font-size:medium !important;
+   	border:2px black solid;
     }
     .fc-col-header a{
       color:#000000 !important; 
@@ -67,6 +71,12 @@
     #shce-insert{
     font-size: 18px !important;
     }
+    
+    .mainspace{
+    display:flex;
+    justify-content: center;
+    margin-top:10px;
+    }
   </style>          
 </head>
 <body>
@@ -78,116 +88,124 @@
         <main>
             <div class="mainarea">
                 <!-- 내부 내용 -->
-    <div id='calendar'></div>
-    <!-- Modal -->
-    <form id="form-modal">
-      <div class="modal fade insertModal" id="myModal">
-        <div class="modal-dialog">
-          <div class="modal-content">
-          
-            <!-- Modal Header -->
-            <div class="modal-header"><h2 class="modal-title">일정 등록</h2></div>
-            
-            <!-- Modal body -->
-            <div class="modal-body">
-              <div class="form-group">
-                <label for="sch-title">제목:</label>
-                <input type="textbox" class="form-control" id="sch-title" >
-              </div>
-              <div class="form-group">
-                <label for="sch-content">내용:</label>
-                <input type="textbox" class="form-control" id="sch-content">
-              </div>
-              <div class="form-group">
-                <label for="allDay">일정구분:&nbsp;</label>
-				 <div class="form-check form-check-inline">
-				  <input class="form-check-input" type="radio" name="inlineRadioOptions1" id="radio-notice" value="notice" checked>
-				  <label class="form-check-label" for="radio-notice">공지</label>
-				</div>
-				<div class="form-check form-check-inline">
-				  <input class="form-check-input" type="radio" name="inlineRadioOptions1" id="radio-vac" value="vac">
-				  <label class="form-check-label" for="radio-vac">휴가</label>
-				</div>
-              </div>
-              <div class="form-group">
-			    <label>휴가구분:&nbsp;&nbsp;</label>
-				<div class="btn-group btn-group-lg" role="group" aria-label="Basic radio toggle button group">
-				  <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
-				  <label class="btn btn-outline-primary" for="btnradio1">오전</label>
-				
-				  <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
-				  <label class="btn btn-outline-primary" for="btnradio2">오후</label>
-				</div>
-              </div>
-              <div class="form-group">
-                <label for="allDay">휴가 종류:&nbsp;</label>
-				 <div class="form-check form-check-inline">
-				  <input class="form-check-input" type="radio" name="inlineRadioOptions2" id="vac-all" value="all" checked>
-				  <label class="form-check-label" for="vac-all">연차</label>
-				</div>
-				<div class="form-check form-check-inline">
-				  <input class="form-check-input" type="radio" name="inlineRadioOptions2" id="vac-half" value="half">
-				  <label class="form-check-label" for="vac-half">반차</label>
-				</div>
-				<div class="form-check form-check-inline">
-				  <input class="form-check-input" type="radio" name="inlineRadioOptions2" id="vac-quat" value="quat">
-				  <label class="form-check-label" for="vac-quat">반반차</label>
-				</div>
-              </div>
-              <div class="form-group-start">
-                <label for="start">시작시간:</label>
-                <select class="form-control" id="start" onchange="">
-                  <option value="09:00">09:00</option>
-                  <option value="09:30">09:30</option>
-                  <option value="10:00">10:00</option>
-                  <option value="10:30">10:30</option>
-                  <option value="11:00">11:00</option>
-                  <option value="11:30">11:30</option>
-                  <option value="12:00">12:00</option>
-                  <option value="12:30">12:30</option>
-                  <option value="13:00">13:00</option>
-                  <option value="13:30">13:30</option>
-                  <option value="14:00">14:00</option>
-                  <option value="14:30">14:30</option>
-                  <option value="15:00">15:00</option>
-                  <option value="15:30">15:30</option>
-                  <option value="16:00">16:00</option>
-                  <option value="16:30">16:30</option>
-                  <option value="17:00">17:00</option>
-                  <option value="17:30">17:30</option>
-                </select>
-              </div>
-              <div class="form-group-end">
-                <label for="end">종료시간:</label>
-                <select class="form-control" id="end">
-                  <option value="09:30">09:30</option>
-                  <option value="10:00">10:00</option>
-                  <option value="10:30">10:30</option>
-                  <option value="11:00">11:00</option>
-                  <option value="11:30">11:30</option>
-                  <option value="12:00">12:00</option>
-                  <option value="12:30">12:30</option>
-                  <option value="13:00">13:00</option>
-                  <option value="13:30">13:30</option>
-                  <option value="14:00">14:00</option>
-                  <option value="14:30">14:30</option>
-                  <option value="15:00">15:00</option>
-                  <option value="15:30">15:30</option>
-                  <option value="16:00">16:00</option>
-                  <option value="16:30">16:30</option>
-                  <option value="17:00">17:00</option>
-                  <option value="17:30">17:30</option>
-                  <option value="18:00">18:00</option>
-                </select>
-              </div>
-            </div>
-            <!-- Modal footer -->
-            <div class="modal-footer"><button type="button" class="btn btn-primary float-right insertBtn" id="shce-insert" onclick="fnRegistSchedule();">등록</button></div>         
-          </div>
-        </div>
-      </div>
-    </form>                
-            </div>
+                <div class="mainspace">
+                	<div id="calendarOpt">
+                		
+                	</div>
+    				<div id='calendar'></div>
+                </div>
+                
+   				 <!-- Modal -->
+   				 <form id="form-modal">
+			      <div class="modal fade insertModal" id="myModal">
+			        <div class="modal-dialog">
+			          <div class="modal-content">
+			          
+			            <!-- Modal Header -->
+			            <div class="modal-header"><h2 class="modal-title">일정 등록</h2></div>
+			            
+			            <!-- Modal body -->
+			            <div class="modal-body">
+			              <div class="form-group">
+			                <label for="sch-title">제목:</label>
+			                <input type="textbox" class="form-control" id="sch-title" >
+			              </div>
+			              <div class="form-group">
+			                <label for="sch-content">내용:</label>
+			                <input type="textbox" class="form-control" id="sch-content">
+			              </div>
+			              <div class="form-group">
+			                <label for="allDay">일정구분:&nbsp;</label>
+							 <div class="form-check form-check-inline">
+							  <input class="form-check-input" type="radio" name="inlineRadioOptions1" id="radio-notice" value="notice" checked>
+							  <label class="form-check-label" for="radio-notice">공지</label>
+							</div>
+							<div class="form-check form-check-inline">
+							  <input class="form-check-input" type="radio" name="inlineRadioOptions1" id="radio-vac" value="vac">
+							  <label class="form-check-label" for="radio-vac">휴가</label>
+							</div>
+			              </div>
+			              <div class="form-group">
+						    <label>휴가구분:&nbsp;&nbsp;</label>
+							<div class="btn-group btn-group-lg" role="group" aria-label="Basic radio toggle button group">
+							  <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+							  <label class="btn btn-outline-primary" for="btnradio1">오전</label>
+							
+							  <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+							  <label class="btn btn-outline-primary" for="btnradio2">오후</label>
+							</div>
+			              </div>
+			              <div class="form-group">
+			                <label for="allDay">휴가 종류:&nbsp;</label>
+							 <div class="form-check form-check-inline">
+							  <input class="form-check-input" type="radio" name="inlineRadioOptions2" id="vac-all" value="all" checked>
+							  <label class="form-check-label" for="vac-all">연차</label>
+							</div>
+							<div class="form-check form-check-inline">
+							  <input class="form-check-input" type="radio" name="inlineRadioOptions2" id="vac-half" value="half">
+							  <label class="form-check-label" for="vac-half">반차</label>
+							</div>
+							<div class="form-check form-check-inline">
+							  <input class="form-check-input" type="radio" name="inlineRadioOptions2" id="vac-quat" value="quat">
+							  <label class="form-check-label" for="vac-quat">반반차</label>
+							</div>
+			              </div>
+			              <div class="form-group-start">
+			                <label for="start">시작시간:</label>
+			                <select class="form-control" id="start" onchange="">
+			                  <option value="09:00">09:00</option>
+			                  <option value="09:30">09:30</option>
+			                  <option value="10:00">10:00</option>
+			                  <option value="10:30">10:30</option>
+			                  <option value="11:00">11:00</option>
+			                  <option value="11:30">11:30</option>
+			                  <option value="12:00">12:00</option>
+			                  <option value="12:30">12:30</option>
+			                  <option value="13:00">13:00</option>
+			                  <option value="13:30">13:30</option>
+			                  <option value="14:00">14:00</option>
+			                  <option value="14:30">14:30</option>
+			                  <option value="15:00">15:00</option>
+			                  <option value="15:30">15:30</option>
+			                  <option value="16:00">16:00</option>
+			                  <option value="16:30">16:30</option>
+			                  <option value="17:00">17:00</option>
+			                  <option value="17:30">17:30</option>
+			                </select>
+			              </div>
+			              <div class="form-group-end">
+			                <label for="end">종료시간:</label>
+			                <select class="form-control" id="end">
+			                  <option value="09:30">09:30</option>
+			                  <option value="10:00">10:00</option>
+			                  <option value="10:30">10:30</option>
+			                  <option value="11:00">11:00</option>
+			                  <option value="11:30">11:30</option>
+			                  <option value="12:00">12:00</option>
+			                  <option value="12:30">12:30</option>
+			                  <option value="13:00">13:00</option>
+			                  <option value="13:30">13:30</option>
+			                  <option value="14:00">14:00</option>
+			                  <option value="14:30">14:30</option>
+			                  <option value="15:00">15:00</option>
+			                  <option value="15:30">15:30</option>
+			                  <option value="16:00">16:00</option>
+			                  <option value="16:30">16:30</option>
+			                  <option value="17:00">17:00</option>
+			                  <option value="17:30">17:30</option>
+			                  <option value="18:00">18:00</option>
+			                </select>
+			              </div>
+			            </div>
+			            <!-- Modal footer -->
+			            <div class="modal-footer"><button type="button" class="btn btn-primary float-right insertBtn" id="shce-insert" onclick="fnRegistSchedule();">등록</button></div>         
+			          </div>
+			        </div>
+			      </div>
+			    </form>     
+			               
+			               
+            </div> <!-- mainarea 끝-->
         </main>
         <footer th:replace="~{layout/footer :: footer}"></footer>
     </div>
@@ -252,11 +270,15 @@
         alert('일정을 등록했다!');
       });
 
-      calendar.on("eventClick", (info)=>{
-        alert('일정 제목:'+ info.event.title);
-        alert('일정 시작:'+ info.event.start);
-        alert('일정 종료:'+ info.event.end);
-      });
+//       calendar.on("eventClick", (info)=>{
+//         alert('일정 제목:'+ info.event.title);
+//         alert('일정 시작:'+ info.event.start);
+//         alert('일정 종료:'+ info.event.end);
+//       });
+      
+      calendar.on("dateClick", (info)=>{
+          alert('일정 제목:'+ info.dateStr);
+        });
 
       calendar.on("select", (info)=>{
         $('#myModal').modal('show');
@@ -265,8 +287,7 @@
       });
 
       function fnRegistSchedule(){
-        console.log($("input:radio[name=allDay]:checked").val());
-        if($("input:radio[name=allDay]:checked").val() == 'true'){
+        if($("input:radio[name=inlineRadioOptions2]:checked").val() == 'all'){
           let schedule = {
               title: $("#sch-title").val(),
               allDay: true, 
