@@ -5,26 +5,38 @@
     <!-- 특정 페이지 css -->
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
   <style>
-  	.mainarea{
-  	width:100%;
-  	height:100%;
-  	border:2px black solid;
-  	}
+    .mainarea{
+    margin:5px auto !important;
+    width:100%;
+   	border:2px red solid;
+    display:flex !important;
+    justify-content: space-around !important;
+    }
   	#calendarOpt{
-  	width:500px;
-  	height:750px;
+  	width:400px;
   	border:2px black solid;
-  	margin: auto 10px;
+  	font-size:20px;
+  	text-align:start;
+  	}
+  	#allsche, #shopsche, #mysche, #go-schemenu{
+	margin-left:15px;
   	}
     #calendar{
     width:1000px;
-    height:750px;
-    margin: auto 10px;
     position: relative;
     color: black !important; 
     font-size:medium !important;
    	border:2px black solid;
     }
+    
+   	#profile-cal{
+  	width:400px;
+  	height:400px;
+  	display:flex;
+  	justify-content: center;
+  	margin-top:10px;
+  	}
+    
     .fc-col-header a{
       color:#000000 !important; 
     }
@@ -72,11 +84,6 @@
     font-size: 18px !important;
     }
     
-    .mainspace{
-    display:flex;
-    justify-content: center;
-    margin-top:10px;
-    }
   </style>          
 </head>
 <body>
@@ -88,12 +95,27 @@
         <main>
             <div class="mainarea">
                 <!-- 내부 내용 -->
-                <div class="mainspace">
                 	<div id="calendarOpt">
-                		
+                		<div id="profile-cal">
+                			<img src="/img/anonymous.png" id="profile-img" width="300px" height="300px">
+                		</div>
+                		<div id="allsche">
+						  <input class="form-check-input" type="checkbox" value="allsche" id="allscheChecked" checked>
+						  <label class="form-check-label" for="allscheChecked">전체보기</label>                		
+                		</div>
+                		<hr>
+                		<div id="shopsche">
+						  <input class="form-check-input" type="checkbox" value="shopsche" id="shopscheChecked" checked>
+						  <label class="form-check-label" for="shopscheChecked">가맹점 일정</label>                    		
+                		</div>
+                		<div id="mysche">
+						  <input class="form-check-input" type="checkbox" value="mysche" id="myscheChecked" checked>
+						  <label class="form-check-label" for="myscheChecked">내 일정</label>                    		
+                		</div>
+                		<hr>
+                		<div id="go-schemenu">개인 근태 관리</div>
                 	</div>
     				<div id='calendar'></div>
-                </div>
                 
    				 <!-- Modal -->
    				 <form id="form-modal">
