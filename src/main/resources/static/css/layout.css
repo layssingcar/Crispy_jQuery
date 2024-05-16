@@ -51,3 +51,7 @@ footer>div {
     margin-top: 10px;
 	margin-top: 10px;
 }
+
+footer>div>div{
+	width:50px;
+}
