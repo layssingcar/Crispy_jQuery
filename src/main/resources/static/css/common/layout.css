@@ -29,7 +29,7 @@ main {
 }
 
 main>div {
-/*     max-width: 1300px; */
+    max-width: 1300px;
     height: 100%;
     margin: 30px 0;
 }
