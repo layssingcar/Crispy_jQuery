@@ -1,5 +1,6 @@
 .member-profile {
-    width: 100%;
+    width: 550px;
+    font-size: 1.3rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -13,7 +14,6 @@
 .form-control {
     margin-top: 0 !important;
 }
-
 
 .signup-container {
     width: 100%;
@@ -69,7 +69,13 @@
 }
 
 .btn {
-    align-self: center; /* 버튼을 자체적으로 중앙에 배치 */
+    align-self: center;
+    font-size: 1.5rem;
+    color: #fff;
+}
+
+.signup-container input {
+    font-size: 1.3rem;
 }
 
 .signup-form img {
