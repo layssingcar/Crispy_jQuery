@@ -8,6 +8,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("crispy")
 public class StockController {
 	
+	/** 재고 현황 조회
+	 * 
+	 * @return forward (stock-list.html)
+	 */
+	@GetMapping("stock-list")
+	public String stockList() {
+		return "stock/stock-list";
+	}
+	
 	/** 발주 신청
 	 * 
 	 * @return forward (stock-order.html)
