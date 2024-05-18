@@ -1,3 +1,4 @@
+/* 발주 신청 페이지 */
 .stock-order {
     width: -webkit-fill-available;
     font-size: 2rem;
@@ -78,11 +79,10 @@
 /* 수량 입력 */
 .stock-order .order-list input {
     width: 100px;
+    margin-right: 5px;
     text-align: end;
     font-size: 1.8rem;
 }
-
-.stock-order .order-list .m-left {margin-left: 5px;}
 
 /* 재고별 합계금액 출력 */
 .stock-order .total-cost {
@@ -93,6 +93,7 @@
 
 /* 합계금액 강조 */
 .stock-order .strong {
+    margin-right: 5px;
     color: var(--main-color);
     font-weight: bold;
 }
@@ -105,6 +106,7 @@
     font-size: 2.75rem;
 }
 
+/* 총 합계금액 강조 */
 .stock-order .order-cost .strong {font-size: 3rem;}
 
 /* 하단 버튼 */

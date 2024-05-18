@@ -12,15 +12,18 @@
 			<main>
 				<div class="stock-order">
 					<h1>발주 신청</h1>
+
 					<!-- 상단 버튼 -->
 					<div class="top-btn">
 						<button type="button" class="btn" id="temp-content">임시저장 내용 불러오기</button>
 						<button type="button" class="btn" id="add-list">+ 추가하기</button>
 					</div>
 					<hr>
+
 					<!-- 발주재고 form -->
 					<form action="" id="form-container">
 						<div class="order-list">
+
 							<!-- 카테고리 -->
 							<div>
 								<div class="m-right" id="stock-ct">카테고리</div>
@@ -33,6 +36,7 @@
 									<option value="">카테고리 5</option>
 								</select>
 							</div>
+
 							<!-- 재고명 -->
 							<div>
 								<div class="m-right" id="stock-name">재고명</div>
@@ -45,6 +49,7 @@
 									<option value="">재고 5</option>
 								</select>
 							</div>
+
 							<!-- 단가 -->
 							<div>
 								<div class="m-right">단가</div>
@@ -55,12 +60,14 @@
 									<span>30g</span>
 								</div>
 							</div>
+
 							<!-- 수량 -->
 							<div>
 								<div class="m-right">수량</div>
 								<input type="text" class="form-control" id="">
-								<div class="m-left">개</div>
+								<div>개</div>
 							</div>
+
 							<!-- 합계금액 -->
 							<div class="total-cost">
 								<span class="strong">50,000</span>
@@ -69,12 +76,13 @@
 						</div>
 						<hr>
 					</form>
+
 					<!-- 하단 버튼 -->
 					<div class="bottom-btn">
+
 						<!-- 임시저장 -->
-						<div>
-							<button class="btn" id="temp">임시저장</button>
-						</div>
+						<div><button class="btn" id="temp">임시저장</button></div>
+
 						<div>
 							<!-- 총 합계금액 -->
 							<div class="order-cost">
@@ -82,6 +90,7 @@
 								<span class="strong">2,000,000</span>
 								<span>원</span>
 							</div>
+
 							<button class="btn" id="order">신청하기</button>
 							<button class="btn" id="cancel">취소</button>
 						</div>
