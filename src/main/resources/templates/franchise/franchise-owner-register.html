@@ -16,7 +16,7 @@
             <div>
                 <div class="container">
                     <section class="step-indicator">
-                        <div class="step step1">
+                        <div class="step step1 active">
                             <div class="step-icon">1</div>
                             <p>가맹점 등록</p>
                         </div>
@@ -30,14 +30,7 @@
                 <div class="container frn-register-container">
                     <div class="frn-wrap">
                         <div>
-                            <form class="frn-register-form" id="owner-register" method="post"
-                                  enctype="multipart/form-data" autocomplete="off">
-                                <div class="img-wrap frn-profile">
-                                    <img src="/img/anonymous.png" class="profile-img" data-src="/img/anonymous.png">
-                                    <div class="update-img" id="update-img">등록</div>
-                                    <input type="file" id="signup-file-input" name="profileImage"
-                                           class="form-control file-input">
-                                </div>
+                            <form class="frn-register-form" id="owner-register" method="post" autocomplete="off">
                                 <div>
                                     <div class="info-wrap">
                                         <div>
@@ -47,14 +40,8 @@
                                             <div class="error-message empId-error" style="display: none;"></div>
                                         </div>
                                         <div>
-                                            <label for="owner-empName" class="form-label">성함</label>
-                                            <input type="text" id="owner-empName" name="empName" class="form-control empName"
-                                                   placeholder="성함을 입력해주세요." autocomplete="on">
-                                            <div class="error-message empName-error" style="display: none;"></div>
-                                        </div>
-                                        <div>
                                             <label for="owner-empPhone" class="form-label">전화번호</label>
-                                            <input type="text" class="form-control" id="owner-empPhone" placeholder="- 제외하고 입력해주세요.">
+                                            <input type="text" class="form-control" id="owner-empPhone" name="empPhone" placeholder="- 제외하고 입력해주세요.">
                                             <div class="error-message empPhone-error" style="display: none;"></div>
                                         </div>
                                         <div class="mt-0">
@@ -77,6 +64,7 @@
         <footer th:replace="~{layout/footer :: footer}"></footer>
     </div>
     <!-- 특정 JS -->
+    <script src="/js/franchise.js"></script>
 </div>
 </body>
 </html>
