@@ -1,0 +1,44 @@
+/* 사이드 바 */
+.sidebar {
+    width: 100%;
+    padding: 20px;
+    font-size: 1.7rem;
+}
+
+/* 헤더 */
+.sidebar .side-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 120px;
+    margin-bottom: 30px;
+}
+
+/* 로고 이미지 */
+.sidebar .side-header img {width: 200px;}
+
+/* 메뉴 리스트 아이템 */
+.sidebar .mb-1 {margin: 15px 20px;}
+
+.sidebar .menu {margin-bottom: 5px;}
+
+.sidebar .menu > a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* 소메뉴 열림, 닫힘 아이콘 */
+.sidebar .menu i {
+    margin-bottom: 5px;
+    font-size: 1rem;
+}
+
+/* 소메뉴 */
+.sidebar .s-menu {
+    padding: 10px;
+    font-size: 1.5rem;
+}
+
+/* 구분 선 */
+.sidebar .my-3 {margin: 30px 20px !important;}
