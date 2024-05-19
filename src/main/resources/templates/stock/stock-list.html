@@ -59,6 +59,41 @@
                             </tr>
                         </tbody>
                     </table>
+
+                    <!-- 재고 상세 모달 -->
+                    <div class="modal" style="display: block;">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+
+                                    <!-- 재고명 -->
+                                    <h2 class="modal-title">고추바사삭</h2>
+
+                                    <!-- 단가 -->
+                                    <div class="stock-price">
+                                        <span>500</span>
+                                        <span>원</span>
+                                        <span>&nbsp;/&nbsp;</span>
+                                        <span>30g</span>
+                                    </div>
+
+                                    <!-- 닫기 버튼 -->
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+
+                                    <!-- 재고 이미지 -->
+                                    <img src="/img/crispy1.png" alt="재고 이미지">
+
+                                    <!-- 재고 설명 -->
+                                    <div>
+                                        한 번도 안 먹은 사람은 있어도 한 번만 먹은 사람은 없다는 그 메뉴
+                                        1초에 1마리씩 팔리는 1초 치킨, 매콤 바삭 고추바사삭!
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 				</div>
 			</main>
 			<footer th:replace="~{layout/footer :: footer}"></footer>
