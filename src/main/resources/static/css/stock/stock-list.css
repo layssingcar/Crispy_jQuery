@@ -1,5 +1,6 @@
 /* 재고 현황 페이지 */
 .stock-list {
+    position: relative;
     width: -webkit-fill-available;
     font-size: 2rem;
 }
@@ -38,7 +39,7 @@
     font-size: 1.7rem;
 }
 
-/* 재고 현황 테이블 */
+/* 테이블 */
 .stock-list table {
     margin-top: 25px;
     text-align: center;
@@ -71,4 +72,41 @@
 .stock-list .strong {
     color: var(--main-color);
     font-weight: bold;
+}
+
+/* 재고 상세 모달 */
+.stock-list .modal {
+    position: absolute;
+    top: 365px;
+    display: block;
+    font-size: 1.7rem;
+}
+
+/* 모달 내용 */
+.stock-list .modal-content {padding: 15px;}
+
+/* 재고명 */
+.stock-list .modal-title {margin-right: 15px;}
+
+/* 단가 */
+.stock-list .stock-price {
+    display: flex;
+    color: #696765;
+}
+
+/* 닫기 버튼 */
+.stock-list .modal-header button {
+    background-color: #fff !important;
+}
+
+/* 모달 바디 */
+.stock-list .modal-body {
+    display: flex;
+    margin-top: 5px;
+}
+
+/* 재고 이미지 */
+.stock-list .modal-body img {
+    width: 200px;
+    margin-right: 20px;
 }
