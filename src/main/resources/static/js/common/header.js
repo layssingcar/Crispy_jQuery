@@ -1,30 +1,34 @@
 document.addEventListener("DOMContentLoaded", () => {
     const navImg = document.querySelector(".nav-img");
-    const navUsername = document.querySelector(".nav-username");
-    const menuContent = document.querySelector(".my-menu-content");
-    const menuItem = document.querySelector(".my-menu-item");
+    const navNotify = document.querySelector(".notification");
+    const notificationMenu = document.querySelector(".notification-menu-content");
+    const profileMenu = document.querySelector(".profile-menu-content");
 
+    navNotify.addEventListener("click", (e) => {
+        notificationMenu.style.display = notificationMenu.style.display === 'block' ? 'none' : "block";
+        profileMenu.style.display = 'none';
+        e.stopPropagation(); // 이벤트 버블링 방지
+    });
 
     navImg.addEventListener("click", (e) => {
-        menuContent.style.display = menuContent.style.display === 'block' ? 'none' : "block";
+        profileMenu.style.display = profileMenu.style.display === 'block' ? 'none' : "block";
+        notificationMenu.style.display = 'none';
         e.stopPropagation();
     });
-
-    navUsername.addEventListener("click", (e) => {
-        menuContent.style.display = menuContent.style.display === 'block' ? 'none' : "block";
-        e.stopPropagation();
-    });
-
 
     document.addEventListener("click", (e) => {
-        if(e.target !== navImg && e.target !== menuContent) {
-            menuContent.style.display = 'none';
-        };
+        if (!notificationMenu.contains(e.target) && e.target !== navNotify) {
+            notificationMenu.style.display = 'none';
+
+        }
+        if (!profileMenu.contains(e.target) && e.target !== navImg) {
+            profileMenu.style.display = 'none';
+
+        }
     });
 
-    menuContent.addEventListener("click", e => e.stopPropagation());
-
-    menuItem.addEventListener("click", () => {
-        location.href = "/";
+    // 메뉴 클릭 시 버블링 방지
+    [notificationMenu, profileMenu].forEach(menu => {
+        menu.addEventListener("click", e => e.stopPropagation());
     });
-})
+});
