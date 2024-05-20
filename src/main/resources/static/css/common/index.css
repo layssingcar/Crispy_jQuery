@@ -1,0 +1,54 @@
+/* 공간5: 미니 결재 목록 */
+.area5 {padding: 20px;}
+
+/* 결재 문서 목록 페이지 */
+.area5 .approval-list {
+    width: -webkit-fill-available;
+    font-size: 1.5rem;
+}
+
+/* 상단 영역 */
+.area5 .approval-list .top-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* 공간 제목 */
+.area5 .approval-list h1 {
+    margin: 10px 0;
+    font-size: 2rem;
+}
+
+/* 구분 선 */
+.area5 .approval-list hr {
+    margin-top: 25px;
+    border: 1.5px solid var(--main-color);
+}
+
+/* 테이블 */
+.area5 .approval-list table {
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* 테이블 헤더 */
+.area5 .approval-list thead {height: 65px;}
+
+/* 제목 셀 */
+.area5 .approval-list th {
+    vertical-align: middle;
+    font-size: 2.3rem;
+    font-weight: normal;
+}
+
+/* 데이터 셀 */
+.area5 .approval-list td {
+    padding: 10px !important;
+    vertical-align: middle;
+}
+
+/* 마지막 데이터 행 */
+.area5 .approval-list tbody:last-child tr {
+    border-bottom: #fff;
+}
