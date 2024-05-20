@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
+<link rel="stylesheet" href="/css/stock/stock-list.css" type="text/css">
+</head>
+<body>
+	<div class="crispy-container">
+		<aside th:replace="~{layout/sidebar :: sidebar}"></aside>
+		<div>
+			<header th:replace="~{layout/navbar :: navbar}"></header>
+			<main>
+				<div class="stock-list">
+					<h1>재고 현황</h1>
+
+					<!-- 상단 영역 -->
+					<div class="top-area">
+
+                        <!-- 재고명 검색 -->
+                        <input type="text" name="" id="" class="form-control" placeholder="재고명을 입력하세요.">
+                        
+                        <!-- 카테고리 선택 -->
+                        <select class="form-select form-select-lg mb-3 m-left" aria-label="Large select example" name="stockCt" id="">
+                            <option value="">카테고리 선택</option>
+                            <option value="">카테고리 1</option>
+                            <option value="">카테고리 2</option>
+                            <option value="">카테고리 3</option>
+                            <option value="">카테고리 4</option>
+                            <option value="">카테고리 5</option>
+                        </select>
+
+                        <!-- 발주 신청 -->
+						<button type="button" class="btn m-left" id="order">발주 신청</button>
+					</div>
+
+					<!-- 테이블 -->
+					<table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col"><input type="checkbox"></th>
+                                <th scope="col">재고 이미지</th>
+                                <th scope="col" class="col-sort">
+                                    <span>재고명</span>
+                                    <i class="fa-solid fa-sort" id="name-sort"></i>
+                                </th>
+                                <th scope="col">카테고리</th>
+                                <th scope="col" class="col-sort">
+                                    <span>수량</span>
+                                    <i class="fa-solid fa-sort" id="count-sort"></i>
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <!-- 리스트 -->
+                        <tbody>
+                            <tr>
+                                <td scope="row"><input type="checkbox"></td>
+                                <td><img src="/img/crispy1.png" alt="재고 1 이미지"></td>
+                                <td>재고 1</td>
+                                <td>카테고리 1</td>
+                                <td>
+                                    <span class="strong">8,000</span>
+                                    <span>개</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- 재고 상세 모달 -->
+                    <div class="modal" style="display: block;">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+
+                                    <!-- 재고명 -->
+                                    <h2 class="modal-title">고추바사삭</h2>
+
+                                    <!-- 단가 -->
+                                    <div class="stock-price">
+                                        <span>500</span>
+                                        <span>원</span>
+                                        <span>&nbsp;/&nbsp;</span>
+                                        <span>30g</span>
+                                    </div>
+
+                                    <!-- 닫기 버튼 -->
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+
+                                    <!-- 재고 이미지 -->
+                                    <img src="/img/crispy1.png" alt="재고 이미지">
+
+                                    <!-- 재고 설명 -->
+                                    <div>
+                                        한 번도 안 먹은 사람은 있어도 한 번만 먹은 사람은 없다는 그 메뉴
+                                        1초에 1마리씩 팔리는 1초 치킨, 매콤 바삭 고추바사삭!
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+				</div>
+			</main>
+			<footer th:replace="~{layout/footer :: footer}"></footer>
+		</div>
+	</div>
+</body>
+</html>

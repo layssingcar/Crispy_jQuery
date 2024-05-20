@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>회원가입 인증 코드</title>
+    <style>
+        .container {
+            width: 600px;
+            margin: auto;
+            padding: 20px;
+        }
+        h3:nth-child(2) {
+            color: #fd8340;
+        }
+        .logo {
+            color: #fd8340;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <span class="logo">Crispy</span> 회원정보
+    <h3>요청하신 인증 번호를</h3>
+    <h3>발송해드립니다.</h3>
+    <hr>
+    <p>아래의 인증번호를 인증번호 입력창에 입력해 주세요.</p>
+    <div>인증번호 :
+        <span style ="color: #fd8340; font-size: 20px;" th:text="${verificationCode}">52525</span>
+    </div>
+    <p>인증코드는 이메일 발송 시점으로부터 5분동안 유효합니다.</p>
+</div>
+</body>
+</html>

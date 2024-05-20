@@ -28,7 +28,6 @@ dependencies {
 	// thymeleaf-security
 //	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 
-
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
@@ -73,6 +72,10 @@ dependencies {
 
 	// jsoup HTML Parser
 	implementation 'org.jsoup:jsoup:1.17.2'
+	
+	// QR Code - zxing
+	implementation group: 'com.google.zxing', name: 'javase', version: '3.5.0'
+	implementation group: 'com.google.zxing', name: 'core', version: '3.5.0'
 }
 
 tasks.named('test') {

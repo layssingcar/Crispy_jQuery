@@ -52,4 +52,13 @@ public class MainController {
 	public String SignUp() {
 		return "pages/sign-up";
 	}
+	
+	@GetMapping("/calendar")
+	public String CalendarTest() {
+		return "calendar/calendar";
+	}
+	@GetMapping("/schedule")
+	public String ScheduleTest() {
+		return "schedule/schedule";
+	}
 }

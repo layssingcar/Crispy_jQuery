@@ -1,0 +1,89 @@
+.main {margin: auto;}
+
+.change-pw-container {
+    padding-top: 30px; /* 내용을 위로 조금 더 올립니다 */
+    padding-bottom: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    width: 100%;
+    margin: auto;
+    max-width: 500px;
+    background-color: #fff;
+}
+
+/* 상단 */
+.change-pw > div:first-child {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    height: 110px;
+}
+
+/* 상단 제목 */
+.change-pw .mb-3 {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.change-password-wrap {
+    font-size: 1.6rem;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.change-password-wrap div {
+    margin-bottom: 16px;
+}
+
+.change-password-wrap input {
+    font-size: 1.5rem;
+}
+
+.form-control {
+    width: 300px
+}
+
+/* 하단 */
+.change-pw > div:last-child {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+/* 비밀번호 div */
+.change-pw .col-12 {width: 420px;}
+.change-pw .pw-mg {margin-top: 15px;}
+
+/* input 태그 */
+.change-pw .form-control {
+    height: 35px;
+    font-size: 1rem;
+}
+
+/* 경고 메시지 미노출 */
+.change-pw .none {display: none;}
+
+/* 경고 메시지 노출 */
+.change-pw .block {
+    display: block;
+    padding: 5px 3px 0;
+    font-size: 1rem;
+    color: #d02927;
+}
+
+.btn {
+    font-size: 1.6rem;
+}
+
+/* 비밀번호 변경 버튼 */
+.change-pw .btn-lg {
+    margin-top: 20px;
+    width: 420px !important;
+}

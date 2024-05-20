@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
+    <!-- 특정 페이지 css -->
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+  <style>
+    .mainarea{
+    margin:5px auto !important;
+    width:100%;
+   	border:2px red solid;
+    display:flex !important;
+    justify-content: space-around !important;
+    }
+  	#calendarOpt{
+  	width:400px;
+  	border:2px black solid;
+  	font-size:20px;
+  	text-align:start;
+  	}
+  	#allsche, #shopsche, #mysche, #go-schemenu{
+	margin-left:15px;
+  	}
+    #calendar{
+    width:1000px;
+    position: relative;
+    color: black !important; 
+    font-size:medium !important;
+   	border:2px black solid;
+    }
+    
+   	#profile-cal{
+  	width:400px;
+  	height:400px;
+  	display:flex;
+  	justify-content: center;
+  	margin-top:10px;
+  	}
+    
+    .fc-col-header a{
+      color:#000000 !important; 
+    }
+    .fc-scrollgrid-sync-inner a{
+      color:#000000 !important; 
+      text-decoration: none !important;
+    }
+    .fc-day-sat a{ 
+        color:#0000FF !important; 
+    }
+    .fc-day-sun a{ 
+        color:#FF0000 !important; 
+    }
+    .fc-toolbar-title{
+      padding-right: 160px;
+    }
+    .form-group{
+      margin-bottom: 10px;
+    }
+    .modal-content{
+    font-size:18px !important; 
+    }
+    .modal-content input{
+    font-size:14px !important; 
+    }
+    .form-check-label{
+    margin-top:2px;
+    }
+    .form-control{
+    font-size:14px !important;
+    }
+	.form-control option{
+	font-size:14px !important; 
+	}
+	.btn-outline-primary{
+	border-color: var(--main-color) !important;	
+	color: #000 !important;
+	}
+	
+    .btn-group input:checked + label {
+      background-color: var(--main-color) !important;
+      color: #fff !important;
+    }
+    #shce-insert{
+    font-size: 18px !important;
+    }
+    
+  </style>          
+</head>
+<body>
+
+<div class="crispy-container">
+    <aside th:replace="~{layout/sidebar :: sidebar}"></aside>
+    <div>
+        <header th:replace="~{layout/navbar :: navbar}"></header>
+        <main>
+            <div class="mainarea">
+                <!-- 내부 내용 -->
+                	<div id="calendarOpt">
+                		<div id="profile-cal">
+                			<img src="/img/anonymous.png" id="profile-img" width="300px" height="300px">
+                		</div>
+                		<div id="allsche">
+						  <input class="form-check-input" type="checkbox" value="allsche" id="allscheChecked" checked>
+						  <label class="form-check-label" for="allscheChecked">전체보기</label>                		
+                		</div>
+                		<hr>
+                		<div id="shopsche">
+						  <input class="form-check-input" type="checkbox" value="shopsche" id="shopscheChecked" checked>
+						  <label class="form-check-label" for="shopscheChecked">가맹점 일정</label>                    		
+                		</div>
+                		<div id="mysche">
+						  <input class="form-check-input" type="checkbox" value="mysche" id="myscheChecked" checked>
+						  <label class="form-check-label" for="myscheChecked">내 일정</label>                    		
+                		</div>
+                		<hr>
+                		<div id="go-schemenu">개인 근태 관리</div>
+                	</div>
+    				<div id='calendar'></div>
+                
+   				 <!-- Modal -->
+   				 <form id="form-modal">
+			      <div class="modal fade insertModal" id="myModal">
+			        <div class="modal-dialog">
+			          <div class="modal-content">
+			          
+			            <!-- Modal Header -->
+			            <div class="modal-header"><h2 class="modal-title">일정 등록</h2></div>
+			            
+			            <!-- Modal body -->
+			            <div class="modal-body">
+			              <div class="form-group">
+			                <label for="sch-title">제목:</label>
+			                <input type="textbox" class="form-control" id="sch-title" >
+			              </div>
+			              <div class="form-group">
+			                <label for="sch-content">내용:</label>
+			                <input type="textbox" class="form-control" id="sch-content">
+			              </div>
+			              <div class="form-group">
+			                <label for="allDay">일정구분:&nbsp;</label>
+							 <div class="form-check form-check-inline">
+							  <input class="form-check-input" type="radio" name="inlineRadioOptions1" id="radio-notice" value="notice" checked>
+							  <label class="form-check-label" for="radio-notice">공지</label>
+							</div>
+							<div class="form-check form-check-inline">
+							  <input class="form-check-input" type="radio" name="inlineRadioOptions1" id="radio-vac" value="vac">
+							  <label class="form-check-label" for="radio-vac">휴가</label>
+							</div>
+			              </div>
+			              <div class="form-group">
+						    <label>휴가구분:&nbsp;&nbsp;</label>
+							<div class="btn-group btn-group-lg" role="group" aria-label="Basic radio toggle button group">
+							  <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+							  <label class="btn btn-outline-primary" for="btnradio1">오전</label>
+							
+							  <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+							  <label class="btn btn-outline-primary" for="btnradio2">오후</label>
+							</div>
+			              </div>
+			              <div class="form-group">
+			                <label for="allDay">휴가 종류:&nbsp;</label>
+							 <div class="form-check form-check-inline">
+							  <input class="form-check-input" type="radio" name="inlineRadioOptions2" id="vac-all" value="all" checked>
+							  <label class="form-check-label" for="vac-all">연차</label>
+							</div>
+							<div class="form-check form-check-inline">
+							  <input class="form-check-input" type="radio" name="inlineRadioOptions2" id="vac-half" value="half">
+							  <label class="form-check-label" for="vac-half">반차</label>
+							</div>
+							<div class="form-check form-check-inline">
+							  <input class="form-check-input" type="radio" name="inlineRadioOptions2" id="vac-quat" value="quat">
+							  <label class="form-check-label" for="vac-quat">반반반차</label>
+							</div>
+			              </div>
+			              <div class="form-group-start">
+			                <label for="start">시작시간:</label>
+			                <select class="form-control" id="start" onchange="">
+			                  <option value="09:00">09:00</option>
+			                  <option value="09:30">09:30</option>
+			                  <option value="10:00">10:00</option>
+			                  <option value="10:30">10:30</option>
+			                  <option value="11:00">11:00</option>
+			                  <option value="11:30">11:30</option>
+			                  <option value="12:00">12:00</option>
+			                  <option value="12:30">12:30</option>
+			                  <option value="13:00">13:00</option>
+			                  <option value="13:30">13:30</option>
+			                  <option value="14:00">14:00</option>
+			                  <option value="14:30">14:30</option>
+			                  <option value="15:00">15:00</option>
+			                  <option value="15:30">15:30</option>
+			                  <option value="16:00">16:00</option>
+			                  <option value="16:30">16:30</option>
+			                  <option value="17:00">17:00</option>
+			                  <option value="17:30">17:30</option>
+			                </select>
+			              </div>
+			              <div class="form-group-end">
+			                <label for="end">종료시간:</label>
+			                <select class="form-control" id="end">
+			                  <option value="09:30">09:30</option>
+			                  <option value="10:00">10:00</option>
+			                  <option value="10:30">10:30</option>
+			                  <option value="11:00">11:00</option>
+			                  <option value="11:30">11:30</option>
+			                  <option value="12:00">12:00</option>
+			                  <option value="12:30">12:30</option>
+			                  <option value="13:00">13:00</option>
+			                  <option value="13:30">13:30</option>
+			                  <option value="14:00">14:00</option>
+			                  <option value="14:30">14:30</option>
+			                  <option value="15:00">15:00</option>
+			                  <option value="15:30">15:30</option>
+			                  <option value="16:00">16:00</option>
+			                  <option value="16:30">16:30</option>
+			                  <option value="17:00">17:00</option>
+			                  <option value="17:30">17:30</option>
+			                  <option value="18:00">18:00</option>
+			                </select>
+			              </div>
+			            </div>
+			            <!-- Modal footer -->
+			            <div class="modal-footer"><button type="button" class="btn btn-primary float-right insertBtn" id="shce-insert" onclick="fnRegistSchedule();">등록</button></div>         
+			          </div>
+			        </div>
+			      </div>
+			    </form>     
+			               
+			               
+            </div> <!-- mainarea 끝-->
+        </main>
+        <footer th:replace="~{layout/footer :: footer}"></footer>
+    </div>
+    <!-- 특정 JS -->
+ <script>
+      ////////////////////////     모달 설정
+	 $("#myModal").on("hidden.bs.modal", function () {
+/*         $(".form-group-start").hide();
+        $(".form-group-end").hide(); */
+        $("#form-modal")[0].reset();
+      });
+
+/*       const fnShowStartEnd = ()=>{
+        $(".form-group-start").hide();
+        $(".form-group-end").hide();
+        $("input:radio[name=allDay]").click(()=>{
+          if($("input:radio[name=allDay]:checked").val() =='false') {
+            $(".form-group-start").show();
+            $(".form-group-end").show();
+          }
+          else{
+            $(".form-group-start").hide();
+            $(".form-group-end").hide();
+          }
+        })
+      } */
+
+      const fntest = ()=>{    // 고른 시간 이후의 시간대만 표시되도록 하는 함수
+        var index = $("#start option").index($("#start option:selected")); // 내가 고른 셀렉트의 인덱스
+        var maxsize = $("#start option").length;
+        for(var i = index + 1; i < maxsize; i++)
+        {
+          var newOption = $('<option>').attr('value', $("#start option:eq(" + i + ")").val()).text($("#start option:eq(" + i + ")").val());
+          $("#end").append(newOption);
+        }
+      }
+
+      ////////////////////////     캘린더 설정
+      let startDt, endDt;
+      const calendarEl = document.getElementById('calendar');
+      const calendarHeader = {
+        left: 'prev,next today',          
+        center: 'title',
+        right:''        
+      }
+
+      const calendarOpt = {
+        headerToolbar: calendarHeader,
+        initialView: 'dayGridMonth',
+        selectable:true,    // 달력 날짜 드래그
+        locale:'kr',      // 달력 언어 설정
+        editable:true,
+        navLinks:true,
+        dayMaxEventRows:true
+      }
+
+      const calendar = new FullCalendar.Calendar(calendarEl, calendarOpt);
+      calendar.render();
+
+      ////////////////////////		캘린더 기능
+      calendar.on("eventAdd", ()=>{
+        alert('일정을 등록했다!');
+      });
+
+//       calendar.on("eventClick", (info)=>{
+//         alert('일정 제목:'+ info.event.title);
+//         alert('일정 시작:'+ info.event.start);
+//         alert('일정 종료:'+ info.event.end);
+//       });
+      
+      calendar.on("dateClick", (info)=>{
+          alert('일정 제목:'+ info.dateStr);
+        });
+
+      calendar.on("select", (info)=>{
+        $('#myModal').modal('show');
+        startDt = new Date(info.startStr.substr(0, 4), info.startStr.substr(5, 2)-1, info.startStr.substr(8, 2));
+        endDt = new Date(info.endStr.substr(0, 4), info.endStr.substr(5, 2)-1, info.endStr.substr(8, 2));
+      });
+
+      function fnRegistSchedule(){
+        if($("input:radio[name=inlineRadioOptions2]:checked").val() == 'all'){
+          let schedule = {
+              title: $("#sch-title").val(),
+              allDay: true, 
+              start: startDt,
+              end : endDt
+          };
+          calendar.addEvent(schedule);
+        }
+        else{
+          let schedule = {
+              title: $("#sch-title").val(),
+              allDay: false, 
+              start: startDt,
+              end: endDt
+            };
+            calendar.addEvent(schedule);
+          }
+        calendar.unselect();
+      };
+
+    </script>    
+</div>
+</body>
+</html>

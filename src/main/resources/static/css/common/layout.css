@@ -1,0 +1,56 @@
+.crispy-container {
+	display: flex;
+}
+
+aside {
+	display: flex;
+    flex-direction: column;
+    align-items: center;
+	position: fixed;
+    z-index: 1;
+	height: 100vh;
+	width: 280px;
+	background-color: white;
+	border-right: 1px solid #dbdbdb;
+}
+
+.crispy-container>div {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	width: 100%;
+	height: 100vh;
+	margin-left: 280px;
+}
+
+main {
+	display: flex;
+	justify-content: center;
+	flex-grow: 1;
+	/* max-width: 1300px; */
+	/* max-height: 1000px; */
+}
+
+main>div {
+    max-width: 1300px;
+    height: 100%;
+    margin: 30px 0;
+}
+
+footer {
+	position: relative; /* 기존의 position: fixed;를 relative로 변경 */
+	bottom: 0;
+	width: 100%;
+	height: 60px;
+	padding: 20px 0;
+	background: #fff;
+	text-align: center;
+	font-size: 14px;
+	border-top: 1px solid #dbdbdb;
+	margin-top: 15px;
+}
+
+footer>div {
+    margin-top: 10px;
+	margin-top: 10px;
+}

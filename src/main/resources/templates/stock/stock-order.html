@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
+<link rel="stylesheet" href="/css/stock/stock-order.css" type="text/css">
+</head>
+<body>
+	<div class="crispy-container">
+		<aside th:replace="~{layout/sidebar :: sidebar}"></aside>
+		<div>
+			<header th:replace="~{layout/navbar :: navbar}"></header>
+			<main>
+				<div class="stock-order">
+					<h1>발주 신청</h1>
+
+					<!-- 상단 버튼 -->
+					<div class="top-btn">
+						<button type="button" class="btn" id="temp-content">임시저장 내용 불러오기</button>
+						<button type="button" class="btn" id="add-list">+ 추가하기</button>
+					</div>
+					<hr>
+
+					<!-- 발주재고 form -->
+					<form action="" id="form-container">
+						<div class="order-list">
+
+							<!-- 카테고리 -->
+							<div>
+								<div class="m-right" id="stock-ct">카테고리</div>
+								<select class="form-select form-select-lg mb-3" aria-label="Large select example" name="stockCt" id="">
+									<option value="">선택</option>
+									<option value="">카테고리 1</option>
+									<option value="">카테고리 2</option>
+									<option value="">카테고리 3</option>
+									<option value="">카테고리 4</option>
+									<option value="">카테고리 5</option>
+								</select>
+							</div>
+
+							<!-- 재고명 -->
+							<div>
+								<div class="m-right" id="stock-name">재고명</div>
+								<select class="form-select form-select-lg mb-3" aria-label="Large select example" name="stockName" id="">
+									<option value="">선택</option>
+									<option value="">재고 1</option>
+									<option value="">재고 2</option>
+									<option value="">재고 3</option>
+									<option value="">재고 4</option>
+									<option value="">재고 5</option>
+								</select>
+							</div>
+
+							<!-- 단가 -->
+							<div>
+								<div class="m-right">단가</div>
+								<div class="stock-price">
+									<span>500</span>
+									<span>원</span>
+									<span>&nbsp;/&nbsp;</span>
+									<span>30g</span>
+								</div>
+							</div>
+
+							<!-- 수량 -->
+							<div>
+								<div class="m-right">수량</div>
+								<input type="text" class="form-control" id="">
+								<div>개</div>
+							</div>
+
+							<!-- 합계금액 -->
+							<div class="total-cost">
+								<span class="strong">50,000</span>
+								<span>원</span>
+							</div>
+						</div>
+						<hr>
+					</form>
+
+					<!-- 하단 버튼 -->
+					<div class="bottom-btn">
+
+						<!-- 임시저장 -->
+						<div><button class="btn" id="temp">임시저장</button></div>
+
+						<div>
+							<!-- 총 합계금액 -->
+							<div class="order-cost">
+								<span>합계&nbsp;</span>
+								<span class="strong">2,000,000</span>
+								<span>원</span>
+							</div>
+
+							<button class="btn" id="order">신청하기</button>
+							<button class="btn" id="cancel">취소</button>
+						</div>
+					</div>
+				</div>
+			</main>
+			<footer th:replace="~{layout/footer :: footer}"></footer>
+		</div>
+	</div>
+	<script src="/js/stock/stock-order.js"></script>
+</body>
+</html>

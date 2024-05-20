@@ -1,0 +1,34 @@
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
+    <link href="/css/employee/find-user.css" rel="stylesheet">
+</head>
+<body>
+<section>
+    <div>
+        <div class="container my-3 find-result">
+            <div class="find-result-form">
+                <div class="mb-5">
+                    <h4>해당 이메일로 가입된 아이디가 있습니다.</h4>
+                </div>
+                <div class="find-username">
+<!--                    <div th:if="${findUsername}">-->
+<!--                        <p>아이디: <span th:text="${findUsername}"></span></p>-->
+<!--                    </div>-->
+                    <div class="find-result-info mb-4">
+                        <span>아이디 : moz1mozi</span>
+                        <span>가입 : 가입한 날짜</span>
+                    </div>
+                    <div class="result-to-find-password mb-3">
+                        <span>비밀번호가 기억나지 않으세요?</span>
+                        <a href="/member/find/password">비밀번호 찾기</a>
+                    </div>
+                </div>
+                <a role="button" class="btn result-to-login" href="/crispy/employee/login">로그인 하러가기</a>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>
