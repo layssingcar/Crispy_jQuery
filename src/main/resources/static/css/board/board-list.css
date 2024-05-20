@@ -1,0 +1,172 @@
+@charset "EUC-KR";
+
+html, body {
+	height: 100%;
+}
+
+.container {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	display: flex;
+	align-items: center; /* 아이템들을 수직으로 정렬 */
+}
+
+table {
+	width: 1000px;
+	border-collapse: collapse;
+	overflow: hidden;
+	box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05)
+		0px 8px 32px;
+	table-layout: fixed;
+	margin: 0 auto;
+	margin-left: 30rem;
+	border-radius: 4px;
+	margin-top: 2rem;
+}
+
+th, td {
+	padding: 15px;
+	background-color: rgba(255, 255, 255, 0.1);
+	color: black;
+	width: calc(800px/ 5);
+	font-size: 12px;
+}
+
+th {
+	text-align: left;
+}
+
+thead {
+	background: white;
+}
+
+tbody tr:hover {
+	background-color: rgb(200, 200, 200, 0.2);
+}
+
+td {
+	position: relative;
+}
+
+td:hover::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: -9999px;
+	bottom: -9999px;
+	z-index: -1;
+}
+
+#modal {
+	margin-top: 12rem;
+	margin-left: 15.5rem;
+	width: 50x;
+	height: 30px;
+}
+
+#boardTitle {
+	height: 3rem;
+}
+
+#boardContent {
+	height: 15rem;
+	resize: none;
+}
+
+button {
+	background-color: #1679AB !important;
+}
+
+:root {
+	--main-color: #1679AB;
+}
+
+a {
+	color: black;
+}
+
+h1 {
+	margin-top: 3rem;
+}
+
+.reply-container textarea {
+	display: none;
+}
+
+#addBtn {
+	margin-left: 30rem;
+}
+
+.box {
+	margin-left: 100rem;
+	width: 22rem;
+	height: 50px;
+	margin-top: 6rem;
+	position: static;
+}
+
+.container-1 {
+	width: 300px;
+	vertical-align: middle;
+	white-space: nowrap;
+	position: relative;
+}
+
+.container-1 input#search {
+	width: 300px;
+	height: 50px;
+	background: #fff;
+	border: none;
+	font-size: 10pt;
+	float: left;
+	color: #63717F;
+	padding-left: 45px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+	margin-top: 1.5px;
+}
+
+.container-1 input#search::-webkit-input-placeholder {
+	color: #D3D3D3;
+}
+
+.container-1 input#search::-webkit-search-cancel-button {
+	display: none; /* "x" 표시를 숨김 */
+}
+
+.container-1 input#search:focus {
+	outline-color: #1679AB;
+	outline-style: solid; /* 테두리 스타일 설정 (필요시) */
+	outline-width: 2px; /* 테두리 두께 설정 (필요시) */
+}
+
+.container-1 .icon {
+	position: absolute;
+	top: 50%;
+	margin-left: 17px;
+	margin-top: 17px;
+	z-index: 1;
+	color: #1679AB;
+	font-size: 14px;
+}
+
+thead {
+	background: white;
+	border-bottom: 2px solid #F1F3F5; /* 밑줄 추가 */
+}
+#reply{
+	margin-top:20px;
+	resize: none;
+}
+#boardcomment{
+	margin-top:20px;
+	resize: none;
+}
+#listbtn{
+	margin-right:36rem;
+}
