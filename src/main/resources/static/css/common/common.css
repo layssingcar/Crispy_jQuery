@@ -13,6 +13,7 @@
 }
 
 a {
+	color: #000;
 	text-decoration: none;
 }
 
@@ -21,11 +22,28 @@ ul, ol {
 }
 
 button {
+	color: #fff !important;
 	background-color: var(--main-color) !important;
 	border-color: var(--main-color) !important;
 }
 
-.form-check-input:checked {
-	background-color: var(--main-color) !important;
-	border-color: var(--main-color) !important;
+.form-control:focus {
+	border-color: var(--main-color);
+	outline: 0;
+	box-shadow: 0 0 0 .25rem rgba(253, 131, 64, .65);
+}
+
+.form-select:focus {
+	border-color: var(--main-color);
+	outline: 0;
+	box-shadow: 0 0 0 .25rem rgba(253, 131, 64, .65);
+}
+
+@font-face {
+	font-family: 'GmarketSansMedium';
+	src:
+		url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff')
+		format('woff');
+	font-weight: normal;
+	font-style: normal;
 }

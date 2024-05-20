@@ -1,0 +1,131 @@
+/* 재고 현황 페이지 */
+.stock-list {
+    position: relative;
+    width: -webkit-fill-available;
+    font-size: 2rem;
+}
+
+/* 페이지 제목 */
+.stock-list h1 {font-size: 3.5rem;}
+
+/* 상단 영역 */
+.stock-list .top-area {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* 재고명 검색 */
+.stock-list input[type="text" i] {
+    width: 240px;
+    padding-left: 10px;
+    font-size: 1.8rem;
+}
+
+/* 카테고리 선택 */
+.stock-list select {
+    width: 200px;
+    margin-bottom: 0 !important;
+    font-size: 1.8rem;
+}
+
+/* 상단 영역 margin-left */
+.stock-list .m-left {margin-left: 7px;}
+
+/* 발주 신청 */
+.stock-list #order {
+    width: 120px;
+    height: 40px;
+    margin-left: 7px;
+    font-size: 1.7rem;
+}
+
+/* 테이블 */
+.stock-list table {
+    margin-top: 25px;
+    text-align: center;
+}
+
+/* 테이블 헤더 */
+.stock-list thead {height: 65px;}
+
+/* 제목 셀 */
+.stock-list th {
+    vertical-align: middle;
+    font-size: 2.3rem;
+    font-weight: normal;
+}
+
+/* 체크박스 */
+.stock-list input[type="checkbox" i] {zoom: 1.5;}
+
+/* 재고명, 수량 정렬 */
+.stock-list .col-sort {position: relative;}
+
+.stock-list #name-sort {
+    position: absolute;
+    top: 18px;
+    right: 33px;
+}
+
+.stock-list #count-sort {
+    position: absolute;
+    top: 18px;
+    right: 80px;
+}
+
+/* 데이터 셀 */
+.stock-list td {
+    padding: 10px !important;
+    /* width: 120px; */
+    vertical-align: middle;
+}
+
+/* 재고 이미지 */
+.stock-list img {width: 150px;}
+
+/* 수량 강조 */
+.stock-list .strong {
+    color: var(--main-color);
+    font-weight: bold;
+}
+
+/* 행 hover */
+.stock-list tbody tr:hover td {cursor: pointer;}
+
+/* 재고 상세 모달 */
+.stock-list .modal {
+    position: absolute;
+    top: 365px;
+    display: block;
+    height: 345px;
+    font-size: 1.7rem;
+}
+
+/* 모달 내용 */
+.stock-list .modal-content {padding: 15px;}
+
+/* 재고명 */
+.stock-list .modal-title {margin-right: 15px;}
+
+/* 단가 */
+.stock-list .stock-price {
+    display: flex;
+    color: #696765;
+}
+
+/* 닫기 버튼 */
+.stock-list .modal-header button {
+    background-color: #fff !important;
+}
+
+/* 모달 바디 */
+.stock-list .modal-body {
+    display: flex;
+    margin-top: 5px;
+}
+
+/* 재고 이미지 */
+.stock-list .modal-body img {
+    width: 200px;
+    margin-right: 20px;
+}

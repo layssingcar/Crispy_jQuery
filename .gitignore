@@ -3,7 +3,7 @@
 
 #.properties
 !application.properties
-.properties
+*.properties
 
 #settings.gradle
 settings.gradle

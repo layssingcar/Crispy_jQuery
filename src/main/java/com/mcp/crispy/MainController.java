@@ -57,4 +57,8 @@ public class MainController {
 	public String CalendarTest() {
 		return "calendar/calendar";
 	}
+	@GetMapping("/schedule")
+	public String ScheduleTest() {
+		return "schedule/schedule";
+	}
 }

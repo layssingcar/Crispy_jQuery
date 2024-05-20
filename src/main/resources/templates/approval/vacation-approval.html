@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
+<link rel="stylesheet" href="/css/summernote/summernote-lite.css">
+<link rel="stylesheet" href="/css/approval/vacation-approval.css" type="text/css">
+</head>
+<body>
+	<div class="crispy-container">
+		<aside th:replace="~{layout/sidebar :: sidebar}"></aside>
+		<div>
+			<header th:replace="~{layout/navbar :: navbar}"></header>
+			<main>
+				<div class="vacation-appr">
+					<h1>휴가/휴직 신청</h1>
+
+					<!-- 상단 영역 -->
+					<div class="top-area">
+
+                        <!-- 문서 선택 -->
+                        <select class="form-select form-select-lg mb-3 m-left" aria-label="Large select example" name="stockCt" id="">
+                            <option value="">문서 선택</option>
+                            <option value="">휴가신청서</option>
+                            <option value="">휴직신청서</option>
+                        </select>
+
+                        <!-- 임시저장 내용 불러오기 -->
+						<button type="button" class="btn" id="temp-content">임시저장 내용 불러오기</button>
+					</div>
+
+                    <!-- 문서 작성 form -->
+                    <form method="post">
+                        <textarea id="summernote" name="editordata"></textarea>
+                        
+                        <!-- 파일 선택 -->
+                        <div class="file-attach">
+                            <div class="mb-3">
+                                <input class="form-control" type="file" id="formFileMultiple" multiple>
+                            </div>
+                        </div>
+
+                        <!-- 하단 버튼 -->
+                        <div class="bottom-btn">
+                            
+                            <!-- 임시저장 -->
+                            <div><button class="btn" id="temp">임시저장</button></div>
+
+                            <div>
+                                <button class="btn" id="cancel">취소</button>
+                                <button class="btn" id="approval">다음</button>
+                            </div>
+                        </div>
+                    </form>
+				</div>
+			</main>
+			<footer th:replace="~{layout/footer :: footer}"></footer>
+		</div>
+	</div>
+
+    <script src="/js/summernote/summernote-lite.js"></script>
+    <script src="/js/summernote/lang/summernote-ko-KR.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#summernote').summernote();
+        });
+
+        $('#summernote').summernote({
+            placeholder: 'Hello stand alone ui',
+            tabsize: 2,
+            height: 120,
+            toolbar: [
+            ['style', ['style']],
+            ['font', ['bold', 'underline', 'clear']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['table', ['table']],
+            ['insert', ['link', 'picture', 'video']],
+            ['view', ['fullscreen', 'codeview', 'help']]
+            ]
+        });
+    </script>
+</body>
+</html>
