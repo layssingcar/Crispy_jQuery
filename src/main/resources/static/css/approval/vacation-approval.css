@@ -70,6 +70,18 @@
     font-size: 1.8rem;
 }
 
+/* 하단 버튼 */
+.vacation-appr .bottom-btn {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+}
+
+/* 하단 우측 버튼 */
+.vacation-appr .bottom-btn > div {display: flex;}
+
+.vacation-appr .bottom-btn button {width: 85px;}
+
 /* 임시저장 */
 .vacation-appr #temp {
     width: 120px;
@@ -77,22 +89,8 @@
     border-color: #696765 !important;
 }
 
-/* 하단 버튼 */
-.vacation-appr .bottom-btn {
-    display: flex;
-    justify-content: flex-end;
-    width: 80%;
-}
-
-/* 하단 우측 버튼 */
-.vacation-appr .bottom-btn > div {display: flex;}
-
 /* 취소 */
 .vacation-appr #cancel {
-    width: 85px;
     background-color: #696765 !important;
     border-color: #696765 !important;
 }
-
-/* 신청하기 */
-.vacation-appr #approval {width: 120px;}
