@@ -22,4 +22,14 @@ public class FranchiseController {
     public String getFranchise() {
         return "franchise/franchise";
     }
+    
+    @GetMapping("franchise-list")
+    public String listFranchise() {
+    	return "franchise/franchise-list";
+    }
+    
+    @GetMapping("franchise-map")
+    public String mapFranchise() {
+    	return "franchise/franchise-map";
+    }
 }
