@@ -3,6 +3,8 @@
 <head>
   <th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
   <!-- 특정 페이지 css -->
+  <link rel="stylesheet" href="/css/common/index.css" type="text/css">
+
   <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script> 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -197,7 +199,104 @@
 			        <canvas id="myChart"></canvas>
 			    </div>   	        
    	        </div>
-	        <div class="area5">안녕하세요 공간5입니다</div>
+
+			<!-- 미니 결재 목록 -->
+	        <div class="area5">
+				<div class="approval-list">
+					<div class="top-area">
+						<h1>결재 문서</h1>
+						<a href="/crispy/approval-list"><i class="fa-solid fa-plus"></i></a>
+					</div>
+					<hr>
+
+					<!-- 테이블 -->
+					<table class="table">
+						<!-- 리스트 -->
+                        <tbody>
+                            <tr>
+                                <td>
+									<span>휴직신청서</span>
+									<span>( 박종구 )</span>
+								</td>
+                                <td>2024-05-13</td>
+                                <td>대기</td>
+                            </tr>
+                        </tbody>
+
+                        <!-- 리스트 -->
+                        <tbody>
+                            <tr>
+                                <td>
+									<span>휴가신청서</span>
+									<span>( 배영욱 )</span>
+								</td>
+                                <td>2024-05-17</td>
+                                <td>진행중</td>
+                            </tr>
+                        </tbody>
+
+                        <!-- 리스트 -->
+                        <tbody>
+                            <tr>
+                                <td>
+									<span>휴직신청서</span>
+									<span>( 오정은 )</span>
+								</td>
+                                <td>2024-05-13</td>
+                                <td>완료</td>
+                            </tr>
+                        </tbody>
+
+                        <!-- 리스트 -->
+                        <tbody>
+                            <tr>
+                                <td>
+									<span>휴가신청서</span>
+									<span>( 우혜진 )</span>
+								</td>
+                                <td>2024-05-18</td>
+                                <td>완료</td>
+                            </tr>
+                        </tbody>
+
+                        <!-- 리스트 -->
+                        <tbody>
+                            <tr>
+                                <td>
+									<span>휴가신청서</span>
+									<span>( 최동환 )</span>
+								</td>
+                                <td>2024-05-17</td>
+                                <td>진행중</td>
+                            </tr>
+                        </tbody>
+
+                        <!-- 리스트 -->
+                        <tbody>
+                            <tr>
+                                <td>
+									<span>휴직신청서</span>
+									<span>( 박종구 )</span>
+								</td>
+                                <td>2024-05-13</td>
+                                <td>대기</td>
+                            </tr>
+                        </tbody>
+
+                        <!-- 리스트 -->
+                        <tbody>
+                            <tr>
+                                <td>
+									<span>휴가신청서</span>
+									<span>( 배영욱 )</span>
+								</td>
+                                <td>2024-05-17</td>
+                                <td>진행중</td>
+                            </tr>
+                        </tbody>
+                    </table>
+				</div>
+			</div>
         </div>
         
       </div>
