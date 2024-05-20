@@ -48,6 +48,12 @@
     vertical-align: middle;
 }
 
+/* 행 hover */
+.area5 .approval-list tbody tr:hover td {
+    background-color: #fd834045;
+    cursor: pointer;
+}
+
 /* 마지막 데이터 행 */
 .area5 .approval-list tbody:last-child tr {
     border-bottom: #fff;

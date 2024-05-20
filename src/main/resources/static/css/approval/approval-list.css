@@ -46,11 +46,26 @@
     font-weight: normal;
 }
 
+/* 기안일 정렬 */
+.approval-list .col-sort {position: relative;}
+
+.approval-list .fa-sort {
+    position: absolute;
+    top: 18px;
+    right: 143px;
+}
+
 /* 데이터 셀 */
 .approval-list td {
     padding: 10px !important;
     /* width: 120px; */
     vertical-align: middle;
+}
+
+/* 행 hover */
+.approval-list tbody tr:hover td {
+    background-color: #fd834045;
+    cursor: pointer;
 }
 
 /* 페이지네이션 */
