@@ -1,0 +1,42 @@
+@charset "EUC-KR";
+
+#boardContent {
+	height: 50px;
+}
+
+#img1 {
+	margin-top: 10px;
+	margin-left: 450px;
+}
+
+.writer {
+	margin-bottom: 20px;
+}
+
+.date {
+	margin-bottom: 50px;
+}
+
+.hit {
+	margin-left: 400px;
+}
+
+.title {
+	height: 50px;
+	width: 100px;
+	margin-bottom: 20px;
+}
+
+.text {
+	height: 50px;
+	width: 100px;
+}
+
+.boardfile {
+	margin: 5px;
+	margin-top: 30px;
+}
+
+* {
+	font-size: 13px;
+}

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
+<!-- 특정 페이지 css -->
+<link href="/css/board/board-list.css" rel="stylesheet">
+<link href="/css/board/board-detail.css" rel="stylesheet">
+
+</head>
+<body>
+	<div class="crispy-container">
+		<aside th:replace="~{layout/sidebar :: sidebar}"></aside>
+		<div>
+			<header th:replace="~{layout/navbar :: navbar}"></header>
+			<main>
+				<h4 class="title" id="title">상세보기</h4>
+		</div>
+		<div class="body">
+			<div>
+				<span class="writer" id="writer">작성자 : 정은</span>
+			</div>
+			<div>
+				<span class="date" id="date">2024/05/19</span>
+			</div>
+			<div>
+				<span class="hit" id="hit">조회수</span> <span>20</span>
+			</div>
+			<hr>
+			<div>
+				<span class="title" id="title">제목 : 제목입니다.</span>
+			</div>
+
+			<div>
+				<span class="text" id="text">내용 :
+					내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다
+					내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다내용입니다
+				</span>
+			</div>
+		</div>
+		<div id="div1">
+			<div>
+				<img src="/img/heart1.png" width="20px" id="img1">
+			</div>
+		</div>
+		<div class="boardfile" id="boardfile">* 첨부파일</div>
+		<hr>
+		<div class="mb-3">
+			<label for="boardContent" class="form-label mt-2" id="comment">댓글</label>
+			<textarea type="text" name="boardcomment" id="boardcomment"
+				class="form-control" placeholder="내용은 500자 내외로 입력해주세요."
+				maxlength="500" wrap="hard" rows="2" cols="1"></textarea>
+			<button type="button" class="btn btn-primary" id="comment-add">등록</button>
+		</div>
+		<div>
+
+			<div>
+				<span>정은</span>
+			</div>
+			<div>
+				<span>2024/05/19</span>
+				<hr>
+			</div>
+			<div>
+				<span>첫번째 댓글 내용 </span><span>크리스피</span>
+				<button type="button" class="btn btn-primary" id="comment-modify">수정</button>
+				<button type="button" class="btn btn-primary" id="comment-delete">삭제</button>
+			</div>
+			<div class="mb-3 reply-container">
+				<button type="button" class="btn btn-primary" id="reply-button">답글</button>
+				<textarea type="text" name="reply" id="reply" class="form-control"
+					placeholder="내용은 500자 내외로 입력해주세요." maxlength="500" wrap="hard"
+					rows="2" cols="50"></textarea>
+				<button type="button" class="btn btn-primary" id="recomment">등록</button>
+			</div>
+		</div>
+		<button type="button" class="btn btn-primary" id="listbtn">목록</button>
+
+		<button type="button" class="btn btn-secondary">삭제</button>
+		<button type="button" class="btn btn-primary" id="modifyBtn">수정</button>
+		</main>
+		<footer th:replace="~{layout/footer :: footer}"></footer>
+	</div>
+	<!-- 특정 JS -->
+	<script>
+		document.getElementById('img1').onclick = function(evt) {
+			var img = document.querySelector('#div1 img');
+			if (evt.target.textContent === 'ON') {
+				img.src = '/img/heart2.png';
+				evt.target.textContent = 'OFF';
+			} else {
+				img.src = '/img/heart1.png';
+				evt.target.textContent = 'ON';
+			}
+		}
+
+		document.getElementById('listbtn').addEventListener('click',
+				function() {
+					window.history.back();
+				});
+		document.getElementById('modifyBtn').addEventListener('click',
+				function() {
+					window.location.href = '/board/board-modify';
+				});
+
+
+	</script>
+
+	</div>
+</body>
+</html>
