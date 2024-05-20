@@ -52,3 +52,27 @@
     /* width: 120px; */
     vertical-align: middle;
 }
+
+/* 페이지네이션 */
+.approval-list .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.approval-list .page-link {color: var(--main-color);}
+
+.approval-list .page-link:focus {
+    z-index: 3;
+    box-shadow: var(--main-color);
+    background-color: var(--main-color);
+    color: #fff;
+    outline: 0;
+    opacity: 0.65;
+}
+
+.approval-list .active > .page-link {
+    color: var(--bs-pagination-active-color);
+    background-color: var(--main-color);
+    border-color: var(--main-color);
+}

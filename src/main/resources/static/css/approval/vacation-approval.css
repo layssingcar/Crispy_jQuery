@@ -1,0 +1,96 @@
+/* 휴가, 휴직 신청 페이지 */
+.vacation-appr {
+    width: -webkit-fill-available;
+    font-size: 2rem;
+}
+
+/* 페이지 제목 */
+.vacation-appr h1 {font-size: 3.5rem;}
+
+/* 버튼 공통 CSS */
+.vacation-appr button {
+    height: 40px;
+    margin-left: 7px;
+    font-size: 1.7rem;
+}
+
+/* 상단 영역 */
+.vacation-appr .top-area {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* 문서 선택 */
+.vacation-appr select {
+    width: 200px;
+    margin-bottom: 0 !important;
+    font-size: 1.8rem;
+}
+
+/* 임시저장 내용 불러오기 */
+.vacation-appr #temp-content {
+    width: 225px;
+    background-color: #696765 !important;
+    border-color: #696765 !important;
+}
+
+/* 상단 영역 margin-left */
+.vacation-appr .m-left {margin-left: 7px;}
+
+/* 문서 작성 form */
+.vacation-appr form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 25px;
+}
+
+.vacation-appr .note-editor {width: 1000px;}
+
+/* 에디터 상단 버튼 */
+.vacation-appr .note-toolbar button {
+    color: initial !important;
+    background-color: #fff !important;
+    border-color: #ddd !important;
+}
+.vacation-appr .note-editable {height: 1275px !important;}
+
+/* 파일 선택 */
+.vacation-appr .file-attach {
+    display: flex;
+    width: 1000px;
+    margin-top: 20px;
+}
+
+.vacation-appr form .mb-3 {width: 450px;}
+
+.vacation-appr form .mb-3 input {
+    height: 40px;
+    font-size: 1.8rem;
+}
+
+/* 하단 버튼 */
+.vacation-appr .bottom-btn {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+}
+
+/* 하단 우측 버튼 */
+.vacation-appr .bottom-btn > div {display: flex;}
+
+.vacation-appr .bottom-btn button {width: 85px;}
+
+/* 임시저장 */
+.vacation-appr #temp {
+    width: 120px;
+    background-color: #696765 !important;
+    border-color: #696765 !important;
+}
+
+/* 취소 */
+.vacation-appr #cancel {
+    background-color: #696765 !important;
+    border-color: #696765 !important;
+}
