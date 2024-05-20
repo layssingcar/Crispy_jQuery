@@ -156,6 +156,12 @@
     font-size: 1.3rem;
 }
 
+.frn-register-form {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
 .frn-register-form img {
     width: 100px;
     height: 100px;
@@ -186,11 +192,18 @@
 .operating-time {
     display: flex;
     align-items: center;
+    width: 150px;
 }
 
-.operating-time input{
+.operating-time input {
+    width: 120px;
+}
+
+.operating-time select{
     width: 70px;
     margin-top: 0;
+    text-align: center;
+    font-size: 1.2rem;
 }
 
 .frn-modify-btn {
@@ -208,4 +221,38 @@
     text-align: center; /* 텍스트를 가로 방향 중앙으로 정렬 */
     line-height: 22px;
     height: 30px; /* 버튼의 높이를 지정 */
+}
+
+.franchise .frn-wrap .file-input {display: none;}
+
+.franchise .frn-img{
+    float: right;
+    width: 150px;
+    height: 150px;
+    margin-top: 15px;
+    border: 1px solid #e6e7eb;
+    border-radius: 100%;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+.franchise .frn-info {
+    display: flex;
+
+}
+
+.franchise .frn-info hr {
+    width: 180px;
+    margin-left: 10px;
+}
+
+.franchise .btn-save-profile {
+    align-self: center;
+    font-size: 1.5rem;
+    color: #fff;
+    background-color: var(--main-color);
+    border: 0;
+    padding: 5px 25px;
+    width: 150px;
+    border-radius: 7px;
 }
