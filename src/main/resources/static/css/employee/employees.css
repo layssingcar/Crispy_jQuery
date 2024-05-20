@@ -10,6 +10,8 @@
     padding: 5px 25px 5px 25px;
     border-radius: 30px;
     background-color: var(--main-color);
+    --bs-btn-hover-color: #fff;
+    color: #fff;
 }
 
 .btn-approve-registration {
@@ -21,31 +23,49 @@
 
 .employee-register {
     display: flex;
-    margin-bottom: 20px;
     align-items: flex-start;
 }
 
-.employee-search{
+.employees-container .employee-wrap {
     display: flex;
-    flex-direction: column;
-    align-items: end;
-    margin-bottom: 20px; /* 적절한 마진으로 요소 간 공간 조정 */
+    justify-content: flex-end;
 }
 
-.employee-search, .employee-register {
-    margin-top: 10px; /* 상단 여백 추가 */
+.employees-container .employee-search {
+    text-align: left; /* 전체 컨테이너를 왼쪽으로 정렬 */
+    margin: 20px; /* 여백을 추가하여 디자인을 조정 */
+}
+
+.employee-search {
+    position: relative; /* 절대적 위치 설정 */
+    margin-right: 20px; /* 오른쪽 여백 추가 */
+    display: flex;
+    align-items: center; /* 내부 아이템들을 세로로 중앙정렬 */
 }
 
 .search-input {
-    max-width: 500px;
-    padding: 8px;
-    border-radius: 4px;
+    padding: 8px 40px 8px 10px; /* 텍스트 필드 내부의 패딩을 조정 */
     border: 1px solid #ccc;
+    border-radius: 20px; /* 둥근 테두리 추가 */
+    font-size: 16px;
 }
 
+.fa-magnifying-glass {
+    font-size: 2rem;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #333;
+    cursor: pointer;
+}
 table td {
     padding: 10px !important;
     width: 120px;
+}
+
+table td a {
+    font-size: 2rem;
 }
 
 .no-column {}
@@ -57,4 +77,18 @@ table td {
 table {
     text-align: center;
     font-size: 1.5rem;
+}
+
+.table>tbody {
+    vertical-align: baseline;
+}
+
+.fa-pen-to-square {
+    margin-right: 20px;
+}
+
+.clickable {
+    color: var(--main-color) !important;
+    OPACITY: 0.8;
+    cursor: pointer;
 }
