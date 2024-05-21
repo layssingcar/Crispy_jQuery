@@ -1,5 +1,6 @@
 .employees-container {
-    width: 100%;
+    width: -webkit-fill-available;
+    font-size: 2rem;
 }
 
 .btn {
@@ -10,6 +11,8 @@
     padding: 5px 25px 5px 25px;
     border-radius: 30px;
     background-color: var(--main-color);
+    --bs-btn-hover-color: #fff;
+    color: #fff;
 }
 
 .btn-approve-registration {
@@ -17,35 +20,105 @@
     font-size: 1.5rem;
     padding: 5px 25px 5px 25px;
     border-radius: 30px;
+    background-color: var(--sub-color);
+    color: #fff;
 }
+
+
+.crispy-container .table tbody tr:hover {
+    background-color: rgba(200, 200, 200, 0.2) !important;
+    cursor: pointer;
+}
+
+td {
+    position: relative;
+}
+
+td:hover::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -9999px;
+    bottom: -9999px;
+    z-index: -1;
+}.form-control {
+     margin-bottom: 10px;
+     border-radius: 5px;
+     color: gray;
+ }
 
 .employee-register {
     display: flex;
-    margin-bottom: 20px;
     align-items: flex-start;
 }
 
-.employee-search{
+.employees-container .employee-wrap {
     display: flex;
-    flex-direction: column;
-    align-items: end;
-    margin-bottom: 20px; /* 적절한 마진으로 요소 간 공간 조정 */
+    justify-content: flex-end;
 }
 
-.employee-search, .employee-register {
-    margin-top: 10px; /* 상단 여백 추가 */
+.employees-container .employee-search {
+    text-align: left; /* 전체 컨테이너를 왼쪽으로 정렬 */
+    margin: 20px; /* 여백을 추가하여 디자인을 조정 */
 }
+
+.employee-search {
+    display: flex;
+    align-items: center;
+    width: 300px;
+    position: relative;
+}
+
+.employee-search input#search {
+    width: 100%;
+    height: 50px;
+    background: #fff;
+    border: none;
+    font-size: 10pt;
+    padding-left: 45px;
+    border: 1px;
+    border-radius: 5px;
+    margin-top: 1.5px;
+}
+
+.employee-search input#search::placeholder {
+    border-color: #d3d3d3;
+}
+
+.employee-search .icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #0C359E;
+    font-size: 14px;
+}
+
 
 .search-input {
-    max-width: 500px;
-    padding: 8px;
-    border-radius: 4px;
+    padding: 8px 40px 8px 10px; /* 텍스트 필드 내부의 패딩을 조정 */
     border: 1px solid #ccc;
+    border-radius: 20px; /* 둥근 테두리 추가 */
+    font-size: 16px;
 }
 
+.fa-magnifying-glass {
+    font-size: 2rem;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #333;
+    cursor: pointer;
+}
 table td {
     padding: 10px !important;
     width: 120px;
+}
+
+table td a {
+    font-size: 2rem;
 }
 
 .no-column {}
@@ -57,4 +130,16 @@ table td {
 table {
     text-align: center;
     font-size: 1.5rem;
+}
+
+.table>:not(caption)>*>* {
+    background-color: unset;
+}
+
+.table>tbody {
+vertical-align: baseline;
+}
+
+.fa-pen-to-square {
+margin-right: 20px;
 }

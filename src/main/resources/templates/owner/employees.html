@@ -12,23 +12,25 @@
         <header th:replace="~{layout/navbar :: navbar}"></header>
         <main>
             <div class="employees-container">
+                <input type="hidden" id="employees-frnNo" th:value="${frnNo}">
                 <div class="mt-4">
                     <h1>직원 관리</h1>
                 </div>
                 <hr>
-                    <div class="employee-register">
-                        <a role="button" href="/crispy/owner/employee/register" class="btn btn-employee-register">직원 등록</a>
-                        <a role="button" href="/crispy/owner/employee/register" class="btn btn-success btn-approve-registration">가입 신청</a>
-                    </div>
+                <div class="employee-register">
+                    <a role="button" href="/crispy/owner/employee/register" class="btn-employee-register">직원 등록</a>
+                    <a role="button" href="/crispy/owner/employee/register" class="btn-approve-registration">가입 신청</a>
+                </div>
+                <div class="employee-wrap">
                     <div class="employee-search">
-                        <input type="text" placeholder="검색어를 입력하세요" class="search-input">
+                        <span class="icon"><i class="fa fa-search"></i></span>
+                        <input type="search" id="search" placeholder="검색" />
                     </div>
+                </div>
                 <table class="table">
                     <thead>
                     <tr>
-                        <th scope="col">
-                            <input type="checkbox">
-                        </th>
+                        <th scope="col"><input type="checkbox"></th>
                         <th scope="col">사원번호</th>
                         <th scope="col">이름</th>
                         <th scope="col" class="id-column">아이디</th>
@@ -36,43 +38,11 @@
                         <th scope="col">직책</th>
                         <th scope="col">핸드폰번호</th>
                         <th scope="col">상태</th>
-                        <th scope="col">수정/삭제</th>
+                        <th scope="col">수정 / 삭제</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td scope="row"><input type="checkbox"></td>
-                        <td>1</td>
-                        <td>배영욱</td>
-                        <td>example@gamil.com</td>
-                        <td>구로점</td>
-                        <td>매니저</td>
-                        <td>010-1234-1234</td>
-                        <td>재직</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td scope="row"><input type="checkbox"></td>
-                        <td>2</td>
-                        <td>김구디</td>
-                        <td>GDJ@gamil.com</td>
-                        <td>가산점</td>
-                        <td>직원</td>
-                        <td>010-1234-1234</td>
-                        <td>휴직</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td scope="row"><input type="checkbox"></td>
-                        <td>3</td>
-                        <td>유병승</td>
-                        <td>GDJ20@gamil.com</td>
-                        <td>가산점</td>
-                        <td>직원</td>
-                        <td>010-1234-1234</td>
-                        <td>휴직</td>
-                        <td></td>
-                    </tr>
+                    <!-- 여기에 JavaScript로 동적으로 행을 추가합니다. -->
                     </tbody>
                 </table>
             </div>
@@ -80,6 +50,7 @@
         <footer th:replace="~{layout/footer :: footer}"></footer>
     </div>
     <!-- 특정 JS -->
+    <script src="/js/owner.js"></script>
 </div>
 </body>
 </html>

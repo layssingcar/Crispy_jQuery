@@ -156,6 +156,12 @@
     font-size: 1.3rem;
 }
 
+.frn-register-form {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
 .frn-register-form img {
     width: 100px;
     height: 100px;
@@ -166,12 +172,19 @@
     flex-direction: column;
 }
 
+.address-wrap input {
+    width: 250px;
+}
+
 .address-wrap button{
-    border-radius: 4px;
-    padding: 3px 6px;
+    border-radius: 7px;
+    padding: 5px 10px;
     margin-left: 6px;
-    color: #fff;
     border: 0;
+    margin-top: 5px;
+    text-align: center; /* 텍스트를 가로 방향 중앙으로 정렬 */
+    line-height: 22px;
+    height: 30px; /* 버튼의 높이를 지정 */
 }
 .zipcode {
     width: 100px !important;
@@ -188,17 +201,22 @@
     align-items: center;
 }
 
-.operating-time input{
+.operating-time input,
+.operating-time select{
     width: 70px;
-    margin-top: 0;
+    text-align: center;
+    font-size: 1.5rem;
 }
-
 .frn-modify-btn {
     display: flex;
     align-items: flex-end;
 }
 
-.frn-modify-btn button {
+.operating-time #frnEndTime {
+    margin-left: 5px;
+}
+
+.frn-modify-btn button{
     display: inline-block;
     margin-left: 10px;
     color: #fff;
@@ -208,4 +226,49 @@
     text-align: center; /* 텍스트를 가로 방향 중앙으로 정렬 */
     line-height: 22px;
     height: 30px; /* 버튼의 높이를 지정 */
+}
+
+.btn-change-address {
+    margin-top: 5px;
+    padding: 5px 10px;
+    border-radius: 7px;
+    border: 0;
+    text-align: center; /* 텍스트를 가로 방향 중앙으로 정렬 */
+    line-height: 22px;
+    height: 30px; /* 버튼의 높이를 지정 */
+
+}
+
+.franchise .frn-wrap .file-input {display: none;}
+
+.franchise .frn-img{
+    float: right;
+    width: 150px;
+    height: 150px;
+    margin-top: 15px;
+    border: 1px solid #e6e7eb;
+    border-radius: 100%;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+.franchise .frn-info {
+    display: flex;
+
+}
+
+.franchise .frn-info hr {
+    width: 180px;
+    margin-left: 10px;
+}
+
+.franchise .btn-save-profile {
+    align-self: center;
+    font-size: 1.5rem;
+    color: #fff;
+    background-color: var(--main-color);
+    border: 0;
+    padding: 5px 25px;
+    width: 150px;
+    border-radius: 7px;
 }

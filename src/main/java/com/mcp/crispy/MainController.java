@@ -1,64 +1,53 @@
 package com.mcp.crispy;
 
+import com.mcp.crispy.employee.dto.EmployeeDto;
+import com.mcp.crispy.employee.service.EmployeeService;
+import jakarta.annotation.security.PermitAll;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.security.Principal;
+
+@Slf4j
 @Controller
 @RequestMapping("/crispy")
+@RequiredArgsConstructor
 public class MainController {
 
+	private final EmployeeService employeeService;
+
 	@GetMapping("/main")
-	public String Main() {
+	public String Main(Principal principal, Model model) {
+		if(principal != null) {
+			String username = principal.getName();
+			EmployeeDto loggedEmp = employeeService.getEmployeeName(username);
+			model.addAttribute("loggedEmp", loggedEmp);
+			log.info("loggedEmp: {}", loggedEmp);
+		}
 		return "index";
 	}
 
-	@GetMapping("/tables")
-	public String Board() {
-		return "pages/tables";
+	@PermitAll
+	@GetMapping("/signup")
+	public String signup() {
+		return "signup";
 	}
 
-	@GetMapping("/tables2")
-	public String Board2() {
-		return "pages/tables2";
-	}
-
-	@GetMapping("/billing")
-	public String Billing() {
-		return "pages/billing";
-	}
-
-	@GetMapping("/virtual-reality")
-	public String Virtualreality() {
-		return "pages/virtual-reality";
-	}
-
-	@GetMapping("/rtl")
-	public String Rtl() {
-		return "pages/rtl";
-	}
-
-	@GetMapping("/profile")
-	public String Profile() {
-		return "pages/profile";
-	}
-
-	@GetMapping("/sign-in")
-	public String SignIn() {
-		return "pages/sign-in";
-	}
-
-	@GetMapping("/sign-up")
-	public String SignUp() {
-		return "pages/sign-up";
-	}
-	
-	@GetMapping("/calendar")
-	public String CalendarTest() {
-		return "calendar/calendar";
+	@GetMapping("/login")
+	public String login() {
+		return "login";
 	}
 	@GetMapping("/schedule")
 	public String ScheduleTest() {
 		return "schedule/schedule";
+	}
+
+	@GetMapping("/calendar")
+	public String calendarTest() {
+		return "calendar/calendar";
 	}
 }

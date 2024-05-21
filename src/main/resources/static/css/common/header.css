@@ -14,6 +14,10 @@ header {
 	cursor: pointer;
 }
 
+.notification {
+	cursor: pointer;
+}
+
 .nav-profile-ui {
 	display: flex;
 }
@@ -58,6 +62,7 @@ header {
 	padding: 1rem;
 	display: flex;
 	align-items: center;
+	font-size: 1.5rem;
 }
 
 #my-profile {
@@ -84,7 +89,7 @@ header {
 	font-weight: bold;
 }
 
-.my-menu-content {
+.profile-menu-content {
 	display: none; /* 초기에 드롭다운 숨김 */
 	position: absolute; /* 절대 위치 지정 */
 	top: 100%;
@@ -96,10 +101,37 @@ header {
 	box-shadow: 0 5px 9px rgba(0, 0, 0, 0.15)
 }
 
+.notification-menu-content {
+	display: none; /* 초기에 드롭다운 숨김 */
+	position: absolute; /* 절대 위치 지정 */
+	top: 100%;
+	right: 70px; /* 오른쪽 정렬 */
+	z-index: 1000; /* 다른 요소 위에 오도록 z-index 설정 */
+	background-color: #fff; /* 배경색 설정 */
+	border-radius: 5px; /* 테두리 둥글게 설정 */
+	font-size: 1.15rem;
+	box-shadow: 0 5px 9px rgba(0, 0, 0, 0.15)
+}
+
+.notification-menu-content ul{
+	width: 220px;
+}
+
 .fa-bell {
 	font-size: 2.7rem;
 }
 
 .navbar-nav {
 	align-items: center
+}
+
+.notification-badge {
+	position: absolute;
+	top: 4px;
+	right: 50px;
+	padding: 2px 6px;
+	border-radius: 50%;
+	background-color: red;
+	color: white;
+	font-size: 12px;
 }

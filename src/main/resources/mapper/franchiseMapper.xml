@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mcp.crispy.franchise.mapper.FranchiseMapper">
+    <insert id="insertFranchise" parameterType="FranchiseDto">
+        <selectKey keyProperty="frnNo" resultType="int" order="BEFORE">
+            SELECT SEQ_FRANCHISE_T.NEXTVAL FROM DUAL
+        </selectKey>
+
+        INSERT INTO FRANCHISE_T (
+        FRN_NO,
+        FRN_NAME,
+        FRN_OWNER,
+        FRN_TEL,
+        FRN_ZIP,
+        FRN_STREET,
+        FRN_DETAIL,
+        FRN_START_TIME,
+        FRN_END_TIME,
+        FRN_JOIN_DT
+        ) VALUES (
+        #{frnNo},
+        #{frnName},
+        #{frnOwner},
+        #{frnTel},
+        #{frnZip},
+        #{frnStreet},
+        #{frnDetail},
+        #{frnStartTime},
+        #{frnEndTime},
+        #{frnJoinDt}
+        )
+    </insert>
+
+    <select id="findByEmpId" parameterType="FranchiseDto">
+        SELECT F.FRN_NAME, F.FRN_NO, F.FRN_IMG, F.FRN_OWNER,
+               F.FRN_TEL, F.FRN_ZIP, F.FRN_STREET, F.FRN_DETAIL,
+               F.FRN_JOIN_DT, F.FRN_START_TIME, F.FRN_END_TIME,
+               E.EMP_NO
+          FROM FRANCHISE_T F
+          LEFT JOIN EMPLOYEE_T E ON F.FRN_NO = E.FRN_NO
+         WHERE E.EMP_ID = #{empId}
+    </select>
+
+    <update id="insertOrUpdateFrnImg" parameterType="FranchiseImgDto">
+        MERGE INTO FRANCHISE_T USING DUAL ON (FRN_NO = #{frnNo})
+        WHEN MATCHED THEN
+            UPDATE SET
+                       FRN_IMG = #{frnImg},
+                       MODIFY_DT = CURRENT_DATE
+        WHEN NOT MATCHED THEN
+            INSERT (FRN_NO, FRN_IMG, CREATE_DT)
+            VALUES (#{frnNo}, #{frnImg}, CURRENT_DATE)
+    </update>
+
+    <update id="updateFrnTel" parameterType="FranchiseTelDto">
+        UPDATE FRANCHISE_T F
+        SET F.FRN_TEL = #{frnTel},
+            F.MODIFY_DT = CURRENT_DATE,
+            F.MODIFIER = #{modifier}
+        WHERE EXISTS (
+            SELECT POS_NO
+            FROM EMPLOYEE_T E
+            WHERE E.FRN_NO = F.FRN_NO
+              AND E.POS_NO = 0
+        )  AND F.FRN_NO = #{frnNo}
+    </update>
+
+    <!-- 기존에 주소가 존재하면 Update, 존재하지 않으면 Insert -->
+    <update id="insertOrUpdateFrnAddress" parameterType="map">
+        MERGE INTO FRANCHISE_T USING DUAL ON (FRN_NO = #{frnAddressDto.frnNo})
+        WHEN MATCHED THEN
+            UPDATE SET
+                       FRN_ZIP = #{frnAddressDto.frnZip},
+                       FRN_STREET = #{frnAddressDto.frnStreet},
+                       FRN_DETAIL = #{frnAddressDto.frnDetail},
+                       MODIFY_DT = CURRENT_DATE,
+                       MODIFIER = #{modifier}
+        WHEN NOT MATCHED THEN
+            INSERT (FRN_NO, FRN_ZIP, FRN_STREET, FRN_DETAIL, CREATE_DT, CREATER)
+            VALUES (#{frnAddressDto.frnNo}, #{frnAddressDto.frnZip}, #{frnAddressDto.frnStreet}, #{frnAddressDto.frnDetail}, CURRENT_DATE, #{modifier})
+    </update>
+
+    <update id="updateFrnOwner" parameterType="FrnUpdateDto">
+        UPDATE FRANCHISE_T F
+        SET F.FRN_OWNER = #{frnOwner},
+            F.MODIFY_DT = CURRENT_DATE,
+            F.MODIFIER = ${modifier}
+        WHERE EXISTS (
+            SELECT E.FRN_NO
+            FROM EMPLOYEE_T E
+            WHERE E.FRN_NO = F.FRN_NO
+        )  AND F.FRN_NO = ${frnNo}
+    </update>
+
+    <update id="updateOperatingTime" parameterType="FrnUpdateDto">
+        UPDATE FRANCHISE_T F
+        <set>
+            <if test="frnStartTime != null">
+                F.FRN_START_TIME = #{frnStartTime},
+            </if>
+            <if test="frnEndTime != null">
+                F.FRN_END_TIME = #{frnEndTime},
+            </if>
+            F.MODIFY_DT = CURRENT_DATE,
+            F.MODIFIER = ${modifier}
+        </set>
+        WHERE EXISTS (
+            SELECT E.FRN_NO
+            FROM EMPLOYEE_T E
+            WHERE E.FRN_NO = F.FRN_NO
+        )  AND F.FRN_NO = ${frnNo}
+    </update>
+
+
+</mapper>

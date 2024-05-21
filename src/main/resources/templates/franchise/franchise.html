@@ -13,79 +13,104 @@
     <div>
         <header th:replace="~{layout/navbar :: navbar}"></header>
         <main>
-            <div>
+            <div class="franchise">
                 <div class="container frn-register-container">
                     <div class="frn-wrap">
                         <div>
-                            <form class="frn-register-form" id="frn-register" method="post" enctype="multipart/form-data"
+                            <form class="frn-register-form" id="frn-form" method="post" enctype="multipart/form-data"
                                   autocomplete="off">
                                 <div class="img-wrap frn-profile">
-                                    <img src="/img/anonymous.png" class="profile-img" data-src="/img/anonymous.png">
-                                    <div class="update-img" id="update-img">등록</div>
-                                    <input type="file" id="signup-file-input" name="profileImage"
-                                           class="form-control file-input">
+                                    <img th:if="${owner.frnImg == null}" src="/img/anonymous.png" class="frn-img">
+                                    <img th:if="${owner.frnImg != null}" th:src=" ${owner.frnImg}" class="frn-img">
+                                    <span class="update-img"
+                                          th:text="${owner.frnImg != null ? '사진 변경' : '사진 등록'}"></span>
+                                    <input type="file" id="signup-file-input" name="frnImg"
+                                           class="form-control file-input" accept="image/png, image/jpeg, image/webp">
                                 </div>
-                                <div>
-                                    <div class="info-wrap">
-                                        <div class="frn-modify-btn">
-                                            <div>
-                                                <label for="frn-frnName" class="form-label">가맹점 이름</label>
-                                                <input type="text" id="frn-frnName" name="frnName" class="form-control frnName"
-                                                      placeholder="가맹점 이름" autocomplete="on">
-                                                <div class="error-message" id="frnName-error" style="display: none;"></div>
-                                            </div>
-                                            <button>변경</button>
-                                        </div>
-                                        <div class="frn-modify-btn">
-                                            <div>
-                                                <label for="frn-frnOwner" class="form-label">대표자</label>
-                                                <input type="text" id="frn-frnOwner" name="frnOwner" class="form-control frnOwner"
-                                                       placeholder="성함을 입력하세요." autocomplete="on">
-                                                <div class="error-message" id="frnOwner-error" style="display: none;"></div>
-                                            </div>
-                                            <button>변경</button>
-                                        </div>
-                                        <div class="frn-modify-btn">
-                                            <div>
-                                                <label for="frn-frnTel" class="form-label">전화번호</label>
-                                                <input type="text" class="form-control frnTel" id="frn-frnTel"
-                                                       name="frnTel" placeholder="- 제외하고 입력해주세요.">
-                                                <div class="error-message" id="frnTel-error" style="display: none;"></div>
-                                            </div>
-                                            <button>변경</button>
-                                        </div>
-                                        <div class="address-wrap">
-                                            <label>가맹점 주소</label>
-                                            <div>
-                                                <input type="text" id="frn-frnZip" name="frnZip"
-                                                       class="form-control zipcode" placeholder="우편번호">
-                                                <div>
-                                                    <button type="button" class="mt-0 search-address"
-                                                            onclick="execPostCode(false)">
-                                                        주소 찾기
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <input type="text" id="frn-frnStreet" name="frnStreet"
-                                                   class="form-control street-address" placeholder="도로명주소">
-                                            <input type="text" id="frn-frnDetail" name="frnDetail"
-                                                   class="form-control detail-address" placeholder="상세주소">
-                                        </div>
+                                <button type="button" id="btn-update-frn-img" class="btn-save-profile">사진 저장</button>
+                            </form>
+                            <div class="frn-info">
+                                가맹점정보
+                                <hr>
+                            </div>
+                            <div class="info-wrap">
+                                <input type="hidden" th:value="${owner.frnNo}" class="frnNo">
+                                <input type="hidden" th:value="${owner.empNo}" class="empNo">
+                                <div class="frn-modify-btn">
+                                    <div>
+                                        <label for="frn-frnName" class="form-label">가맹점 이름</label>
+                                        <input type="text" id="frn-frnName" name="frnName"
+                                               class="form-control frnName"
+                                               placeholder="가맹점 이름" autocomplete="on"
+                                               th:value="${owner.frnName}">
+                                        <div class="error-message" id="frnName-error" style="display: none;"></div>
+                                    </div>
+                                    <button type="button" id="btn-edit-frnName">수정</button>
+                                    <button type="button" id="btn-change-frnName" style="display: none;">변경</button>
+                                </div>
+                                <div class="frn-modify-btn">
+                                    <div>
+                                        <label for="frn-frnOwner" class="form-label">대표자</label>
+                                        <input type="text" id="frn-frnOwner" name="frnOwner"
+                                               class="form-control frnOwner"
+                                               placeholder="성함을 입력하세요." autocomplete="on"
+                                               th:value="${owner.frnOwner}">
+                                        <div class="error-message" id="frnOwner-error" style="display: none;"></div>
+                                    </div>
+                                    <button type="button" id="btn-edit-frnOwner">수정</button>
+                                    <button type="button" id="btn-change-frnOwner" style="display: none;">변경</button>
+                                </div>
+                                <div class="frn-modify-btn">
+                                    <div>
+                                        <label for="frn-frnTel" class="form-label">전화번호</label>
+                                        <input type="text" class="form-control frnTel" id="frn-frnTel"
+                                               name="frnTel" placeholder="- 제외하고 입력해주세요."
+                                               th:value="${owner.frnTel}">
+                                        <div class="error-message" id="frnTel-error" style="display: none;"></div>
+                                    </div>
+                                    <button type="button" id="btn-edit-frnTel">수정</button>
+                                    <button type="button" id="btn-change-frnTel" style="display: none;">변경</button>
+                                </div>
+                                <div class="address-wrap">
+                                    <label>가맹점 주소</label>
+                                    <div>
+                                        <input type="text" id="frn-frnZip" name="frnZip"
+                                               class="form-control zipcode" placeholder="우편번호"
+                                               th:value="${owner.frnZip}" readonly>
                                         <div>
-                                            <label for="signup-empInDt" class="form-label">가맹일</label>
-                                            <input type="date" class="form-control empInDt"
-                                                   id="signup-empInDt" placeholder="연도. 월. 일.">
-                                        </div>
-                                        <label class="mt-3">운영시간</label>
-                                        <div class="operating-time">
-                                            <input type="text" class="form-control me-3" id="frnStartTime"
-                                                   name="frnStartTime" placeholder="시작 시간"> ~
-                                            <input type="text" class="form-control ms-3" id="frnEndTime"
-                                                   name="frnEndTime" placeholder="종료 시간">
+                                            <button type="button" class="mt-0 search-address"
+                                                    onclick="execPostCode(false)">주소 찾기
+                                            </button>
                                         </div>
                                     </div>
+                                    <input type="text" id="frn-frnStreet" name="frnStreet"
+                                           class="form-control street-address" placeholder="도로명주소"
+                                           th:value="${owner.frnStreet}" readonly>
+                                    <input type="text" id="frn-frnDetail" name="frnDetail"
+                                           class="form-control detail-address" placeholder="상세주소"
+                                           th:value="${owner.frnDetail}" readonly>
                                 </div>
-                            </form>
+                                <button class="btn-change-address">주소 변경</button>
+                                <div>
+                                    <label for="signup-empInDt" class="form-label">가맹일</label>
+                                    <input type="date" class="form-control empInDt"
+                                           id="signup-empInDt" placeholder="연도. 월. 일."
+                                           th:value="${#temporals.format(owner.frnJoinDt.toLocalDate(), 'yyyy-MM-dd')}" disabled>
+                                </div>
+                                <label class="mt-3">운영시간</label>
+                                <div class="frn-modify-btn mt-0">
+                                    <div class="operating-time">
+                                        <input type="text" class="form-control frnStartTime me-3"
+                                               name="frnStartTime" placeholder="시작 시간"
+                                               th:value="${owner.frnStartTime}"> ~
+                                        <input type="text" class="form-control frnEndTime ms-3"
+                                               name="frnEndTime" placeholder="종료 시간"
+                                               th:value="${owner.frnEndTime}">
+                                    </div>
+                                    <button type="button" id="btn-edit-operating-time">수정</button>
+                                    <button type="button" id="btn-change-operating-time" style="display: none;">변경</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -94,6 +119,9 @@
         <footer th:replace="~{layout/footer :: footer}"></footer>
     </div>
     <!-- 특정 JS -->
+    <script src="/js/address.js"></script>
+    <script src="/js/franchise.js"></script>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 </div>
 </body>
 </html>
