@@ -172,12 +172,19 @@
     flex-direction: column;
 }
 
+.address-wrap input {
+    width: 250px;
+}
+
 .address-wrap button{
-    border-radius: 4px;
-    padding: 3px 6px;
+    border-radius: 7px;
+    padding: 5px 10px;
     margin-left: 6px;
-    color: #fff;
     border: 0;
+    margin-top: 5px;
+    text-align: center; /* 텍스트를 가로 방향 중앙으로 정렬 */
+    line-height: 22px;
+    height: 30px; /* 버튼의 높이를 지정 */
 }
 .zipcode {
     width: 100px !important;
@@ -192,26 +199,24 @@
 .operating-time {
     display: flex;
     align-items: center;
-    width: 150px;
 }
 
-.operating-time input {
-    width: 120px;
-}
-
+.operating-time input,
 .operating-time select{
     width: 70px;
-    margin-top: 0;
     text-align: center;
-    font-size: 1.2rem;
+    font-size: 1.5rem;
 }
-
 .frn-modify-btn {
     display: flex;
     align-items: flex-end;
 }
 
-.frn-modify-btn button {
+.operating-time #frnEndTime {
+    margin-left: 5px;
+}
+
+.frn-modify-btn button{
     display: inline-block;
     margin-left: 10px;
     color: #fff;
@@ -221,6 +226,17 @@
     text-align: center; /* 텍스트를 가로 방향 중앙으로 정렬 */
     line-height: 22px;
     height: 30px; /* 버튼의 높이를 지정 */
+}
+
+.btn-change-address {
+    margin-top: 5px;
+    padding: 5px 10px;
+    border-radius: 7px;
+    border: 0;
+    text-align: center; /* 텍스트를 가로 방향 중앙으로 정렬 */
+    line-height: 22px;
+    height: 30px; /* 버튼의 높이를 지정 */
+
 }
 
 .franchise .frn-wrap .file-input {display: none;}
