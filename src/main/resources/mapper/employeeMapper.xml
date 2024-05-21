@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mcp.crispy.employee.mapper.EmployeeMapper">
+
+    <resultMap id="EmployeeDtoMap" type="EmployeeDto">
+        <id property="empNo" column="EMP_NO"/>
+        <result property="empId" column="EMP_ID"/>
+        <result property="empPw" column="EMP_PW"/>
+        <result property="empName" column="EMP_NAME"/>
+        <result property="empEmail" column="EMP_EMAIL"/>
+        <result property="empPhone" column="EMP_PHONE"/>
+        <result property="empAppr" column="EMP_APPR"/>
+        <result property="empZip" column="EMP_ZIP"/>
+        <result property="empStreet" column="EMP_STREET"/>
+        <result property="empDetail" column="EMP_DETAIL"/>
+        <result property="empProfile" column="EMP_PROFILE"/>
+        <result property="empSign" column="EMP_SIGN"/>
+        <result property="empAnnual" column="EMP_ANNUAL"/>
+        <result property="empStat" column="EMP_STAT"/>
+        <result property="empInDt" column="EMP_IN_DT"/>
+        <result property="empOutDt" column="EMP_OUT_DT"/>
+        <result property="createDt" column="CREATE_DT"/>
+        <result property="modifyDt" column="MODIFY_DT"/>
+        <result property="posNo" column="POS_NO" typeHandler="com.mcp.crispy.common.typehandler.PositionTypeHandler"/>
+        <result property="frnNo" column="FRN_NO"/>
+    </resultMap>
+
+
+    <insert id="insertEmployee" parameterType="EmployeeRegisterDto">
+        <selectKey keyProperty="empNo" resultType="int" order="BEFORE">
+            SELECT SEQ_EMPLOYEE_T.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO EMPLOYEE_T (
+                EMP_NO,
+                EMP_ID,
+                EMP_PW,
+                EMP_NAME,
+                EMP_EMAIL,
+                EMP_PHONE,
+                EMP_IN_DT,
+                EMP_STAT,
+                FRN_NO,
+                POS_NO)  VALUES (
+        #{empNo},
+        #{empId},
+        #{empPw},
+        #{empName},
+        #{empEmail},
+        #{empPhone},
+        #{empInDt},
+        #{empStat, typeHandler=com.mcp.crispy.common.typehandler.EmpStatusTypeHandler},
+        #{frnNo},
+        #{posNo, typeHandler=com.mcp.crispy.common.typehandler.PositionTypeHandler}
+        )
+    </insert>
+
+    <!-- empId로 유저 정보 찾기 -->
+    <select id="findByUsername" resultMap="EmployeeDtoMap">
+        SELECT E.EMP_NO, E.EMP_PW, E.EMP_ID, E.EMP_NAME, E.EMP_PHONE,
+               E.EMP_ZIP, E.EMP_STREET, E.EMP_DETAIL, E.EMP_SIGN,
+               E.EMP_EMAIL, E.EMP_STAT, E.FRN_NO, E.EMP_PROFILE,
+               F.FRN_NAME, P.POS_NAME, P.POS_NO
+        FROM EMPLOYEE_T E
+        LEFT JOIN FRANCHISE_T F ON E.FRN_NO = F.FRN_NO
+         INNER JOIN POSITION_T P ON E.POS_NO = P.POS_NO
+        WHERE E.EMP_ID = #{empId}
+    </select>
+
+    <!-- empNo로 해당 사원의 정보 찾기 -->
+    <select id="findByEmployeeDetailsByEmpNo" parameterType="EmployeeDto">
+            SELECT E.EMP_NO, E.EMP_ID, E.EMP_NAME, E.EMP_PHONE, E.EMP_ZIP, E.EMP_STREET, E.EMP_DETAIL,
+            E.EMP_PROFILE, E.EMP_EMAIL, E.EMP_STAT, F.FRN_NO, F.FRN_NAME, P.POS_NAME, P.POS_NO
+            FROM EMPLOYEE_T E
+            LEFT JOIN FRANCHISE_T F ON E.FRN_NO = F.FRN_NO
+            INNER JOIN POSITION_T P ON E.POS_NO = P.POS_NO
+            WHERE E.EMP_NO = #{empNo}
+    </select>
+
+    <!-- 가맹점 번호로 가맹점에 속해있는 직원 정보 가져오기 -->
+    <select id="findEmployeeByFranchise" parameterType="int" resultType="EmployeeRequestDto">
+        SELECT E.EMP_NO, E.EMP_ID, E.EMP_NAME, E.EMP_PHONE, E.EMP_STAT, F.FRN_NAME, P.POS_NAME
+        FROM EMPLOYEE_T E
+                 LEFT JOIN FRANCHISE_T F ON E.FRN_NO = F.FRN_NO
+                 INNER JOIN POSITION_T P ON E.POS_NO = P.POS_NO
+        WHERE E.FRN_NO = #{frnNo} AND E.POS_NO != 0
+        ORDER BY E.EMP_NO
+    </select>
+
+    <!-- 이메일로 찾기 -->
+    <select id="findByEmpEmail"
+            resultType="FindEmployeeDto">
+        SELECT EMP_NO, EMP_ID, EMP_NAME, EMP_EMAIL
+        FROM EMPLOYEE_T
+        WHERE EMP_EMAIL = #{empEmail} AND EMP_NAME = #{empName}
+    </select>
+
+    <update id="updateEmpPw">
+        UPDATE EMPLOYEE_T
+           SET EMP_PW = #{empPw}
+         WHERE EMP_ID = #{empId}
+    </update>
+
+    <!-- 이메일과 해당 사원의 이메일이 일치하는 정보 가져오기 -->
+    <select id="findByEmpNameAndEmpEmail"
+            parameterType="FindEmployeeDto">
+        SELECT EMP_ID ,EMP_NAME, EMP_EMAIL, CREATE_DT
+        FROM EMPLOYEE_T
+        WHERE EMP_NAME = #{empName} AND EMP_EMAIL = #{empEmail}
+    </select>
+
+    <!-- 닉네임, 이메일, 아이디에 해당하는 직원의 정보 찾기 -->
+    <select id="findByEmpNameAndEmpEmailAndEmpId"
+            parameterType="FindEmployeeDto">
+        SELECT EMP_ID ,EMP_NAME, EMP_EMAIL, CREATE_DT
+        FROM EMPLOYEE_T
+        WHERE EMP_NAME = #{empName} AND EMP_EMAIL = #{empEmail} AND EMP_ID = #{empId}
+    </select>
+
+    <!-- empNo에 맞는 직원 찾기 -->
+    <select id="findEmployeeByEmpNo"
+            parameterType="EmployeeDto">
+        SELECT E.EMP_NO, E.EMP_ID, E.EMP_NAME, E.EMP_PHONE, E.EMP_STAT,
+               E.EMP_ZIP, EMP_STREET, EMP_DETAIL, F.FRN_NAME, P.POS_NAME
+        FROM EMPLOYEE_T E
+        LEFT JOIN FRANCHISE_T F ON E.FRN_NO = F.FRN_NO
+         INNER JOIN POSITION_T P ON E.POS_NO = P.POS_NO
+        WHERE E.EMP_NO = #{empNo}
+    </select>
+
+    <!-- 기존에 주소가 존재하면 Update, 존재하지 않으면 Insert-->
+    <update id="insertOrUpdateAddress" parameterType="EmpAddressDto">
+        MERGE INTO EMPLOYEE_T USING DUAL ON (EMP_NO = #{empNo})
+        WHEN MATCHED THEN
+            UPDATE SET
+                       EMP_ZIP = #{empZip},
+                       EMP_STREET = #{empStreet},
+                       EMP_DETAIL = #{empDetail},
+                       MODIFY_DT = CURRENT_DATE
+        WHEN NOT MATCHED THEN
+            INSERT (EMP_NO, EMP_ZIP, EMP_STREET, EMP_DETAIL, CREATE_DT)
+            VALUES (#{empNo}, #{empZip}, #{empStreet}, #{empDetail}, CURRENT_DATE)
+    </update>
+
+    <!-- 기존에 서명이 존재하면 Update, 존재하지 않으면 Insert-->
+    <update id="insertOrUpdateEmpSign" parameterType="EmployeeSignDto">
+        MERGE INTO EMPLOYEE_T USING DUAL ON (EMP_NO = #{empNo})
+        WHEN MATCHED THEN
+            UPDATE SET
+                       EMP_SIGN = #{empSign},
+                       MODIFY_DT = CURRENT_DATE
+        WHEN NOT MATCHED THEN
+            INSERT (EMP_NO, EMP_SIGN, CREATE_DT)
+            VALUES (#{empNo}, #{empSign}, CURRENT_DATE)
+    </update>
+
+    <!-- 기존에 이미지가 존재하면 Update, 존재하지 않으면 Insert-->
+    <update id="insertOrUpdateEmpProfile" parameterType="EmployeeProfileDto">
+        MERGE INTO EMPLOYEE_T USING DUAL ON (EMP_NO = #{empNo})
+        WHEN MATCHED THEN
+            UPDATE SET
+                       EMP_PROFILE = #{empProfile},
+                       MODIFY_DT = CURRENT_DATE
+        WHEN NOT MATCHED THEN
+            INSERT (EMP_NO, EMP_PROFILE, CREATE_DT)
+            VALUES (#{empNo}, #{empProfile}, CURRENT_DATE)
+    </update>
+
+    <!-- 전화번호 변경 -->
+    <update id="updateEmpPhone" parameterType="EmployeeUpdateDto">
+        UPDATE EMPLOYEE_T
+        SET EMP_PHONE = #{empPhone},
+            MODIFY_DT = #{modifyDt},
+            MODIFIER = #{modifier}
+        WHERE EMP_NO = #{empNo}
+    </update>
+
+    <update id="updateEmpName" parameterType="EmployeeUpdateDto">
+        UPDATE EMPLOYEE_T
+        SET EMP_NAME = #{empName},
+            MODIFY_DT = #{modifyDt},
+            MODIFIER = #{modifier}
+        WHERE EMP_NO = #{empNo}
+    </update>
+
+    <update id="updatePosNo" parameterType="EmployeeUpdateDto">
+        UPDATE EMPLOYEE_T
+          SET POS_NO = #{posNo},
+              MODIFY_DT = #{modifyDt},
+              MODIFIER = #{modifier}
+         WHERE EMP_NO = #{empNo}
+    </update>
+
+    <update id="updateEmpStat" parameterType="EmployeeUpdateDto">
+        UPDATE EMPLOYEE_T
+        SET EMP_STAT = #{empStat},
+            MODIFY_DT = CURRENT_DATE,
+            MODIFIER = #{modifier}
+        WHERE EMP_NO = #{empNo}
+    </update>
+</mapper>

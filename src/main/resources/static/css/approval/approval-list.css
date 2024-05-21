@@ -1,11 +1,11 @@
 /* 결재 문서 목록 페이지 */
 .approval-list {
     width: -webkit-fill-available;
-    font-size: 2rem;
+    font-size: 1.7rem;
 }
 
 /* 페이지 제목 */
-.approval-list h1 {font-size: 3.5rem;}
+.approval-list h1 {font-size: 2.5rem;}
 
 /* 상단 영역 */
 .approval-list .top-area {
@@ -14,17 +14,34 @@
 }
 
 /* 기안자 검색 */
-.approval-list input[type="text" i] {
+.approval-list .container-1 {
     width: 240px;
-    padding-left: 10px;
-    font-size: 1.8rem;
+    position: relative;
+}
+
+/* 검색 아이콘 */
+.approval-list .container-1 .icon {
+    position: absolute;
+    left: 15px;
+    top: 22px;
+    transform: translateY(-50%);
+    color: var(--main-color);
+    font-size: 14px;
+}
+
+/* 검색 창 */
+.approval-list #search {
+    width: 240px;
+    height: 40px;
+    padding-left: 35px;
+    font-size: 1.5rem;
 }
 
 /* 드롭다운 */
 .approval-list select {
-    width: 200px;
-    margin-bottom: 0 !important;
-    font-size: 1.8rem;
+    width: 165px;
+    height: 40px;
+    font-size: 1.5rem;
 }
 
 /* 상단 영역 margin-left */
@@ -36,23 +53,13 @@
     text-align: center;
 }
 
-/* 테이블 헤더 */
-.approval-list thead {height: 65px;}
-
-/* 제목 셀 */
-.approval-list th {
-    vertical-align: middle;
-    font-size: 2.3rem;
-    font-weight: normal;
-}
-
 /* 기안일 정렬 */
 .approval-list .col-sort {position: relative;}
 
 .approval-list .fa-sort {
     position: absolute;
-    top: 18px;
-    right: 143px;
+    top: 7px;
+    right: 163px;
 }
 
 /* 데이터 셀 */
@@ -64,7 +71,7 @@
 
 /* 행 hover */
 .approval-list tbody tr:hover td {
-    background-color: #fd834045;
+    background-color: rgba(200, 200, 200, 0.2);
     cursor: pointer;
 }
 

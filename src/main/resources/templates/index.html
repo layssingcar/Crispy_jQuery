@@ -327,25 +327,9 @@
 	  // 출 퇴근 영역
 	  let startWorkTime, endWorkTime, workingTime;
 	  let timer;
-	  function fnClickWork(){
-		  	startWorkTime = moment().format('HH:mm:ss');
- 		  	$("#work-start").text("출근시간 : " + startWorkTime);			  
- 		  	$("#btn-work").attr("disabled", true);
- 		  	$("#btn-finish").attr("disabled", false);
- 		  	
- 		  	timer = setInterval(updateClock, 1000);
- 		  	updateClock();
-	  }
-	  function fnClickFin(){
-		  	endWorkTime = moment().format('HH:mm:ss');
- 		  	$("#work-fin").text("퇴근시간 : " + endWorkTime);			  
- 		  	$("#btn-work").attr("disabled", false);
- 		  	$("#btn-finish").attr("disabled", true);
- 		  	clearInterval(timer);
-	  }
-	  
   	  let hour = 0, minute = 0, second = 0;
   	  let perWork = 16200;
+  	  let h = 0, m = 0, s = 0;
 	  function updateClock() {
 		  	++second;
 		  	++perWork;
@@ -359,9 +343,9 @@
 		        minute = 0;
 		    }
 		    // 숫자를 2자리로 표현
-		    let h = String(hour).padStart(2, '0');
-		    let m = String(minute).padStart(2, '0');
-		    let s = String(second).padStart(2, '0');
+		    h = String(hour).padStart(2, '0');
+		    m = String(minute).padStart(2, '0');
+		    s = String(second).padStart(2, '0');
 		    
 		    let perval = ((perWork / 32400) * 100);
 		    
@@ -370,8 +354,73 @@
 		    
 		    $("#work-time").text("근무시간 : " + h + ":" + m + ":" + s);	
 		  }
-	  
-	  
+
+	  function fnClickWork(){
+		  	startWorkTime = moment().format('HH:mm:ss');
+ 		  	$("#work-start").text("출근시간 : " + startWorkTime);			  
+ 		  	$("#btn-work").attr("disabled", true);
+ 		  	$("#btn-finish").attr("disabled", false);
+ 		  	
+ 		  	timer = setInterval(updateClock, 1000);
+ 		  	updateClock();
+	  }
+	  function fnClickFin(){
+		    // 현재 시간을 HH:mm:ss 형식으로 저장
+		    endWorkTime = moment().format('HH:mm:ss');
+
+		    // 근무 시간 계산 (여기서는 단순히 예시로 사용됨)
+		    workingTime = h + ":" + m + ":" + s;
+
+		    // 화면에 퇴근 시간 표시 및 버튼 상태 변경
+		    $("#work-fin").text("퇴근시간 : " + endWorkTime);			  
+		    $("#btn-work").attr("disabled", false);
+		    $("#btn-finish").attr("disabled", true);
+		    clearInterval(timer);
+
+		    // 로그 출력
+		    console.log(startWorkTime);
+		    console.log(endWorkTime);
+		    console.log(workingTime);
+
+		    // 현재 날짜를 가져옵니다
+		    const currentDate = moment().format('YYYY-MM-DD');
+
+		    // 날짜와 시간을 결합하여 전체 날짜-시간 문자열을 생성합니다
+		    const startDateTimeString = `${currentDate}T${startWorkTime}`;
+		    const endDateTimeString = `${currentDate}T${endWorkTime}`;
+
+		    // 문자열을 타임스탬프로 변환합니다
+		    const startTimestamp = new Date(startDateTimeString).getTime();
+		    const endTimestamp = new Date(endDateTimeString).getTime();
+
+		    // JSON 데이터를 생성합니다
+		    const data = JSON.stringify({
+		        'attInDt': startTimestamp,
+		        'attOutDt': endTimestamp,
+		        'attWorkTime': workingTime,
+		        'createDt': currentDate,
+		        'creator': 1,
+		        'modifyDt': currentDate,
+		        'modifier': 1,
+		        'empNo': 1
+		    });
+
+		    $.ajax({
+		        type: 'POST',
+		        url: '/crispy/atten/registAtt',
+		        contentType: 'application/json',
+		        dataType: 'json',
+		        data: data
+		    })
+			.done(function(data){
+				alert("근태 저장 성공");
+			})
+			.fail(function(jqXHR){
+				alert("근태 저장 실패");
+				alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
+			})
+		}
+	    
 	  // 차트 영역
       const ctx = document.querySelector('#myChart');
 
@@ -406,6 +455,7 @@
               }
           }
       });	  
+
   </script>
 </div>
 </body>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mcp.crispy.attendance.mapper.AttendanceMapper">
+
+	<resultMap type="AttendanceDto" id="AttendanceMap">
+		<id property="attNo" column="ATT_NO" />
+		<result property="attInDt" column="ATT_IN_DT"/>
+		<result property="attOutDt" column="ATT_OUT_DT"/>
+		<result property="attWorkTime" column="ATT_WORK_TIME"/>
+		<result property="createDt" column="CREATE_DT"/>
+		<result property="creator" column="CREATOR"/>
+		<result property="modifyDt" column="MODIFY_DT"/>
+		<result property="modifier" column="MODIFIER"/>
+		<association property="employee" javaType="EmployeeDto">
+			<id property="empNo" column="EMP_NO" />
+			<result property="empName" column="EMP_NAME" />
+		</association>
+	</resultMap>
+	
+<insert id="insertAttendance" parameterType="AttendanceDto">
+    INSERT INTO ATTENDENCE_T (
+        ATT_NO,
+        ATT_IN_DT,
+        ATT_OUT_DT,
+        ATT_WORK_TIME,
+        CREATE_DT,
+        CREATOR,
+        MODIFY_DT,
+        MODIFIER,
+        EMP_NO
+    ) VALUES (
+        ATTENDENCE_SEQ.NEXTVAL,
+        #{attInDt},
+        #{attOutDt},
+        #{attWorkTime},
+        CURRENT_DATE,
+        #{creator},
+        CURRENT_DATE,
+        #{modifier},
+        #{empNo}
+    )
+</insert>
+	
+</mapper>

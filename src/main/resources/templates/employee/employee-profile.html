@@ -5,6 +5,7 @@
     <!-- 특정 페이지 css -->
     <link href="/css/employee/employee.css" rel="stylesheet">
     <link href="/css/profile.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
 </head>
 <body>
 
@@ -13,76 +14,90 @@
     <div>
         <header th:replace="~{layout/navbar :: navbar}"></header>
         <main>
-            <div>
-                <div class="container frn-register-container">
+            <div class="employee-profile">
+                <div id="employee-profile" class="container frn-register-container">
                     <div class="frn-wrap">
                         <div>
                             <div class="d-flex mb-3">
-                                <form class="frn-register-form" id="frn-register" method="post" enctype="multipart/form-data"
-                                      autocomplete="off">
+                                <form class="frn-register-form" id="profileImageForm" method="post"
+                                      enctype="multipart/form-data" autocomplete="off">
                                     <div class="img-wrap frn-profile">
-                                        <img src="/img/anonymous.png" class="profile-img" data-src="/img/anonymous.png">
-                                        <div class="update-img" id="update-img">등록</div>
-                                        <input type="file" id="signup-file-input" name="profileImage"
-                                               class="form-control file-input">
+                                        <img th:src="${employee.empProfile != null ? employee.empProfile : '/img/anonymous.png'}" class="profile-img">
+                                        <span class="update-img" th:text="${employee.empProfile != null ? '사진 변경' : '사진 등록'}"></span>
+                                        <input type="file" id="profile-file-input" name="empProfile"
+                                               class="form-control file-input" accept="image/png, image/jpeg, image/webp">
                                     </div>
+                                    <button type="button" id="btn-update-profile" class="btn-save-profile">사진 저장</button>
                                 </form>
-                                <div class="d-flex flex-column justify-content-center ms-4">
-                                    <span>지점: <span th:text="${employee.frnName}">어디어디점</span></span>
-                                    <span>직책: <span th:text="${employee.posName}">매니저</span></span>
-                                    <span>이름: <span th:text="${employee.empName}">김구디</span></span>
+                                <div class="d-flex flex-column justify-content-center ms-4 mb-5">
+                                    <input type="hidden" th:value="${employee.empId}" class="empId">
+                                    <input type="hidden" th:value="${employee.empNo}" class="empNo">
+                                    <span>지점: <span th:text="${employee.frnName}" class="frnName"></span></span>
+                                    <span>직책: <span th:text="${employee.posName}" class="posName"></span></span>
+                                    <span>이름: <span th:text="${employee.empName}" class="empName"></span></span>
                                 </div>
                             </div>
                             <hr>
-                                <div>
-                                    <div class="info-wrap">
+                            <div>
+                                <div class="info-wrap">
+                                    <label class="form-label">비밀번호 변경</label>
+                                    <a href="/crispy/employee/change/password" role="button" class="change-password">
+                                        비밀번호 변경
+                                    </a>
+                                    <div class="frn-modify-btn">
                                         <div>
-                                            <label class="form-label">비밀번호 변경</label>
-                                            <a href="/crispy/employee/change/password" role="button" class="btn">
-                                                비밀번호 변경
-                                            </a>
+                                            <label for="emp-profile-empEmail" class="form-label">이메일</label>
+                                            <input type="email" id="emp-profile-empEmail" name="empEmail" class="form-control empEmail" placeholder="이메일"
+                                                   autocomplete="on" th:value="${employee.empEmail}">
+                                            <div class="error-message empEmail-error" style="display: none;"></div>
                                         </div>
-                                        <div class="frn-modify-btn">
-                                            <div>
-                                                <label for="emp-profile-empEmail" class="form-label">이메일</label>
-                                                <input type="email" id="emp-profile-empEmail" name="empEmail" class="form-control" placeholder="이메일"
-                                                       autocomplete="on" th:value="${employee.empEmail}">
-                                                <div class="error-message empEmail-error" style="display: none;"></div>
-                                            </div>
-                                            <button>변경</button>
-                                        </div>
-                                        <div class="frn-modify-btn">
-                                            <div>
-                                                <label for="emp-profile-frnTel" class="form-label">전화번호</label>
-                                                <input type="text" class="form-control frnTel" id="emp-profile-frnTel"
-                                                       name="frnTel" placeholder="- 제외하고 입력해주세요." th:value="${employee.empPhone}">
-                                                <div class="error-message frnTel-error" style="display: none;"></div>
-                                            </div>
-                                            <button>변경</button>
-                                        </div>
-                                        <div>
-                                            <div class="address-wrap">
-                                                <label>주소</label>
-                                                <div>
-                                                    <input type="text" id="emp-profile-frnZip" name="frnZip"
-                                                           class="form-control zipcode" placeholder="우편번호">
-                                                    <div>
-                                                        <button type="button" class="mt-0 search-address"
-                                                                onclick="execPostCode(false)">
-                                                            주소 찾기
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                                <input type="text" id="emp-profile-frnStreet" name="frnStreet"
-                                                       class="form-control street-address" placeholder="도로명주소">
-                                                <input type="text" id="emp-profile-frnDetail" name="frnDetail"
-                                                       class="form-control detail-address" placeholder="상세주소">
-                                            </div>
-                                            <button class="btn-change-address">주소 변경</button>
-                                        </div>
-                                        <button id="add-approval">결재 서명 추가</button>
+                                        <button type="button" class="btn-edit-empEmail">수정</button>
+                                        <button type="button" class="btn-change-empEmail" style="display: none;">변경</button>
                                     </div>
+                                    <div class="frn-modify-btn">
+                                        <div>
+                                            <label for="emp-profile-empPhone" class="form-label">전화번호</label>
+                                            <input type="text" class="form-control empPhone" id="emp-profile-empPhone"
+                                                   name="empPhone" placeholder="- 제외하고 입력해주세요." th:value="${employee.empPhone}">
+                                            <div class="error-message frnTel-error" style="display: none;"></div>
+                                        </div>
+                                        <button type="button" class="btn-edit-empPhone">수정</button>
+                                        <button class="btn-change-empPhone" style="display: none;">변경</button>
+                                    </div>
+                                    <div>
+                                        <div class="address-wrap">
+                                            <label>주소</label>
+                                            <div>
+                                                <input type="text" id="emp-profile-frnZip" name="frnZip"
+                                                       class="form-control zipcode" placeholder="우편번호" th:value="${employee.empZip}">
+                                                <div>
+                                                    <button type="button" class="mt-0 search-address"
+                                                            onclick="execPostCode(false)">
+                                                        주소 찾기
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <input type="text" id="emp-profile-frnStreet" name="frnStreet"
+                                                   class="form-control street-address" placeholder="도로명주소" th:value="${employee.empStreet}">
+                                            <input type="text" id="emp-profile-frnDetail" name="frnDetail"
+                                                   class="form-control detail-address" placeholder="상세주소" th:value="${employee.empDetail}">
+                                        </div>
+                                        <button type="button" class="btn-change-address">주소 변경</button>
+                                    </div>
+                                    <img th:if="${employee.empSign != null}" th:src="${employee.empSign}" class="sign-img">
+                                    <button id="add-approval">결재 서명 추가</button>
+
+                                        <div id="signature-modal" style="display:none;">
+                                            <div class="modal-content">
+                                                <span class="close">❌</span>
+                                                <h2>결재 서명 추가</h2>
+                                                <canvas id="signature-pad" width="400" height="200" style="border: 1px solid #ccc;"></canvas>
+                                                <button id="save-signature">저장</button>
+                                                <button id="clear-signature">지우기</button>
+                                            </div>
+                                        </div>
                                 </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -91,6 +106,10 @@
         <footer th:replace="~{layout/footer :: footer}"></footer>
     </div>
     <!-- 특정 JS -->
+    <script src="/js/address.js"></script>
+    <script src="/js/employee.js"></script>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
 </div>
 </body>
 </html>

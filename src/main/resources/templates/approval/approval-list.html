@@ -17,7 +17,10 @@
 					<div class="top-area">
 
                         <!-- 기안자 검색 -->
-                        <input type="text" name="" id="" class="form-control" placeholder="기안자를 입력하세요.">
+                        <div class="container-1">
+							<span class="icon"><i class="fa fa-search"></i></span>
+							<input type="text" name="" id="search" class="form-control" placeholder="기안자를 입력하세요.">
+						</div>
                         
                         <!-- 휴가/휴직 구분 -->
                         <select class="form-select form-select-lg mb-3 m-left" aria-label="Large select example" name="stockCt" id="">
@@ -174,7 +177,7 @@
                                 </a>
                             </li>
                         </ul>
-                      </nav>
+                    </nav>
 				</div>
 			</main>
 			<footer th:replace="~{layout/footer :: footer}"></footer>
