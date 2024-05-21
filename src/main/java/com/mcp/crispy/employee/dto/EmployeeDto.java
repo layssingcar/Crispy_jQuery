@@ -18,9 +18,6 @@ public class EmployeeDto {
     private String empName;
     private String empEmail;
     private String empPhone;
-
-    // 회원가입 승인 / 미승인
-    private EmpApprovalStatus empAppr;
     private String empZip;
     private String empStreet;
     private String empDetail;
@@ -39,7 +36,6 @@ public class EmployeeDto {
     private Date createDt;
     private Date modifyDt;
     private Position posNo;
-
     private int frnNo;
     private String frnName;
     private String posName;

@@ -1,17 +1,17 @@
 /* 발주 신청 페이지 */
 .stock-order {
     width: -webkit-fill-available;
-    font-size: 2rem;
+    font-size: 1.7rem;
 }
 
 /* 페이지 제목 */
-.stock-order h1 {font-size: 3.5rem;}
+.stock-order h1 {font-size: 2.5rem;}
 
 /* 버튼 공통 CSS */
 .stock-order button {
     height: 40px;
     margin-left: 7px;
-    font-size: 1.7rem;
+    font-size: 1.5rem;
 }
 
 /* 상단 버튼 */
@@ -23,13 +23,13 @@
 
 /* 임시저장 내용 불러오기 */
 .stock-order #temp-content {
-    width: 225px;
-    background-color: #696765 !important;
-    border-color: #696765 !important;
+    width: 200px;
+    background-color: var(--sub-color) !important;
+    border-color: var(--sub-color) !important;
 }
 
 /* 추가하기 */
-.stock-order #add-list {width: 125px;}
+.stock-order #add-list {width: 115px;}
 
 /* 리스트 구분 선 */
 .stock-order hr {
@@ -43,7 +43,7 @@
 .stock-order .order-list {
     display: flex;
     justify-content: space-around;
-    height: 50px;
+    height: 40px;
 }
 
 /* 발주재고 리스트 아이템 */
@@ -103,12 +103,12 @@
 .stock-order .order-cost {
     display: flex;
     align-items: flex-end;
-    margin-right: 20px;
-    font-size: 2.75rem;
+    margin: 5px 15px 0 0;
+    font-size: 2.5rem;
 }
 
 /* 총 합계금액 강조 */
-.stock-order .order-cost .strong {font-size: 3rem;}
+.stock-order .order-cost .strong {font-size: 2.7rem;}
 
 /* 하단 버튼 */
 .stock-order .bottom-btn {
@@ -118,20 +118,20 @@
 
 /* 임시저장 */
 .stock-order #temp {
-    width: 120px;
-    background-color: #696765 !important;
-    border-color: #696765 !important;
+    width: 100px;
+    background-color: var(--sub-color) !important;
+    border-color: var(--sub-color) !important;
 }
 
 /* 하단 우측 버튼 */
 .stock-order .bottom-btn > div:last-child {display: flex;}
 
 /* 신청하기 */
-.stock-order #order {width: 120px;}
+.stock-order #order {width: 100px;}
 
 /* 취소 */
 .stock-order #cancel {
-    width: 85px;
-    background-color: #696765 !important;
-    border-color: #696765 !important;
+    width: 70px;
+    background-color: var(--sub-color) !important;
+    border-color: var(--sub-color) !important;
 }
