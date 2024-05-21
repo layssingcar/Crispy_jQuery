@@ -21,7 +21,7 @@ public interface EmployeeMapper {
 	List<EmployeeDto> findEmployeeByFranchise(int frnNo);
 
 	// 이메일로 아이디(username) 찾기
-	Optional<FindEmployeeDto> findByEmpEmail(String email);
+	Optional<FindEmployeeDto> findByEmpEmail(@Param("empEmail")String email, @Param("empName")String empName);
 
 	//비밀번호 변경
 	void updateEmpPw(@Param("empId")String username, @Param("empPw")String password);

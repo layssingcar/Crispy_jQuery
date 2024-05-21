@@ -49,7 +49,7 @@ public class EmployeeApiController {
 
     @PostMapping("/resetPassword")
     public ResponseEntity<?> getEmployeeResetPassword(@RequestBody EmployeeRequestDto employeeRequestDto) {
-        employeeService.resetEmployeePassword(employeeRequestDto.getEmpEmail());
+        employeeService.resetEmployeePassword(employeeRequestDto.getEmpEmail(), employeeRequestDto.getEmpName());
         return ResponseEntity.ok(Map.of("message", "임시 비밀번호가 전송되었습니다."));
     }
 

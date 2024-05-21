@@ -38,6 +38,11 @@ public class EmployeeService {
                 .orElseThrow(() -> new UsernameNotFoundException("직원이 존재하지 않습니다."));
     }
 
+    public FindEmployeeDto getEmpEmail(String empEmail, String empName) {
+        return employeeMapper.findByEmpEmail(empEmail, empName)
+                .orElseThrow(() -> new UsernameNotFoundException("이메일이 존재하지 않습니다."));
+    }
+
     // 비밀번호 변경 ( 자신이 변경하는 거 )
     @Transactional
     public void updateEmployeePassword(String empId, PasswordChangeDto passwordChangeDto) {
@@ -52,8 +57,8 @@ public class EmployeeService {
 
     // 임시 비밀번호로 변경 ( 관리자가 변경해주는 거)
     @Transactional
-    public void resetEmployeePassword(String email) {
-        FindEmployeeDto employee = employeeMapper.findByEmpEmail(email)
+    public void resetEmployeePassword(String email, String empName) {
+        FindEmployeeDto employee = employeeMapper.findByEmpEmail(email, empName)
                 .orElseThrow(() -> new UsernameNotFoundException("이메일이 존재하지 않습니다."));
         log.info("employee: {}", employee.getEmpEmail());
         String tempPassword = generateTempPassword();
