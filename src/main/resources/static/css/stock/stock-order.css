@@ -38,6 +38,7 @@
     border: 0;
     background-color: #696765;
 }
+
 /* 발주재고 리스트 */
 .stock-order .order-list {
     display: flex;

@@ -58,6 +58,21 @@
 /* 체크박스 */
 .stock-list input[type="checkbox" i] {zoom: 1.5;}
 
+/* 재고명, 수량 정렬 */
+.stock-list .col-sort {position: relative;}
+
+.stock-list #name-sort {
+    position: absolute;
+    top: 18px;
+    right: 33px;
+}
+
+.stock-list #count-sort {
+    position: absolute;
+    top: 18px;
+    right: 80px;
+}
+
 /* 데이터 셀 */
 .stock-list td {
     padding: 10px !important;
@@ -74,11 +89,15 @@
     font-weight: bold;
 }
 
+/* 행 hover */
+.stock-list tbody tr:hover td {cursor: pointer;}
+
 /* 재고 상세 모달 */
 .stock-list .modal {
     position: absolute;
     top: 365px;
     display: block;
+    height: 345px;
     font-size: 1.7rem;
 }
 
