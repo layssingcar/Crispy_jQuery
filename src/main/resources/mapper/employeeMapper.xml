@@ -95,7 +95,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             resultType="FindEmployeeDto">
         SELECT EMP_NO, EMP_ID, EMP_NAME, EMP_EMAIL
         FROM EMPLOYEE_T
-        WHERE EMP_EMAIL = #{empEmail}
+        WHERE EMP_EMAIL = #{empEmail} AND EMP_NAME = #{empName}
     </select>
 
     <update id="updateEmpPw">
