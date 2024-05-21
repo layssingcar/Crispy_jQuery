@@ -1,5 +1,6 @@
 .employees-container {
-    width: 100%;
+    width: -webkit-fill-available;
+    font-size: 2rem;
 }
 
 .btn {
@@ -19,7 +20,33 @@
     font-size: 1.5rem;
     padding: 5px 25px 5px 25px;
     border-radius: 30px;
+    background-color: var(--sub-color);
+    color: #fff;
 }
+
+
+.crispy-container .table tbody tr:hover {
+    background-color: rgba(200, 200, 200, 0.2) !important;
+    cursor: pointer;
+}
+
+td {
+    position: relative;
+}
+
+td:hover::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -9999px;
+    bottom: -9999px;
+    z-index: -1;
+}.form-control {
+     margin-bottom: 10px;
+     border-radius: 5px;
+     color: gray;
+ }
 
 .employee-register {
     display: flex;
@@ -37,11 +64,37 @@
 }
 
 .employee-search {
-    position: relative; /* 절대적 위치 설정 */
-    margin-right: 20px; /* 오른쪽 여백 추가 */
     display: flex;
-    align-items: center; /* 내부 아이템들을 세로로 중앙정렬 */
+    align-items: center;
+    width: 300px;
+    position: relative;
 }
+
+.employee-search input#search {
+    width: 100%;
+    height: 50px;
+    background: #fff;
+    border: none;
+    font-size: 10pt;
+    padding-left: 45px;
+    border: 1px;
+    border-radius: 5px;
+    margin-top: 1.5px;
+}
+
+.employee-search input#search::placeholder {
+    border-color: #d3d3d3;
+}
+
+.employee-search .icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #0C359E;
+    font-size: 14px;
+}
+
 
 .search-input {
     padding: 8px 40px 8px 10px; /* 텍스트 필드 내부의 패딩을 조정 */
@@ -79,16 +132,14 @@ table {
     font-size: 1.5rem;
 }
 
+.table>:not(caption)>*>* {
+    background-color: unset;
+}
+
 .table>tbody {
-    vertical-align: baseline;
+vertical-align: baseline;
 }
 
 .fa-pen-to-square {
-    margin-right: 20px;
-}
-
-.clickable {
-    color: var(--main-color) !important;
-    OPACITY: 0.8;
-    cursor: pointer;
+margin-right: 20px;
 }
