@@ -1,8 +1,8 @@
 package com.mcp.crispy.franchise.service;
 
+import com.mcp.crispy.common.ImageService;
 import com.mcp.crispy.employee.dto.OwnerRegisterDto;
 import com.mcp.crispy.employee.service.EmployeeService;
-import com.mcp.crispy.employee.service.ImageService;
 import com.mcp.crispy.employee.service.OwnerService;
 import com.mcp.crispy.franchise.dto.FranchiseDto;
 import com.mcp.crispy.franchise.dto.FranchiseImgDto;
