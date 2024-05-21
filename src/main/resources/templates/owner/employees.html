@@ -11,20 +11,18 @@
     <div>
         <header th:replace="~{layout/navbar :: navbar}"></header>
         <main>
-            <div class="employees-container">
+            <div class="employees">
                 <input type="hidden" id="employees-frnNo" th:value="${frnNo}">
-                <div class="mt-4">
+                <div>
                     <h1>직원 관리</h1>
                 </div>
-                <hr>
-                <div class="employee-register">
-                    <a role="button" href="/crispy/owner/employee/register" class="btn-employee-register">직원 등록</a>
-                    <a role="button" href="/crispy/owner/employee/register" class="btn-approve-registration">가입 신청</a>
-                </div>
-                <div class="employee-wrap">
+                <div class="employees-wrap">
+                    <div class="employee-register">
+                        <a role="button" href="/crispy/owner/employee/register" class="btn-employee-register">직원 등록</a>
+                    </div>
                     <div class="employee-search">
                         <span class="icon"><i class="fa fa-search"></i></span>
-                        <input type="search" id="search" placeholder="검색" />
+                        <input type="search" class="form-control" id="search" placeholder="검색" />
                     </div>
                 </div>
                 <table class="table">
