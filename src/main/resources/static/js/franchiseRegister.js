@@ -21,8 +21,8 @@ const franchiseRegister = {
             frnZip: document.getElementById("frn-frnZip").value,
             frnStreet: document.getElementById("frn-frnStreet").value,
             frnDetail: document.getElementById("frn-frnDetail").value,
-            frnStartTime: document.getElementById("frnStartTime").value,
-            frnEndTime: document.getElementById("frnEndTime").value
+            frnStartTime: document.querySelector(".frnStartTime").value,
+            frnEndTime: document.querySelector(".frnEndTime").value
         };
         sessionStorage.setItem('franchiseData', JSON.stringify(franchiseData));
         window.location.href = '/crispy/franchise/owner/register'; // 점주 등록 페이지로 이동

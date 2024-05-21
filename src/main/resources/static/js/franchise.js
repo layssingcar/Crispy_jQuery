@@ -13,8 +13,8 @@ const employee = {
             addressButton?.addEventListener('click', this.updateFrnAddress);
         }
 
-        const empNameButton = document.getElementById("btn-change-empName");
-        empNameButton?.addEventListener("click", this.changeEmpName);
+        const frnOwnerButton = document.getElementById("btn-change-frnOwner");
+        frnOwnerButton?.addEventListener("click", this.changeFrnOwner);
 
         const frnTelButton = document.getElementById("btn-change-frnTel");
         frnTelButton?.addEventListener("click", this.changeFrnTel);
@@ -22,11 +22,53 @@ const employee = {
         const posNoButton = document.getElementById("btn-change-posNo");
         posNoButton?.addEventListener("click", this.changePosNo);
 
+        const operatingTimeButton = document.getElementById("btn-edit-operating-time");
+        operatingTimeButton?.addEventListener("click", this.setupOperatingTimeFields.bind(this));
+
+        const changeOperatingTimeButton = document.getElementById("btn-change-operating-time");
+        changeOperatingTimeButton.addEventListener("click", this.changeOperatingTime.bind(this));
+
+
         this.setupEditableField("btn-edit-frnName", "frn-frnName", "btn-change-frnName");
         this.setupEditableField("btn-edit-frnOwner", "frn-frnOwner", "btn-change-frnOwner");
         this.setupEditableField("btn-edit-frnTel", "frn-frnTel", "btn-change-frnTel");
+        this.setupEditableField("btn-edit-operating-time", "frnStartTime", "btn-change-operating-time");
 
     },
+
+    setupOperatingTimeFields: function () {
+        this.replaceInputWithSelect('.frnStartTime', true);
+        this.replaceInputWithSelect('.frnEndTime', false);
+        document.getElementById('btn-edit-operating-time').style.display = 'none';  // 수정 버튼 숨기기
+        document.getElementById('btn-change-operating-time').style.display = 'inline'; // 변경 버튼 보이기
+    },
+
+    replaceInputWithSelect: function (inputId, focusAfterReplace) {
+    const inputElement = document.querySelector(inputId);
+    const currentValue = inputElement.value;
+    const select = document.createElement("select");
+    select.className = inputElement.className;
+    select.id = inputElement.id;
+    select.name = inputElement.name;
+
+    for (let hour = 0; hour < 24; hour++) {
+        for (let minute = 0; minute < 60; minute += 30) { // 30분 간격으로 옵션 추가
+            const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+            const option = document.createElement('option');
+            option.value = option.textContent = time;
+            if (time === currentValue) {
+                option.selected = true;
+            }
+            select.appendChild(option);
+        }
+    }
+
+    // 기존 input을 select로 교체
+    inputElement.parentNode.replaceChild(select, inputElement);
+
+        if (focusAfterReplace) {select.focus();}
+},
+
     setupEditableField: function(editButtonId, inputId, changeButtonId) {
         const editButton = document.getElementById(editButtonId);
         const inputElement = document.getElementById(inputId);
@@ -70,13 +112,13 @@ const employee = {
         }).then(response => {
             console.log(response);
             if (!response.ok) {
-                throw new Error('Failed to update the address');
+                throw new Error('주소 변경에 실패했습니다.');
             }
             return response.json();
         }).then(data => {
             alert(data.message);
         }).catch(error => {
-            console.error('Error updating address:', error);
+            console.error('주소 변경에 실패하였습니다 :', error);
             alert('주소 변경에 실패하였습니다.');
         });
     },
@@ -153,6 +195,60 @@ const employee = {
             console.error('Error:', error);
         });
     },
+    changeFrnOwner: function () {
+        const data = {
+            frnNo: parseInt(document.querySelector(".frnNo").value),
+            empNo: parseInt(document.querySelector(".empNo").value),
+            frnOwner: document.querySelector(".frnOwner").value,
+        }
+        fetch("/api/v1/franchise/updateFrnOwner", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data)
+        }).then(response => {
+            console.log(response);
+            if (!response.ok) {
+                throw new Error('대표자명 변경에 실패했습니다.');
+            }
+            return response.json();
+        }).then(data => {
+            alert(data.message);
+            return location.reload();
+        }).catch(error => {
+            console.error('Error updating address:', error);
+            alert('대표자명 변경에 실패하였습니다.');
+        });
+    },
+    changeOperatingTime: function () {
+        const data = {
+            frnNo: parseInt(document.querySelector(".frnNo").value),
+            empNo: parseInt(document.querySelector(".empNo").value),
+            frnStartTime: document.querySelector(".frnStartTime").value,
+            frnEndTime: document.querySelector(".frnEndTime").value
+        }
+
+        fetch("/api/v1/franchise/update/operating-time", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data)
+        }).then(response => {
+            console.log(response);
+            if (!response.ok) {
+                throw new Error('운영시간 변경에 실패했습니다.');
+            }
+            return response.json();
+        }).then(data => {
+            alert(data.message);
+            return location.reload();
+        }).catch(error => {
+            console.error('Error updating address:', error);
+            alert('운영시간 변경에 실패하였습니다.');
+        });
+    }
 }
 document.addEventListener("DOMContentLoaded", function () {
     employee.init();

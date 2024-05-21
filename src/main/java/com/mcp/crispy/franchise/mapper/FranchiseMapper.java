@@ -6,7 +6,7 @@ import com.mcp.crispy.franchise.dto.FrnAddressDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.Date;
+import java.time.LocalTime;
 
 @Mapper
 public interface FranchiseMapper {
@@ -25,7 +25,9 @@ public interface FranchiseMapper {
     void updateFrnTel(@Param("frnTel") String frnTel, @Param("frnNo") Integer frnNo, @Param("modifier") Integer modifier);
 
     // 대표자 이름 변경
-    void updateEmpName(@Param("frnOwner") String empName, @Param("modifyDt") Date modifyDt,
-                       @Param("modifier") Integer modifier, @Param("frnNo") Integer frnNo, @Param("posNo") Integer posNo);
+    void updateFrnOwner(@Param("frnOwner") String empName, @Param("modifier") Integer modifier, @Param("frnNo") Integer frnNo);
 
+    // 운영시간 변경
+    void updateOperatingTime(@Param("frnStartTime") LocalTime frnStartTime, @Param("frnEndTime") LocalTime frnEndTime,
+                             @Param("modifier") Integer modifier, @Param("frnNo") Integer frnNo);
 }

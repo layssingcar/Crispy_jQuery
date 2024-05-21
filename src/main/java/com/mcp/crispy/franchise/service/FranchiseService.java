@@ -1,11 +1,13 @@
 package com.mcp.crispy.franchise.service;
 
 import com.mcp.crispy.employee.dto.OwnerRegisterDto;
+import com.mcp.crispy.employee.service.EmployeeService;
 import com.mcp.crispy.employee.service.ImageService;
 import com.mcp.crispy.employee.service.OwnerService;
 import com.mcp.crispy.franchise.dto.FranchiseDto;
 import com.mcp.crispy.franchise.dto.FranchiseImgDto;
 import com.mcp.crispy.franchise.dto.FrnAddressDto;
+import com.mcp.crispy.franchise.dto.FrnUpdateDto;
 import com.mcp.crispy.franchise.mapper.FranchiseMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +31,7 @@ public class FranchiseService {
     private final FranchiseMapper franchiseMapper;
 
     private final OwnerService ownerService;
+    private EmployeeService employeeService;
     private final ImageService imageService;
 
     /**
@@ -98,5 +101,17 @@ public class FranchiseService {
     @Transactional
     public void insertOrUpdateFrnAddress(FrnAddressDto frnAddressDto, Integer modifier) {
         franchiseMapper.insertOrUpdateFrnAddress(frnAddressDto, modifier);
+    }
+
+    // 대표자명 변경
+    @Transactional
+    public void changeFrnOwner(String frnOwner, Integer modifier, Integer frnNo) {
+        franchiseMapper.updateFrnOwner(frnOwner, modifier, frnNo);
+    }
+
+    // 운영시간 변경
+    @Transactional
+    public void changeOperatingTime(FrnUpdateDto frnUpdateDto, Integer modifier) {
+        franchiseMapper.updateOperatingTime(frnUpdateDto.getFrnStartTime(), frnUpdateDto.getFrnEndTime(), modifier, frnUpdateDto.getFrnNo());
     }
 }

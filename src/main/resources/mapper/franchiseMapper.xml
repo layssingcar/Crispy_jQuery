@@ -81,5 +81,36 @@
             VALUES (#{frnAddressDto.frnNo}, #{frnAddressDto.frnZip}, #{frnAddressDto.frnStreet}, #{frnAddressDto.frnDetail}, CURRENT_DATE, #{modifier})
     </update>
 
+    <update id="updateFrnOwner" parameterType="FrnUpdateDto">
+        UPDATE FRANCHISE_T F
+        SET F.FRN_OWNER = #{frnOwner},
+            F.MODIFY_DT = CURRENT_DATE,
+            F.MODIFIER = ${modifier}
+        WHERE EXISTS (
+            SELECT E.FRN_NO
+            FROM EMPLOYEE_T E
+            WHERE E.FRN_NO = F.FRN_NO
+        )  AND F.FRN_NO = ${frnNo}
+    </update>
+
+    <update id="updateOperatingTime" parameterType="FrnUpdateDto">
+        UPDATE FRANCHISE_T F
+        <set>
+            <if test="frnStartTime != null">
+                F.FRN_START_TIME = #{frnStartTime},
+            </if>
+            <if test="frnEndTime != null">
+                F.FRN_END_TIME = #{frnEndTime},
+            </if>
+            F.MODIFY_DT = CURRENT_DATE,
+            F.MODIFIER = ${modifier}
+        </set>
+        WHERE EXISTS (
+            SELECT E.FRN_NO
+            FROM EMPLOYEE_T E
+            WHERE E.FRN_NO = F.FRN_NO
+        )  AND F.FRN_NO = ${frnNo}
+    </update>
+
 
 </mapper>
