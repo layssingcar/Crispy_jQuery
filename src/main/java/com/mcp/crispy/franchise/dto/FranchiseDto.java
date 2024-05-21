@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Date;
 
 @Data
@@ -23,8 +22,8 @@ public class FranchiseDto {
     private String frnDetail;
     private String frnX;
     private String frnY;
-    private LocalTime frnStartTime;
-    private LocalTime frnEndTime;
+    private String frnStartTime;
+    private String frnEndTime;
     private String frnImg;
     private LocalDateTime frnJoinDt;
     private Date createDt;
