@@ -16,5 +16,4 @@ public class EmployeeDto {
     private String empName;
     private String empEmail;
     private String empPhone;
-
 }
