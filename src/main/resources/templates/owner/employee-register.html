@@ -3,7 +3,6 @@
 <head>
     <th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
     <link href="/css/employee/employee-register.css" rel="stylesheet">
-    <link href="/css/profile.css" rel="stylesheet">
 </head>
 <body>
 
@@ -12,11 +11,12 @@
     <div>
         <header th:replace="~{layout/navbar :: navbar}"></header>
         <main>
-            <div>
-                <div class="container my-3 signup-container">
-                    <div class="member-profile">
+            <div class="emp-register">
+                <h1 class="emp-reg-title">직원 등록</h1>
+                <div class="container my-3 emp-register-container">
+                    <div class="emp-info">
                         <div>
-                            <form class="signup-form" id="emp-register" method="post" autocomplete="off">
+                            <form class="emp-reg-form" id="emp-register" method="post" autocomplete="off">
                                 <div>
                                     <div class="info-wrap">
                                         <div>
@@ -53,7 +53,7 @@
                                     <div class="employee-position">
                                         <div class="employee-role">
                                             <label>직책</label>
-                                            <div class="d-flex mt-0 ms-3">
+                                            <div class="d-flex">
                                                 <div class="d-flex mt-0">
                                                     <input type="radio" id="emp-register-manager" class="manager" name="posNo" value="1">
                                                     <label for="emp-register-manager">매니저</label>
@@ -66,7 +66,7 @@
                                         </div>
                                     </div>
 
-                                    <button type="button" class="btn mt-4 mb-3" id="btn-emp-register">직원등록</button>
+                                    <button type="button" class="mt-4 mb-3" id="btn-emp-register">직원등록</button>
                                 </div>
                             </form>
                         </div>
