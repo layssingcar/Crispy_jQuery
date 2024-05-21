@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+>
 <head>
     <th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
     <link href="/css/employee/login.css" rel="stylesheet">
 </head>
 <body>
-<div class="container my-3 main">
+<div class="container my-3">
     <div class="my-3 login-container">
-        <a class="nav-header" href="/static"><img src="/img/crispy2.png"></a>
+        <img src="/img/crispy2.png">
         <form class="login-form" th:action="@{/crispy/login}" method="post">
             <div th:if="${param.error}">
                 <div class="alert alert-danger">
@@ -30,8 +30,8 @@
             </div>
             <button type="submit">로그인</button>
             <ul class="find-wrap" id="find-wrap">
-                <li><a class="find-text" href="/crispy/employee/find/username">아이디 찾기</a></li>
-                <li><a class="find-text" href="/crispy/employee/find/password">비밀번호 찾기</a></li>
+                <li><a class="find-text" href="/crispy/employee/find-emp-id">아이디 찾기</a></li>
+                <li><a class="find-text" href="/crispy/employee/find-emp-pw">비밀번호 찾기</a></li>
                 <li><a class="find-text" href="/crispy/signup">회원가입</a></li>
             </ul>
         </form>
