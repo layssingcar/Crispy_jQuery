@@ -3,6 +3,7 @@
 <head>
     <th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
     <link href="/css/employee/find-user.css" rel="stylesheet">
+    <link href="/css/common/common.css" rel="stylesheet">
 </head>
 <body>
 <section>
@@ -13,17 +14,17 @@
                     <h4>해당 이메일로 가입된 아이디가 있습니다.</h4>
                 </div>
                 <div class="find-username">
-                        <p>아이디: <span th:text="${findEmpName}"></span></p>
+<!--                        <p>아이디: <span th:text="${findEmpName}"></span></p>-->
                     <div class="find-result-info mb-4">
-<!--                        <span th:></span>-->
+                        <span>아이디 : moz1mozi</span>
                         <span>가입 : 가입한 날짜</span>
                     </div>
                     <div class="result-to-find-password mb-3">
                         <span>비밀번호가 기억나지 않으세요?</span>
-                        <a href="/member/find/password">비밀번호 찾기</a>
+                        <a href="/crispy/employee/find-emp-pw">비밀번호 찾기</a>
                     </div>
                 </div>
-                <a role="button" class="btn result-to-login" href="/crispy/employee/login">로그인 하러가기</a>
+                <a role="button" class="result-to-login" href="/crispy/login">로그인 하러가기</a>
             </div>
         </div>
     </div>
