@@ -1,79 +1,27 @@
-.container {
-    width: 350px;
-    margin: 0 auto;
+.employee-profile input,
+.employee-profile label,
+.employee-profile span,
+.employee-profile button,
+.employee-profile a {
+    font-size: 1.5rem;
 }
-
-.step-indicator {
-    margin-top: 50px;
+.employee-profile header {
+    height: 65px !important; /* 다른 모든 규칙을 오버라이드 */
+    line-height: 65px;
+    background-color: var(--main-color);
     display: flex;
     align-items: center;
-    padding: 0 40px;
+    justify-content: space-between;
+    padding: 0 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-.step {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    position: relative;
-    z-index: 1;
+.employee-profile input {
+    width: 300px;
 }
 
-.step-indicator .step-icon {
-    height: 45px;
-    width: 45px;
-    border-radius: 50%;
-    background: #c2c2c2;
-    text-align: center;
-    color: #ffffff;
-    position: relative;
-    line-height: 50px;
-    font-size: 20px;
-}
-
-.step.active .step-icon {
-    background: var(--main-color);
-}
-
-.step p {
-    text-align: center;
-    position: absolute;
-    bottom: -50px;
-    color: #c2c2c2;
-    font-size: 1.4rem;
-    font-weight: bold;
-}
-
-.step.active p {
-    color: var(--main-color);
-}
-
-.step.step2 p {
-    left: 50%;
-    transform: translateX(-50%);
-    width: 30px;
-}
-
-.indicator-line {
-    width: 100%;
-    height: 2px;
-    background: #c2c2c2;
-    flex: 1;
-}
-
-.indicator-line.active {
-    background: var(--main-color);
-}
-
-@media screen and (max-width: 500px) {
-    .step p {
-        font-size: 11px;
-        bottom: -20px;
-    }
-}
-
-.frn-wrap {
+.employee-profile .emp-wrap {
     width: 550px;
-    font-size: 1.3rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -85,50 +33,70 @@
 }
 
 .employee-profile .file-input {display: none;}
-.employee-profile .frn-wrap .file-input,
-.employee-detail .frn-wrap .file-input {display: none;}
 
-.employee-profile .profile-img,
-.employee-detail .profile-img{
+.employee-profile .profile-img{
     float: right;
     width: 150px;
     height: 150px;
-    margin-top: 15px;
+    margin-bottom: 10px;
     border: 1px solid #e6e7eb;
     border-radius: 100%;
     object-fit: cover;
     cursor: pointer;
 }
 
-.employee-profile .sign-img {
-    margin-top: 15px;
-    width: 300px;
-    height: 150px;
-    border: 1px solid #e6e7eb;
+.employee-profile-form .emp-profile > div:first-child {position: relative;}
+
+/* 프로필 이미지 hover */
+.employee-profile-form .profile-img:hover {filter: brightness(50%);}
+.employee-profile-form .profile-img:hover + .update-img {display: block;}
+
+/* 프로필 이미지 변경 텍스트 */
+.employee-profile-form .update-img {
+    display: none;
+    position: absolute;
+    top: 27%;
+    color: #fff;
+}
+
+.employee-info-header {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.pw-change-btn {
+    display: flex;
+    justify-content: flex-end;
+    margin-left: 20%;
+    flex-direction: column;
+    width: 150px;
+    text-align: center;
 }
 
 .employee-profile .change-password{
-    font-size: 1.5rem;
-    padding: 5px 25px;
+    height: 35px;
+    padding: 5px 10px;
     border-radius: 7px;
+    line-height: 27px;
     background-color: var(--main-color);
     --bs-btn-hover-color: #fff;
     color: #fff;
 }
 
-
-.employee-profile span,
-.employee-detail span{
-    font-size: 1.5rem;
+#add-approval {
+    padding: 5px 10px;
+    border-radius: 7px;
+    border: 0;
+    margin-bottom: 10px;
+    background-color: var(--sub-color) !important;
 }
 
 .form-control {
     margin-top: 0 !important;
 }
 
-.frn-register-container {
+.employee-profile-container {
     width: 100%;
-    max-width: 500px;
     margin: auto;
     display: flex;
     flex-direction: column;
@@ -137,15 +105,11 @@
 }
 
 .info-wrap {
-    width: 100%; /* 내부 랩의 너비를 부모와 같게 설정 */
+    width: 500px;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     justify-content: center;
-}
-
-.info-wrap input{
-    width: 200px;
 }
 
 .info-wrap div {
@@ -181,24 +145,13 @@
     align-items: center;
 }
 
-.form-control, .btn {
-    width: 100%; /* 모든 입력 필드와 버튼의 너비를 균일하게 설정 */
-}
 
-.employee-profile .btn-save-profile,
-.employee-detail .btn-save-profile {
+.employee-profile .btn-save-profile{
     align-self: center;
-    font-size: 1.5rem;
-    color: #fff;
-    background-color: var(--main-color);
     border: 0;
     padding: 5px 25px;
     width: 150px;
     border-radius: 7px;
-}
-
-.frn-register-container input {
-    font-size: 1.4rem;
 }
 
 .employee-profile img {
@@ -209,21 +162,39 @@
 .address-wrap {
     display: flex;
     flex-direction: column;
-}
-
-.employee-profile .address-wrap input,
-.employee-detail .address-wrap input{
-    width: 250px;
-}
-
-.zipcode {
-    width: 100px !important;
+    margin-left: 6%;
 }
 
 .address-wrap div:nth-child(2) {
+    width: 100%;
     display: flex;
-    align-items: center;
+    flex-direction: column;
     margin-top: 0;
+}
+
+.address-wrap div:nth-child(2)>div {
+    display: flex;
+}
+
+.address-wrap .zipcode {
+    width: 150px !important;
+}
+
+.address-wrap .search-address {
+    width: 100px !important;
+    background-color: var(--sub-color) !important;
+}
+
+.detail-wrap {
+    display: flex;
+    align-items: flex-start;
+    margin-top: 0 !important;
+    margin-bottom: 10px;
+}
+
+.detail-wrap button {
+    position: relative;
+    right: -40px;
 }
 
 .operating-time {
@@ -237,41 +208,65 @@
     margin-top: 0;
 }
 
-.frn-modify-btn {
+.emp-modify-btn {
+    width: 100%;
     display: flex;
     align-items: flex-end;
+    justify-content: space-between;
 }
 
-.frn-modify-btn button{
-    margin-left: 10px;
-    color: #fff;
-    padding: 5px 10px;
+.emp-modify-btn div:first-child {
+    margin-left: 30px;
+}
+
+.emp-modify-btn button{
+    width: 70px;
     border-radius: 7px;
+    padding: 5px 15px;
     border: 0;
-    text-align: center; /* 텍스트를 가로 방향 중앙으로 정렬 */
-    line-height: 22px;
-    height: 30px; /* 버튼의 높이를 지정 */
-    font-size: 1.5rem;
+}
+
+.address-container {
+    width: 100%;
+    display: flex;
+}
+
+.address-container .change-address-container {
+    display: flex;
+    align-items: flex-end;
+    width: 100%;
+    justify-content: flex-end;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.address-container .change-address-container button {
+    width: 100px;
+    border-radius: 7px;
+    padding: 5px 10px;
+    border: 0;
 }
 
 .address-wrap button{
-    font-size: 1.5rem;
     border-radius: 7px;
     padding: 5px 10px;
-    margin-left: 6px;
-    color: #fff;
     border: 0;
 }
 
-.btn-change-address,
-#add-approval{
-    color: #fff;
-    padding: 5px 10px;
-    border-radius: 7px;
-    border: 0;
-    margin-top: 10px;
-    font-size: 1.5rem;
+.sign-img-container {
+    width: 100%;
+    margin-left: 36%;
+    display: flex;
+    flex-direction: column;
 }
+
+.sign-img-container .sign-img {
+    width: 250px;
+    height: 150px;
+    border: 1px solid #e6e7eb;
+    border-radius: 0.375rem;
+}
+
 
 #signature-modal {
     position: fixed;
@@ -295,28 +290,36 @@
     text-align: center;
 }
 
-.employee-detail .reset-password {
-    font-size: 1.5rem;
+.employee-profile .reset-password {
     padding: 5px 25px;
     border-radius: 7px;
     border: 0;
 }
 
-.employee-detail input[type=radio]{
-    width: 10px;
+.employee-profile input[type=radio]{
+    width: 25px;
+    height: 1.5rem;
 }
 
-.employee-detail .position-radio {
+.employee-profile .position-radio {
     display: flex;
 }
 
-.employee-detail .position-radio div {
-    margin-left: 10px;
-    font-size: 1.5rem;
+.employee-profile .position-radio div {
+    margin: 0 10px 0 0;
+    display: flex;
+    align-items: center;
 }
 
-.employee-detail .form-label,
 .employee-profile .form-label{
-    font-size: 1.5rem;
     margin-bottom: 0;
+}
+
+.employee-profile .emp-info {
+    display: flex;
+    font-size: 1.5rem;
+}
+.employee-profile .emp-info hr {
+    width: 83%;
+    margin-left: 10px;
 }
