@@ -193,4 +193,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
               MODIFIER = #{modifier}
          WHERE EMP_NO = #{empNo}
     </update>
+
+    <update id="updateEmpStat" parameterType="EmployeeUpdateDto">
+        UPDATE EMPLOYEE_T
+        SET EMP_STAT = #{empStat},
+            MODIFY_DT = CURRENT_DATE,
+            MODIFIER = #{modifier}
+        WHERE EMP_NO = #{empNo}
+    </update>
 </mapper>

@@ -16,6 +16,7 @@ public class EmployeeUpdateDto {
     private String empPhone;
     private String empName;
     private Position posNo;
+    private EmpStatus empStat;
     private Date modifyDt;
     private Integer modifier;
 }

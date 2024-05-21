@@ -155,6 +155,7 @@ public class EmployeeService {
         employeeMapper.updateEmpName(empName, date, modifier, empNo);
     }
 
+    // 직책 변경
     @Transactional
     public void changePosNo(Integer posNo, Integer empNo, Integer modifier) {
         if (empNo == null) {
@@ -164,7 +165,14 @@ public class EmployeeService {
         employeeMapper.updatePosNo(Position.of(posNo), date, modifier, empNo);
     }
 
-
+    // 재직 상태 변경
+    @Transactional
+    public void changeEmpStat(Integer empStat, Integer empNo, Integer modifier) {
+        if(empNo == null) {
+            throw new IllegalArgumentException("해당하는 직원이 존재하지 않습니다.");
+        }
+        employeeMapper.updateEmpStat(EmpStatus.fromValue(empStat), modifier, empNo);
+    }
 
 
 }

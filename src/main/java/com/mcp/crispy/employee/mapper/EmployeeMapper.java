@@ -53,4 +53,7 @@ public interface EmployeeMapper {
 	// 직책 변경
 	void updatePosNo(@Param("posNo") Position posNo, @Param("modifyDt") Date modifyDt,
 					 @Param("modifier") Integer modifier, @Param("empNo") Integer empNo);
+
+	// 상태 변경
+	void updateEmpStat(@Param("empStat") EmpStatus empStat, @Param("modifier") Integer modifier, @Param("empNo") Integer empNo);
 }

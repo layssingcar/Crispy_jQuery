@@ -25,6 +25,9 @@ const employee = {
         const posNoButton = document.getElementById("btn-change-posNo");
         posNoButton?.addEventListener("click", this.changePosNo);
 
+        const empStatButton = document.getElementById("btn-change-empStat");
+        empStatButton?.addEventListener("click", this.changeEmpStat);
+
         this.setupEditableField(".btn-edit-empName", ".empName", ".btn-change-empName");
         this.setupEditableField(".btn-edit-empPhone", ".empPhone", ".btn-change-empPhone");
         this.setupEditableField(".btn-edit-empEmail", ".empEmail", ".btn-change-empEmail");
@@ -281,6 +284,34 @@ const employee = {
             alert('직책 변경에 실패하였습니다.');
         });
     },
+    changeEmpStat: function () {
+        const selectedCheck = document.querySelector("input[name='empStat']:checked").value;
+        console.log(selectedCheck)
+        const data = {
+            empNo: parseInt(document.querySelector(".empNo").value),
+            empStat: selectedCheck,
+        }
+        fetch("/api/v1/employee/updateEmpStat", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data)
+        }).then(response => {
+            console.log(response);
+            if (!response.ok) {
+                throw new Error('재직 상태 변경에 실패했습니다.');
+            }
+            return response.json();
+        }).then(data => {
+            alert(data.message);
+            return location.reload();
+        }).catch(error => {
+            console.error('Error updating address:', error);
+            alert('재직 상태 변경에 실패하였습니다.');
+        });
+    },
+
 }
 document.addEventListener("DOMContentLoaded", function () {
     employee.init();

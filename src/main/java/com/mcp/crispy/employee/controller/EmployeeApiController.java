@@ -113,4 +113,13 @@ public class EmployeeApiController {
         return ResponseEntity.ok(Map.of("message", "직책이 변경되었습니다."));
     }
 
+    @PutMapping("/updateEmpStat")
+    public ResponseEntity<?> changeEmpStat(@RequestBody EmployeeUpdateDto employeeUpdateDto,
+                                           Principal principal) {
+        EmployeeDto employee = employeeService.getEmployeeName(principal.getName());
+        employeeService.changeEmpStat(employeeUpdateDto.getEmpStat().getValue(), employeeUpdateDto.getEmpNo(), employee.getEmpNo());
+        log.info("empStatus: {}", employeeUpdateDto.getEmpStat());
+        log.info("empStatus: {}", employeeUpdateDto.getEmpStat().getValue());
+        return ResponseEntity.ok(Map.of("message", "직책이 변경되었습니다."));
+    }
 }
