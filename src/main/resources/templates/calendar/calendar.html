@@ -8,13 +8,11 @@
     .mainarea{
     margin:5px auto !important;
     width:100%;
-   	border:2px red solid;
     display:flex !important;
     justify-content: space-around !important;
     }
   	#calendarOpt{
-  	width:400px;
-  	border:2px black solid;
+  	width:200px;
   	font-size:20px;
   	text-align:start;
   	}
@@ -26,15 +24,15 @@
     position: relative;
     color: black !important; 
     font-size:medium !important;
-   	border:2px black solid;
     }
     
    	#profile-cal{
-  	width:400px;
-  	height:400px;
+  	width:200px;
+  	height:200px;
   	display:flex;
   	justify-content: center;
   	margin-top:10px;
+  	margin-bottom:100px;
   	}
     
     .fc-col-header a{
@@ -97,19 +95,19 @@
                 <!-- 내부 내용 -->
                 	<div id="calendarOpt">
                 		<div id="profile-cal">
-                			<img src="/img/anonymous.png" id="profile-img" width="300px" height="300px">
+                			<img src="/img/anonymous.png" id="profile-img" width="200px" height="200px">
                 		</div>
                 		<div id="allsche">
-						  <input class="form-check-input" type="checkbox" value="allsche" id="allscheChecked" checked>
+						  <input class="form-check-input" type="checkbox" value="allsche" id="allscheChecked" checked onclick="fnClickCheckAll()">
 						  <label class="form-check-label" for="allscheChecked">전체보기</label>                		
                 		</div>
                 		<hr>
                 		<div id="shopsche">
-						  <input class="form-check-input" type="checkbox" value="shopsche" id="shopscheChecked" checked>
+						  <input class="form-check-input" type="checkbox" value="shopsche" id="shopscheChecked" checked onclick="fnClickCheckSingle()">
 						  <label class="form-check-label" for="shopscheChecked">가맹점 일정</label>                    		
                 		</div>
                 		<div id="mysche">
-						  <input class="form-check-input" type="checkbox" value="mysche" id="myscheChecked" checked>
+						  <input class="form-check-input" type="checkbox" value="mysche" id="myscheChecked" checked onclick="fnClickCheckSingle()">
 						  <label class="form-check-label" for="myscheChecked">내 일정</label>                    		
                 		</div>
                 		<hr>
@@ -147,7 +145,7 @@
 							  <label class="form-check-label" for="radio-vac">휴가</label>
 							</div>
 			              </div>
-			              <div class="form-group">
+			              <div class="form-group" id="vac-type">
 						    <label>휴가구분:&nbsp;&nbsp;</label>
 							<div class="btn-group btn-group-lg" role="group" aria-label="Basic radio toggle button group">
 							  <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
@@ -157,7 +155,7 @@
 							  <label class="btn btn-outline-primary" for="btnradio2">오후</label>
 							</div>
 			              </div>
-			              <div class="form-group">
+			              <div class="form-group" id="vac-elem">
 			                <label for="allDay">휴가 종류:&nbsp;</label>
 							 <div class="form-check form-check-inline">
 							  <input class="form-check-input" type="radio" name="inlineRadioOptions2" id="vac-all" value="all" checked>
@@ -169,13 +167,13 @@
 							</div>
 							<div class="form-check form-check-inline">
 							  <input class="form-check-input" type="radio" name="inlineRadioOptions2" id="vac-quat" value="quat">
-							  <label class="form-check-label" for="vac-quat">반반반차</label>
+							  <label class="form-check-label" for="vac-quat">반반차</label>
 							</div>
 			              </div>
 			              <div class="form-group-start">
 			                <label for="start">시작시간:</label>
 			                <select class="form-control" id="start" onchange="">
-			                  <option value="09:00">09:00</option>
+			                  <option value="09:00" selected>09:00</option>
 			                  <option value="09:30">09:30</option>
 			                  <option value="10:00">10:00</option>
 			                  <option value="10:30">10:30</option>
@@ -235,25 +233,81 @@
  <script>
       ////////////////////////     모달 설정
 	 $("#myModal").on("hidden.bs.modal", function () {
-/*         $(".form-group-start").hide();
-        $(".form-group-end").hide(); */
         $("#form-modal")[0].reset();
       });
-
-/*       const fnShowStartEnd = ()=>{
-        $(".form-group-start").hide();
-        $(".form-group-end").hide();
-        $("input:radio[name=allDay]").click(()=>{
-          if($("input:radio[name=allDay]:checked").val() =='false') {
-            $(".form-group-start").show();
-            $(".form-group-end").show();
-          }
-          else{
-            $(".form-group-start").hide();
-            $(".form-group-end").hide();
-          }
-        })
-      } */
+      
+	 $("#myModal").on("show.bs.modal", function(){
+		    // 초기 체크 상태에 따라 show/hide 설정
+		    if ($("#radio-notice").is(':checked')) {
+		        $("#vac-type").hide();
+		        $("#vac-elem").hide();
+            	$(".form-group-start").show();
+            	$(".form-group-end").show();
+		    }
+		    $("input[name='inlineRadioOptions1']").off('click').on('click', function() {
+		        if ($("#radio-notice").is(':checked')) {		// 공지
+		            $("#vac-type").hide();
+		            $("#vac-elem").hide();
+	            	$(".form-group-start").show();
+	            	$(".form-group-end").show();
+	        } else if ($("#radio-vac").is(':checked')) {		// 휴가
+		            $("#vac-type").show();
+		            $("#vac-elem").show();
+		            
+		            if($("#vac-all").is(':checked')){	// 연차
+		            	$(".form-group-start").hide();
+		            	$(".form-group-end").hide();
+		            }
+		            $("input[name='inlineRadioOptions2']").off('click').on('click', function(){
+		            	 if ($("#vac-all").is(':checked')) {	// 연차
+			            	$(".form-group-start").hide();
+			            	$(".form-group-end").hide();
+		 		        } else if ($("#vac-half").is(':checked')){	// 반차
+			            	$(".form-group-start").show();
+			            	$(".form-group-end").show();
+			            	
+			            	if($("#btnradio2").is(":checked"))
+			            		$('#start option').eq(10).prop('selected', true);
+			            	else if($("#btnradio1").is(":checked"))
+			            		$('#start option').eq(0).prop('selected', true);
+			            	
+			            	$("#start").off('change').on('change', function(){
+			            		if(($( "#start option" ).index($("#start option:selected")) + 7) >= $("#start option").length)
+			            			$('#end option').eq($( "#start option" ).length - 1).prop('selected', true);
+			            		else
+			            			$('#end option').eq($("#start option").index($("#start option:selected")) + 7).prop('selected', true);
+			            	})
+			            	
+		            		if(($( "#start option" ).index($("#start option:selected")) + 7) >= $("#start option").length)
+		            			$('#end option').eq($( "#start option" ).length - 1).prop('selected', true);
+		            		else
+		            			$('#end option').eq($("#start option").index($("#start option:selected")) + 7).prop('selected', true);
+			            	
+		 		        } else if($("#vac-quat").is(':checked')){	// 반반차
+			            	$(".form-group-start").show();
+			            	$(".form-group-end").show();
+			            	
+			            	if($("#btnradio2").is(":checked"))
+			            		$('#start option').eq(10).prop('selected', true);
+			            	else if($("#btnradio1").is(":checked"))
+			            		$('#start option').eq(0).prop('selected', true);
+			            	
+			            	$("#start").off('change').on('change', function(){
+			            		if(($( "#start option" ).index($("#start option:selected")) + 3) >= $("#start option").length)
+			            			$('#end option').eq($( "#start option" ).length - 1).prop('selected', true);
+			            		else
+			            			$('#end option').eq($("#start option").index($("#start option:selected")) + 3).prop('selected', true);
+			            	})
+			            	
+		            		if(($( "#start option" ).index($("#start option:selected")) + 3) >= $("#start option").length)
+		            			$('#end option').eq($( "#start option" ).length - 1).prop('selected', true);
+		            		else
+		            			$('#end option').eq($("#start option").index($("#start option:selected")) + 3).prop('selected', true);
+		 		        }
+		            })
+		        }
+		    });
+		});
 
       const fntest = ()=>{    // 고른 시간 이후의 시간대만 표시되도록 하는 함수
         var index = $("#start option").index($("#start option:selected")); // 내가 고른 셀렉트의 인덱스
@@ -290,6 +344,7 @@
       ////////////////////////		캘린더 기능
       calendar.on("eventAdd", ()=>{
         alert('일정을 등록했다!');
+        $("#myModal").modal('hide');
       });
 
 //       calendar.on("eventClick", (info)=>{
@@ -299,7 +354,6 @@
 //       });
       
       calendar.on("dateClick", (info)=>{
-          alert('일정 제목:'+ info.dateStr);
         });
 
       calendar.on("select", (info)=>{
@@ -330,6 +384,18 @@
         calendar.unselect();
       };
 
+      function fnClickCheckAll(){
+    	  if ($('#allscheChecked').is(':checked')){
+      	    $('.form-check-input').prop('checked', true);
+      	  } else {
+      	    $('.form-check-input').prop('checked', false);
+      	  }
+      }
+      
+      function fnClickCheckSingle(){
+    	  if($('#allscheChecked').is(':checked'))
+    		  $('#allscheChecked').prop('checked', false);
+      }
     </script>    
 </div>
 </body>
