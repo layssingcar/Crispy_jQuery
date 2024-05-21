@@ -1,20 +1,18 @@
-package com.mcp.crispy.attendence.dto;
-
-import java.sql.Date;
-import java.sql.Timestamp;
-
-import com.mcp.crispy.employee.dto.EmployeeDto;
+package com.mcp.crispy.attendance.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AttendenceDto {
+public class AttendanceDto {
 	private int attNo;
 	private Timestamp attInDt;
 	private Timestamp attOutDt;

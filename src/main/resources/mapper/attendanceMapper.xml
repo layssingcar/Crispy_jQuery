@@ -5,9 +5,9 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.mcp.crispy.attendence.mapper.AttendenceMapper">
+<mapper namespace="com.mcp.crispy.attendance.mapper.AttendanceMapper">
 
-	<resultMap type="AttendenceDto" id="AttendenceMap">
+	<resultMap type="AttendanceDto" id="AttendanceMap">
 		<id property="attNo" column="ATT_NO" />
 		<result property="attInDt" column="ATT_IN_DT"/>
 		<result property="attOutDt" column="ATT_OUT_DT"/>
@@ -17,12 +17,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="modifyDt" column="MODIFY_DT"/>
 		<result property="modifier" column="MODIFIER"/>
 		<association property="employee" javaType="EmployeeDto">
-			<id property="empNo" column="EMP_NO"></id>
+			<id property="empNo" column="EMP_NO" />
 			<result property="empName" column="EMP_NAME" />
 		</association>
 	</resultMap>
 	
-<insert id="insertAttendence" parameterType="AttendenceDto">
+<insert id="insertAttendance" parameterType="AttendanceDto">
     INSERT INTO ATTENDENCE_T (
         ATT_NO,
         ATT_IN_DT,
