@@ -1,462 +1,565 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
-  <!-- 특정 페이지 css -->
-  <link rel="stylesheet" href="/css/common/index.css" type="text/css">
+<th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
+<!-- 특정 페이지 css -->
+<link rel="stylesheet" href="/css/common/index.css" type="text/css">
 
-  <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script> 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-  	.mainarea{
-  	width:100%;
-  	height: 100%;
-  	max-width:1660px;
-  	}
-  	.maintop{
-  	display:flex !important;
-  	}
-  	.maintop > div{
-  	margin: 10px auto;
-  	}
-  	.mainbottom{
-  	display:flex;
-  	}
-  	.mainbottom > div{
-  	margin: 10px auto;
-  	}
-  	.area1{
-  	width:500px;
-  	height:320px;
-  	display:flex;
-  	flex-wrap:wrap;
-  	flex-direction:column;
+<script
+	src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+.mainarea {
+	width: 100%;
+	height: 100%;
+	max-width: 1660px;
+}
+
+.maintop {
+	display: flex !important;
+}
+
+.maintop>div {
+	margin: 10px auto;
+}
+
+.mainbottom {
+	display: flex;
+}
+
+.mainbottom>div {
+	margin: 10px auto;
+}
+
+.area1 {
+	width: 500px;
+	height: 320px;
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: column;
 	border: 2px var(--main-color) solid;
 	border-radius: 7px;
-  	}
-  	.area2{
-  	width:550px;
-  	height:320px;
-  	border: 2px var(--main-color) solid;
-  	border-radius: 7px;
-  	}
-  	.area3{
-  	width:500px;
-  	height:320px;
-  	border: 2px var(--main-color) solid;
-  	border-radius: 7px;
-  	}
-  	.area4{
-  	width:800px;
-  	height:440px;
-  	border: 2px var(--main-color) solid;
-  	border-radius: 7px;
-  	}
-  	.area5{
-  	width:800px;
-  	height:440px;
-  	border: 2px var(--main-color) solid;
-  	border-radius: 7px;
-  	}
-  	
-  	.area1 > div{
-  	margin:auto 5px; 
-  	}
-  	.area1-profile{
-  	width:240px;
-  	height:180px;
-  	display:flex;
-  	justify-content: center;
-  	}
-  	.area1-info{
-  	width:240px;
-  	height:120px;
-  	font-size:20px;
-  	display:flex;
-  	flex-direction:column; 
-  	justify-content: center;
-  	}
-  	.area1-inoutBtn{
-  	width:240px;
-  	height:60px;
-  	
-  	}
-  	.area1-qr{
-  	width:240px;
-  	height:240px;
-  	}
-  	
-  	.btn-workfin{
-  	display:flex;
-  	justify-content: space-between;
-  	}
-  	#btn-work, #btn-finish{
-  	width:100px;
-  	font-size:20px;
-  	margin:auto 10px;
-  	margin-top:10px;
-  	}
-  	#btn-work{
-  	border-color: rgba(0, 0, 255, 0.9) !important;
-  	border: 2px solid;
-  	background-color: rgba(0, 0, 255, 0.9) !important;
-  	color:white !important;
-  	}
-  	#btn-finish{
-  	border-color: rgba(255, 0, 0, 0.9) !important;
-  	border: 2px solid;
-  	background-color: rgba(255, 0, 0, 0.9) !important;
-  	color:white !important;
-  	}
-  	
-  	.area1-qr > img{
-  	margin:auto 10px;
-  	border: 2px black solid;
-  	}
-	.area1-info > div{
-	margin-left:30px;
-	}
-	#work-start, #work-fin{
-	font-size:15px;
-	}
-	
-    #calendar{
-      margin: 10px auto;
-      width:90%;
-      height:95%;
-      color: black !important; 
-      font-size:15px;
-    }
-    .fc-col-header a{
-      color:#000000 !important; 
-    }
-    .fc-scrollgrid-sync-inner a{
-      color:#000000 !important; 
-      text-decoration: none !important;
-    }
-    .fc-day-sat a{ 
-        color:#0000FF !important; 
-    }
-    .fc-day-sun a{ 
-        color:#FF0000 !important; 
-    }
-    .fc-toolbar-title{
-    font-size:20px !important;
-    }
-    
-    .progress{
-    height:30px;
-    font-size:15px;
-    line-height:30px;
-    }
-  </style>
+}
+
+.area2 {
+	width: 550px;
+	height: 320px;
+	border: 2px var(--main-color) solid;
+	border-radius: 7px;
+}
+
+.area3 {
+	width: 500px;
+	height: 320px;
+	border: 2px var(--main-color) solid;
+	border-radius: 7px;
+}
+
+.area4 {
+	width: 800px;
+	height: 440px;
+	border: 2px var(--main-color) solid;
+	border-radius: 7px;
+}
+
+.area5 {
+	width: 800px;
+	height: 440px;
+	border: 2px var(--main-color) solid;
+	border-radius: 7px;
+}
+
+.area1>div {
+	margin: auto 5px;
+}
+
+.area1-profile {
+	width: 240px;
+	height: 180px;
+	display: flex;
+	justify-content: center;
+}
+
+.area1-info {
+	width: 240px;
+	height: 120px;
+	font-size: 20px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.area1-inoutBtn {
+	width: 240px;
+	height: 60px;
+}
+
+.area1-qr {
+	width: 240px;
+	height: 240px;
+}
+
+.btn-workfin {
+	display: flex;
+	justify-content: space-between;
+}
+
+#btn-work, #btn-finish {
+	width: 100px;
+	font-size: 20px;
+	margin: auto 10px;
+	margin-top: 10px;
+}
+
+#btn-work {
+	border-color: rgba(0, 0, 255, 0.9) !important;
+	border: 2px solid;
+	background-color: rgba(0, 0, 255, 0.9) !important;
+	color: white !important;
+}
+
+#btn-finish {
+	border-color: rgba(255, 0, 0, 0.9) !important;
+	border: 2px solid;
+	background-color: rgba(255, 0, 0, 0.9) !important;
+	color: white !important;
+}
+
+.area1-qr>img {
+	margin: auto 10px;
+	border: 2px black solid;
+}
+
+.area1-info>div {
+	margin-left: 30px;
+}
+
+#work-start, #work-fin {
+	font-size: 15px;
+}
+
+#calendar {
+	margin: 10px auto;
+	width: 90%;
+	height: 95%;
+	color: black !important;
+	font-size: 15px;
+}
+
+.fc-col-header a {
+	color: #000000 !important;
+}
+
+.fc-scrollgrid-sync-inner a {
+	color: #000000 !important;
+	text-decoration: none !important;
+}
+
+.fc-day-sat a {
+	color: #0000FF !important;
+}
+
+.fc-day-sun a {
+	color: #FF0000 !important;
+}
+
+.fc-toolbar-title {
+	font-size: 20px !important;
+}
+
+.progress {
+	height: 30px;
+	font-size: 15px;
+	line-height: 30px;
+}
+#noti{
+margin-left:51rem;
+font-size:1.5rem;
+
+}
+
+.area2 .top-area {
+margin-top:8px;
+
+}
+.area2 .top-area h1{
+ margin-right:10px;
+}
+</style>
 </head>
 <body>
 
-<div class="crispy-container">
-  <aside th:replace="~{layout/sidebar :: sidebar}"></aside>
-  <div>
-    <header th:replace="~{layout/navbar :: navbar}"></header>
-    <main>
-      <div class="mainarea">
-        <!-- 내부 내용 -->
-        안녕하세요 메인공간이에요
-        <div class="maintop">
-	        <div class="area1">
-	        	<div class="area1-profile">
-	        		 <img src="/img/anonymous.png" id="profile-img" width="180px" height="180px">
-	        	</div>
-	        	<div class="area1-info">
-					<div id="work-start">출근시간 : 00:00:00</div>
-					<div id="work-fin">퇴근시간 : 00:00:00</div>
-					<div class="progress">
-					  <div class="progress-bar progress-bar-striped bg-danger progress-bar-animated" role="progressbar" 
-					  style="width: 10%" aria-valuenow="" aria-valuemin="0" aria-valuemax="100"></div>
-					</div>
-					<div id="work-time">근무시간 : 00:00:00</div>
-	        	</div>
-	        	<div class="area1-inoutBtn">
-		        	<div class="btn-workfin">
-						<button type="button" class="btn btn-outline-primary btn-lg" id="btn-work" 
-							onclick="fnClickWork()">출근</button>
-						<button type="button" class="btn btn-outline-danger btn-lg" id="btn-finish" 
-							onclick="fnClickFin()" disabled>퇴근</button>
-					</div>
-	        	</div>
-	        	<div class="area1-qr">
-	        		<img src="https://api.qrserver.com/v1/create-qr-code/?data=HelloWorld&size=220x220" alt="" title="" />
-	        	</div>
-	        </div>
-	        <div class="area2">안녕하세요 공간2입니다</div>
-	        <div class="area3"><div id='calendar'></div></div>
-        </div>
-        <div class="mainbottom">
-   	        <div class="area4">
-			    <!-- 차트 크기는 부모 크기를 조절하면 거기에 맞게 자동으로 맹글어짐-->
-			    <div style="width:790px;height:435px;border:2px solid black">
-			        <!-- 차트 그릴 위치 지정 canvas webGL(그래픽엔진) 사용 -->
-			        <canvas id="myChart"></canvas>
-			    </div>   	        
-   	        </div>
+	<div class="crispy-container">
+		<aside th:replace="~{layout/sidebar :: sidebar}"></aside>
+		<div>
+			<header th:replace="~{layout/navbar :: navbar}"></header>
+			<main>
+				<div class="mainarea">
+					<!-- 내부 내용 -->
+					안녕하세요 메인공간이에요
+					<div class="maintop">
+						<div class="area1">
+							<div class="area1-profile">
+								<img src="/img/anonymous.png" id="profile-img" width="180px"
+									height="180px">
+							</div>
+							<div class="area1-info">
+								<div id="work-start">출근시간 : 00:00:00</div>
+								<div id="work-fin">퇴근시간 : 00:00:00</div>
+								<div class="progress">
+									<div
+										class="progress-bar progress-bar-striped bg-danger progress-bar-animated"
+										role="progressbar" style="width: 10%" aria-valuenow=""
+										aria-valuemin="0" aria-valuemax="100"></div>
+								</div>
+								<div id="work-time">근무시간 : 00:00:00</div>
+							</div>
+							<div class="area1-inoutBtn">
+								<div class="btn-workfin">
+									<button type="button" class="btn btn-outline-primary btn-lg"
+										id="btn-work" onclick="fnClickWork()">출근</button>
+									<button type="button" class="btn btn-outline-danger btn-lg"
+										id="btn-finish" onclick="fnClickFin()" disabled>퇴근</button>
+								</div>
+							</div>
+							<div class="area1-qr">
+								<img
+									src="https://api.qrserver.com/v1/create-qr-code/?data=HelloWorld&size=220x220"
+									alt="" title="" />
+							</div>
+						</div>
+						<div class="area2">
+							<div class="board-list">
+								<div class="top-area">
+									<h1>공지사항</h1>
+									<a href="/board/board-list"><i class="fa-solid fa-plus" id="noti"></i></a>
+								</div>
+								<hr>
 
-			<!-- 미니 결재 목록 -->
-	        <div class="area5">
-				<div class="approval-list">
-					<div class="top-area">
-						<h1>결재 문서</h1>
-						<a href="/crispy/approval-list"><i class="fa-solid fa-plus"></i></a>
-					</div>
-					<hr>
-
-					<!-- 테이블 -->
-					<table class="table">
-						<!-- 리스트 -->
-                        <tbody>
-                            <tr>
-                                <td>
-									<span>휴직신청서</span>
-									<span>( 박종구 )</span>
-								</td>
+								<!-- 테이블 -->
+								<table class="table">
+									<!-- 리스트 -->
+									<thead>
+										<tr>
+											<th scope="col">게시물 번호</th>
+											<th scope="col">작성자</th>
+											<th scope="col">제목</th>
+											<th scope="col">내용</th>
+											<th scope="col">조회수</th>
+											<th scope="col">작성일</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>1</td>
+											<td>1</td>
+											<td>제목</td>
+											<td>내용</td>
+											<td>20</td>
+											<td>2024-05-13</td>
+										</tr>
+										<tr>
+											<td>1</td>
+											<td>1</td>
+											<td>제목</td>
+											<td>내용</td>
+											<td>20</td>
+											<td>2024-05-13</td>
+										</tr>
+										<tr>
+											<td>1</td>
+											<td>1</td>
+											<td>제목</td>
+											<td>내용</td>
+											<td>20</td>
+											<td>2024-05-13</td>
+										</tr>
+										<tr>
+                                <td>1</td>
+                                <td>1</td>
+                                <td>제목</td>
+                                <td>내용</td>
+                                <td>20</td>
                                 <td>2024-05-13</td>
-                                <td>대기</td>
-                            </tr>
-                        </tbody>
-
-                        <!-- 리스트 -->
-                        <tbody>
-                            <tr>
-                                <td>
-									<span>휴가신청서</span>
-									<span>( 배영욱 )</span>
-								</td>
-                                <td>2024-05-17</td>
-                                <td>진행중</td>
-                            </tr>
-                        </tbody>
-
-                        <!-- 리스트 -->
-                        <tbody>
-                            <tr>
-                                <td>
-									<span>휴직신청서</span>
-									<span>( 오정은 )</span>
-								</td>
+                            </tr><tr>
+                                <td>1</td>
+                                <td>1</td>
+                                <td>제목</td>
+                                <td>내용</td>
+                                <td>20</td>
                                 <td>2024-05-13</td>
-                                <td>완료</td>
                             </tr>
-                        </tbody>
-
-                        <!-- 리스트 -->
-                        <tbody>
                             <tr>
-                                <td>
-									<span>휴가신청서</span>
-									<span>( 우혜진 )</span>
-								</td>
-                                <td>2024-05-18</td>
-                                <td>완료</td>
-                            </tr>
-                        </tbody>
-
-                        <!-- 리스트 -->
-                        <tbody>
-                            <tr>
-                                <td>
-									<span>휴가신청서</span>
-									<span>( 최동환 )</span>
-								</td>
-                                <td>2024-05-17</td>
-                                <td>진행중</td>
-                            </tr>
-                        </tbody>
-
-                        <!-- 리스트 -->
-                        <tbody>
-                            <tr>
-                                <td>
-									<span>휴직신청서</span>
-									<span>( 박종구 )</span>
-								</td>
+                                <td>1</td>
+                                <td>1</td>
+                                <td>제목</td>
+                                <td>내용</td>
+                                <td>20</td>
                                 <td>2024-05-13</td>
-                                <td>대기</td>
+                            </tr><tr>
+                                <td>1</td>
+                                <td>1</td>
+                                <td>제목</td>
+                                <td>내용</td>
+                                <td>20</td>
+                                <td>2024-05-13</td>
                             </tr>
-                        </tbody>
-
-                        <!-- 리스트 -->
-                        <tbody>
                             <tr>
-                                <td>
-									<span>휴가신청서</span>
-									<span>( 배영욱 )</span>
-								</td>
-                                <td>2024-05-17</td>
-                                <td>진행중</td>
+                                <td>1</td>
+                                <td>1</td>
+                                <td>제목</td>
+                                <td>내용</td>
+                                <td>20</td>
+                                <td>2024-05-13</td>
                             </tr>
-                        </tbody>
-                    </table>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="area3">
+							<div id='calendar'></div>
+						</div>
+					</div>
+					<div class="mainbottom">
+						<div class="area4">
+							<!-- 차트 크기는 부모 크기를 조절하면 거기에 맞게 자동으로 맹글어짐-->
+							<div style="width: 790px; height: 435px; border: 2px solid black">
+								<!-- 차트 그릴 위치 지정 canvas webGL(그래픽엔진) 사용 -->
+								<canvas id="myChart"></canvas>
+							</div>
+						</div>
+
+						<!-- 미니 결재 목록 -->
+						<div class="area5">
+							<div class="approval-list">
+								<div class="top-area">
+									<h1>결재 문서</h1>
+									<a href="/crispy/approval-list"><i class="fa-solid fa-plus"></i></a>
+								</div>
+								<hr>
+
+								<!-- 테이블 -->
+								<table class="table">
+									<!-- 리스트 -->
+									<tbody>
+										<tr>
+											<td><span>휴직신청서</span> <span>( 박종구 )</span></td>
+											<td>2024-05-13</td>
+											<td>대기</td>
+										</tr>
+									</tbody>
+
+									<!-- 리스트 -->
+									<tbody>
+										<tr>
+											<td><span>휴가신청서</span> <span>( 배영욱 )</span></td>
+											<td>2024-05-17</td>
+											<td>진행중</td>
+										</tr>
+									</tbody>
+
+									<!-- 리스트 -->
+									<tbody>
+										<tr>
+											<td><span>휴직신청서</span> <span>( 오정은 )</span></td>
+											<td>2024-05-13</td>
+											<td>완료</td>
+										</tr>
+									</tbody>
+
+									<!-- 리스트 -->
+									<tbody>
+										<tr>
+											<td><span>휴가신청서</span> <span>( 우혜진 )</span></td>
+											<td>2024-05-18</td>
+											<td>완료</td>
+										</tr>
+									</tbody>
+
+									<!-- 리스트 -->
+									<tbody>
+										<tr>
+											<td><span>휴가신청서</span> <span>( 최동환 )</span></td>
+											<td>2024-05-17</td>
+											<td>진행중</td>
+										</tr>
+									</tbody>
+
+									<!-- 리스트 -->
+									<tbody>
+										<tr>
+											<td><span>휴직신청서</span> <span>( 박종구 )</span></td>
+											<td>2024-05-13</td>
+											<td>대기</td>
+										</tr>
+									</tbody>
+
+									<!-- 리스트 -->
+									<tbody>
+										<tr>
+											<td><span>휴가신청서</span> <span>( 배영욱 )</span></td>
+											<td>2024-05-17</td>
+											<td>진행중</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+
 				</div>
-			</div>
-        </div>
-        
-      </div>
-    </main>
-    <footer th:replace="~{layout/footer :: footer}"></footer>
-  </div>
-  <!-- 특정 JS -->
-  <script>
-	// 달력 영역
-	  const calendarEl = document.getElementById('calendar');
-	  const calendarHeader = {
-	    left: 'prev,next',          
-	    center: 'title',
-	    right:'today'        
-	  }
-	
-	  const calendarOpt = {
-	    headerToolbar: calendarHeader,
-	    initialView: 'dayGridMonth',
-	    selectable:true,    // 달력 날짜 드래그
-	    locale:'kr',      // 달력 언어 설정
-	    dayMaxEventRows:true
-	  }
-	
-	  const calendar = new FullCalendar.Calendar(calendarEl, calendarOpt);
-	  calendar.render();
-	  
-	  // 출 퇴근 영역
-	  let startWorkTime, endWorkTime, workingTime;
-	  let timer;
-  	  let hour = 0, minute = 0, second = 0;
-  	  let perWork = 16200;
-  	  let h = 0, m = 0, s = 0;
-	  function updateClock() {
-		  	++second;
-		  	++perWork;
-		  	
-		  	if(second >= 60){
-		  		++minute;
-		  		second = 0;
-		  	}
-		    if(minute >= 60){ 
-		        ++hour;
-		        minute = 0;
-		    }
-		    // 숫자를 2자리로 표현
-		    h = String(hour).padStart(2, '0');
-		    m = String(minute).padStart(2, '0');
-		    s = String(second).padStart(2, '0');
-		    
-		    let perval = ((perWork / 32400) * 100);
-		    
-		    $(".progress-bar").width(perval + "%");
-		    $(".progress-bar").text(perval.toFixed(2) + "%"); // 소수점 2자리까지만
-		    
-		    $("#work-time").text("근무시간 : " + h + ":" + m + ":" + s);	
-		  }
+			</main>
+			<footer th:replace="~{layout/footer :: footer}"></footer>
+		</div>
+		<!-- 특정 JS -->
+		<script>
+			// 달력 영역
+			const calendarEl = document.getElementById('calendar');
+			const calendarHeader = {
+				left : 'prev,next',
+				center : 'title',
+				right : 'today'
+			}
 
-	  function fnClickWork(){
-		  	startWorkTime = moment().format('HH:mm:ss');
- 		  	$("#work-start").text("출근시간 : " + startWorkTime);			  
- 		  	$("#btn-work").attr("disabled", true);
- 		  	$("#btn-finish").attr("disabled", false);
- 		  	
- 		  	timer = setInterval(updateClock, 1000);
- 		  	updateClock();
-	  }
-	  function fnClickFin(){
-		    // 현재 시간을 HH:mm:ss 형식으로 저장
-		    endWorkTime = moment().format('HH:mm:ss');
+			const calendarOpt = {
+				headerToolbar : calendarHeader,
+				initialView : 'dayGridMonth',
+				selectable : true, // 달력 날짜 드래그
+				locale : 'kr', // 달력 언어 설정
+				dayMaxEventRows : true
+			}
 
-		    // 근무 시간 계산 (여기서는 단순히 예시로 사용됨)
-		    workingTime = h + ":" + m + ":" + s;
+			const calendar = new FullCalendar.Calendar(calendarEl, calendarOpt);
+			calendar.render();
 
-		    // 화면에 퇴근 시간 표시 및 버튼 상태 변경
-		    $("#work-fin").text("퇴근시간 : " + endWorkTime);			  
-		    $("#btn-work").attr("disabled", false);
-		    $("#btn-finish").attr("disabled", true);
-		    clearInterval(timer);
+			// 출 퇴근 영역
+			let startWorkTime, endWorkTime, workingTime;
+			let timer;
+			let hour = 0, minute = 0, second = 0;
+			let perWork = 16200;
+			let h = 0, m = 0, s = 0;
+			function updateClock() {
+				++second;
+				++perWork;
 
-		    // 로그 출력
-		    console.log(startWorkTime);
-		    console.log(endWorkTime);
-		    console.log(workingTime);
+				if (second >= 60) {
+					++minute;
+					second = 0;
+				}
+				if (minute >= 60) {
+					++hour;
+					minute = 0;
+				}
+				// 숫자를 2자리로 표현
+				h = String(hour).padStart(2, '0');
+				m = String(minute).padStart(2, '0');
+				s = String(second).padStart(2, '0');
 
-		    // 현재 날짜를 가져옵니다
-		    const currentDate = moment().format('YYYY-MM-DD');
+				let perval = ((perWork / 32400) * 100);
 
-		    // 날짜와 시간을 결합하여 전체 날짜-시간 문자열을 생성합니다
-		    const startDateTimeString = `${currentDate}T${startWorkTime}`;
-		    const endDateTimeString = `${currentDate}T${endWorkTime}`;
+				$(".progress-bar").width(perval + "%");
+				$(".progress-bar").text(perval.toFixed(2) + "%"); // 소수점 2자리까지만
 
-		    // 문자열을 타임스탬프로 변환합니다
-		    const startTimestamp = new Date(startDateTimeString).getTime();
-		    const endTimestamp = new Date(endDateTimeString).getTime();
+				$("#work-time").text("근무시간 : " + h + ":" + m + ":" + s);
+			}
 
-		    // JSON 데이터를 생성합니다
-		    const data = JSON.stringify({
-		        'attInDt': startTimestamp,
-		        'attOutDt': endTimestamp,
-		        'attWorkTime': workingTime,
-		        'createDt': currentDate,
-		        'creator': 1,
-		        'modifyDt': currentDate,
-		        'modifier': 1,
-		        'empNo': 1
-		    });
+			function fnClickWork() {
+				startWorkTime = moment().format('HH:mm:ss');
+				$("#work-start").text("출근시간 : " + startWorkTime);
+				$("#btn-work").attr("disabled", true);
+				$("#btn-finish").attr("disabled", false);
 
-		    $.ajax({
-		        type: 'POST',
-		        url: '/crispy/atten/registAtt',
-		        contentType: 'application/json',
-		        dataType: 'json',
-		        data: data
-		    })
-			.done(function(data){
-				alert("근태 저장 성공");
-			})
-			.fail(function(jqXHR){
-				alert("근태 저장 실패");
-				alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
-			})
-		}
-	    
-	  // 차트 영역
-      const ctx = document.querySelector('#myChart');
+				timer = setInterval(updateClock, 1000);
+				updateClock();
+			}
+			function fnClickFin() {
+				// 현재 시간을 HH:mm:ss 형식으로 저장
+				endWorkTime = moment().format('HH:mm:ss');
 
-		//만들위치, 설정값객체
-      new Chart(ctx, {
-          type: 'bar',  // bar, line, pie, doughnut, radar 등등...
-          data: {
-              labels: ['인천', '서울', '대구', '대전', '부산', '경기'],
-              datasets: [
-                  {
-                      label: '작년 매출',
-                      data: [10, 19, 13, 15, 12, 13],
-                      borderWidth: 1,
-                  },
-                  {
-                      label: '올해 매출',
-                      data: [9, 14, 10, 19, 22, 11],
-                      borderWidth: 1
-                  },
-                  {
-                      label: '내년 매출',
-                      data: [19, 4, 1, 9, 2, 1],
-                      borderWidth: 1
-                  }
-              ]
-          },
-          options: {
-              scales: {
-                  y: {
-                      beginAtZero: true
-                  }
-              }
-          }
-      });	  
+				// 근무 시간 계산 (여기서는 단순히 예시로 사용됨)
+				workingTime = h + ":" + m + ":" + s;
 
-  </script>
-</div>
+				// 화면에 퇴근 시간 표시 및 버튼 상태 변경
+				$("#work-fin").text("퇴근시간 : " + endWorkTime);
+				$("#btn-work").attr("disabled", false);
+				$("#btn-finish").attr("disabled", true);
+				clearInterval(timer);
+
+				// 로그 출력
+				console.log(startWorkTime);
+				console.log(endWorkTime);
+				console.log(workingTime);
+
+				// 현재 날짜를 가져옵니다
+				const currentDate = moment().format('YYYY-MM-DD');
+
+				// 날짜와 시간을 결합하여 전체 날짜-시간 문자열을 생성합니다
+				const startDateTimeString = `${currentDate}T${startWorkTime}`;
+				const endDateTimeString = `${currentDate}T${endWorkTime}`;
+
+				// 문자열을 타임스탬프로 변환합니다
+				const startTimestamp = new Date(startDateTimeString).getTime();
+				const endTimestamp = new Date(endDateTimeString).getTime();
+
+				// JSON 데이터를 생성합니다
+				const data = JSON.stringify({
+					'attInDt' : startTimestamp,
+					'attOutDt' : endTimestamp,
+					'attWorkTime' : workingTime,
+					'createDt' : currentDate,
+					'creator' : 1,
+					'modifyDt' : currentDate,
+					'modifier' : 1,
+					'empNo' : 1
+				});
+
+				$.ajax({
+					type : 'POST',
+					url : '/crispy/atten/registAtt',
+					contentType : 'application/json',
+					dataType : 'json',
+					data : data
+				}).done(function(data) {
+					alert("근태 저장 성공");
+				}).fail(function(jqXHR) {
+					alert("근태 저장 실패");
+					alert(jqXHR.statusText + '(' + jqXHR.status + ')');
+				})
+			}
+
+			// 차트 영역
+			const ctx = document.querySelector('#myChart');
+
+			//만들위치, 설정값객체
+			new Chart(ctx, {
+				type : 'bar', // bar, line, pie, doughnut, radar 등등...
+				data : {
+					labels : [ '인천', '서울', '대구', '대전', '부산', '경기' ],
+					datasets : [ {
+						label : '작년 매출',
+						data : [ 10, 19, 13, 15, 12, 13 ],
+						borderWidth : 1,
+					}, {
+						label : '올해 매출',
+						data : [ 9, 14, 10, 19, 22, 11 ],
+						borderWidth : 1
+					}, {
+						label : '내년 매출',
+						data : [ 19, 4, 1, 9, 2, 1 ],
+						borderWidth : 1
+					} ]
+				},
+				options : {
+					scales : {
+						y : {
+							beginAtZero : true
+						}
+					}
+				}
+			});
+		</script>
+	</div>
 </body>
 </html>

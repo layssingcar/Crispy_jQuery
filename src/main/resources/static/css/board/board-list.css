@@ -1,172 +1,100 @@
-@charset "EUC-KR";
-
-html, body {
-	height: 100%;
+/* ê²°ìž¬ ë¬¸ì„œ ëª©ë¡ íŽ˜ì´ì§€ */
+.board-list {
+    width: -webkit-fill-available;
+    font-size: 1.7rem;
 }
 
-.container {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	display: flex;
-	align-items: center; /* ¾ÆÀÌÅÛµéÀ» ¼öÁ÷À¸·Î Á¤·Ä */
+/* íŽ˜ì´ì§€ ì œëª© */
+.board-list h1 {font-size: 2.5rem;}
+
+/* ìƒë‹¨ ì˜ì—­ */
+.board-list .top-area {
+    display: flex;
+    justify-content: flex-end;
 }
 
-table {
-	width: 1000px;
-	border-collapse: collapse;
-	overflow: hidden;
-	box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05)
-		0px 8px 32px;
-	table-layout: fixed;
-	margin: 0 auto;
-	margin-left: 30rem;
-	border-radius: 4px;
-	margin-top: 2rem;
+/* ê¸°ì•ˆìž ê²€ìƒ‰ */
+.board-list .container-1 {
+    width: 240px;
+    position: relative;
 }
 
-th, td {
-	padding: 15px;
-	background-color: rgba(255, 255, 255, 0.1);
-	color: black;
-	width: calc(800px/ 5);
-	font-size: 12px;
+/* ê²€ìƒ‰ ì•„ì´ì½˜ */
+.board-list .container-1 .icon {
+    position: absolute;
+    left: 15px;
+    top: 22px;
+    transform: translateY(-50%);
+    color: var(--main-color);
+    font-size: 14px;
 }
 
-th {
-	text-align: left;
+/* ê²€ìƒ‰ ì°½ */
+.board-list #search {
+    width: 240px;
+    height: 40px;
+    padding-left: 35px;
+    font-size: 1.5rem;
 }
 
-thead {
-	background: white;
+/* ë“œë¡­ë‹¤ìš´ */
+.board-list select {
+    width: 165px;
+    height: 40px;
+    font-size: 1.5rem;
 }
 
-tbody tr:hover {
-	background-color: rgb(200, 200, 200, 0.2);
+/* ìƒë‹¨ ì˜ì—­ margin-left */
+.board-list .m-left {margin-left: 7px;}
+
+/* ë¬¸ì„œ ëª©ë¡ í…Œì´ë¸” */
+.board-list table {
+    margin-top: 25px;
+    text-align: center;
 }
 
-td {
-	position: relative;
+/* ê¸°ì•ˆì¼ ì •ë ¬ */
+.board-list .col-sort {position: relative;}
+
+.board-list .fa-sort {
+    position: absolute;
+    top: 7px;
+    right: 163px;
 }
 
-td:hover::before {
-	content: "";
-	position: absolute;
-	left: 0;
-	right: 0;
-	top: -9999px;
-	bottom: -9999px;
-	z-index: -1;
+/* ë°ì´í„° ì…€ */
+.board-list td {
+    padding: 10px !important;
+    /* width: 120px; */
+    vertical-align: middle;
 }
 
-#modal {
-	margin-top: 12rem;
-	margin-left: 15.5rem;
-	width: 50x;
-	height: 30px;
+/* í–‰ hover */
+.board-list tbody tr:hover td {
+    background-color: rgba(200, 200, 200, 0.2);
+    cursor: pointer;
 }
 
-#boardTitle {
-	height: 3rem;
+/* íŽ˜ì´ì§€ë„¤ì´ì…˜ */
+.board-list .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
 }
 
-#boardContent {
-	height: 15rem;
-	resize: none;
+.board-list .page-link {color: var(--main-color);}
+
+.board-list .page-link:focus {
+    z-index: 3;
+    box-shadow: var(--main-color);
+    background-color: var(--main-color);
+    color: #fff;
+    outline: 0;
+    opacity: 0.65;
 }
 
-button {
-	background-color: #1679AB !important;
-}
-
-:root {
-	--main-color: #1679AB;
-}
-
-a {
-	color: black;
-}
-
-h1 {
-	margin-top: 3rem;
-}
-
-.reply-container textarea {
-	display: none;
-}
-
-#addBtn {
-	margin-left: 30rem;
-}
-
-.box {
-	margin-left: 100rem;
-	width: 22rem;
-	height: 50px;
-	margin-top: 6rem;
-	position: static;
-}
-
-.container-1 {
-	width: 300px;
-	vertical-align: middle;
-	white-space: nowrap;
-	position: relative;
-}
-
-.container-1 input#search {
-	width: 300px;
-	height: 50px;
-	background: #fff;
-	border: none;
-	font-size: 10pt;
-	float: left;
-	color: #63717F;
-	padding-left: 45px;
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
-	border-radius: 5px;
-	box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
-	margin-top: 1.5px;
-}
-
-.container-1 input#search::-webkit-input-placeholder {
-	color: #D3D3D3;
-}
-
-.container-1 input#search::-webkit-search-cancel-button {
-	display: none; /* "x" Ç¥½Ã¸¦ ¼û±è */
-}
-
-.container-1 input#search:focus {
-	outline-color: #1679AB;
-	outline-style: solid; /* Å×µÎ¸® ½ºÅ¸ÀÏ ¼³Á¤ (ÇÊ¿ä½Ã) */
-	outline-width: 2px; /* Å×µÎ¸® µÎ²² ¼³Á¤ (ÇÊ¿ä½Ã) */
-}
-
-.container-1 .icon {
-	position: absolute;
-	top: 50%;
-	margin-left: 17px;
-	margin-top: 17px;
-	z-index: 1;
-	color: #1679AB;
-	font-size: 14px;
-}
-
-thead {
-	background: white;
-	border-bottom: 2px solid #F1F3F5; /* ¹ØÁÙ Ãß°¡ */
-}
-#reply{
-	margin-top:20px;
-	resize: none;
-}
-#boardcomment{
-	margin-top:20px;
-	resize: none;
-}
-#listbtn{
-	margin-right:36rem;
+.board-list .active > .page-link {
+    color: var(--bs-pagination-active-color);
+    background-color: var(--main-color);
+    border-color: var(--main-color);
 }

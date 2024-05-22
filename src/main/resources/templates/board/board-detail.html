@@ -3,7 +3,7 @@
 <head>
 <th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
 <!-- 특정 페이지 css -->
-<link href="/css/board/board-list.css" rel="stylesheet">
+
 <link href="/css/board/board-detail.css" rel="stylesheet">
 
 </head>
@@ -13,11 +13,11 @@
 		<div>
 			<header th:replace="~{layout/navbar :: navbar}"></header>
 			<main>
-				<h4 class="title" id="title">상세보기</h4>
+				<h4 class="detail-title" id="detail-title">상세보기</h4>
 		</div>
-		<div class="body">
+		<div class="detail-body">
 			<div>
-				<span class="writer" id="writer">작성자 : 정은</span>
+				<span class="detail-writer" id="detail-writer">작성자 : 정은</span>
 			</div>
 			<div>
 				<span class="date" id="date">2024/05/19</span>

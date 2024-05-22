@@ -62,3 +62,29 @@
 #cate{
 	height:3rem;
 }
+
+/* 문서 작성 form */
+#content-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 25px;
+}
+
+.note-editor {width: 1200px;}
+
+/* 에디터 상단 버튼 */
+.note-toolbar button {
+    color: initial !important;
+    background-color: #fff !important;
+    border-color: #ddd !important;
+}
+.note-editable {height: 500px !important;}
+
+/* 파일 선택 */
+.file-attach {
+    display: flex;
+    width: 1000px;
+    margin-top: 20px;
+}
