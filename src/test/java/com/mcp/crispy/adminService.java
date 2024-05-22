@@ -1,9 +1,7 @@
 package com.mcp.crispy;
 
-import com.mcp.crispy.employee.dto.EmpStatus;
-import com.mcp.crispy.employee.dto.EmployeeRegisterDto;
-import com.mcp.crispy.employee.dto.Position;
-import com.mcp.crispy.employee.mapper.EmployeeMapper;
+import com.mcp.crispy.admin.dto.AdminDto;
+import com.mcp.crispy.admin.mapper.AdminMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,25 +11,22 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class adminService {
 
     @Autowired
-    private EmployeeMapper employeeMapper;
+    private AdminMapper adminMapper;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Test
-    void 직원_등록() {
+    void 관리자_등록() {
         String password = "1234";
         String encoded = passwordEncoder.encode(password);
-        EmployeeRegisterDto employeeDto = EmployeeRegisterDto.builder()
-                .empId("moz1mozi")
-                .empPw(encoded)
-                .empEmail("moz1mozi@gmail.com")
-                .empName("모지히")
-                .empPhone("010-1234-1234")
-                .empStat(EmpStatus.EMPLOYED)
-                .posNo(Position.EMPLOYEE)
+        AdminDto adminDto = AdminDto.builder()
+                .adminId("admin")
+                .adminPw(encoded)
                 .build();
-        employeeMapper.insertEmployee(employeeDto);
+
+        adminMapper.insertAdmin(adminDto);
+
     }
 
 }

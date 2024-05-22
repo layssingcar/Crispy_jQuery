@@ -1,10 +1,10 @@
 const employee = {
     init: function () {
-        this.bindEvents();
         this.setupProfileImageUpload();
         document.getElementById("btn-update-frn-img")?.addEventListener("click", () => {
             this.changeProfileImage();
         })
+        this.bindEvents();
     },
     bindEvents: function() {
         const addressButton = document.querySelector('.btn-change-address');
@@ -29,10 +29,10 @@ const employee = {
         changeOperatingTimeButton.addEventListener("click", this.changeOperatingTime.bind(this));
 
 
-        this.setupEditableField("btn-edit-frnName", "frn-frnName", "btn-change-frnName");
-        this.setupEditableField("btn-edit-frnOwner", "frn-frnOwner", "btn-change-frnOwner");
-        this.setupEditableField("btn-edit-frnTel", "frn-frnTel", "btn-change-frnTel");
-        this.setupEditableField("btn-edit-operating-time", "frnStartTime", "btn-change-operating-time");
+        this.setupFrnEditBtn("btn-edit-frnName", "frn-frnName", "btn-change-frnName");
+        this.setupFrnEditBtn("btn-edit-frnOwner", "frn-frnOwner", "btn-change-frnOwner");
+        this.setupFrnEditBtn("btn-edit-frnTel", "frn-frnTel", "btn-change-frnTel");
+        this.setupFrnEditBtn("btn-edit-operating-time", "frnStartTime", "btn-change-operating-time");
 
     },
 
@@ -69,7 +69,7 @@ const employee = {
         if (focusAfterReplace) {select.focus();}
 },
 
-    setupEditableField: function(editButtonId, inputId, changeButtonId) {
+    setupFrnEditBtn: function(editButtonId, inputId, changeButtonId) {
         const editButton = document.getElementById(editButtonId);
         const inputElement = document.getElementById(inputId);
         const changeButton = document.getElementById(changeButtonId);
@@ -149,7 +149,6 @@ const employee = {
     },
     setupProfileImageUpload: function () {
         const profileImage = document.querySelector(".frn-img");
-        const updateText = document.querySelector(".update-img");
         const fileInput = document.querySelector(".file-input");
 
         profileImage?.addEventListener('click', function() {

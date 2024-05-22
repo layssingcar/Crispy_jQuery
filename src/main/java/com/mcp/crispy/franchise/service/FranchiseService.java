@@ -2,7 +2,6 @@ package com.mcp.crispy.franchise.service;
 
 import com.mcp.crispy.common.ImageService;
 import com.mcp.crispy.employee.dto.OwnerRegisterDto;
-import com.mcp.crispy.employee.service.EmployeeService;
 import com.mcp.crispy.employee.service.OwnerService;
 import com.mcp.crispy.franchise.dto.FranchiseDto;
 import com.mcp.crispy.franchise.dto.FranchiseImgDto;
@@ -19,8 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 @Slf4j
@@ -31,7 +28,6 @@ public class FranchiseService {
     private final FranchiseMapper franchiseMapper;
 
     private final OwnerService ownerService;
-    private EmployeeService employeeService;
     private final ImageService imageService;
 
     /**
@@ -48,11 +44,6 @@ public class FranchiseService {
 
     @Transactional
     public int registerFranchise(FranchiseDto franchiseDto) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-
-        String startTimeString = franchiseDto.getFrnStartTime().format(formatter);
-        String endTimeString = franchiseDto.getFrnEndTime().format(formatter);
-
         FranchiseDto franchise = FranchiseDto.builder()
                 .frnName(franchiseDto.getFrnName())
                 .frnOwner(franchiseDto.getFrnOwner())
@@ -60,8 +51,8 @@ public class FranchiseService {
                 .frnZip(franchiseDto.getFrnZip())
                 .frnStreet(franchiseDto.getFrnStreet())
                 .frnDetail(franchiseDto.getFrnDetail())
-                .frnStartTime(LocalTime.parse(startTimeString))
-                .frnEndTime(LocalTime.parse(endTimeString))
+                .frnStartTime(franchiseDto.getFrnStartTime())
+                .frnEndTime(franchiseDto.getFrnEndTime())
                 .frnJoinDt(LocalDateTime.now())
                 .build();
 

@@ -25,16 +25,16 @@ public class EmployeeController {
 
 	private final EmployeeService employeeService;
 
-	@GetMapping("/find/username")
+	@GetMapping("/find-emp-id")
 	public String findUsername() {
-		return "employee/find-username";
+		return "employee/find-emp-id";
 	}
 
-	@PostMapping("/find/username")
+	@PostMapping("/find-emp-id")
 	public String findUsernamePost(@ModelAttribute FindEmployeeDto findEmployeeDto, BindingResult result,
 								   RedirectAttributes ra) {
 		if (result.hasErrors()) {
-			return "employee/find-username";
+			return "employee/find-emp-id";
 		}
 
 		FindEmployeeDto findEmp = employeeService.getEmpEmail(findEmployeeDto.getEmpEmail(), findEmployeeDto.getEmpName());
@@ -44,20 +44,20 @@ public class EmployeeController {
 		} else {
 			ra.addFlashAttribute("error", "해당 이메일로 가입된 아이디가 없습니다.");
 		}
-		return "redirect:/crispy/employee/find/username/result";
+		return "redirect:/crispy/employee/find-emp-id-result";
 	}
 
-	@GetMapping("/find/username/result")
+	@GetMapping("/find-emp-id-result")
 	public String findUsernameResult() {
-		return "employee/find-username-result";
+		return "employee/find-emp-id-result";
 	}
 
-	@GetMapping("/find/password")
+	@GetMapping("/find-emp-pw")
 	public String findPassword() {
-		return "employee/find-password";
+		return "employee/find-emp-pw";
 	}
 
-	@GetMapping("/change/password")
+	@GetMapping("/change-emp-pw")
 	public String changePassword(HttpSession session, Principal principal, Model model) {
 		if(principal != null) {
 			EmployeeDto employee = employeeService.getEmployeeName(principal.getName());
@@ -66,9 +66,9 @@ public class EmployeeController {
 			String findEmpId = (String) session.getAttribute("empId");
 			model.addAttribute("empId", findEmpId);
 		} else {
-			return "redirect:/login";
+			return "redirect:/crispy/login";
 		}
-		return "employee/change-password";
+		return "employee/change-emp-pw";
 	}
 
 	// 직원 혹은 관리자 개인이 들어가는 마이 페이지

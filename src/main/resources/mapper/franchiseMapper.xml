@@ -4,7 +4,7 @@
 <mapper namespace="com.mcp.crispy.franchise.mapper.FranchiseMapper">
     <insert id="insertFranchise" parameterType="FranchiseDto">
         <selectKey keyProperty="frnNo" resultType="int" order="BEFORE">
-            SELECT SEQ_FRANCHISE_T.NEXTVAL FROM DUAL
+            SELECT FRANCHISE_SEQ.NEXTVAL FROM DUAL
         </selectKey>
 
         INSERT INTO FRANCHISE_T (

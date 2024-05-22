@@ -6,12 +6,17 @@
 
     <insert id="insertVerification"
             parameterType="EmailVerificationDto">
+        <selectKey keyProperty="verifyNo" resultType="int" order="BEFORE">
+            SELECT VERIFICATION_SEQ.NEXTVAL FROM DUAL
+        </selectKey>
         INSERT INTO VERIFICATION_T (
+        VERIFY_NO,
         VERIFY_EMAIL,
         VERIFY_CODE,
         VERIFY_STAT
         )
         VALUES (
+        #{verifyNo},
         #{verifyEmail},
         #{verifyCode},
         #{verifyStat}
