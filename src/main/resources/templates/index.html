@@ -174,18 +174,37 @@
 	font-size: 15px;
 	line-height: 30px;
 }
-#noti{
-margin-left:51rem;
-font-size:1.5rem;
 
+#noti {
+	margin-right:15px;
+	font-size: 1.7rem;
+	top: -100px;
+	
 }
 
-.area2 .top-area {
-margin-top:8px;
 
+.area2 table {
+	margin-left: 5px;
+	margin-top: 20px;
+	width: 53rem;
+	height: 25px
 }
-.area2 .top-area h1{
- margin-right:10px;
+
+.area2 .table th, .table td {
+	text-align: center;
+	vertical-align: middle;
+}
+.area2 .board-list .top-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top:15px;
+    margin-left:10px;
+}
+        .area2 .board-list h1 {
+    writing-mode: horizontal-tb; /* Ensure writing mode is horizontal */
+    transform: none; /* Reset any transforms if applied */
+    white-space: nowrap; /* Prevent text from breaking to the next line */
 }
 </style>
 </head>
@@ -234,10 +253,9 @@ margin-top:8px;
 							<div class="board-list">
 								<div class="top-area">
 									<h1>공지사항</h1>
-									<a href="/board/board-list"><i class="fa-solid fa-plus" id="noti"></i></a>
+									<a href="/board/board-list"><i class="fa-solid fa-plus"
+										id="noti"></i></a>
 								</div>
-								<hr>
-
 								<!-- 테이블 -->
 								<table class="table">
 									<!-- 리스트 -->
@@ -277,43 +295,45 @@ margin-top:8px;
 											<td>2024-05-13</td>
 										</tr>
 										<tr>
-                                <td>1</td>
-                                <td>1</td>
-                                <td>제목</td>
-                                <td>내용</td>
-                                <td>20</td>
-                                <td>2024-05-13</td>
-                            </tr><tr>
-                                <td>1</td>
-                                <td>1</td>
-                                <td>제목</td>
-                                <td>내용</td>
-                                <td>20</td>
-                                <td>2024-05-13</td>
-                            </tr>
-                            <tr>
-                                <td>1</td>
-                                <td>1</td>
-                                <td>제목</td>
-                                <td>내용</td>
-                                <td>20</td>
-                                <td>2024-05-13</td>
-                            </tr><tr>
-                                <td>1</td>
-                                <td>1</td>
-                                <td>제목</td>
-                                <td>내용</td>
-                                <td>20</td>
-                                <td>2024-05-13</td>
-                            </tr>
-                            <tr>
-                                <td>1</td>
-                                <td>1</td>
-                                <td>제목</td>
-                                <td>내용</td>
-                                <td>20</td>
-                                <td>2024-05-13</td>
-                            </tr>
+											<td>1</td>
+											<td>1</td>
+											<td>제목</td>
+											<td>내용</td>
+											<td>20</td>
+											<td>2024-05-13</td>
+										</tr>
+										<tr>
+											<td>1</td>
+											<td>1</td>
+											<td>제목</td>
+											<td>내용</td>
+											<td>20</td>
+											<td>2024-05-13</td>
+										</tr>
+										<tr>
+											<td>1</td>
+											<td>1</td>
+											<td>제목</td>
+											<td>내용</td>
+											<td>20</td>
+											<td>2024-05-13</td>
+										</tr>
+										<tr>
+											<td>1</td>
+											<td>1</td>
+											<td>제목</td>
+											<td>내용</td>
+											<td>20</td>
+											<td>2024-05-13</td>
+										</tr>
+										<tr>
+											<td>1</td>
+											<td>1</td>
+											<td>제목</td>
+											<td>내용</td>
+											<td>20</td>
+											<td>2024-05-13</td>
+										</tr>
 									</tbody>
 								</table>
 							</div>

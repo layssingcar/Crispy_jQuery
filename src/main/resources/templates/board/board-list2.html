@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 <th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
-<link rel="stylesheet" href="/css/board/board-list.css" type="text/css">
+<link rel="stylesheet" href="/css/board/board-list2.css" type="text/css">
 </head>
 <body>
 	<div class="crispy-container">
@@ -11,8 +11,7 @@
 			<header th:replace="~{layout/navbar :: navbar}"></header>
 			<main>
 				<div class="board-list">
-					<h1>공지사항</h1>
-
+					<h1>자유게시판</h1>
 					<!-- 상단 영역 -->
 					<div class="top-area">
 					<button type="submit" id="addBtn" class="btn btn-primary btn-lg">등록</button>
@@ -38,7 +37,7 @@
 
 					<!-- 리스트 -->
 					<tbody>
-						<tr data-href="/board/board-detail">
+						<tr>
 							<td>1</td>
 							<td>1</td>
 							<td>제목</td>
@@ -46,7 +45,7 @@
 							<td>20</td>
 							<td>2024-05-13</td>
 						</tr>
-						<tr data-href="/board/board-detail">
+						<tr>
 							<td>1</td>
 							<td>1</td>
 							<td>제목</td>
@@ -54,7 +53,7 @@
 							<td>20</td>
 							<td>2024-05-13</td>
 						</tr>
-						<tr data-href="/board/board-detail">
+						<tr>
 							<td>1</td>
 							<td>1</td>
 							<td>제목</td>
@@ -62,7 +61,7 @@
 							<td>20</td>
 							<td>2024-05-13</td>
 						</tr>
-						<tr data-href="/board/board-detail">
+						<tr>
 							<td>1</td>
 							<td>1</td>
 							<td>제목</td>
@@ -152,12 +151,7 @@
 			function() {
 				window.location.href = '/board/board-add';
 			});
-	
-	document.querySelectorAll('tr[data-href]').forEach(row => {
-        row.addEventListener('click', function() {
-            window.location.href = this.getAttribute('data-href');
-        });
-    });
+
 	</script>
 	</div>
 </body>
