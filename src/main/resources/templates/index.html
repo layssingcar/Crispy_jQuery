@@ -150,6 +150,21 @@
     font-size:15px;
     line-height:30px;
     }
+    
+    .weather{
+    width:1600px !important;
+    display:flex;
+    font-size:2.0rem;
+    align-items:center;
+    justify-content: flex-end;
+    }
+    .weather > div{
+    margin-left: 10px;
+    }
+    
+    .weather > #weather-icon{
+	object-fit: cover;
+    }
   </style>
 </head>
 <body>
@@ -161,7 +176,12 @@
     <main>
       <div class="mainarea">
         <!-- 내부 내용 -->
-        안녕하세요 메인공간이에요
+        <div class="weather">
+        	<div id="weather-icon"></div>
+        	<div id="temp"></div>
+        	<div id="weather-desc"></div>
+        	<div id="city"></div>
+        </div>
         <div class="maintop">
 	        <div class="area1">
 	        	<div class="area1-profile">
@@ -305,6 +325,45 @@
   </div>
   <!-- 특정 JS -->
   <script>
+  	// 날씨 영역
+  	var apiURI = "http://api.openweathermap.org/data/2.5/weather?q="+"seoul"+ "&lang=kr" + "&units=metric" + 
+  			"&appid="+"be9d839b0ff3435abb7f4e732bcc8649";
+
+    const weatherMap = {
+        'Clear': '맑음',
+        'Clouds': '구름',
+        'Rain': '비',
+        'Drizzle': '이슬비',
+        'Thunderstorm': '천둥번개',
+        'Snow': '눈',
+        'Mist': '안개',
+        'Smoke': '연기',
+        'Haze': '실안개',
+        'Dust': '먼지',
+        'Fog': '안개',
+        'Sand': '모래',
+        'Ash': '재',
+        'Squall': '돌풍',
+        'Tornado': '토네이도'
+    };
+ 	
+  	$.ajax({
+  	    url: apiURI,
+  	    dataType: "json",
+  	    type: "GET",
+  	    success: function(data) {
+  	        var weatherDesc = data.weather[0].main;
+  	        var temp = (data.main.temp).toFixed(1);
+  	        var city = '서울';
+
+  	      	$('#weather-icon').append('<img src= "http://openweathermap.org/img/wn/'
+  	              + data.weather[0].icon + '.png"></img>');
+  	        $('#weather-desc').append(weatherMap[weatherDesc]);
+  	        $('#temp').append(temp + "°C");
+  	        $('#city').append(city);
+  	    }
+  	})
+  	
 	// 달력 영역
 	  const calendarEl = document.getElementById('calendar');
 	  const calendarHeader = {
