@@ -8,7 +8,7 @@ const franchiseRegister = {
             _this.registerFranchiseAndOwner();
         });
         const currentPage = window.location.pathname;
-        const step = currentPage.includes('/crispy/franchiseRegister/register') ? 1 : 2;
+        const step = currentPage.includes('/crispy/franchise/register') ? 1 : 2;
         _this.updateStepIndicator(step);
     },
 

@@ -4,7 +4,7 @@
 <mapper namespace="com.mcp.crispy.employee.mapper.OwnerMapper">
     <insert id="insertOwner" parameterType="OwnerRegisterDto">
         <selectKey keyProperty="empNo" resultType="int" order="BEFORE">
-            SELECT SEQ_EMPLOYEE_T.NEXTVAL FROM DUAL
+            SELECT EMPLOYEE_SEQ.NEXTVAL FROM DUAL
         </selectKey>
         INSERT INTO EMPLOYEE_T (
         EMP_NO,

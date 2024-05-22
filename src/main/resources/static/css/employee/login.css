@@ -17,10 +17,6 @@
     margin-bottom: 20px;
 }
 
-.btn {
-    color: #fff;
-}
-
 .login-form {
     display: flex;
     flex-direction: column;

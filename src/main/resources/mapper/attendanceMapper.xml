@@ -23,10 +23,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</resultMap>
 	
 <insert id="insertAttendance" parameterType="AttendanceDto">
-    INSERT INTO ATTENDENCE_T (
+    INSERT INTO ATTENDANCE_T (
         ATT_NO,
-        ATT_IN_DT,
-        ATT_OUT_DT,
+        ATT_IN_TIME,
+        ATT_OUT_TIME,
         ATT_WORK_TIME,
         CREATE_DT,
         CREATOR,
@@ -34,7 +34,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         MODIFIER,
         EMP_NO
     ) VALUES (
-        ATTENDENCE_SEQ.NEXTVAL,
+        ATTENDANCE_SEQ.NEXTVAL,
         #{attInDt},
         #{attOutDt},
         #{attWorkTime},

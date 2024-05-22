@@ -4,7 +4,6 @@
     <th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
     <!-- 특정 페이지 css -->
     <link href="/css/franchise/franchise.css" rel="stylesheet">
-    <link href="/css/profile.css" rel="stylesheet">
 </head>
 <body>
 
@@ -14,10 +13,10 @@
         <header th:replace="~{layout/navbar :: navbar}"></header>
         <main>
             <div class="franchise">
-                <div class="container frn-register-container">
+                <div class="container frn-container">
                     <div class="frn-wrap">
-                        <div>
-                            <form class="frn-register-form" id="frn-form" method="post" enctype="multipart/form-data"
+                        <div class="frn-info-wrap">
+                            <form class="frn-info-form" id="frn-form" method="post" enctype="multipart/form-data"
                                   autocomplete="off">
                                 <div class="img-wrap frn-profile">
                                     <img th:if="${owner.frnImg == null}" src="/img/anonymous.png" class="frn-img">
@@ -71,34 +70,45 @@
                                     <button type="button" id="btn-edit-frnTel">수정</button>
                                     <button type="button" id="btn-change-frnTel" style="display: none;">변경</button>
                                 </div>
-                                <div class="address-wrap">
-                                    <label>가맹점 주소</label>
-                                    <div>
-                                        <input type="text" id="frn-frnZip" name="frnZip"
-                                               class="form-control zipcode" placeholder="우편번호"
-                                               th:value="${owner.frnZip}" readonly>
+                                <div class="address-container">
+                                    <div class="address-wrap">
+                                        <label class="form-label">주소</label>
                                         <div>
-                                            <button type="button" class="mt-0 search-address"
-                                                    onclick="execPostCode(false)">주소 찾기
-                                            </button>
+                                            <div class="d-flex">
+                                                <input type="text" id="frn-frnZip" name="frnZip"
+                                                       class="form-control zipcode" placeholder="우편번호"
+                                                       th:value="${owner.frnZip}" readonly>
+                                                <div>
+                                                    <button type="button" class="mt-0 search-address"
+                                                            onclick="execPostCode(false)">주소 찾기
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <input type="text" id="frn-frnStreet" name="frnStreet"
+                                                   class="form-control street-address" placeholder="도로명주소"
+                                                   th:value="${owner.frnStreet}" readonly>
+                                            <div class="detail-wrap">
+                                                <input type="text" id="frn-frnDetail" name="frnDetail"
+                                                       class="form-control detail-address" placeholder="상세주소"
+                                                       th:value="${owner.frnDetail}" readonly>
+                                            </div>
                                         </div>
                                     </div>
-                                    <input type="text" id="frn-frnStreet" name="frnStreet"
-                                           class="form-control street-address" placeholder="도로명주소"
-                                           th:value="${owner.frnStreet}" readonly>
-                                    <input type="text" id="frn-frnDetail" name="frnDetail"
-                                           class="form-control detail-address" placeholder="상세주소"
-                                           th:value="${owner.frnDetail}" readonly>
+                                    <div class="change-address-container">
+                                        <button type="button" class="btn-change-address">주소 변경</button>
+                                    </div>
                                 </div>
-                                <button class="btn-change-address">주소 변경</button>
+                                <div class="frn-modify-btn mt-0">
                                 <div>
                                     <label for="signup-empInDt" class="form-label">가맹일</label>
                                     <input type="date" class="form-control empInDt"
                                            id="signup-empInDt" placeholder="연도. 월. 일."
                                            th:value="${#temporals.format(owner.frnJoinDt.toLocalDate(), 'yyyy-MM-dd')}" disabled>
                                 </div>
-                                <label class="mt-3">운영시간</label>
+                                </div>
                                 <div class="frn-modify-btn mt-0">
+                                    <div>
+                                    <label class="form-label mt-3">운영시간</label>
                                     <div class="operating-time">
                                         <input type="text" class="form-control frnStartTime me-3"
                                                name="frnStartTime" placeholder="시작 시간"
@@ -106,6 +116,7 @@
                                         <input type="text" class="form-control frnEndTime ms-3"
                                                name="frnEndTime" placeholder="종료 시간"
                                                th:value="${owner.frnEndTime}">
+                                    </div>
                                     </div>
                                     <button type="button" id="btn-edit-operating-time">수정</button>
                                     <button type="button" id="btn-change-operating-time" style="display: none;">변경</button>

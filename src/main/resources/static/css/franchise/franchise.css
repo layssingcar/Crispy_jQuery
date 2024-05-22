@@ -1,10 +1,11 @@
+/* 스텝 인디케이터 */
 .container {
     width: 350px;
     margin: 0 auto;
 }
 
 .step-indicator {
-    margin-top: 50px;
+    margin-bottom: 30px;
     display: flex;
     align-items: center;
     padding: 0 40px;
@@ -67,9 +68,20 @@
     }
 }
 
-.frn-wrap {
+.franchise input, button, span, a, label {
+    font-size: 1.5rem;
+}
+
+.franchise input {
+    width: 250px;
+}
+
+.form-control {
+    font-size: 1.5rem !important;
+}
+
+.franchise .frn-wrap {
     width: 550px;
-    font-size: 1.3rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -80,30 +92,21 @@
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
-.form-control {
-    margin-top: 0 !important;
-}
-
-.frn-register-container {
+.franchise .frn-container {
     width: 100%;
-    max-width: 500px;
     margin: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 80px 20px 20px 20px;
+    padding: 30px 20px 20px 20px;
 }
 
 .info-wrap {
-    width: 100%; /* 내부 랩의 너비를 부모와 같게 설정 */
+    width: 500px;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     justify-content: center;
-}
-
-.info-wrap input{
-    width: 200px;
 }
 
 .info-wrap div {
@@ -139,96 +142,166 @@
     align-items: center;
 }
 
-.form-control, .btn {
-    width: 100%; /* 모든 입력 필드와 버튼의 너비를 균일하게 설정 */
-}
-
-.btn {
-    align-self: center;
-    font-size: 1.5rem;
-    color: #fff;
-    background-color: var(--main-color);
-    border: 0;
-    padding: 2px 10px;
-}
-
-.frn-register-container input {
-    font-size: 1.3rem;
-}
-
-.frn-register-form {
+.frn-container .frn-info-form {
     display: flex;
     flex-direction: column;
     margin-bottom: 20px;
 }
 
-.frn-register-form img {
-    width: 100px;
-    height: 100px;
-}
-
-.address-wrap {
+.frn-container .frn-register-form {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
-.address-wrap input {
+#next-button {
     width: 250px;
+    border-radius: 7px;
+    padding: 5px 15px;
+    border: 0;
+    margin-top: 20px;
 }
 
-.address-wrap button{
+.frn-info-form img {
+    float: right;
+    width: 100px;
+    height: 100px;
+    margin-top: 15px;
+    border: 1px solid #e6e7eb;
+    border-radius: 100%;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+.frn-info-form .frn-profile > div:first-child {position: relative;}
+
+/* 프로필 이미지 hover */
+.frn-info-form .frn-img:hover {filter: brightness(50%);}
+.frn-info-form .frn-img:hover + .update-img {display: block;}
+
+/* 프로필 이미지 변경 텍스트 */
+.frn-info-form .update-img {
+    display: none;
+    position: absolute;
+    top: 23%;
+    color: #fff;
+}
+
+.franchise .address-container {
+    width: 100%;
+    display: flex;
+}
+
+.franchise .address-container .change-address-container {
+    display: flex;
+    align-items: flex-end;
+    width: 100%;
+    justify-content: flex-end;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.franchise .address-container .change-address-container button {
+    width: 100px;
     border-radius: 7px;
     padding: 5px 10px;
-    margin-left: 6px;
     border: 0;
-    margin-top: 5px;
-    text-align: center; /* 텍스트를 가로 방향 중앙으로 정렬 */
-    line-height: 22px;
-    height: 30px; /* 버튼의 높이를 지정 */
-}
-.zipcode {
-    width: 100px !important;
 }
 
-.address-wrap div:nth-child(2) {
+.franchise .frn-register-form .address-wrap {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    margin-left: 10%;
+}
+
+.franchise .frn-register-form .address-wrap div:nth-child(2) {
+    width: 100%;
+    display: flex;
     margin-top: 0;
 }
 
-.operating-time {
+.franchise .frn-info-wrap .address-wrap {
+    display: flex;
+    flex-direction: column;
+    margin-left: 6%;
+}
+
+.franchise .frn-info-wrap .address-wrap div:nth-child(2) {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-top: 0;
+}
+
+.franchise .address-wrap .zipcode {
+    width: 150px !important;
+}
+.franchise .address-wrap  input{
+    width: 300px;
+}
+
+
+.franchise .address-wrap button {
+    border-radius: 7px;
+    padding: 5px 10px;
+    border: 0;
+    margin-left: 10px;
+}
+
+.franchise .address-wrap .search-address {
+    width: 100px !important;
+    background-color: var(--sub-color) !important;
+}
+
+.franchise .detail-wrap {
+    display: flex;
+    align-items: flex-start;
+    margin-top: 0 !important;
+    margin-bottom: 10px;
+}
+
+.franchise .detail-wrap button {
+    position: relative;
+    right: -40px;
+}
+
+.franchise .zipcode {
+    width: 100px !important;
+}
+
+.franchise .operating-time {
     display: flex;
     align-items: center;
 }
 
-.operating-time input,
-.operating-time select{
+.franchise .operating-time input,
+.franchise .operating-time select{
     width: 70px;
     text-align: center;
-    font-size: 1.5rem;
 }
 .frn-modify-btn {
+    width: 100%;
     display: flex;
     align-items: flex-end;
+    justify-content: space-between;
 }
 
-.operating-time #frnEndTime {
+.frn-modify-btn div:first-child {
+    margin-left: 30px;
+}
+.franchise .operating-time #frnEndTime {
     margin-left: 5px;
 }
 
-.frn-modify-btn button{
-    display: inline-block;
-    margin-left: 10px;
-    color: #fff;
-    padding: 5px 10px;
+.franchise .frn-modify-btn button{
+    width: 70px;
     border-radius: 7px;
+    padding: 5px 15px;
     border: 0;
-    text-align: center; /* 텍스트를 가로 방향 중앙으로 정렬 */
-    line-height: 22px;
-    height: 30px; /* 버튼의 높이를 지정 */
 }
 
-.btn-change-address {
+.franchise .btn-change-address {
     margin-top: 5px;
     padding: 5px 10px;
     border-radius: 7px;
@@ -245,7 +318,7 @@
     float: right;
     width: 150px;
     height: 150px;
-    margin-top: 15px;
+    margin-bottom: 10px;
     border: 1px solid #e6e7eb;
     border-radius: 100%;
     object-fit: cover;
@@ -254,21 +327,24 @@
 
 .franchise .frn-info {
     display: flex;
-
+    font-size: 1.5rem;
 }
 
 .franchise .frn-info hr {
-    width: 180px;
+    width: 83%;
     margin-left: 10px;
 }
 
 .franchise .btn-save-profile {
     align-self: center;
-    font-size: 1.5rem;
-    color: #fff;
-    background-color: var(--main-color);
     border: 0;
     padding: 5px 25px;
     width: 150px;
     border-radius: 7px;
+}
+
+#btn-frn-register {
+    font-size: 1.5rem;
+    margin-top: 20px;
+    width: 250px;
 }

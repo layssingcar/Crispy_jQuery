@@ -4,7 +4,6 @@
     <th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
     <!-- 특정 페이지 css -->
     <link href="/css/franchise/franchise.css" rel="stylesheet">
-    <link href="/css/profile.css" rel="stylesheet">
 </head>
 <body>
 
@@ -13,7 +12,7 @@
     <div>
         <header th:replace="~{layout/navbar :: navbar}"></header>
         <main>
-            <div>
+            <div class="franchise">
                 <div class="container">
                     <section class="step-indicator">
                         <div class="step step1 active">
@@ -27,7 +26,7 @@
                         </div>
                     </section>
                 </div>
-                <div class="container frn-register-container">
+                <div class="container frn-container">
                     <div class="frn-wrap">
                         <div>
                             <form class="frn-register-form" id="owner-register" method="post" autocomplete="off">
@@ -40,7 +39,7 @@
                                             <div class="error-message empId-error" style="display: none;"></div>
                                         </div>
                                         <div>
-                                            <label for="owner-empPhone" class="form-label">전화번호</label>
+                                            <label for="owner-empPhone" class="form-label">휴대폰번호</label>
                                             <input type="text" class="form-control" id="owner-empPhone" name="empPhone" placeholder="- 제외하고 입력해주세요.">
                                             <div class="error-message empPhone-error" style="display: none;"></div>
                                         </div>
@@ -53,8 +52,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <button type="button" class="btn mt-4 mb-3" id="btn-frn-register">가맹점 등록</button>
                                 </div>
+                                <button type="button" class="btn" id="btn-frn-register">가맹점 등록</button>
                             </form>
                         </div>
                     </div>

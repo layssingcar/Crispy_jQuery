@@ -4,12 +4,14 @@
 <head>
     <th:block th:insert="~{layout/header :: header('비밀번호 찾기')}"></th:block>
     <link href="/css/employee/find-user.css" rel="stylesheet">
+    <link href="/css/common/common.css" rel="stylesheet">
 </head>
 <body>
 <div class="find-container">
-    <div class="my-3">
-        <form class="find-form" th:action="@{/crispy/employee/find/password}" method="post" autocomplete="off">
-            <a class="find-header" href="/"><h1>비밀번호 찾기</h1></a>
+    <div>
+        <img src="/img/crispy2.png">
+        <form class="find-form" th:action="@{/crispy/employee/find-emp-pw}" method="post" autocomplete="off">
+            <h1 class="find-header">비밀번호 찾기</h1>
             <div th:if="${param.error}">
                 <div class="alert alert-danger">
                     사용자 ID 또는 비밀번호를 확인해주세요.
@@ -39,7 +41,7 @@
                         <button class="btn email-validate-btn" th:data-action="verify-user" type="button">인증 요청</button>
                     </div>
                 </div>
-                <div class="mb-3" id="verify-code-div" style="display: none">
+                <div class="mb-3" id="verify-code-div" style="display: block">
                     <div class="verify-email mb-4">
                         <div class="mt-2">
                             <input type="text" class="form-control verify-code"

@@ -4,12 +4,14 @@
 <head>
     <th:block th:insert="~{layout/header :: header('아이디 찾기')}"></th:block>
     <link href="/css/employee/find-user.css" rel="stylesheet">
+    <link href="/css/common/common.css" rel="stylesheet">
 </head>
 <body>
     <div class="find-container">
-        <div class="my-3">
+        <div>
+            <img src="/img/crispy2.png">
             <form class="find-form" th:action="@{/crispy/employee/find/username}" method="post" autocomplete="off">
-                <a class="find-header" href="/"><h1>아이디 찾기</h1></a>
+                <h1 class="find-header">아이디 찾기</h1>
                 <div th:if="${param.error}">
                     <div class="alert alert-danger">
                         사용자 ID 또는 비밀번호를 확인해주세요.
@@ -33,7 +35,7 @@
                             <button class="btn email-validate-btn" th:data-action="verify-user" type="button">인증 요청</button>
                         </div>
                     </div>
-                    <div class="mb-3" id="verify-code-div" style="display: none">
+                    <div class="mb-3" id="verify-code-div" style="display: block">
                         <div class="verify-email">
                             <div class="mt-2">
                                 <input type="text" class="form-control verify-code"
@@ -41,12 +43,12 @@
                                 <div class="error-message verifyCode-error" style="display: none"></div>
                             </div>
                             <div class="col-4 d-flex align-items-end ms-2">
-                                <button class="btn mb-3 check-verify-code" type="button">확인</button>
+                                <button class="btn check-verify-code" type="button">확인</button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <button class="btn find-btn" type="submit">아이디 찾기</button>
+                <button class="btn find-btn mt-3" type="submit">아이디 찾기</button>
             </form>
         </div>
     </div>
