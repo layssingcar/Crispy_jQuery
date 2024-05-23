@@ -15,7 +15,7 @@ const empRegister = {
             posNo: parseInt(document.querySelector("input[name='posNo']:checked")?.value, 10)
         };
 
-        fetch("/api/v1/owner/employee/register", {
+        fetch("/api/owner/employee/register/v1", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -23,7 +23,6 @@ const empRegister = {
             body: JSON.stringify(employeeData)
         }).then(response => response.json())
             .then(data => {
-                console.log(data);
                 alert("직원 등록이 완료되었습니다.");
                 window.location.href = "/crispy/owner/employees"; // 성공 페이지로 이동
             })
