@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:insert="~{layout/header :: header('받은 메시지함')}"></th:block>
+    <!-- 특정 페이지 css -->
+    <link rel="stylesheet" href="/css/chat/message.css" type="text/css">
+</head>
+<body>
+
+<div class="crispy-container">
+    <aside th:replace="~{layout/sidebar :: sidebar}"></aside>
+    <div>
+        <header th:replace="~{layout/navbar :: navbar}"></header>
+        <main>
+            <div>
+                <div class="container message">
+                    <div class="main">
+                        <div>
+                            <!-- 메시지 박스 -->
+                            <div class="box">
+
+                                <!-- 좌측: 채팅방 분류, 목록 -->
+                                <div class="left">
+
+                                    <!-- 채팅방 탐색  -->
+                                    <div class="request">
+                                        <span>moz1mozi</span>
+                                        <a role="button" class="send-message" data-bs-toggle="modal"
+                                           data-bs-target="#newMessageModal">
+                                            <img class="icon" src="/img/icon/write.png" alt="메시지 작성 아이콘">
+                                        </a>
+                                    </div>
+
+                                    <!-- 채팅방 분류 (주요, 일반, 요청 등) -->
+                                    <div class="chat-search">
+                                        <input type="search" class="form-control" id="search" placeholder="검색"/>
+                                    </div>
+
+                                    <!-- 채팅방 목록 -->
+                                    <div>
+                                        <div>
+                                            <!-- 채팅방 리스트 div -->
+                                            <div class="msg-room" data-chat-id="1">
+
+                                                <!-- 상대방 프로필 이미지 -->
+                                                <div class="profile-image">
+                                                    <div><img src="/img/anonymous.png"></div>
+                                                </div>
+
+                                                <!-- 상대방 이름, 최근 메시지 -->
+                                                <div class="temp">
+                                                    <div>moz1mozi</div>
+                                                    <div>미안하다 이거 보여주려고 어그로 끌었다.</div>
+                                                </div>
+
+                                                <!-- 새로운 메시지 알림 -->
+                                                <div class="notify"></div>
+                                            </div>
+
+                                            <div class="msg-room" data-chat-id="2">
+                                                <div class="profile-image">
+                                                    <div><img src="/img/anonymous.png"></div>
+                                                </div>
+
+                                                <div class="temp">
+                                                    <div>사황</div>
+                                                    <div>카이도우는 죽었다.. 미안하다..</div>
+                                                </div>
+                                            </div>
+
+                                            <div class="msg-room" data-chat-id="3">
+                                                <div class="profile-image">
+                                                    <div><img src="/img/anonymous.png"></div>
+                                                </div>
+
+                                                <div class="temp">
+                                                    <div>원피스</div>
+                                                    <div>루피가 태양신이라고?</div>
+                                                </div>
+                                            </div>
+
+                                            <!-- 추가적인 채팅방 목록 생략 -->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 우측: 메시지 안내 문구 -->
+                                <div class="mid-intro">
+                                    <div class="intro">
+                                        <div>
+                                            <div class="circle"></div>
+                                            <img src="/img/icon/message.png" alt="메시지 아이콘">
+                                        </div>
+
+                                        <div>내 메시지</div>
+                                        <div>친구나 그룹에 비공개 사진과 메시지를 보내보세요.</div>
+
+                                        <a role="button" class="send-message" data-bs-toggle="modal"
+                                           data-bs-target="#newMessageModal">
+                                            <div id="msg">메시지 보내기</div>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- 우측: 상대방 정보, 메시지 내용 -->
+                                <div class="mid-chat" style="display: none;">
+
+                                    <!-- 상대방 정보 -->
+                                    <div class="chat-name">
+                                        <!-- 상대방 프로필 이미지 -->
+                                        <div class="profile-image">
+                                            <div><img src="/img/anonymous.png"></div>
+                                        </div>
+
+                                        <!-- 상대방 이름 -->
+                                        <div>절대고집</div>
+                                        <div>
+                                            검색
+                                        </div>
+                                        <div>
+                                            <a role="button" id="toggleSidebar"><img src="/img/icon/menu.png"></a>
+                                        </div>
+                                    </div>
+
+                                    <!-- 메시지 내용 -->
+                                    <div class="chat-window">
+                                        <div>
+                                            <!-- 채팅을 주고받은 날짜 -->
+                                            <div class="datetime">2023. 05. 02. 오후 12:02</div>
+
+                                            <div class="output receive">
+                                                <div class="profile-image">
+                                                    <div><img src="/img/anonymous.png"></div>
+                                                </div>
+
+                                                <div class="chat">
+                                                    Hello, world!
+                                                </div>
+                                                <div class="chat-datetime">
+                                                    오후 12:02
+                                                </div>
+                                            </div>
+
+                                            <div class="output sent">
+                                                <!-- 내가 보낸 메시지 내용 -->
+                                                <div class="chat-datetime">
+                                                    오후 12:02
+                                                </div>
+                                                <div class="chat">
+                                                    노루, 보고, 위에 마디씩 강아지, 하나에 하나 아이들의 못 거외다.
+                                                    오면 별 밤이 별 벌써 계십니다. 내 사람들의 무덤 불러 어머님, 까닭입니다.
+                                                    이름자를 별 다 까닭입니다. 별 이름과, 파란 봅니다.
+                                                    하나 불러 겨울이 지나가는 벌써 둘 쓸쓸함과 있습니다. 멀리 그러나 걱정도 별 별 까닭입니다.
+                                                </div>
+                                            </div>
+
+                                            <div class="output receive">
+                                                <!-- 상대방 프로필 이미지 -->
+                                                <div class="profile-image">
+                                                    <div><img src="/img/anonymous.png"></div>
+                                                </div>
+
+                                                <!-- 상대방이 보낸 메시지 내용 -->
+                                                <div class="chat">
+                                                    <p>
+                                                        아스라히 이름과, 아름다운 별이 애기 소녀들의 어머니 않은 있습니다.
+                                                        아름다운 라이너 별 이름을 벌레는 까닭입니다. 이런 가난한 다 별빛이 계십니다.
+                                                        사랑과 쉬이 나의 우는 벌레는 이 보고, 거외다. 남은 겨울이 이 있습니다.
+                                                    </p>
+                                                </div>
+                                                <div class="chat-datetime">
+                                                    오후 12:02
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- 메시지 입력 -->
+                                        <div class="input">
+                                            <div>
+                                                <!-- 메시지 입력 textarea -->
+                                                <form method="post">
+                                                    <textarea name="chat" id="chat" rows="1"
+                                                              placeholder="메시지 입력..."></textarea>
+                                                </form>
+
+                                                <!-- 이미지 첨부, 하트 이모티콘 아이콘 -->
+                                                <div><img class="icon" src="/img/icon/image.png" alt="이미지 아이콘"></div>
+                                            </div>
+                                        </div>
+
+                                        <!-- 요청된 메시지 안내 -->
+                                        <!--                                        <div class="req">-->
+                                        <!--                                            <div>-->
+                                        <!--                                                <div><span>bbakkjji</span> 님이 회원님에게 메시지를 보내고 싶어 합니다.</div>-->
+                                        <!--                                                <div>팔로워 <span>2014</span>명 게시물 <span>1267</span>개</div>-->
+                                        <!--                                                <div>-->
+                                        <!--                                                    지금부터 bbakkjji님이 회원님에게 메시지를 보낼 수 있도록 허용하시겠어요?<br>-->
+                                        <!--                                                    수락하지 않는 이상 상대방은 회원님이 요청을 확인했다는 사실을 알 수 없습니다.-->
+                                        <!--                                                </div>-->
+                                        <!--                                            </div>-->
+
+                                        <!--                                            &lt;!&ndash; 차단, 삭제, 수락 버튼 &ndash;&gt;-->
+                                        <!--                                            <div>-->
+                                        <!--                                                <div><a href="#">차단</a></div>-->
+                                        <!--                                                <div><a href="#">삭제</a></div>-->
+                                        <!--                                                <div><a href="#">수락</a></div>-->
+                                        <!--                                            </div>-->
+                                        <!--                                        </div>-->
+                                    </div>
+                                </div>
+                                <div class="right-intro" id="rightSidebar">
+                                    <div class="intro">
+                                        <div class="chat-side-bar">대화하는 유저 목록</div>
+                                        <div class="side-bar-img-wrap">
+                                            <div class="profile-image">
+                                                <a role="button" class="send-message" data-bs-toggle="modal"
+                                                   data-bs-target="#invite-modal">
+                                                    <div><img src="/img/question.png"></div>
+                                                    <span>새로운 사용자 초대</span>
+                                                </a>
+                                            </div>
+                                            <div class="chat-user-list">
+                                                <div class="profile-image">
+                                                    <div><img src="/img/anonymous.png"></div>
+                                                </div>
+                                                <span>최동환</span>
+                                            </div>
+                                            <div>
+                                                <div class="profile-image">
+                                                    <div><img src="/img/anonymous.png"></div>
+                                                </div>
+                                                <span>박종구</span>
+                                            </div>
+                                            <div>
+                                                <div class="profile-image">
+                                                    <div><img src="/img/anonymous.png"></div>
+                                                </div>
+                                                <span>우혜진</span>
+                                            </div>
+                                            <div>
+                                                <div class="profile-image">
+                                                    <div><img src="/img/anonymous.png"></div>
+                                                </div>
+                                                <span>배영욱</span>
+                                            </div>
+                                            <div>
+                                                <div class="profile-image">
+                                                    <div><img src="/img/anonymous.png"></div>
+                                                </div>
+                                                <span>오정은</span>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                    </div>
+                                    <div class="chat-room-wrap">
+                                        <div class="intro">
+                                            <div>
+                                                <div class="notify-on" style="display: none">
+                                                    <i class="fa-solid fa-bell"></i>
+                                                    알림켜기
+                                                </div>
+                                                <div class="notify-off">
+                                                    <i class="fa-solid fa-bell-slash"></i>
+                                                    알림끄기
+                                                </div>
+                                                <div class="leave-chat-room">
+                                                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                                                    나가기
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="newMessageModal" tabindex="-1" aria-labelledby="newMessageModalLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title" id="newMessageModalLabel">새로운 메시지</h4>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- 모달 내용 -->
+                                    <form>
+                                        <div class="mb-3">
+                                            <label class="form-label">받는 사람</label>
+                                            <input type="text" class="form-control recipient" placeholder="검색...">
+                                        </div>
+                                        <div class="search-results">
+                                            <!--                                            <p>계정을 찾을 수 없습니다.</p>-->
+                                            <div>
+                                                <div class="modal-profile-image">
+                                                    <div><img src="/img/anonymous.png"></div>
+                                                    <div class="search-emp">
+                                                        <span>최동환</span>
+                                                        <input type="radio" class="form-check-input" name="empName">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="modal-profile-image">
+                                                    <div><img src="/img/anonymous.png"></div>
+                                                    <div class="search-emp">
+                                                        <span>최동환</span>
+                                                        <input type="radio" class="form-check-input" name="empName">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="modal-profile-image">
+                                                    <div><img src="/img/anonymous.png"></div>
+                                                    <div class="search-emp">
+                                                        <span>최동환</span>
+                                                        <input type="radio" class="form-check-input" name="empName">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="modal-profile-image">
+                                                    <div><img src="/img/anonymous.png"></div>
+                                                    <div class="search-emp">
+                                                        <span>최동환</span>
+                                                        <input type="radio" name="empName">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="modal-profile-image">
+                                                    <div><img src="/img/anonymous.png"></div>
+                                                    <div class="search-emp">
+                                                        <span>최동환</span>
+                                                        <input type="radio" name="empName">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="modal-profile-image">
+                                                    <div><img src="/img/anonymous.png"></div>
+                                                    <div class="search-emp">
+                                                        <span>최동환</span>
+                                                        <input type="radio" name="empName">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="modal-profile-image">
+                                                    <div><img src="/img/anonymous.png"></div>
+                                                    <div class="search-emp">
+                                                        <span>최동환</span>
+                                                        <input type="radio" name="empName">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="modal-profile-image">
+                                                    <div><img src="/img/anonymous.png"></div>
+                                                    <div class="search-emp">
+                                                        <span>최동환</span>
+                                                        <input type="radio" name="empName">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="modal-profile-image">
+                                                    <div><img src="/img/anonymous.png"></div>
+                                                    <div class="search-emp">
+                                                        <span>최동환</span>
+                                                        <input type="radio" name="empName">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="modal-profile-image">
+                                                    <div><img src="/img/anonymous.png"></div>
+                                                    <div class="search-emp">
+                                                        <span>최동환</span>
+                                                        <input type="radio" name="empName">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="modal-profile-image">
+                                                    <div><img src="/img/anonymous.png"></div>
+                                                    <div class="search-emp">
+                                                        <span>최동환</span>
+                                                        <input type="radio" name="empName">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="modal-profile-image">
+                                                    <div><img src="/img/anonymous.png"></div>
+                                                    <div class="search-emp">
+                                                        <span>최동환</span>
+                                                        <input type="radio" name="empName">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="modal-profile-image">
+                                                    <div><img src="/img/anonymous.png"></div>
+                                                    <div class="search-emp">
+                                                        <span>최동환</span>
+                                                        <input type="radio" name="empName">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="modal-profile-image">
+                                                    <div><img src="/img/anonymous.png"></div>
+                                                    <div class="search-emp">
+                                                        <span>최동환</span>
+                                                        <input type="radio" name="empName">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="modal-profile-image">
+                                                    <div><img src="/img/anonymous.png"></div>
+                                                    <div class="search-emp">
+                                                        <span>최동환</span>
+                                                        <input type="radio" name="empName">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="modal-profile-image">
+                                                    <div><img src="/img/anonymous.png"></div>
+                                                    <div class="search-emp">
+                                                        <span>최동환</span>
+                                                        <input type="radio" name="empName">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="modal-profile-image">
+                                                    <div><img src="/img/anonymous.png"></div>
+                                                    <div class="search-emp">
+                                                        <span>최동환</span>
+                                                        <input type="radio" name="empName">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="modal-profile-image">
+                                                    <div><img src="/img/anonymous.png"></div>
+                                                    <div class="search-emp">
+                                                        <span>최동환</span>
+                                                        <input type="radio" name="empName">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="modal-profile-image">
+                                                    <div><img src="/img/anonymous.png"></div>
+                                                    <div class="search-emp">
+                                                        <span>최동환</span>
+                                                        <input type="radio" name="empName">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="modal-profile-image">
+                                                    <div><img src="/img/anonymous.png"></div>
+                                                    <div class="search-emp">
+                                                        <span>최동환</span>
+                                                        <input type="radio" name="empName">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="modal-profile-image">
+                                                    <div><img src="/img/anonymous.png"></div>
+                                                    <div class="search-emp">
+                                                        <span>최동환</span>
+                                                        <input type="radio" name="empName">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="modal-profile-image">
+                                                    <div><img src="/img/anonymous.png"></div>
+                                                    <div class="search-emp">
+                                                        <span>최동환</span>
+                                                        <input type="radio" name="empName">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="modal-profile-image">
+                                                    <div><img src="/img/anonymous.png"></div>
+                                                    <div class="search-emp">
+                                                        <span>최동환</span>
+                                                        <input type="radio" name="empName">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="modal-profile-image">
+                                                    <div><img src="/img/anonymous.png"></div>
+                                                    <div class="search-emp">
+                                                        <span>최동환</span>
+                                                        <input type="radio" name="empName">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="">채팅</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="invite-modal" tabindex="-1" aria-labelledby="invite-modal"
+                         aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title" id="invite-modal-label">사용자 초대</h4>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+
+                                    <form>
+                                        <div class="mb-3">
+                                            <label class="form-label">받는 사람</label>
+                                            <input type="text" class="form-control recipient" placeholder="검색...">
+                                        </div>
+                                        <div class="search-results">
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="">채팅</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer th:replace="~{layout/footer :: footer}"></footer>
+    </div>
+    <script src="/js/aside.js"></script>
+    <script src="/js/message.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const toggleButton = document.getElementById("toggleSidebar");
+            const rightSidebar = document.getElementById("rightSidebar");
+            const midChat = document.querySelector(".mid-chat");
+            const notifyOff = document.querySelector(".notify-off");
+            const notifyOn = document.querySelector(".notify-on");
+
+            toggleButton.addEventListener("click", function () {
+                if (rightSidebar.style.display === "none" || rightSidebar.style.display === "") {
+                    rightSidebar.style.display = "flex";
+                    midChat.style.flexGrow = "0";
+                } else {
+                    rightSidebar.style.display = "none";
+                    midChat.style.flexGrow = "1";
+                }
+            });
+
+            notifyOff.addEventListener("click",  function () {
+                this.style.display = "none";
+                notifyOn.style.display = "block";
+            })
+
+            notifyOn.addEventListener("click", function () {
+                this.style.display = "none";
+                notifyOff.style.display = "block";
+            })
+        });
+
+
+    </script>
+</div>
+</body>
+</html>

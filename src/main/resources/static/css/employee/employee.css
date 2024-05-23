@@ -66,15 +66,16 @@
 
 .pw-change-btn {
     display: flex;
-    justify-content: flex-end;
-    margin-left: 20%;
     flex-direction: column;
-    width: 150px;
+    width: 50%;
     text-align: center;
+    justify-content: flex-end;
+    align-items: flex-end;
 }
 
 .employee-profile .change-password{
     height: 35px;
+    width: 115px;
     padding: 5px 10px;
     border-radius: 7px;
     line-height: 27px;
@@ -84,6 +85,7 @@
 }
 
 #add-approval {
+    width: 115px;
     padding: 5px 10px;
     border-radius: 7px;
     border: 0;
@@ -101,7 +103,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 80px 20px 20px 20px;
+    padding: 20px;
 }
 
 .info-wrap {
@@ -233,11 +235,11 @@
 
 .address-container .change-address-container {
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     width: 100%;
     justify-content: flex-end;
     margin-top: 0;
-    margin-bottom: 10px;
+    margin-bottom: 50px;
 }
 
 .address-container .change-address-container button {
@@ -253,20 +255,13 @@
     border: 0;
 }
 
-.sign-img-container {
-    width: 100%;
-    margin-left: 36%;
-    display: flex;
-    flex-direction: column;
-}
-
-.sign-img-container .sign-img {
-    width: 250px;
+.pw-change-btn .sign-img {
+    width: 200px;
     height: 150px;
     border: 1px solid #e6e7eb;
     border-radius: 0.375rem;
+    margin-bottom: 10px;
 }
-
 
 #signature-modal {
     position: fixed;
