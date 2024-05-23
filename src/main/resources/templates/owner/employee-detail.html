@@ -145,7 +145,7 @@
             const empNo = sessionStorage.getItem('selectedEmpNo');
             if (empNo) {
                 // 세션에 저장된 empNo가 있다면, 해당 직원 정보를 비동기적으로 불러와서 업데이트
-                fetch(`/api/v1/employee/${empNo}`)
+                fetch(`/api/employee/${empNo}/v1`)
                     .then(response => response.json())
                     .then(data => {
                         // 받은 데이터로 페이지 업데이트

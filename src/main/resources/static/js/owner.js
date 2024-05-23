@@ -20,7 +20,7 @@ const owner = {
 
     resetPassword: function() {
         const email = document.getElementById("emp-profile-empEmail").value;
-        fetch("/api/v1/employee/resetPassword", {
+        fetch("/api/employee/password/reset/v1", {
             method: 'POST',
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({empEmail: email})
@@ -30,7 +30,7 @@ const owner = {
 
     loadEmployeeData: function() {
         const frnNo = document.getElementById("employees-frnNo").value;
-        fetch(`/api/v1/owner/employees/${frnNo}`)
+        fetch(`/api/owner/employees/${frnNo}/v1`)
             .then(response => response.json())
             .then(data => this.renderEmployeeTable(data))
             .catch(error => console.error('Error loading employee data:', error));

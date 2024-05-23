@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
@@ -17,11 +18,12 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/email")
 public class EmailApiController {
 
     private final AuthenticationService authenticationService;
 
-    @PostMapping("/api/v1/email/send-verification-code")
+    @PostMapping("/verificationCode/v1")
     // 인증 코드 전송
     public ResponseEntity<?> sendVerificationCode(@Valid @RequestBody EmailSendDto emailSendDto) {
         String verifyEmail = emailSendDto.getVerifyEmail();
@@ -35,7 +37,7 @@ public class EmailApiController {
     }
 
     // 인증 코드 검증
-    @PostMapping("/api/v1/email/verify-code")
+    @PostMapping("/verificationCode/verify/v1")
     public ResponseEntity<?> verifyCode(@Valid @RequestBody EmailVerificationDto emailVerificationDto) {
         String verifyEmail = emailVerificationDto.getVerifyEmail();
         String verifyCode = emailVerificationDto.getVerifyCode();

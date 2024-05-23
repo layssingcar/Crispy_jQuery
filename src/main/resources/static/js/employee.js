@@ -10,7 +10,6 @@ const employee = {
     bindEvents: function() {
         const addressButton = document.querySelector('.btn-change-address');
         if (addressButton) {
-            console.log(addressButton);
             addressButton?.addEventListener('click', this.updateAddress);
         }
         const empSignButton = document.getElementById("save-signature");
@@ -67,14 +66,14 @@ const employee = {
             empDetail: detail
         };
 
-        fetch('/api/v1/employee/address', {
+        fetch('/api/employee/address/v1', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(addressData)
         }).then(response => {
-            console.log(response);
+
             if (!response.ok) {
                 throw new Error('Failed to update the address');
             }
@@ -99,7 +98,7 @@ const employee = {
                     confirmPassword: document.getElementById("confirm-pw").value
                 }
                 // 서버로 데이터 전송
-                fetch("/api/v1/employee/updateEmpPw", {
+                fetch("/api/employee/empPw/v1", {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -115,11 +114,8 @@ const employee = {
                         return response.json();
                     })
                     .catch(error => {
-                        console.log("Error:", error);
                         Object.entries(error).forEach(([key, value]) => {
                             const errorContainer = document.getElementById(`${key}-error`);
-                            console.log(key)
-                            console.log(value)
                             if(errorContainer) {
                                 errorContainer.textContent = value;
                                 errorContainer.style.display = "block";
@@ -134,14 +130,13 @@ const employee = {
             empNo: parseInt(document.querySelector(".empNo").value),
             empPhone: document.querySelector(".empPhone").value,
         }
-        fetch("/api/v1/employee/updateEmpPhone", {
+        fetch("/api/employee/empPhone/v1", {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(data)
         }).then(response => {
-                console.log(response);
                 if (!response.ok) {
                     throw new Error('휴대폰 번호 변경에 실패했습니다.');
                 }
@@ -163,14 +158,13 @@ const employee = {
             empNo: empNo,
             empSign: empSign
         }
-        fetch('/api/v1/employee/empSign', {
+        fetch('/api/employee/empSign/v1', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(data)
         }).then(response => {
-            console.log(response);
             if (!response.ok) {
                 throw new Error('Failed to update the address');
             }
@@ -204,10 +198,8 @@ const employee = {
     changeProfileImage: function () {
         const empNo = document.querySelector(".empNo").value;
         const profileForm = document.getElementById("profileImageForm")
-        console.log(empNo);
 
         const formData = new FormData(profileForm);
-        console.log("formData: " + formData);
         formData.append('empNo', empNo);
 
         const file = document.querySelector(".file-input").files[0];
@@ -215,17 +207,15 @@ const employee = {
             formData.append('file', file);  // 서버에서 요구하는 파라미터 이름('file')에 맞게 설정
         }
 
-        fetch("/api/v1/employee/profileImg", {
+        fetch("/api/employee/profileImg/v1", {
             method: "POST",
             body: formData
         }).then(response => {
-            console.log(response)
             if (response.ok) {
                 return response.json();
             }
             throw new Error('Failed to update profile image');
         }).then(data => {
-            console.log(data)
             alert(data.message);
             return location.reload();
         }).catch(error => {
@@ -237,14 +227,13 @@ const employee = {
             empNo: parseInt(document.querySelector(".empNo").value),
             empName: document.querySelector(".empName").value,
         }
-        fetch("/api/v1/employee/updateEmpName", {
+        fetch("/api/employee/empName/v1", {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(data)
         }).then(response => {
-            console.log(response);
             if (!response.ok) {
                 throw new Error('성함 변경에 실패했습니다.');
             }
@@ -259,19 +248,17 @@ const employee = {
     },
     changePosNo: function () {
         const selectedCheck = document.querySelector("input[name='position']:checked").value;
-        console.log(selectedCheck)
         const data = {
             empNo: parseInt(document.querySelector(".empNo").value),
             posNo: selectedCheck,
         }
-        fetch("/api/v1/employee/updatePosNo", {
+        fetch("/api/employee/posNo/v1", {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(data)
         }).then(response => {
-            console.log(response);
             if (!response.ok) {
                 throw new Error('직책 변경에 실패했습니다.');
             }
@@ -286,19 +273,17 @@ const employee = {
     },
     changeEmpStat: function () {
         const selectedCheck = document.querySelector("input[name='empStat']:checked").value;
-        console.log(selectedCheck)
         const data = {
             empNo: parseInt(document.querySelector(".empNo").value),
             empStat: selectedCheck,
         }
-        fetch("/api/v1/employee/updateEmpStat", {
+        fetch("/api/employee/empStat/v1", {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(data)
         }).then(response => {
-            console.log(response);
             if (!response.ok) {
                 throw new Error('재직 상태 변경에 실패했습니다.');
             }
@@ -311,7 +296,6 @@ const employee = {
             alert('재직 상태 변경에 실패하였습니다.');
         });
     },
-
 }
 document.addEventListener("DOMContentLoaded", function () {
     employee.init();
