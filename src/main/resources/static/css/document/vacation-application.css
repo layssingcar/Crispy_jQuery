@@ -1,5 +1,9 @@
 /* 휴가신청서 */
-.vacation {font-size: 1.6em;}
+.vacation {
+    display: flex;
+    justify-content: center;
+    margin-top: 25px;
+}
 
 /* 테이블 */
 .vacation table {
