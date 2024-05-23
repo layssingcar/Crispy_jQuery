@@ -11,6 +11,11 @@
     padding-bottom: 80px;
 }
 
+.my-3 {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+
 .login-container img {
     width: 200px;
     height: 100px;

@@ -50,7 +50,7 @@
 
 /* 행 hover */
 .area5 .approval-list tbody tr:hover td {
-    background-color: #fd834045;
+    background-color: rgba(200, 200, 200, 0.2);
     cursor: pointer;
 }
 

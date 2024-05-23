@@ -74,11 +74,15 @@ public class EmployeeController {
 	// 직원 혹은 관리자 개인이 들어가는 마이 페이지
 	@GetMapping("/profile")
 	public String getEmployee(Principal principal, Model model) {
-		EmployeeDto employee = employeeService.getEmployeeName(principal.getName());
-		log.info("address : {} {} {}", employee.getEmpZip(), employee.getEmpStreet(), employee.getEmpDetail());
-		log.info("empSign : {}", employee.getEmpSign());
-		model.addAttribute("employee", employee);
-		return "employee/employee-profile";
+		if(principal != null) {
+			EmployeeDto employee = employeeService.getEmployeeName(principal.getName());
+			log.info("address : {} {} {}", employee.getEmpZip(), employee.getEmpStreet(), employee.getEmpDetail());
+			log.info("empSign : {}", employee.getEmpSign());
+			model.addAttribute("employee", employee);
+			return "employee/employee-profile";
+		} else {
+			return "redirect:/crispy/login";
+		}
 	}
 
 }

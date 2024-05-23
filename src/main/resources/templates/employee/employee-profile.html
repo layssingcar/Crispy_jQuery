@@ -35,6 +35,9 @@
                                     <span>이름: <span th:text="${employee.empName}" class="empName"></span></span>
                                 </div>
                                 <div class="pw-change-btn">
+                                    <div class="sign-img-container">
+                                        <img th:if="${employee.empSign != null}" th:src="${employee.empSign}" class="sign-img">
+                                    </div>
                                 <button id="add-approval">결재 서명 추가</button>
                                 <a href="/crispy/employee/change-emp-pw" role="button" class="change-password">
                                     비밀번호 변경
@@ -77,7 +80,7 @@
                                             <div>
                                                 <div>
                                                     <input type="text" id="emp-profile-empZip" name="empZip"
-                                                           class="form-control zipcode" placeholder="우편번호"
+                                                           class="form-control zipcode mb-2" placeholder="우편번호"
                                                            th:value="${employee.empZip}">
                                                     <div class="ms-0">
                                                         <button type="button" class="mt-0 ms-3 search-address"
@@ -87,11 +90,11 @@
                                                     </div>
                                                 </div>
                                                 <input type="text" id="emp-profile-empStreet" name="empStreet"
-                                                       class="form-control street-address" placeholder="도로명주소"
+                                                       class="form-control street-address mb-2" placeholder="도로명주소"
                                                        th:value="${employee.empStreet}">
                                                 <div class="detail-wrap">
                                                     <input type="text" id="emp-profile-empDetail" name="empDetail"
-                                                           class="form-control detail-address" placeholder="상세주소"
+                                                           class="form-control detail-address mb-2" placeholder="상세주소"
                                                            th:value="${employee.empDetail}">
                                                 </div>
                                             </div>
@@ -99,10 +102,6 @@
                                         <div class="change-address-container">
                                             <button type="button" class="btn-change-address">주소 변경</button>
                                         </div>
-                                    </div>
-                                    <div class="sign-img-container">
-                                    <label class="form-label">서명 이미지</label>
-                                    <img th:if="${employee.empSign != null}" th:src="${employee.empSign}" class="sign-img">
                                     </div>
                                         <div id="signature-modal" style="display:none;">
                                             <div class="modal-content">

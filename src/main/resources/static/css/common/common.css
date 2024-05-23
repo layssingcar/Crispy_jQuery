@@ -40,6 +40,17 @@ button {
 	box-shadow: 0 0 0 .25rem rgba(253, 131, 64, .65);
 }
 
+/* 라디오 버튼 체크 색상 변경 */
+.form-check-input:checked {
+	background-color: var(--main-color);
+	border-color: var(--main-color);
+}
+
+.form-check-input:focus {
+	border-color: var(--main-color);
+	box-shadow: 0 0 0 .25rem rgba(253, 131, 64, .65);
+}
+
 @font-face {
 	font-family: 'GmarketSansMedium';
 	src:

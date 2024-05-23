@@ -1,300 +1,447 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
-  <!-- 특정 페이지 css -->
-  <link rel="stylesheet" href="/css/common/index.css" type="text/css">
+<th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
+<!-- 특정 페이지 css -->
+<link rel="stylesheet" href="/css/common/index.css" type="text/css">
 
-  <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script> 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-  	.mainarea{
-  	width:100%;
-  	height: 100%;
-  	max-width:1660px;
-  	}
-  	.maintop{
-  	display:flex !important;
-  	}
-  	.maintop > div{
-  	margin: 10px auto;
-  	}
-  	.mainbottom{
-  	display:flex;
-  	}
-  	.mainbottom > div{
-  	margin: 10px auto;
-  	}
-  	.area1{
-  	width:500px;
-  	height:320px;
-  	display:flex;
-  	flex-wrap:wrap;
-  	flex-direction:column;
+<script
+	src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+.mainarea {
+	width: 100%;
+	height: 100%;
+	max-width: 1660px;
+}
+
+.maintop {
+	display: flex !important;
+}
+
+.maintop>div {
+	margin: 10px auto;
+}
+
+.mainbottom {
+	display: flex;
+}
+
+.mainbottom>div {
+	margin: 10px auto;
+}
+
+.area1 {
+	width: 500px;
+	height: 320px;
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: column;
 	border: 2px var(--main-color) solid;
 	border-radius: 7px;
-  	}
-  	.area2{
-  	width:550px;
-  	height:320px;
-  	border: 2px var(--main-color) solid;
-  	border-radius: 7px;
-  	}
-  	.area3{
-  	width:500px;
-  	height:320px;
-  	border: 2px var(--main-color) solid;
-  	border-radius: 7px;
-  	}
-  	.area4{
-  	width:800px;
-  	height:440px;
-  	border: 2px var(--main-color) solid;
-  	border-radius: 7px;
-  	}
-  	.area5{
-  	width:800px;
-  	height:440px;
-  	border: 2px var(--main-color) solid;
-  	border-radius: 7px;
-  	}
-  	
-  	.area1 > div{
-  	margin:auto 5px; 
-  	}
-  	.area1-profile{
-  	width:240px;
-  	height:180px;
-  	display:flex;
-  	justify-content: center;
-  	}
-  	.area1-info{
-  	width:240px;
-  	height:120px;
-  	font-size:20px;
-  	display:flex;
-  	flex-direction:column; 
-  	justify-content: center;
-  	}
-  	.area1-inoutBtn{
-  	width:240px;
-  	height:60px;
-  	
-  	}
-  	.area1-qr{
-  	width:240px;
-  	height:240px;
-  	}
-  	
-  	.btn-workfin{
-  	display:flex;
-  	justify-content: space-between;
-  	}
-  	#btn-work, #btn-finish{
-  	width:100px;
-  	font-size:20px;
-  	margin:auto 10px;
-  	margin-top:10px;
-  	}
-  	#btn-work{
-  	border-color: rgba(0, 0, 255, 0.9) !important;
-  	border: 2px solid;
-  	background-color: rgba(0, 0, 255, 0.9) !important;
-  	color:white !important;
-  	}
-  	#btn-finish{
-  	border-color: rgba(255, 0, 0, 0.9) !important;
-  	border: 2px solid;
-  	background-color: rgba(255, 0, 0, 0.9) !important;
-  	color:white !important;
-  	}
-  	
-  	.area1-qr > img{
-  	margin:auto 10px;
-  	border: 2px black solid;
-  	}
-	.area1-info > div{
-	margin-left:30px;
-	}
-	#work-start, #work-fin{
-	font-size:15px;
-	}
-	
-    #calendar{
-      margin: 10px auto;
-      width:90%;
-      height:95%;
-      color: black !important; 
-      font-size:15px;
-    }
-    .fc-col-header a{
-      color:#000000 !important; 
-    }
-    .fc-scrollgrid-sync-inner a{
-      color:#000000 !important; 
-      text-decoration: none !important;
-    }
-    .fc-day-sat a{ 
-        color:#0000FF !important; 
-    }
-    .fc-day-sun a{ 
-        color:#FF0000 !important; 
-    }
-    .fc-toolbar-title{
-    font-size:20px !important;
-    }
-    
-    .progress{
-    height:30px;
-    font-size:15px;
-    line-height:30px;
-    }
-  </style>
+}
+
+.area2 {
+	width: 550px;
+	height: 320px;
+	border: 2px var(--main-color) solid;
+	border-radius: 7px;
+}
+
+.area3 {
+	width: 500px;
+	height: 320px;
+	border: 2px var(--main-color) solid;
+	border-radius: 7px;
+}
+
+.area4 {
+	width: 800px;
+	height: 440px;
+	border: 2px var(--main-color) solid;
+	border-radius: 7px;
+}
+
+.area5 {
+	width: 800px;
+	height: 440px;
+	border: 2px var(--main-color) solid;
+	border-radius: 7px;
+}
+
+.area1>div {
+	margin: auto 5px;
+}
+
+.area1-profile {
+	width: 240px;
+	height: 180px;
+	display: flex;
+	justify-content: center;
+}
+
+.area1-info {
+	width: 240px;
+	height: 120px;
+	font-size: 20px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.area1-inoutBtn {
+	width: 240px;
+	height: 60px;
+}
+
+.area1-qr {
+	width: 240px;
+	height: 240px;
+}
+
+.btn-workfin {
+	display: flex;
+	justify-content: space-between;
+}
+
+#btn-work, #btn-finish {
+	width: 100px;
+	font-size: 20px;
+	margin: auto 10px;
+	margin-top: 10px;
+}
+
+#btn-work {
+	border-color: rgba(0, 0, 255, 0.9) !important;
+	border: 2px solid;
+	background-color: rgba(0, 0, 255, 0.9) !important;
+	color: white !important;
+}
+
+#btn-finish {
+	border-color: rgba(255, 0, 0, 0.9) !important;
+	border: 2px solid;
+	background-color: rgba(255, 0, 0, 0.9) !important;
+	color: white !important;
+}
+
+.area1-qr>img {
+	margin: auto 10px;
+	border: 2px black solid;
+}
+
+.area1-info>div {
+	margin-left: 30px;
+}
+
+#work-start, #work-fin {
+	font-size: 15px;
+}
+
+#calendar {
+	margin: 10px auto;
+	width: 90%;
+	height: 95%;
+	color: black !important;
+	font-size: 15px;
+}
+
+.fc-col-header a {
+	color: #000000 !important;
+}
+
+.fc-scrollgrid-sync-inner a {
+	color: #000000 !important;
+	text-decoration: none !important;
+}
+
+.fc-day-sat a {
+	color: #0000FF !important;
+}
+
+.fc-day-sun a {
+	color: #FF0000 !important;
+}
+
+.fc-toolbar-title {
+	font-size: 20px !important;
+}
+
+.progress {
+	height: 30px;
+	font-size: 15px;
+	line-height: 30px;
+}
+  
+.weather{
+  width:1600px !important;
+  display:flex;
+  font-size:2.0rem;
+  align-items:center;
+  justify-content: flex-end;
+}
+.weather > div{
+  margin-left: 10px;
+}
+
+.weather > #weather-icon{
+  object-fit: cover;
+}
+
+#noti {
+	margin-right:15px;
+	font-size: 1.7rem;
+	top: -100px;
+}
+
+.area2 table {
+	margin-left: 5px;
+	margin-top: 20px;
+	width: 53rem;
+	height: 25px
+}
+
+.area2 .table th, .table td {
+	text-align: center;
+	vertical-align: middle;
+}
+.area2 .board-list .top-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top:15px;
+    margin-left:10px;
+}
+        .area2 .board-list h1 {
+    writing-mode: horizontal-tb; /* Ensure writing mode is horizontal */
+    transform: none; /* Reset any transforms if applied */
+    white-space: nowrap; /* Prevent text from breaking to the next line */
+}
+</style>
 </head>
 <body>
 
-<div class="crispy-container">
-  <aside th:replace="~{layout/sidebar :: sidebar}"></aside>
-  <div>
-    <header th:replace="~{layout/navbar :: navbar}"></header>
-    <main>
-      <div class="mainarea">
-        <!-- 내부 내용 -->
-        안녕하세요 메인공간이에요
-        <div class="maintop">
-	        <div class="area1">
-	        	<div class="area1-profile">
-	        		 <img src="/img/anonymous.png" id="profile-img" width="180px" height="180px">
-	        	</div>
-	        	<div class="area1-info">
-					<div id="work-start">출근시간 : 00:00:00</div>
-					<div id="work-fin">퇴근시간 : 00:00:00</div>
-					<div class="progress">
-					  <div class="progress-bar progress-bar-striped bg-danger progress-bar-animated" role="progressbar" 
-					  style="width: 10%" aria-valuenow="" aria-valuemin="0" aria-valuemax="100"></div>
+	<div class="crispy-container">
+		<aside th:replace="~{layout/sidebar :: sidebar}"></aside>
+		<div>
+			<header th:replace="~{layout/navbar :: navbar}"></header>
+			<main>
+				<div class="mainarea">
+					<!-- 내부 내용 -->
+					안녕하세요 메인공간이에요
+					<div class="maintop">
+						<div class="area1">
+							<div class="area1-profile">
+								<img src="/img/anonymous.png" id="profile-img" width="180px"
+									height="180px">
+							</div>
+							<div class="area1-info">
+								<div id="work-start">출근시간 : 00:00:00</div>
+								<div id="work-fin">퇴근시간 : 00:00:00</div>
+								<div class="progress">
+									<div
+										class="progress-bar progress-bar-striped bg-danger progress-bar-animated"
+										role="progressbar" style="width: 10%" aria-valuenow=""
+										aria-valuemin="0" aria-valuemax="100"></div>
+								</div>
+								<div id="work-time">근무시간 : 00:00:00</div>
+							</div>
+							<div class="area1-inoutBtn">
+								<div class="btn-workfin">
+									<button type="button" class="btn btn-outline-primary btn-lg"
+										id="btn-work" onclick="fnClickWork()">출근</button>
+									<button type="button" class="btn btn-outline-danger btn-lg"
+										id="btn-finish" onclick="fnClickFin()" disabled>퇴근</button>
+								</div>
+							</div>
+							<div class="area1-qr">
+								<img
+									src="https://api.qrserver.com/v1/create-qr-code/?data=HelloWorld&size=220x220"
+									alt="" title="" />
+							</div>
+						</div>
+						<div class="area2">
+							<div class="board-list">
+								<div class="top-area">
+									<h1>공지사항</h1>
+									<a href="/board/board-list"><i class="fa-solid fa-plus"
+										id="noti"></i></a>
+								</div>
+								<!-- 테이블 -->
+								<table class="table">
+									<!-- 리스트 -->
+									<thead>
+										<tr>
+											<th scope="col">게시물 번호</th>
+											<th scope="col">작성자</th>
+											<th scope="col">제목</th>
+											<th scope="col">내용</th>
+											<th scope="col">조회수</th>
+											<th scope="col">작성일</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>1</td>
+											<td>1</td>
+											<td>제목</td>
+											<td>내용</td>
+											<td>20</td>
+											<td>2024-05-13</td>
+										</tr>
+										<tr>
+											<td>1</td>
+											<td>1</td>
+											<td>제목</td>
+											<td>내용</td>
+											<td>20</td>
+											<td>2024-05-13</td>
+										</tr>
+										<tr>
+											<td>1</td>
+											<td>1</td>
+											<td>제목</td>
+											<td>내용</td>
+											<td>20</td>
+											<td>2024-05-13</td>
+										</tr>
+										<tr>
+											<td>1</td>
+											<td>1</td>
+											<td>제목</td>
+											<td>내용</td>
+											<td>20</td>
+											<td>2024-05-13</td>
+										</tr>
+										<tr>
+											<td>1</td>
+											<td>1</td>
+											<td>제목</td>
+											<td>내용</td>
+											<td>20</td>
+											<td>2024-05-13</td>
+										</tr>
+										<tr>
+											<td>1</td>
+											<td>1</td>
+											<td>제목</td>
+											<td>내용</td>
+											<td>20</td>
+											<td>2024-05-13</td>
+										</tr>
+										<tr>
+											<td>1</td>
+											<td>1</td>
+											<td>제목</td>
+											<td>내용</td>
+											<td>20</td>
+											<td>2024-05-13</td>
+										</tr>
+										<tr>
+											<td>1</td>
+											<td>1</td>
+											<td>제목</td>
+											<td>내용</td>
+											<td>20</td>
+											<td>2024-05-13</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="area3">
+							<div id='calendar'></div>
+						</div>
 					</div>
-					<div id="work-time">근무시간 : 00:00:00</div>
-	        	</div>
-	        	<div class="area1-inoutBtn">
-		        	<div class="btn-workfin">
-						<button type="button" class="btn btn-outline-primary btn-lg" id="btn-work" 
-							onclick="fnClickWork()">출근</button>
-						<button type="button" class="btn btn-outline-danger btn-lg" id="btn-finish" 
-							onclick="fnClickFin()" disabled>퇴근</button>
+					<div class="mainbottom">
+						<div class="area4">
+							<!-- 차트 크기는 부모 크기를 조절하면 거기에 맞게 자동으로 맹글어짐-->
+							<div style="width: 790px; height: 435px; border: 2px solid black">
+								<!-- 차트 그릴 위치 지정 canvas webGL(그래픽엔진) 사용 -->
+								<canvas id="myChart"></canvas>
+							</div>
+						</div>
+
+						<!-- 미니 결재 목록 -->
+						<div class="area5">
+							<div class="approval-list">
+								<div class="top-area">
+									<h1>결재 문서</h1>
+									<a href="/crispy/approval-list"><i class="fa-solid fa-plus"></i></a>
+								</div>
+								<hr>
+
+								<!-- 테이블 -->
+								<table class="table">
+									<!-- 리스트 -->
+									<tbody>
+										<tr>
+											<td><span>휴직신청서</span> <span>( 박종구 )</span></td>
+											<td>2024-05-13</td>
+											<td>대기</td>
+										</tr>
+									</tbody>
+
+									<!-- 리스트 -->
+									<tbody>
+										<tr>
+											<td><span>휴가신청서</span> <span>( 배영욱 )</span></td>
+											<td>2024-05-17</td>
+											<td>진행중</td>
+										</tr>
+									</tbody>
+
+									<!-- 리스트 -->
+									<tbody>
+										<tr>
+											<td><span>휴직신청서</span> <span>( 오정은 )</span></td>
+											<td>2024-05-13</td>
+											<td>완료</td>
+										</tr>
+									</tbody>
+
+									<!-- 리스트 -->
+									<tbody>
+										<tr>
+											<td><span>휴가신청서</span> <span>( 우혜진 )</span></td>
+											<td>2024-05-18</td>
+											<td>완료</td>
+										</tr>
+									</tbody>
+
+									<!-- 리스트 -->
+									<tbody>
+										<tr>
+											<td><span>휴가신청서</span> <span>( 최동환 )</span></td>
+											<td>2024-05-17</td>
+											<td>진행중</td>
+										</tr>
+									</tbody>
+
+									<!-- 리스트 -->
+									<tbody>
+										<tr>
+											<td><span>휴직신청서</span> <span>( 박종구 )</span></td>
+											<td>2024-05-13</td>
+											<td>대기</td>
+										</tr>
+									</tbody>
+
+									<!-- 리스트 -->
+									<tbody>
+										<tr>
+											<td><span>휴가신청서</span> <span>( 배영욱 )</span></td>
+											<td>2024-05-17</td>
+											<td>진행중</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
 					</div>
-	        	</div>
-	        	<div class="area1-qr">
-	        		<img src="https://api.qrserver.com/v1/create-qr-code/?data=HelloWorld&size=220x220" alt="" title="" />
-	        	</div>
-	        </div>
-	        <div class="area2">안녕하세요 공간2입니다</div>
-	        <div class="area3"><div id='calendar'></div></div>
-        </div>
-        <div class="mainbottom">
-   	        <div class="area4">
-			    <!-- 차트 크기는 부모 크기를 조절하면 거기에 맞게 자동으로 맹글어짐-->
-			    <div style="width:790px;height:435px;border:2px solid black">
-			        <!-- 차트 그릴 위치 지정 canvas webGL(그래픽엔진) 사용 -->
-			        <canvas id="myChart"></canvas>
-			    </div>   	        
-   	        </div>
 
-			<!-- 미니 결재 목록 -->
-	        <div class="area5">
-				<div class="approval-list">
-					<div class="top-area">
-						<h1>결재 문서</h1>
-						<a href="/crispy/approval-list"><i class="fa-solid fa-plus"></i></a>
-					</div>
-					<hr>
-
-					<!-- 테이블 -->
-					<table class="table">
-						<!-- 리스트 -->
-                        <tbody>
-                            <tr>
-                                <td>
-									<span>휴직신청서</span>
-									<span>( 박종구 )</span>
-								</td>
-                                <td>2024-05-13</td>
-                                <td>대기</td>
-                            </tr>
-                        </tbody>
-
-                        <!-- 리스트 -->
-                        <tbody>
-                            <tr>
-                                <td>
-									<span>휴가신청서</span>
-									<span>( 배영욱 )</span>
-								</td>
-                                <td>2024-05-17</td>
-                                <td>진행중</td>
-                            </tr>
-                        </tbody>
-
-                        <!-- 리스트 -->
-                        <tbody>
-                            <tr>
-                                <td>
-									<span>휴직신청서</span>
-									<span>( 오정은 )</span>
-								</td>
-                                <td>2024-05-13</td>
-                                <td>완료</td>
-                            </tr>
-                        </tbody>
-
-                        <!-- 리스트 -->
-                        <tbody>
-                            <tr>
-                                <td>
-									<span>휴가신청서</span>
-									<span>( 우혜진 )</span>
-								</td>
-                                <td>2024-05-18</td>
-                                <td>완료</td>
-                            </tr>
-                        </tbody>
-
-                        <!-- 리스트 -->
-                        <tbody>
-                            <tr>
-                                <td>
-									<span>휴가신청서</span>
-									<span>( 최동환 )</span>
-								</td>
-                                <td>2024-05-17</td>
-                                <td>진행중</td>
-                            </tr>
-                        </tbody>
-
-                        <!-- 리스트 -->
-                        <tbody>
-                            <tr>
-                                <td>
-									<span>휴직신청서</span>
-									<span>( 박종구 )</span>
-								</td>
-                                <td>2024-05-13</td>
-                                <td>대기</td>
-                            </tr>
-                        </tbody>
-
-                        <!-- 리스트 -->
-                        <tbody>
-                            <tr>
-                                <td>
-									<span>휴가신청서</span>
-									<span>( 배영욱 )</span>
-								</td>
-                                <td>2024-05-17</td>
-                                <td>진행중</td>
-                            </tr>
-                        </tbody>
-                    </table>
 				</div>
 			</div>
         </div>
@@ -305,6 +452,45 @@
   </div>
   <!-- 특정 JS -->
   <script>
+  	// 날씨 영역
+  	var apiURI = "http://api.openweathermap.org/data/2.5/weather?q="+"seoul"+ "&lang=kr" + "&units=metric" + 
+  			"&appid="+"be9d839b0ff3435abb7f4e732bcc8649";
+
+    const weatherMap = {
+        'Clear': '맑음',
+        'Clouds': '구름',
+        'Rain': '비',
+        'Drizzle': '이슬비',
+        'Thunderstorm': '천둥번개',
+        'Snow': '눈',
+        'Mist': '안개',
+        'Smoke': '연기',
+        'Haze': '실안개',
+        'Dust': '먼지',
+        'Fog': '안개',
+        'Sand': '모래',
+        'Ash': '재',
+        'Squall': '돌풍',
+        'Tornado': '토네이도'
+    };
+ 	
+  	$.ajax({
+  	    url: apiURI,
+  	    dataType: "json",
+  	    type: "GET",
+  	    success: function(data) {
+  	        var weatherDesc = data.weather[0].main;
+  	        var temp = (data.main.temp).toFixed(1);
+  	        var city = '서울';
+
+  	      	$('#weather-icon').append('<img src= "http://openweathermap.org/img/wn/'
+  	              + data.weather[0].icon + '.png"></img>');
+  	        $('#weather-desc').append(weatherMap[weatherDesc]);
+  	        $('#temp').append(temp + "°C");
+  	        $('#city').append(city);
+  	    }
+  	})
+  	
 	// 달력 영역
 	  const calendarEl = document.getElementById('calendar');
 	  const calendarHeader = {
@@ -457,6 +643,6 @@
       });	  
 
   </script>
-</div>
+  </div>
 </body>
 </html>
