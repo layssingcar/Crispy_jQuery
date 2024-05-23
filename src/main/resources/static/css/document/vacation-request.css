@@ -1,0 +1,98 @@
+/* 휴가신청서 */
+.vacation {font-size: 1.6em;}
+
+/* 테이블 */
+.vacation table {
+    width: 870px;
+    text-align: center;
+}
+
+/* 제목 셀, 데이터 셀 */
+.vacation th, .vacation td {
+    display: table-cell;
+    border: 1px solid black;
+}
+
+/* 전체 열 */
+.vacation .col {
+    background-color: rgba(200, 200, 200, 0.2);
+}
+
+/* 문서 제목 */
+.vacation #doc-title {
+    border-top: none;
+    border-left: none;
+    font-size: 3rem;
+    letter-spacing: 0.5rem;
+}
+
+/* 결재 */
+.vacation #appr {
+    width: 65px;
+    height: 170px;
+    writing-mode: vertical-lr;
+}
+
+/* 결재 열 */
+.vacation .appr-col {
+    width: 120px;
+    height: 50px;
+}
+
+/* 입력 열 */
+.vacation .inp-col {
+    width: 145px;
+    height: 50px;
+}
+
+/* 휴가 사유 */
+.vacation #vct-cont {
+    width: 724px;
+    height: 50px;
+    padding-left: 10px;
+    border: none;
+}
+
+/* 문서 내용 */
+.vacation #doc-cont {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 65px 0;
+}
+
+.vacation #doc-cont > div:nth-child(1) {
+    margin-bottom: 85px;
+}
+
+.vacation #doc-cont > div:nth-child(2) {
+    margin-bottom: 20px;
+}
+
+/* 기안자 서명 */
+.vacation .appr-emp {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
+/* 기안자 이름 */
+.vacation #emp-name {
+    width: 100px;
+    letter-spacing: 0.7rem;
+}
+
+/* 기안자 서명 */
+.vacation #emp-sign {
+    position: relative;
+    margin: 0 30px;
+}
+
+/* 서명 이미지 */
+.vacation .appr-emp img {
+    position: absolute;
+    right: -30px;
+    bottom: 0px;
+    width: 87px;
+    height: 87px;
+}

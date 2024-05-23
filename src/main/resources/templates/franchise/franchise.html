@@ -14,7 +14,7 @@
         <main>
             <div class="franchise">
                 <div class="container frn-container">
-                    <div class="frn-wrap">
+                    <div class="frn-detail-wrap">
                         <div class="frn-info-wrap">
                             <form class="frn-info-form" id="frn-form" method="post" enctype="multipart/form-data"
                                   autocomplete="off">
@@ -76,7 +76,7 @@
                                         <div>
                                             <div class="d-flex">
                                                 <input type="text" id="frn-frnZip" name="frnZip"
-                                                       class="form-control zipcode" placeholder="우편번호"
+                                                       class="form-control zipcode mb-2" placeholder="우편번호"
                                                        th:value="${owner.frnZip}" readonly>
                                                 <div>
                                                     <button type="button" class="mt-0 search-address"
@@ -85,11 +85,11 @@
                                                 </div>
                                             </div>
                                             <input type="text" id="frn-frnStreet" name="frnStreet"
-                                                   class="form-control street-address" placeholder="도로명주소"
+                                                   class="form-control street-address mb-2" placeholder="도로명주소"
                                                    th:value="${owner.frnStreet}" readonly>
                                             <div class="detail-wrap">
                                                 <input type="text" id="frn-frnDetail" name="frnDetail"
-                                                       class="form-control detail-address" placeholder="상세주소"
+                                                       class="form-control detail-address mb-2" placeholder="상세주소"
                                                        th:value="${owner.frnDetail}" readonly>
                                             </div>
                                         </div>

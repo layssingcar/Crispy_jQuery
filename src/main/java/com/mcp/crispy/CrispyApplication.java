@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-@EnableAsync
+//@EnableAsyncpp
 @EnableScheduling
 @MapperScan("com.mcp.crispy.*")
 @SpringBootApplication
