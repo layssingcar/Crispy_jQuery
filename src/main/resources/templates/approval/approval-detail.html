@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
+<link rel="stylesheet" href="/css/summernote/summernote-lite.css">
+<link rel="stylesheet" href="/css/approval/approval-detail.css" type="text/css">
+<link rel="stylesheet" href="/css/document/vacation-application.css" type="text/css">
+</head>
+<body>
+	<div class="crispy-container">
+		<aside th:replace="~{layout/sidebar :: sidebar}"></aside>
+		<div>
+			<header th:replace="~{layout/navbar :: navbar}"></header>
+			<main>
+				<div class="approval-detail">
+					<h1>문서 열람</h1>
+
+					<!-- 상단 영역 -->
+					<div class="top-area">
+						<button type="button" class="btn" id="temp-content">결재하기</button>
+					</div>
+
+                    <div th:replace="~{document/vacation-application :: vacation-application}"></div>
+
+                    <!-- 파일 선택 -->
+                    <!-- <div class="file-attach">
+                        <div class="mb-3">
+                            <input class="form-control" type="file" id="formFileMultiple" multiple>
+                        </div>
+                    </div> -->
+				</div>
+			</main>
+			<footer th:replace="~{layout/footer :: footer}"></footer>
+		</div>
+	</div>
+</body>
+</html>

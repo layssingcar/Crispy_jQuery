@@ -17,6 +17,15 @@ public class ApprovalController {
 		return "approval/approval-list";
 	}
 	
+	/** 결재 문서 열람
+	 * 
+	 * @return forward (approval-detail.html)
+	 */
+	@GetMapping("approval-detail")
+	public String apprDetail() {
+		return "approval/approval-detail";
+	}
+	
 	/** 휴가, 휴직 신청
 	 * 
 	 * @return forward (vacation-approval.html)

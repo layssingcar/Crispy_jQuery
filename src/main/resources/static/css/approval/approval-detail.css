@@ -1,0 +1,22 @@
+/* 결재 상세 페이지 */
+.approval-detail {
+    width: -webkit-fill-available;
+    font-size: 1.7rem;
+}
+
+/* 페이지 제목 */
+.approval-detail h1 {font-size: 2.5rem;}
+
+/* 상단 영역 */
+.approval-detail .top-area {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* 결재하기 */
+.approval-detail button {
+    width: 100px;
+    height: 40px;
+    margin-left: 7px;
+    font-size: 1.5rem;
+}
