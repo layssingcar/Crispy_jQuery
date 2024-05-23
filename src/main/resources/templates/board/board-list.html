@@ -2,11 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 <th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
-<!-- 특정 페이지 css -->
-<link href="/css/board/board-list.css" rel="stylesheet">
-<link href="/css/board/board-pagination.css" rel="stylesheet">
-<link href="/css/board/board-detail.css" rel="stylesheet">
-
+<link rel="stylesheet" href="/css/board/board-list.css" type="text/css">
 </head>
 <body>
 	<div class="crispy-container">
@@ -14,143 +10,155 @@
 		<div>
 			<header th:replace="~{layout/navbar :: navbar}"></header>
 			<main>
-				<h1>공지사항</h1>
-				<div class="container">
-					<!-- Button to add before the search bar -->
-					<div class="search-container">
-						<!-- 검색창  -->
-						<div class="box">
-							<div class="container-1">
-								<span class="icon"><i class="fa fa-search"></i></span> <input
-									type="search" id="search" placeholder="검색" />
-							</div>
-						</div>
-						<table>
-							<button class="btn btn-primary btn-lg" id="addBtn">작성하기</button>
-							<thead>
-								<tr>
-									<th>게시글 번호</th>
-									<th>제목</th>
-									<th>작성자</th>
-									<th>작성일</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>1</td>
-									<td id="boardname">제목 1</td>
-									<td>1</td>
-									<td>2024/05/15</td>
-								</tr>
-								<tr>
-									<td>2</td>
-									<td id="boardname">제목 2</td>
-									<td>2</td>
-									<td>2024/05/15</td>
-								</tr>
-								<tr>
-									<td>3</td>
-									<td id="boardname">제목 3</td>
-									<td>3</td>
-									<td>2024/05/15</td>
-								</tr>
-								<tr>
-									<td>4</td>
-									<td>제목 4</td>
-									<td>4</td>
-									<td>2024/05/15</td>
-								</tr>
-								<tr>
-									<td>5</td>
-									<td>제목 5</td>
-									<td>5</td>
-									<td>2024/05/15</td>
-								</tr>
-								<tr>
-									<td>6</td>
-									<td>제목 6</td>
-									<td>6</td>
-									<td>2024/05/15</td>
-								</tr>
-							</tbody>
-						</table>
-						<nav aria-label="Page navigation example">
-							<ul class="pagination">
-								<li class="page-item"><a class="page-link"
-									aria-label="First"> <span aria-hidden="true">&laquo;</span>
-								</a></li>
-								<li class="page-item"><a class="page-link"
-									aria-label="Previous"> <span aria-hidden="true">&lt;</span>
-								</a></li>
-								<li class="page-item"><a class="page-link" href="#">1</a></li>
-								<li class="page-item"><a class="page-link" href="#">2</a></li>
-								<li class="page-item"><a class="page-link" href="#">3</a></li>
-								<li class="page-item"><a class="page-link" href="#">4</a></li>
-								<li class="page-item"><a class="page-link" href="#">5</a></li>
-								<li class="page-item"><a class="page-link" href="#">6</a></li>
-								<li class="page-item"><a class="page-link" href="#">7</a></li>
-								<li class="page-item"><a class="page-link" href="#">8</a></li>
-								<li class="page-item"><a class="page-link" href="#">9</a></li>
-								<li class="page-item"><a class="page-link" href="#">10</a></li>
-								<li class="page-item"><a class="page-link"
-									aria-label="Next"> <span aria-hidden="true">&gt;</span>
-								</a></li>
-								<li class="page-item"><a class="page-link"
-									aria-label="Last"> <span aria-hidden="true">&raquo;</span>
-								</a></li>
-							</ul>
-						</nav>
+				<div class="board-list">
+					<h1>공지사항</h1>
 
-					</div>
+					<!-- 상단 영역 -->
+					<div class="top-area">
+					<button type="submit" id="addBtn" class="btn btn-primary btn-lg">등록</button>
+						<div class="container-1">
+							<span class="icon"><i class="fa fa-search"></i></span><input
+								type="text" name="" id="search" class="form-control"
+								placeholder="검색어를 입력하세요.">
+						</div>
 				</div>
 
-			</main>
-			<footer th:replace="~{layout/footer :: footer}"></footer>
+				<!-- 테이블 -->
+				<table class="table">
+					<thead>
+						<tr>
+							<th scope="col">게시물 번호</th>
+							<th scope="col">작성자</th>
+							<th scope="col">제목</th>
+							<th scope="col">내용</th>
+							<th scope="col">조회수</th>
+							<th scope="col">작성일</th>
+						</tr>
+					</thead>
+
+					<!-- 리스트 -->
+					<tbody>
+						<tr data-href="/board/board-detail">
+							<td>1</td>
+							<td>1</td>
+							<td>제목</td>
+							<td>내용</td>
+							<td>20</td>
+							<td>2024-05-13</td>
+						</tr>
+						<tr data-href="/board/board-detail">
+							<td>1</td>
+							<td>1</td>
+							<td>제목</td>
+							<td>내용</td>
+							<td>20</td>
+							<td>2024-05-13</td>
+						</tr>
+						<tr data-href="/board/board-detail">
+							<td>1</td>
+							<td>1</td>
+							<td>제목</td>
+							<td>내용</td>
+							<td>20</td>
+							<td>2024-05-13</td>
+						</tr>
+						<tr data-href="/board/board-detail">
+							<td>1</td>
+							<td>1</td>
+							<td>제목</td>
+							<td>내용</td>
+							<td>20</td>
+							<td>2024-05-13</td>
+						</tr>
+						<tr>
+							<td>1</td>
+							<td>1</td>
+							<td>제목</td>
+							<td>내용</td>
+							<td>20</td>
+							<td>2024-05-13</td>
+						</tr>
+						<tr>
+							<td>1</td>
+							<td>1</td>
+							<td>제목</td>
+							<td>내용</td>
+							<td>20</td>
+							<td>2024-05-13</td>
+						</tr>
+						<tr>
+							<td>1</td>
+							<td>1</td>
+							<td>제목</td>
+							<td>내용</td>
+							<td>20</td>
+							<td>2024-05-13</td>
+						</tr>
+						<tr>
+							<td>1</td>
+							<td>1</td>
+							<td>제목</td>
+							<td>내용</td>
+							<td>20</td>
+							<td>2024-05-13</td>
+						</tr>
+						<tr>
+							<td>1</td>
+							<td>1</td>
+							<td>제목</td>
+							<td>내용</td>
+							<td>20</td>
+							<td>2024-05-13</td>
+						</tr>
+						<tr>
+							<td>1</td>
+							<td>1</td>
+							<td>제목</td>
+							<td>내용</td>
+							<td>20</td>
+							<td>2024-05-13</td>
+						</tr>
+					</tbody>
+
+
+				</table>
+
+				<nav aria-label="Page navigation example">
+					<ul class="pagination pagination-lg">
+						<li class="page-item"><a class="page-link" href="#"
+							aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
+						</a></li>
+						<li class="page-item active"><a class="page-link" href="#">1</a></li>
+						<li class="page-item"><a class="page-link" href="#">2</a></li>
+						<li class="page-item"><a class="page-link" href="#">3</a></li>
+						<li class="page-item"><a class="page-link" href="#">4</a></li>
+						<li class="page-item"><a class="page-link" href="#">5</a></li>
+						<li class="page-item"><a class="page-link" href="#">6</a></li>
+						<li class="page-item"><a class="page-link" href="#">7</a></li>
+						<li class="page-item"><a class="page-link" href="#">8</a></li>
+						<li class="page-item"><a class="page-link" href="#">9</a></li>
+						<li class="page-item"><a class="page-link" href="#">10</a></li>
+						<li class="page-item"><a class="page-link" href="#"
+							aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+						</a></li>
+					</ul>
+				</nav>
 		</div>
-		<!-- 특정 JS -->
-		<script>
-			/*$('#boardname').on('click', function() {
-				$('#exampleModal').modal('show');
-			});*/
-
-			document.getElementById('img1').onclick = function(evt) {
-				var img = document.querySelector('#div1 img');
-				if (evt.target.textContent === 'ON') {
-					img.src = '/img/heart2.png';
-					evt.target.textContent = 'OFF';
-				} else {
-					img.src = '/img/heart1.png';
-					evt.target.textContent = 'ON';
-				}
-			}
-			document.getElementById('boardname').addEventListener('click',
-					function() {
-						window.location.href = '/board/board-detail';
-					});
-			document.getElementById('addBtn').addEventListener('click',
-					function() {
-						window.location.href = '/board/board-add';
-					});
-			document.getElementById('modifyBtn').addEventListener('click',
-					function() {
-						window.location.href = '/board/board-modify';
-					});
-
-			document
-			.getElementById('reply-button')
-			.addEventListener(
-					'click',
-					function() {
-						var textarea = document.getElementById('reply');
-						var button = document
-								.getElementById('recomment');
-						textarea.style.display = textarea.style.display === 'none' ? 'block'
-								: 'none';
-						button.style.display = button.style.display === 'none' ? 'block'
-								: 'none';
-					});
-		</script>
-
+		</main>
+		<footer th:replace="~{layout/footer :: footer}"></footer>
+	</div>
+	<script>
+	document.getElementById('addBtn').addEventListener('click',
+			function() {
+				window.location.href = '/board/board-add';
+			});
+	
+	document.querySelectorAll('tr[data-href]').forEach(row => {
+        row.addEventListener('click', function() {
+            window.location.href = this.getAttribute('data-href');
+        });
+    });
+	</script>
 	</div>
 </body>
 </html>
