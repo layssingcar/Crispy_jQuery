@@ -80,7 +80,7 @@
 .board-list .pagination {
     display: flex;
     justify-content: center;
-    margin-top: 50px;
+    margin-top: 30px;
 }
 
 .board-list .page-link {color: var(--main-color);}

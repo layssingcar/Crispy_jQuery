@@ -28,7 +28,10 @@ public class BoardController {
 	public String boardDetail() {
 		return "board/board-detail";
 	}
+	@GetMapping("/board-detail2")
+	public String boardDetail2() {
+		return "board/board-detail2";
+	}
 
-	
 	
 }
