@@ -34,5 +34,11 @@ public class ApprovalController {
 	public String vacationAppr() {
 		return "approval/vacation-approval";
 	}
-
+	
+	// 결재선 선택 (임시)
+	@GetMapping("vacation-approval-2")
+	public String vacationAppr2() {
+		return "approval/vacation-approval-2";
+	}
+	
 }
