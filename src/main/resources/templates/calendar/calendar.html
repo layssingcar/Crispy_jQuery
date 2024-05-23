@@ -137,11 +137,11 @@
 			              <div class="form-group">
 			                <label for="allDay">일정구분:&nbsp;</label>
 							 <div class="form-check form-check-inline">
-							  <input class="form-check-input" type="radio" name="inlineRadioOptions1" id="radio-notice" value="notice" checked>
+							  <input class="form-check-input" type="radio" name="notice-or-vac" id="radio-notice" value="notice" checked>
 							  <label class="form-check-label" for="radio-notice">공지</label>
 							</div>
 							<div class="form-check form-check-inline">
-							  <input class="form-check-input" type="radio" name="inlineRadioOptions1" id="radio-vac" value="vac">
+							  <input class="form-check-input" type="radio" name="notice-or-vac" id="radio-vac" value="vac">
 							  <label class="form-check-label" for="radio-vac">휴가</label>
 							</div>
 			              </div>
@@ -158,15 +158,15 @@
 			              <div class="form-group" id="vac-elem">
 			                <label for="allDay">휴가 종류:&nbsp;</label>
 							 <div class="form-check form-check-inline">
-							  <input class="form-check-input" type="radio" name="inlineRadioOptions2" id="vac-all" value="all" checked>
+							  <input class="form-check-input" type="radio" name="var-elem-radio" id="vac-all" value="all" checked>
 							  <label class="form-check-label" for="vac-all">연차</label>
 							</div>
 							<div class="form-check form-check-inline">
-							  <input class="form-check-input" type="radio" name="inlineRadioOptions2" id="vac-half" value="half">
+							  <input class="form-check-input" type="radio" name="var-elem-radio" id="vac-half" value="half">
 							  <label class="form-check-label" for="vac-half">반차</label>
 							</div>
 							<div class="form-check form-check-inline">
-							  <input class="form-check-input" type="radio" name="inlineRadioOptions2" id="vac-quat" value="quat">
+							  <input class="form-check-input" type="radio" name="var-elem-radio" id="vac-quat" value="quat">
 							  <label class="form-check-label" for="vac-quat">반반차</label>
 							</div>
 			              </div>
@@ -239,37 +239,54 @@
 	 $("#myModal").on("show.bs.modal", function(){
 		    // 초기 체크 상태에 따라 show/hide 설정
 		    if ($("#radio-notice").is(':checked')) {
-		        $("#vac-type").hide();
-		        $("#vac-elem").hide();
-            	$(".form-group-start").show();
-            	$(".form-group-end").show();
+	            $("#vac-type, #vac-elem").hide();
+            	$(".form-group-start, .form-group-end").show();
 		    }
-		    $("input[name='inlineRadioOptions1']").off('click').on('click', function() {
+		    
+		    $("input[name='notice-or-vac']").off('click').on('click', function() {		// 공지, 휴가 라디오 버튼 눌렀을 때 
 		        if ($("#radio-notice").is(':checked')) {		// 공지
-		            $("#vac-type").hide();
-		            $("#vac-elem").hide();
-	            	$(".form-group-start").show();
-	            	$(".form-group-end").show();
+		            $("#vac-type, #vac-elem").hide();
+	            	$(".form-group-start, .form-group-end").show();
+            	 	$("#start").off();									// 일정구분 라디오 초기화	
+            	 	$('#start option').eq(0).prop('selected', true);	// 시작시간 초기화
+            	 	$('#end option').eq(0).prop('selected', true);		// 종료시간 초기화
+            	 	$("#end").attr("disabled", false);
+		            $("#vac-all").prop("checked", true);
+            	 	
 	        } else if ($("#radio-vac").is(':checked')) {		// 휴가
-		            $("#vac-type").show();
-		            $("#vac-elem").show();
+		            $("#vac-type, #vac-elem").show();
 		            
 		            if($("#vac-all").is(':checked')){	// 연차
-		            	$(".form-group-start").hide();
-		            	$(".form-group-end").hide();
+		            	$(".form-group-start, .form-group-end").hide();
+		            	$("#end").attr("disabled", false);
 		            }
-		            $("input[name='inlineRadioOptions2']").off('click').on('click', function(){
+		            $("input[name='var-elem-radio']").off('click').on('click', function(){		// 휴가 종류 라디오 버튼 눌렀을 때 
 		            	 if ($("#vac-all").is(':checked')) {	// 연차
-			            	$(".form-group-start").hide();
-			            	$(".form-group-end").hide();
+		            		 $(".form-group-start, .form-group-end").hide();
 		 		        } else if ($("#vac-half").is(':checked')){	// 반차
-			            	$(".form-group-start").show();
-			            	$(".form-group-end").show();
+		 		        	$(".form-group-start, .form-group-end").show();
+			            	$("#end").attr("disabled", true);
 			            	
 			            	if($("#btnradio2").is(":checked"))
 			            		$('#start option').eq(10).prop('selected', true);
 			            	else if($("#btnradio1").is(":checked"))
 			            		$('#start option').eq(0).prop('selected', true);
+			            	
+			            	$("#btnradio2").off('click').on('click', function(){
+			            		$('#start option').eq(10).prop('selected', true);
+			            		if(($( "#start option" ).index($("#start option:selected")) + 7) >= $("#start option").length)
+			            			$('#end option').eq($( "#start option" ).length - 1).prop('selected', true);
+			            		else
+			            			$('#end option').eq($("#start option").index($("#start option:selected")) + 7).prop('selected', true);
+			            	})
+			            	
+			            	$("#btnradio1").off('click').on('click', function(){
+			            		$('#start option').eq(0).prop('selected', true);
+			            		if(($( "#start option" ).index($("#start option:selected")) + 7) >= $("#start option").length)
+			            			$('#end option').eq($( "#start option" ).length - 1).prop('selected', true);
+			            		else
+			            			$('#end option').eq($("#start option").index($("#start option:selected")) + 7).prop('selected', true);
+			            	})
 			            	
 			            	$("#start").off('change').on('change', function(){
 			            		if(($( "#start option" ).index($("#start option:selected")) + 7) >= $("#start option").length)
@@ -284,13 +301,29 @@
 		            			$('#end option').eq($("#start option").index($("#start option:selected")) + 7).prop('selected', true);
 			            	
 		 		        } else if($("#vac-quat").is(':checked')){	// 반반차
-			            	$(".form-group-start").show();
-			            	$(".form-group-end").show();
+		 		        	$(".form-group-start, .form-group-end").show();
+			            	$("#end").attr("disabled", true);
 			            	
 			            	if($("#btnradio2").is(":checked"))
 			            		$('#start option').eq(10).prop('selected', true);
 			            	else if($("#btnradio1").is(":checked"))
 			            		$('#start option').eq(0).prop('selected', true);
+			            	
+			            	$("#btnradio2").off('click').on('click', function(){
+			            		$('#start option').eq(10).prop('selected', true);
+			            		if(($( "#start option" ).index($("#start option:selected")) + 3) >= $("#start option").length)
+			            			$('#end option').eq($( "#start option" ).length - 1).prop('selected', true);
+			            		else
+			            			$('#end option').eq($("#start option").index($("#start option:selected")) + 3).prop('selected', true);
+			            	})
+			            	
+			            	$("#btnradio1").off('click').on('click', function(){
+			            		$('#start option').eq(0).prop('selected', true);
+			            		if(($( "#start option" ).index($("#start option:selected")) + 3) >= $("#start option").length)
+			            			$('#end option').eq($( "#start option" ).length - 1).prop('selected', true);
+			            		else
+			            			$('#end option').eq($("#start option").index($("#start option:selected")) + 3).prop('selected', true);
+			            	})
 			            	
 			            	$("#start").off('change').on('change', function(){
 			            		if(($( "#start option" ).index($("#start option:selected")) + 3) >= $("#start option").length)
@@ -334,7 +367,6 @@
         selectable:true,    // 달력 날짜 드래그
         locale:'kr',      // 달력 언어 설정
         editable:true,
-        navLinks:true,
         dayMaxEventRows:true
       }
 
