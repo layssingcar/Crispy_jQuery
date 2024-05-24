@@ -1,0 +1,197 @@
+<div class="order-doc" th:fragment="order-application">
+    <div>
+        <div class="top-area">
+            <!-- 가맹점 정보 테이블 -->
+            <table class="franchise-table">
+                <tbody>
+                    <tr>
+                        <th class="col top-col">가맹점명</th>
+                        <!-- 가맹점명 -->
+                        <td colspan="3"></td>
+                    </tr>
+                    <tr>
+                        <th class="col top-col">대표자</th>
+                        <!-- 기안자 -->
+                        <td></td>
+
+                        <th class="col top-col">전화번호</th>
+                        <!-- 전화번호 -->
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th class="col top-col">주소</th>
+                        <!-- 주소 -->
+                        <td colspan="3"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- 본사(관리자) 결재 서명 테이블 -->
+            <table>
+                <tr>
+                    <th class="col" id="appr">결재</th>
+                </tr>
+
+                <tr id="sign-tr">
+                    <!-- 결재 이미지 -->
+                    <td><img src="" id="sign-img" alt="서명 이미지"></td>
+                </tr>
+            </table>
+        </div>
+    
+        <!-- 발주재고 테이블 -->
+        <table class="stock-order-table">
+            <tbody>
+                <tr>
+                    <th class="col">NO</th>
+                    <th class="col">카테고리</th>
+                    <th class="col">재고명</th>
+                    <th class="col">단가</th>
+                    <th class="col">수량</th>
+                    <th class="col">금액</th>
+                </tr>
+                <tr>
+                    <th class="col">1</th>
+                    
+                    <!-- 카테고리 -->
+                    <td></td>
+
+                    <!-- 재고명 -->
+                    <td></td>
+
+                    <td>
+                        <div class="stock-flex">
+                            <!-- 단가 -->
+                            <span></span>
+                            <span>원</span>
+                            <span>&nbsp;/&nbsp;</span>
+                            <!-- 단위 -->
+                            <span></span>
+                        </div>
+                    </td>
+
+                    <td>
+                        <div class="stock-flex">
+                            <!-- 수량 -->
+                            <span></span>
+                            <span>개</span>
+                        </div>
+                    </td>
+
+                    <td>
+                        <div class="stock-flex">
+                            <!-- 금액 -->
+                            <span></span>
+                            <span>원</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="col">2</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th class="col">3</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th class="col">4</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th class="col">5</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th class="col">6</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th class="col">7</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th class="col">8</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th class="col">9</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th class="col">10</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th colspan="3" class="col" id="ls">합계금액</th>
+                    <td colspan="4" class="col">
+                        <div class="stock-flex">
+                            <!-- 합계금액 -->
+                            <span></span>
+                            <span>원</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6">
+                        <div id="doc-cont">
+                            <div>위와 같이 발주를 요청합니다.</div>
+
+                            <!-- 기안일 (2024년 05월 22일 수요일) -->
+                            <div></div>
+    
+                            <div class="appr-emp">
+                                <div>신청인:&nbsp;</div>
+    
+                                <!-- 기안자 -->
+                                <div id="emp-name"></div>
+    
+                                <div id="emp-sign">
+                                    <span>(인)</span>
+                                    <!-- 서명 이미지 -->
+                                    <img src="" alt="서명 이미지">
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
