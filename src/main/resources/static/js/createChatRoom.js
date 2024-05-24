@@ -5,12 +5,14 @@ document.addEventListener("DOMContentLoaded", function () {
         event.preventDefault();
 
         const chatRoomTitle = document.getElementById("chatRoomTitle").value;
+        const inviteUser = document.getElementById("inviteUser").value;
         const creatorEmpNo = currentEmpNo;
         console.log(chatRoomTitle);
 
         const chatRoom = {
             chatRoomTitle: chatRoomTitle,
-            creator: currentEmpNo
+            creator: currentEmpNo,
+            participants: [{ empNo: inviteUser }]
         };
 
         fetch(`/api/chat/rooms/${creatorEmpNo}/v1`, {
@@ -28,11 +30,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             })
             .then(data => {
-                // 성공적으로 생성된 경우 채팅방 목록을 다시 로드
+                alert(data.message);
                 loadChatRooms();
-                // 모달 닫기
                 const createChatRoomModal = bootstrap.Modal.getInstance(document.getElementById('createChatRoomModal'));
                 createChatRoomModal.hide();
+
             })
             .catch(error => console.error('Error:', error));
     });
