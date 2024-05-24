@@ -63,12 +63,13 @@ function loadChatRooms() {
     fetch('/api/chat/rooms/v1')
         .then(response => response.json())
         .then(chatRooms => {
-            console.log(chatRooms)
             const chatRoomList = document.getElementById('chatRoomList');
             chatRoomList.innerHTML = '';
             chatRooms.forEach(chatRoom => {
+                console.log("charRoom : " + chatRoom)
                 const chatRoomElement = createChatRoomElement(chatRoom);
                 chatRoomList.appendChild(chatRoomElement);
+                loadLatestMessage(chatRoom.chatRoomNo, chatRoomElement)
             });
         })
         .catch(error => console.error('Error loading chat rooms:', error));
@@ -76,6 +77,7 @@ function loadChatRooms() {
 
 function createChatRoomElement(chatRoom) {
     const chatRoomElement = document.createElement('div');
+    console.log(chatRoom);
     chatRoomElement.className = 'msg-room';
     chatRoomElement.dataset.chatId = chatRoom.chatRoomNo;
     chatRoomElement.innerHTML = `
@@ -83,8 +85,8 @@ function createChatRoomElement(chatRoom) {
             <div><img src="/img/anonymous.png"></div>
         </div>
         <div class="temp">
-            <div>${chatRoom.empName}</div>
-            <div>최근 메시지 내용</div>
+            <div>${chatRoom.chatRoomTitle}</div>
+            <div class="latest-message">최근 메시지 내용</div>
         </div>
         <div class="notify"></div>
     `;
@@ -95,15 +97,55 @@ function createChatRoomElement(chatRoom) {
     return chatRoomElement;
 }
 
+function loadLatestMessage(chatRoomNo, chatRoomElement) {
+    fetch(`/api/chat/rooms/${chatRoomNo}/messages/v1`)
+        .then(response => response.json())
+        .then(messages => {
+            if (messages.length > 0) {
+                const latestMessage = messages[messages.length - 1];
+                const latestMessageDiv = chatRoomElement.querySelector('.latest-message');
+                latestMessageDiv.textContent = latestMessage.msgContent;
+            }
+        })
+        .catch(error => console.error('Error loading latest message:', error));
+}
+
 function loadChatDetails(chatRoomNo) {
-    const chatName = document.getElementById("chatName")
+    const chatName = document.getElementById("chatName");
+    const sideBarImgWrap = document.querySelector(".side-bar-img-wrap");
+
     fetch(`/api/chat/rooms/${chatRoomNo}/v1`)
         .then(response => response.json())
         .then(data => {
             console.log(data);
-            chatName.textContent = data.participants[0].empName;
+
+            // 기존 내용을 지우고 새로 추가
+            chatName.innerHTML = '';
+            // 초기 요소 (새로운 사용자 초대)를 유지하고 이후의 자식 요소들만 제거
+            while (sideBarImgWrap.children.length > 1) {
+                sideBarImgWrap.removeChild(sideBarImgWrap.lastChild);
+            }
+
+            data.participants.forEach(participant => {
+                console.log(participant)
+                const participantName = document.createElement('div');
+                participantName.textContent = participant.empName + ', ';
+                chatName.appendChild(participantName);
+
+                const participantElement = document.createElement('div');
+                participantElement.className = 'chat-user-list';
+                participantElement.innerHTML = `
+                    <div class="profile-image">
+                        <div><img src="${participant.empProfile}"></div>
+                    </div>
+                    <span>${participant.empName}</span>
+                `;
+                sideBarImgWrap.appendChild(participantElement);
+            });
         })
+        .catch(error => console.error('Error loading chat details:', error));
 }
+
 function updateChatRoomTitle(title) {
     console.log("updateChatRoomTitle" + title)
     document.getElementById('chatRoomTitle').textContent = title;
@@ -111,20 +153,30 @@ function updateChatRoomTitle(title) {
 
 
 function loadMessages(chatRoomNo) {
-    fetch(`/api/chat/rooms/${chatRoomNo}/messages/v1`)
-        .then(response => response.json())
-        .then(messages => {
-            document.querySelector(".mid-intro").style.display = "none";
-            document.querySelector(".mid-chat").style.display = "flex";
-            loadChatDetails(chatRoomNo);
-            const chatWindow = document.getElementById("chatMessages");
-            chatWindow.innerHTML = '';
-            messages.forEach(msg => {
-                const messageElement = createMessageElement(msg);
-                chatWindow.appendChild(messageElement);
-            });
-        })
-        .catch(error => console.error('Error loading messages:', error));
+    fetch(`/api/chat/rooms/${chatRoomNo}/access/v1`, {
+        method: "POST"
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to add access record');
+        }
+        console.log('Access record added successfully');
+        // 메시지 로드 로직
+        fetch(`/api/chat/rooms/${chatRoomNo}/messages/v1`)
+            .then(response => response.json())
+            .then(messages => {
+                document.querySelector(".mid-intro").style.display = "none";
+                document.querySelector(".mid-chat").style.display = "flex";
+                loadChatDetails(chatRoomNo);
+                const chatWindow = document.getElementById("chatMessages");
+                chatWindow.innerHTML = '';
+                messages.forEach(msg => {
+                    const messageElement = createMessageElement(msg);
+                    chatWindow.appendChild(messageElement);
+                });
+            })
+            .catch(error => console.error('Error loading messages:', error));
+    }).catch(error => console.error('Error adding access record:', error));
 }
 
 function createMessageElement(msg) {
@@ -139,8 +191,14 @@ function createMessageElement(msg) {
                 ${msg.msgContent}
             </div>
         ` : `
-            <div class="chat">
-                ${msg.msgContent}
+            <div class="profile-image">
+                <img src="${msg.empProfile}" alt="Profile Image">
+            </div>
+            <div>
+            ${msg.empName}
+                <div class="chat">
+                    ${msg.msgContent}
+                </div>
             </div>
             <div class="chat-datetime">
                 ${new Date(msg.msgDt).toLocaleTimeString()}
