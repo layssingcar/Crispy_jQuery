@@ -21,4 +21,6 @@ public class ChatMessageDto {
     private Integer modifier;
     private Integer chatRoomNo;
     private Integer empNo;
+    private String empProfile;
+    private String empName;
 }

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 
 @Builder
@@ -20,4 +21,7 @@ public class ChatRoomDto {
     private Integer creator;
     private Date modifyDt;
     private Integer modifier;
+    private List<CrEmpDto> participants;
+    private String empName;
+    private Integer empNo;
 }
