@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mcp.crispy.chat.mapper.ChatMapper">
+
+    <resultMap id="ChatRoomMap" type="ChatRoomDto">
+        <id property="chatRoomNo" column="CHAT_ROOM_NO"/>
+        <result property="chatRoomTitle" column="CHAT_ROOM_TITLE"/>
+        <result property="chatRoomStat" column="CHAT_ROOM_STAT"/>
+        <result property="createDt" column="CREATE_DT"/>
+        <result property="creator" column="CREATOR"/>
+        <result property="modifyDt" column="MODIFY_DT"/>
+        <result property="modifier" column="MODIFIER"/>
+        <collection property="participants" ofType="CrEmpDto">
+            <id property="empNo" column="EMP_NO"/>
+            <result property="entryStat" column="ENTRY_STAT"/>
+            <result property="empName" column="EMP_NAME" />
+        </collection>
+
+    </resultMap>
+
+    <select id="getChatRooms" resultType="ChatRoomDto">
+        SELECT DISTINCT c.CHAT_ROOM_NO, c.CHAT_ROOM_TITLE, c.CHAT_ROOM_STAT, c.CREATE_DT, c.CREATOR, c.MODIFY_DT, c.MODIFIER,
+                        P.EMP_NO, P.ENTRY_STAT, E.EMP_NAME
+        FROM CHAT_ROOM_T C
+                 LEFT JOIN CR_EMP_T P ON C.CHAT_ROOM_NO = P.CHAT_ROOM_NO
+                 LEFT JOIN EMPLOYEE_T E ON E.EMP_NO = P.EMP_NO
+        where C.CREATOR = #{empNo} or P.EMP_NO = #{empNo}
+    </select>
+
+    <select id="getChatRoom" resultMap="ChatRoomMap">
+        SELECT C.CHAT_ROOM_NO, C.CHAT_ROOM_TITLE , C.CHAT_ROOM_STAT, C.CREATE_DT, C.CREATOR,
+               C.MODIFY_DT, C.MODIFIER, P.EMP_NO, P.ENTRY_STAT, E.EMP_NAME
+          FROM CHAT_ROOM_T C
+          LEFT JOIN CR_EMP_T P ON C.CHAT_ROOM_NO = P.CHAT_ROOM_NO
+          LEFT JOIN EMPLOYEE_T E ON P.EMP_NO = E.EMP_NO
+         WHERE C.CHAT_ROOM_NO = #{chatRoomNo}
+    </select>
+
+    <select id="getMessages" resultType="com.mcp.crispy.chat.dto.ChatMessageDto">
+        SELECT * FROM CHAT_MESSAGE_T WHERE CHAT_ROOM_NO = #{chatRoomNo} ORDER BY MSG_DT
+    </select>
+
+    <insert id="saveMessage">
+        <selectKey keyProperty="msgNo" resultType="int" order="BEFORE">
+            SELECT CHAT_MESSAGE_SEQ.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO CHAT_MESSAGE_T (MSG_NO, MSG_CONTENT, CHAT_ROOM_NO, EMP_NO, CREATE_DT)
+        VALUES (#{msgNo}, #{msgContent}, #{chatRoomNo}, #{empNo}, CURRENT_TIMESTAMP)
+    </insert>
+
+    <insert id="createChatRoom">
+        <selectKey keyProperty="chatRoomNo" resultType="int" order="BEFORE">
+            SELECT CHAT_ROOM_SEQ.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO CHAT_ROOM_T (CHAT_ROOM_NO, CHAT_ROOM_TITLE, CREATOR, CREATE_DT)
+        VALUES (#{chatRoomNo}, #{chatRoomTitle}, #{creator}, CURRENT_TIMESTAMP)
+    </insert>
+
+    <insert id="addParticipant">
+        INSERT INTO CR_EMP_T (CHAT_ROOM_NO, EMP_NO, ENTRY_STAT)
+        VALUES (#{chatRoomNo}, #{empNo}, #{entryStat})
+    </insert>
+
+    <select id="getParticipantsByRoom" parameterType="CrEmpDto">
+        SELECT CHAT_ROOM_NO, EMP_NO, ENTRY_STAT
+          FROM CR_EMP_T
+         WHERE CHAT_ROOM_NO = #{chatRoomNo}
+    </select>
+
+</mapper>
