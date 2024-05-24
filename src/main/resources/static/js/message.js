@@ -1,95 +1,201 @@
-document.addEventListener("DOMContentLoaded", function() {
-    // 하드코딩된 메시지 데이터를 객체 형태로 저장
-    const chatData = {
-        1: [
-            {
-                sender: "moz1mozi",
-                time: "오후 12:02",
-                message: "미안하다 이거 보여주려고 어그로 끌었다."
-            },
-            {
-                sender: "나",
-                time: "오후 12:03",
-                message: "이거 레알 실화냐? 가슴이 웅장해진다."
-            }
-        ],
-        2: [
-            {
-                sender: "사황",
-                time: "오후 12:04",
-                message: "카이도우는 죽었다.. 미안하다.."
-            },
-            {
-                sender: "나",
-                time: "오후 12:05",
-                message: "진짜냐? 대박이다."
-            }
-        ],
-        3: [
-            {
-                sender: "원피스",
-                time: "오후 12:06",
-                message: "루피가 태양신이라고?"
-            },
-            {
-                sender: "나",
-                time: "오후 12:07",
-                message: "그게 무슨 말이야?"
-            }
-        ]
-    };
+let stompClient = null;
+let currentChatRoomNo = null;
 
-    // 메시지 안내 문구 -> 메시지 내용
-    document.querySelectorAll(".msg-room").forEach(room => {
-        room.addEventListener("click", function() {
-            const chatId = this.getAttribute("data-chat-id");
-            const messages = chatData[chatId];
-            console.log(chatId);
+document.addEventListener("DOMContentLoaded", function () {
+    connect();
+    setupEventListeners();
+    loadChatRooms();
+});
 
-            // Hide the intro section and show the chat section
-            document.querySelector(".mid-intro").style.display = "none";
-            document.querySelector(".mid-chat").style.display = "flex";
+function setupEventListeners() {
+    document.getElementById("sendButton").addEventListener("click", sendMessage);
 
-            // Update the chat name in the chat section
-            const chatName = this.querySelector(".temp > div:first-child").textContent;
-            document.querySelector(".mid-chat .chat-name > div:nth-child(2)").textContent = chatName;
+    document.getElementById("invite-form").addEventListener('submit', function (event) {
+        event.preventDefault();
+        const recipient = document.getElementById("recipient").value;
+        if (currentChatRoomNo) {
+            inviteUser(currentChatRoomNo, recipient);
+            console.log(currentChatRoomNo);
+        } else {
+            alert("채팅방을 선택하세요.");
+        }
+    });
 
-            // Clear previous chat messages
-            const chatWindow = document.querySelector(".mid-chat .chat-window > div:first-child");
-            chatWindow.innerHTML = "";
+    const toggleButton = document.getElementById("toggleSidebar");
+    const rightSidebar = document.getElementById("rightSidebar");
+    const midChat = document.querySelector(".mid-chat");
+    const notifyOff = document.querySelector(".notify-off");
+    const notifyOn = document.querySelector(".notify-on");
 
-            // Add new chat messages
-            messages.forEach(msg => {
-                const messageElement = `
-                    <div class="output ${msg.sender === '나' ? 'sent' : 'receive'}">
-                        ${msg.sender === '나' ? `
-                            <div class="chat-datetime">
-                                ${msg.time}
-                            </div>
-                            <div class="chat">
-                                ${msg.message}
-                            </div>
-                        ` : `
-                            <div class="chat">
-                                ${msg.message}
-                            </div>
-                            <div class="chat-datetime">
-                                ${msg.time}
-                            </div>
-                        `}
-                    </div>
-                `;
-                chatWindow.innerHTML += messageElement;
-            });
+    toggleButton.addEventListener("click", function () {
+        if (rightSidebar.style.display === "none" || rightSidebar.style.display === "") {
+            rightSidebar.style.display = "flex";
+            midChat.style.flexGrow = "0";
+        } else {
+            rightSidebar.style.display = "none";
+            midChat.style.flexGrow = "1";
+        }
+    });
 
-            // Ensure the right-info section is hidden
-            // document.querySelector(".right-info").style.display = "none";
+    notifyOff.addEventListener("click", function () {
+        this.style.display = "none";
+        notifyOn.style.display = "block";
+    });
+
+    notifyOn.addEventListener("click", function () {
+        this.style.display = "none";
+        notifyOff.style.display = "block";
+    });
+}
+
+function connect() {
+    const socket = new SockJS('/chat');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, function (frame) {
+        console.log('Connected: ' + frame);
+        stompClient.subscribe('/topic/messages', function (messageOutput) {
+            showMessage(JSON.parse(messageOutput.body));
         });
     });
+}
 
-    // 채팅방 상세 정보 -> 메시지 내용
-    document.querySelector(".right-info > div:nth-child(1) a").addEventListener("click", function() {
-        document.querySelector(".right-info").style.display = "none";
-        document.querySelector(".mid-chat").style.display = "flex";
+function loadChatRooms() {
+    fetch('/api/chat/rooms/v1')
+        .then(response => response.json())
+        .then(chatRooms => {
+            console.log(chatRooms)
+            const chatRoomList = document.getElementById('chatRoomList');
+            chatRoomList.innerHTML = '';
+            chatRooms.forEach(chatRoom => {
+                const chatRoomElement = createChatRoomElement(chatRoom);
+                chatRoomList.appendChild(chatRoomElement);
+            });
+        })
+        .catch(error => console.error('Error loading chat rooms:', error));
+}
+
+function createChatRoomElement(chatRoom) {
+    const chatRoomElement = document.createElement('div');
+    chatRoomElement.className = 'msg-room';
+    chatRoomElement.dataset.chatId = chatRoom.chatRoomNo;
+    chatRoomElement.innerHTML = `
+        <div class="profile-image">
+            <div><img src="/img/anonymous.png"></div>
+        </div>
+        <div class="temp">
+            <div>${chatRoom.empName}</div>
+            <div>최근 메시지 내용</div>
+        </div>
+        <div class="notify"></div>
+    `;
+    chatRoomElement.addEventListener('click', function () {
+        loadMessages(chatRoom.chatRoomNo);
+        currentChatRoomNo = chatRoom.chatRoomNo; // 현재 채팅방 번호를 업데이트
     });
-});
+    return chatRoomElement;
+}
+
+function loadChatDetails(chatRoomNo) {
+    const chatName = document.getElementById("chatName")
+    fetch(`/api/chat/rooms/${chatRoomNo}/v1`)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            chatName.textContent = data.participants[0].empName;
+        })
+}
+function updateChatRoomTitle(title) {
+    console.log("updateChatRoomTitle" + title)
+    document.getElementById('chatRoomTitle').textContent = title;
+}
+
+
+function loadMessages(chatRoomNo) {
+    fetch(`/api/chat/rooms/${chatRoomNo}/messages/v1`)
+        .then(response => response.json())
+        .then(messages => {
+            document.querySelector(".mid-intro").style.display = "none";
+            document.querySelector(".mid-chat").style.display = "flex";
+            loadChatDetails(chatRoomNo);
+            const chatWindow = document.getElementById("chatMessages");
+            chatWindow.innerHTML = '';
+            messages.forEach(msg => {
+                const messageElement = createMessageElement(msg);
+                chatWindow.appendChild(messageElement);
+            });
+        })
+        .catch(error => console.error('Error loading messages:', error));
+}
+
+function createMessageElement(msg) {
+    const messageElement = document.createElement('div');
+    messageElement.className = `output ${msg.empNo === currentEmpNo ? 'sent' : 'receive'}`;
+    messageElement.innerHTML = `
+        ${msg.empNo === currentEmpNo ? `
+            <div class="chat-datetime">
+                ${new Date(msg.msgDt).toLocaleTimeString()}
+            </div>
+            <div class="chat">
+                ${msg.msgContent}
+            </div>
+        ` : `
+            <div class="chat">
+                ${msg.msgContent}
+            </div>
+            <div class="chat-datetime">
+                ${new Date(msg.msgDt).toLocaleTimeString()}
+            </div>
+        `}
+    `;
+    return messageElement;
+}
+
+function sendMessage() {
+    const chatInput = document.getElementById("chatInput");
+    const messageContent = chatInput.value.trim();
+    if (messageContent && currentChatRoomNo) {
+        const chatMessage = {
+            msgContent: messageContent,
+            chatRoomNo: currentChatRoomNo,
+            empNo: currentEmpNo
+        };
+        stompClient.send("/app/chat", {}, JSON.stringify(chatMessage));
+        chatInput.value = '';
+    } else {
+        alert("채팅방을 선택하고 메시지를 입력하세요.");
+    }
+}
+
+function showMessage(message) {
+    const chatWindow = document.getElementById("chatMessages");
+    const messageElement = createMessageElement(message);
+    chatWindow.appendChild(messageElement);
+}
+
+function inviteUser(chatRoomNo, empNo) {
+    const participant = {
+        chatRoomNo: chatRoomNo,
+        empNo: parseInt(empNo),
+        entryStat: 0 // 기본 입장 상태
+    };
+
+    fetch(`/api/chat/rooms/${chatRoomNo}/invite/v1`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(participant),
+    })
+        .then(response => {
+            if (!response.ok) {
+                console.log(response)
+                throw new Error('Failed to invite user');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('User invited successfully:', data);
+            // 추가적인 작업이 필요하다면 여기에 추가
+        })
+        .catch(error => console.error('Error inviting user:', error));
+}
