@@ -12,6 +12,9 @@ import java.security.Principal;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @Controller
 @RequiredArgsConstructor
@@ -29,10 +32,9 @@ public class AttendanceController {
 		return ResponseEntity.ok(insertCount);
 	}
 	
-	@ResponseBody
-	@GetMapping(value = "", produces = "application/json") 	
-	public List<AttendanceDto> getAttendenceList(@PathVariable(value = "boardNo") Optional<String> opt, Model model) {
-		List<AttendanceDto> list = attendanceService.getAttendenceList(model, 0);
-		return list;
+	@GetMapping(value="/getAtt", produces="application/json")
+	public String getAttList(Model model) {
+		return new String();
 	}
+	
 }

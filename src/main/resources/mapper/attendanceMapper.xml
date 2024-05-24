@@ -25,8 +25,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <insert id="insertAttendance" parameterType="AttendanceDto">
     INSERT INTO ATTENDANCE_T (
         ATT_NO,
-        ATT_IN_TIME,
-        ATT_OUT_TIME,
+        ATT_IN_DT,
+        ATT_OUT_DT,
         ATT_WORK_TIME,
         CREATE_DT,
         CREATOR,
@@ -35,7 +35,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         EMP_NO
     ) VALUES (
         ATTENDANCE_SEQ.NEXTVAL,
-        #{attInDt},
+       	#{attInDt},
         #{attOutDt},
         #{attWorkTime},
         CURRENT_DATE,
@@ -45,5 +45,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         #{empNo}
     )
 </insert>
-	
+
+<select id="getAttList"
+		resultMap="AttendanceMap">
+SELECT * FROM
+	(SELECT ROW_NUMBER() OVER(ORDER BY A.ATT_IN_DT ASC) AS RN 
+		 , A.ATT_NO
+		 , A.ATT_IN_DT
+		 , A.ATT_OUT_DT
+		 , A.ATT_WORK_TIME
+		 , A.EMP_NO
+		 , A.BOARD_NO
+		 , U.USER_NAME
+	  FROM ATTENDANCE_T A 
+  	INNER JOIN EMPLOYEE_T E
+	  ON A.EMP_NO = E.EMP_NO
+ 		WHERE A.ATT_NO = #{attNo})
+</select>
+
+
 </mapper>

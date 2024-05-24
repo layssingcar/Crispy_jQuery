@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mcp.crispy.schedule.mapper.ScheduleMapper">
+
+	<resultMap type="ScheduleDto" id="ScheduleMap">
+		<id property="scheNo" column="SCHE_NO" />
+		<result property="scheDiv" column="SCHE_DIV"/>
+		<result property="scheTitle" column="SCHE_TITLE"/>
+		<result property="scheContent" column="SCHE_CONTENT"/>
+		<result property="scheStartTime" column="SCHE_START_TIME"/>
+		<result property="scheEndTime" column="SCHE_END_TIME"/>
+		<result property="createDt" column="CREATE_DT"/>
+		<result property="creator" column="CREATOR"/>
+		<result property="modifyDt" column="MODIFY_DT"/>
+		<result property="modifier" column="MODIFIER"/>
+		<association property="employee" javaType="EmployeeDto">
+			<id property="empNo" column="EMP_NO" />
+			<result property="empName" column="EMP_NAME" />
+		</association>
+	</resultMap>
+
+</mapper>
