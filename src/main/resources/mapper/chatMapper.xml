@@ -22,12 +22,18 @@
     </resultMap>
 
     <select id="getChatRooms" resultType="ChatRoomDto">
-        SELECT DISTINCT c.CHAT_ROOM_NO, c.CHAT_ROOM_TITLE, c.CHAT_ROOM_STAT, c.CREATE_DT, c.CREATOR, c.MODIFY_DT, c.MODIFIER,
-                        P.EMP_NO, P.ENTRY_STAT, E.EMP_NAME
-        FROM CHAT_ROOM_T C
-                 LEFT JOIN CR_EMP_T P ON C.CHAT_ROOM_NO = P.CHAT_ROOM_NO
-                 LEFT JOIN EMPLOYEE_T E ON E.EMP_NO = P.EMP_NO
-        where C.CREATOR = #{empNo} or P.EMP_NO = #{empNo}
+        SELECT
+            c.CHAT_ROOM_NO, c.CHAT_ROOM_TITLE, c.CHAT_ROOM_STAT, c.CREATE_DT,
+            c.CREATOR, c.MODIFY_DT, c.MODIFIER
+        FROM
+            CHAT_ROOM_T c
+                LEFT JOIN CR_EMP_T p ON c.CHAT_ROOM_NO = p.CHAT_ROOM_NO
+                LEFT JOIN EMPLOYEE_T E ON p.EMP_NO = E.EMP_NO
+        WHERE
+            c.CREATOR = #{empNo} OR p.EMP_NO = #{empNo}
+        GROUP BY
+            c.CHAT_ROOM_NO, c.CHAT_ROOM_TITLE, c.CHAT_ROOM_STAT,
+            c.CREATE_DT, c.CREATOR, c.MODIFY_DT, c.MODIFIER
     </select>
 
     <select id="getChatRoom" resultMap="ChatRoomMap">
@@ -39,8 +45,11 @@
          WHERE C.CHAT_ROOM_NO = #{chatRoomNo}
     </select>
 
-    <select id="getMessages" resultType="com.mcp.crispy.chat.dto.ChatMessageDto">
-        SELECT * FROM CHAT_MESSAGE_T WHERE CHAT_ROOM_NO = #{chatRoomNo} ORDER BY MSG_DT
+    <select id="getMessages" resultType="ChatMessageDto">
+        SELECT CM.*, E.EMP_PROFILE, E.EMP_NAME
+        FROM CHAT_MESSAGE_T CM
+                 LEFT JOIN EMPLOYEE_T E ON CM.EMP_NO = E.EMP_NO
+        WHERE CHAT_ROOM_NO = #{chatRoomNo} ORDER BY MSG_DT
     </select>
 
     <insert id="saveMessage">
@@ -64,10 +73,50 @@
         VALUES (#{chatRoomNo}, #{empNo}, #{entryStat})
     </insert>
 
-    <select id="getParticipantsByRoom" parameterType="CrEmpDto">
-        SELECT CHAT_ROOM_NO, EMP_NO, ENTRY_STAT
-          FROM CR_EMP_T
-         WHERE CHAT_ROOM_NO = #{chatRoomNo}
+    <select id="getParticipantsByRoom" resultType="CrEmpDto">
+        SELECT P.CHAT_ROOM_NO, P.EMP_NO, P.ENTRY_STAT, E.EMP_NAME, E.EMP_PROFILE
+        FROM CR_EMP_T P
+                 LEFT JOIN EMPLOYEE_T E ON P.EMP_NO = E.EMP_NO
+        WHERE P.CHAT_ROOM_NO = #{chatRoomNo}
     </select>
 
+    <insert id="addAccessRecord">
+        insert into CR_ACCESS_T (CHAT_ROOM_NO, EMP_NO, ACCESS_DT)
+        VALUES (#{chatRoomNo}, #{empNo}, CURRENT_TIMESTAMP)
+    </insert>
+
+    <update id="updateAccessRecord">
+        UPDATE CR_ACCESS_T
+           SET ACCESS_DT = CURRENT_TIMESTAMP
+         WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo}
+    </update>
+
+    <select id="checkAccessExists">
+        SELECT COUNT(*)
+          FROM  CR_ACCESS_T
+         WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo}
+    </select>
+
+    <insert id="insertEntryRecord">
+        INSERT INTO ENTRY_EXIT_T(CHAT_ROOM_NO, EMP_NO, ENTRY_DT)
+        VALUES(#{chatRoomNo}, #{empNo}, CURRENT_TIMESTAMP);
+    </insert>
+
+    <update id="updateExitRecord">
+        UPDATE ENTRY_EXIT_T
+        SET EXIT_DT = CURRENT_TIMESTAMP
+        WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo}
+    </update>
+
+    <update id="updateEntryRecord">
+        UPDATE ENTRY_EXIT_T
+        SET ENTRY_DT = CURRENT_TIMESTAMP
+        WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo}
+    </update>
+
+    <select id="checkEntryRecordExists">
+        SELECT COUNT(*)
+        FROM ENTRY_EXIT_T
+        WHERE CHAT_ROOM_NO = 38 AND EMP_NO = 1;
+    </select>
 </mapper>
