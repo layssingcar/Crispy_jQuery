@@ -111,6 +111,22 @@ public class ChatService {
         return chatRoom.getChatRoomNo();
     }
 
+    // 채팅방에 초대 시 참가자에게 채팅방 번호 부여
+    public void addParticipantToRoom(Integer chatRoomNo, CrEmpDto participant) {
+        participant.setChatRoomNo(chatRoomNo);
+        addParticipant(participant);
+    }
+
+    // 새 채팅방을 생성하고 해당 채팅방에 참가자들을 추가합니다.
+    public Integer createAndSetupChatRoom(ChatRoomDto chatRoom, Integer creatorEmpNo) {
+        Integer chatRoomNo = createChatRoom(chatRoom, creatorEmpNo);
+        for (CrEmpDto participant : chatRoom.getParticipants()) {
+            participant.setChatRoomNo(chatRoomNo);
+            addParticipant(participant);
+        }
+        return chatRoomNo;
+    }
+
     // 채팅방에 참가자 추가
     public void addParticipant(CrEmpDto participant) {
         CrEmpDto existingParticipant = chatMapper.getParticipant(participant.getChatRoomNo(), participant.getEmpNo());
@@ -128,7 +144,13 @@ public class ChatService {
     }
 
     // 참가자 입장 상태 관리
-    public void updateEntryStat(CrEmpDto participant) {
+    public void updateEntryStat(Integer chatRoomNo, Integer empNo) {
+        CrEmpDto participant = CrEmpDto.builder()
+                .chatRoomNo(chatRoomNo)
+                .empNo(empNo)
+                .entryStat(EntryStat.INACTIVE.getStatus())
+                .alarmStat(AlarmStat.INACTIVE.getStatus())
+                .build();
         chatMapper.updateEntryStat(participant);
     }
 

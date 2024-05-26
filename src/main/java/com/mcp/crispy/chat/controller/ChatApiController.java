@@ -41,40 +41,37 @@ public class ChatApiController {
     }
 
     @GetMapping("/rooms/{chatRoomNo}/messages/v1")
-    public List<ChatMessageDto> getMessages(@PathVariable Integer chatRoomNo) {
-        return chatService.getMessages(chatRoomNo);
+    public List<ChatMessageDto> getMessages(@PathVariable Integer chatRoomNo, Authentication authentication) {
+        CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
+        return chatService.getMessages(chatRoomNo, userDetails.getEmpNo());
     }
 
     // 채팅방 생성
     @PostMapping("/rooms/{creatorEmpNo}/v1")
     public ResponseEntity<?> createChatRoom(@RequestBody ChatRoomDto chatRoom, @PathVariable Integer creatorEmpNo) {
-        log.info("채팅방 생성: {} {} {}", chatRoom.getChatRoomNo(), chatRoom.getChatRoomTitle(), chatRoom.getCreator());
-        Integer chatRoomNo = chatService.createChatRoom(chatRoom, creatorEmpNo);
-        log.info("생성자 번호 : {}", creatorEmpNo);
-
-        if(chatRoom.getParticipants() != null && !chatRoom.getParticipants().isEmpty()) {
-            for(CrEmpDto participant : chatRoom.getParticipants()) {
-                log.info("participant: {}", participant.toString());
-                participant.setChatRoomNo(chatRoomNo);
-                chatService.addParticipant(participant);
-            }
-        }
-        log.info("채팅방 생성 및 참가자 추가 완료: {}", chatRoomNo);
-        return ResponseEntity.ok().body(Map.of("message","채팅방 생성 및 초대 완료, 방 번호: " + chatRoomNo));
+        Integer chatRoomNo = chatService.createAndSetupChatRoom(chatRoom, creatorEmpNo);
+        return ResponseEntity.ok().body(Map.of("message", "채팅방 생성 및 초대 완료, 방 번호: " + chatRoomNo));
     }
 
     @PostMapping("/rooms/{chatRoomNo}/invite/v1")
-    public void addParticipant(@PathVariable Integer chatRoomNo, @RequestBody CrEmpDto participant) {
-        log.info("Adding participant: chatRoomNo = {}, empNo = {}", chatRoomNo, participant.getEmpNo());
-        participant.setChatRoomNo(chatRoomNo);
-        chatService.addParticipant(participant);
+    public ResponseEntity<?> inviteParticipant(@PathVariable Integer chatRoomNo, @RequestBody CrEmpDto participant) {
+        chatService.addParticipantToRoom(chatRoomNo, participant);
+        return ResponseEntity.ok().build(); // or return appropriate response
+    }
+
+    @PostMapping("/rooms/{chatRoomNo}/leave/v1")
+    public ResponseEntity<Map<String, String>> leaveChatRoom(@PathVariable Integer chatRoomNo, Authentication authentication) {
+        CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
+        chatService.updateEntryStat(chatRoomNo, userDetails.getEmpNo());
+        return ResponseEntity.ok().body(Map.of("message","채팅방을 나갔습니다."));
     }
 
     @MessageMapping("/chat")
     @SendTo("/topic/messages")
     public ChatMessageDto sendMessage(ChatMessageDto message) {
-        chatService.saveMessage(message);
+        chatService.sendMessage(message);
         log.info("메소드 호출 테스트");
+        messagingTemplate.convertAndSend("/topic/roomUpdate", chatService.getChatRooms(message.getEmpNo()));
         return message;
     }
 
@@ -85,14 +82,14 @@ public class ChatApiController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/rooms/{chatRoomNo}/entry")
-    public ResponseEntity<Void> handleEntryRecord(@PathVariable Integer chatRoomNo, Authentication authentication) {
-        CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
-        chatService.handleEntryRecord(chatRoomNo, userDetails.getEmpNo());
+    @PostMapping("/rooms/{chatRoomNo}/entry/{empNo}/v2")
+    public ResponseEntity<Void> handleEntryRecord(@PathVariable Integer chatRoomNo, @PathVariable Integer empNo) {
+        chatService.handleEntryRecord(chatRoomNo, empNo);
+        log.info("ChatRoom No : {} {}", chatRoomNo, empNo);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/rooms/{chatRoomNo}/exit")
+    @PostMapping("/rooms/{chatRoomNo}/exit/v1")
     public ResponseEntity<Void> handleExitRecord(@PathVariable Integer chatRoomNo, Authentication authentication) {
         CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
         chatService.handleExitRecord(chatRoomNo, userDetails.getEmpNo());
