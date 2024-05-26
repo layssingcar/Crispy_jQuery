@@ -3,6 +3,7 @@ package com.mcp.crispy.chat.mapper;
 import com.mcp.crispy.chat.dto.ChatMessageDto;
 import com.mcp.crispy.chat.dto.ChatRoomDto;
 import com.mcp.crispy.chat.dto.CrEmpDto;
+import com.mcp.crispy.chat.dto.UnreadMessageCountDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -49,6 +50,9 @@ public interface ChatMapper {
     void updateExitRecord(@Param("chatRoomNo") Integer chatRoomNo, @Param("empNo") Integer empNo);
     void updateEntryRecord(@Param("chatRoomNo") Integer chatRoomNo, @Param("empNo") Integer empNo);
     Integer checkEntryRecordExists(@Param("chatRoomNo") Integer chatRoomNo, @Param("empNo") Integer empNo);
+
+    // 안 읽은 메시지 개수 반환
+    List<UnreadMessageCountDto> countUnreadMessages(@Param("empNo") Integer empNo);
 
 
 

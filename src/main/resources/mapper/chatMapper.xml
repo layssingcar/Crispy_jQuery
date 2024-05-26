@@ -86,8 +86,8 @@
     </select>
 
     <insert id="addParticipant">
-        INSERT INTO CR_EMP_T (CHAT_ROOM_NO, EMP_NO, ENTRY_STAT)
-        VALUES (#{chatRoomNo}, #{empNo}, #{entryStat})
+        INSERT INTO CR_EMP_T (CHAT_ROOM_NO, EMP_NO, ENTRY_STAT, ALARM_STAT)
+        VALUES (#{chatRoomNo}, #{empNo}, #{entryStat}, #{alarmStat})
     </insert>
 
     <update id="updateParticipantEntryStat">
@@ -150,5 +150,20 @@
         SELECT COUNT(*)
         FROM ENTRY_EXIT_T
         WHERE CHAT_ROOM_NO = ${chatRoomNo} AND EMP_NO = #{empNo}
+    </select>
+
+    <select id="countUnreadMessages" resultType="UnreadMessageCountDto">
+        SELECT CR.CHAT_ROOM_NO, COUNT(*) as unread_count
+          FROM CHAT_ROOM_T CR
+          LEFT JOIN CR_EMP_T CE ON CR.CHAT_ROOM_NO = CE.CHAT_ROOM_NO
+          LEFT JOIN CHAT_MESSAGE_T m ON CR.CHAT_ROOM_NO = m.CHAT_ROOM_NO
+          LEFT JOIN CR_ACCESS_T a ON CR.CHAT_ROOM_NO = a.CHAT_ROOM_NO AND CE.EMP_NO = a.EMP_NO
+         WHERE CE.EMP_NO = #{empNo}
+           AND (m.MSG_DT > a.ACCESS_DT OR a.ACCESS_DT IS NULL)
+           AND CE.ALARM_STAT = 0  -- 알림이 활성화된 경우만 계산
+           AND CE.ENTRY_STAT = 0 -- 입장 상태가 활성화된 경우만 계산
+           AND m.EMP_NO != #{empNo} -- 본인이 보낸 메시지는 제외
+
+        GROUP BY CR.CHAT_ROOM_NO
     </select>
 </mapper>

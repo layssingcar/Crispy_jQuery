@@ -3,6 +3,7 @@ package com.mcp.crispy.chat.controller;
 import com.mcp.crispy.chat.dto.ChatMessageDto;
 import com.mcp.crispy.chat.dto.ChatRoomDto;
 import com.mcp.crispy.chat.dto.CrEmpDto;
+import com.mcp.crispy.chat.dto.UnreadMessageCountDto;
 import com.mcp.crispy.chat.mapper.ChatMapper;
 import com.mcp.crispy.chat.service.ChatService;
 import com.mcp.crispy.common.userdetails.CustomDetails;
@@ -71,8 +72,19 @@ public class ChatApiController {
     public ChatMessageDto sendMessage(ChatMessageDto message) {
         chatService.sendMessage(message);
         log.info("메소드 호출 테스트");
+        int totalUnread = chatService.getUnreadCounts(message.getEmpNo());
+        messagingTemplate.convertAndSendToUser(message.getEmpNo().toString(), "/queue/unreadCount", totalUnread);
         messagingTemplate.convertAndSend("/topic/roomUpdate", chatService.getChatRooms(message.getEmpNo()));
         return message;
+    }
+
+    @MessageMapping("/fetchUnreadCount")
+    public void fetchUnreadCounts(Authentication authentication) {
+        CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
+        int totalUnread = chatService.getUnreadCounts(userDetails.getEmpNo());
+        log.info("total Unread: {}", totalUnread);
+        // 사용자에게 개수 반환
+        messagingTemplate.convertAndSendToUser(userDetails.getUsername(), "/queue/unreadCount", totalUnread);
     }
 
     @PostMapping("/rooms/{chatRoomNo}/access/v1")
@@ -94,5 +106,12 @@ public class ChatApiController {
         CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
         chatService.handleExitRecord(chatRoomNo, userDetails.getEmpNo());
         return ResponseEntity.ok().build();
+    }
+
+    // 읽지 않은 메시지 개수
+    @GetMapping("/rooms/unread-count/v1")
+    public List<UnreadMessageCountDto> getUnreadMessageCount(Authentication authentication) {
+        CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
+        return chatService.getUnreadMessageCount(userDetails.getEmpNo());
     }
 }

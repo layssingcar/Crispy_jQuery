@@ -11,10 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -181,5 +178,22 @@ public class ChatService {
     @Transactional
     public void handleExitRecord(Integer chatRoomNo, Integer empNo) {
         chatMapper.updateExitRecord(chatRoomNo, empNo);
+    }
+
+
+    // 각 방마다의 읽지 않은 메시지 개수
+    @Transactional
+    public List<UnreadMessageCountDto> getUnreadMessageCount(Integer empNo) {
+        return chatMapper.countUnreadMessages(empNo);
+    }
+
+    // 읽지 않은 메시지 총합
+    @Transactional
+    public int getUnreadCounts(Integer empNo) {
+        List<UnreadMessageCountDto> unreadCounts = chatMapper.countUnreadMessages(empNo);
+        return unreadCounts.stream()
+                .filter(Objects::nonNull)
+                .mapToInt(UnreadMessageCountDto::getUnreadCount)
+                .sum();
     }
 }

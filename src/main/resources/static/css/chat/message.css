@@ -63,7 +63,7 @@
 .message .left > div:nth-child(1) img {
     position: absolute;
     bottom: -12px;
-    left: 85px;
+    left: 130px;
 }
 
 /* 메시지 작성, 상세 정보, 이미지 첨부, 하트 이모티콘 아이콘 */
@@ -103,7 +103,7 @@
 /* 채팅방 목록 */
 .message .left > div:nth-child(3) {
     padding-top: 8px;
-    max-height: 546px;
+    max-height: 500px;
     overflow: auto;
 }
 
@@ -337,6 +337,15 @@
     font-weight: bold;
 }
 
+.message #chatName {
+    display: flex;
+    width: 200px;
+}
+
+.message #chatName>div {
+    margin-left: 5px;
+}
+
 /* 상대방 프로필 이미지 */
 .message .chat-name .profile-image > div {
     width: 30px;
@@ -352,8 +361,12 @@
 
 .message .chat-name > div:nth-child(3) > a {display: flex;}
 
-.message .chat-window {
-
+.message .chat-window .profile-image img{
+    width: 60px;
+    height: 60px;
+    box-sizing: border-box;
+    border: 1px solid rgba(0, 0, 0, .0975);
+    border-radius: 100%;
 }
 
 /* 메시지 내용 */
@@ -661,6 +674,7 @@
 
 .message .modal-content {
     left: 120px;
+    width: 400px;
 }
 
 .message .modal-content div,
@@ -676,18 +690,15 @@
 
 .message .btn-close {
     --bs-btn-close-opacity: 1;
-    color: #fff;
+    color: #fff !important;
 }
 
 .message .modal-profile-image {
     display: flex;
-    width: 100%;
+    width: 30px;
+    border-radius: 15px;
     align-items: center;
     margin-bottom: 10px;
-}
-
-.message .modal-profile-image img{
-    width: 45px;
 }
 
 .message .modal-content .search-emp {
@@ -723,4 +734,26 @@
 /* 사이드바 기본 스타일 */
 #rightSidebar {
     /* 다른 스타일 속성들... */
+}
+.unread-count-badge {
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 5px 10px;
+    font-size: 1.4rem;
+}
+
+.modal-header {
+    justify-content: space-between;
+}
+
+.btn-chat-create {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.invite-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
