@@ -27,7 +27,6 @@
 
                                     <!-- 채팅방 탐색  -->
                                     <div class="request">
-<!--                                        <span>moz1mozi</span>-->
                                         <a role="button" class="send-message" data-bs-toggle="modal"
                                            data-bs-target="#createChatRoomModal">
                                             <img class="icon" src="/img/icon/write.png" alt="메시지 작성 아이콘">
@@ -107,15 +106,10 @@
                                             <div class="profile-image">
                                                 <a role="button" class="send-message" data-bs-toggle="modal"
                                                    data-bs-target="#invite-modal">
+
                                                     <div><img src="/img/question.png"></div>
                                                     <span>새로운 사용자 초대</span>
                                                 </a>
-                                            </div>
-                                            <div class="chat-user-list">
-                                                <div class="profile-image">
-                                                    <div><img src="/img/anonymous.png"></div>
-                                                </div>
-                                                <span>최동환</span>
                                             </div>
                                         </div>
                                         <hr>
@@ -131,7 +125,7 @@
                                                     <i class="fa-solid fa-bell-slash"></i>
                                                     알림끄기
                                                 </div>
-                                                <div class="leave-chat-room">
+                                                <div class="leave-chat-room" id="leave-room">
                                                     <i class="fa-solid fa-arrow-right-from-bracket"></i>
                                                     나가기
                                                 </div>
@@ -148,9 +142,9 @@
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h4 class="modal-title" id="newMessageModalLabel">새로운 메시지</h4>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
+                                    <h4 class="modal-title" id="newMessageModalLabel">새로운 채팅방</h4>
+                                    <button type="button" class="btn" data-bs-dismiss="modal"
+                                            aria-label="Close">X</button>
                                 </div>
                                 <div class="modal-body">
                                     <form id="createChatRoomForm">
@@ -162,11 +156,11 @@
                                             <label for="inviteUser" class="form-label">초대할 사용자</label>
                                             <input type="text" class="form-control" id="inviteUser" placeholder="사용자 이름 또는 ID 검색">
                                         </div>
-                                        <button type="submit" class="btn btn-primary">생성</button>
+                                        <div id="userList" class="mb-3"></div> <!-- 사용자 목록 표시 영역 -->
+                                        <div class="btn-chat-create">
+                                            <button type="submit" class="btn btn-primary">생성</button>
+                                        </div>
                                     </form>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="">채팅</button>
                                 </div>
                             </div>
                         </div>
@@ -178,8 +172,8 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h4 class="modal-title" id="invite-modal-label">사용자 초대</h4>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
+                                    <button type="button" class="btn" data-bs-dismiss="modal"
+                                            aria-label="Close">X</button>
                                 </div>
                                 <div class="modal-body">
                                     <form id="invite-form">
@@ -192,7 +186,7 @@
                                     </form>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="">채팅</button>
+                                    <button type="button" class="">초대</button>
                                 </div>
                             </div>
                         </div>
