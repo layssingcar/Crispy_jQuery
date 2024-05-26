@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -23,7 +24,6 @@ public class EmployeeApiController {
 
     private final EmployeeService employeeService;
     private final AuthenticationService authenticationService;
-
 
     /**
      * 아이디 찾기, 비밀번호 찾기 메소드
@@ -126,5 +126,11 @@ public class EmployeeApiController {
         log.info("empStatus: {}", employeeUpdateDto.getEmpStat());
         log.info("empStatus: {}", employeeUpdateDto.getEmpStat().getValue());
         return ResponseEntity.ok(Map.of("message", "직책이 변경되었습니다."));
+    }
+
+    @GetMapping("/employees/v1")
+    public ResponseEntity<List<EmployeeDto>> getAllEmployees() {
+        List<EmployeeDto> employees = employeeService.getAllEmployees();
+        return ResponseEntity.ok(employees);
     }
 }
