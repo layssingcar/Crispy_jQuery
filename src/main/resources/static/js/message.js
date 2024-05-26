@@ -21,6 +21,14 @@ function setupEventListeners() {
         }
     });
 
+    document.getElementById("leave-room").addEventListener("click", function () {
+        if (currentChatRoomNo) {
+            leaveChatRoom(currentChatRoomNo);
+        } else {
+            alert("채팅방을 먼저 선택하세요.");
+        }
+    })
+
     const toggleButton = document.getElementById("toggleSidebar");
     const rightSidebar = document.getElementById("rightSidebar");
     const midChat = document.querySelector(".mid-chat");
@@ -53,10 +61,26 @@ function connect() {
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
         console.log('Connected: ' + frame);
+        // 기존 메시지 수신 구독
         stompClient.subscribe('/topic/messages', function (messageOutput) {
             showMessage(JSON.parse(messageOutput.body));
         });
+        // 채팅방 업데이트 정보 수신 구독
+        stompClient.subscribe('/topic/roomUpdate', function (roomUpdate) {
+            updateChatRooms(JSON.parse(roomUpdate.body));
+        });
     });
+}
+
+function updateChatRooms(chatRooms) {
+    const chatRoomList = document.getElementById('chatRoomList');
+    chatRoomList.innerHTML = '';  // 기존 목록을 비우고
+    chatRooms.forEach(chatRoom => {
+        const chatRoomElement = createChatRoomElement(chatRoom);
+        chatRoomList.appendChild(chatRoomElement);
+        loadLatestMessage(chatRoom.chatRoomNo, chatRoomElement);  // 마지막 메시지 로드 로직 추가
+    });
+    console.log('Chat rooms updated.');
 }
 
 function loadChatRooms() {
@@ -146,12 +170,6 @@ function loadChatDetails(chatRoomNo) {
         .catch(error => console.error('Error loading chat details:', error));
 }
 
-function updateChatRoomTitle(title) {
-    console.log("updateChatRoomTitle" + title)
-    document.getElementById('chatRoomTitle').textContent = title;
-}
-
-
 function loadMessages(chatRoomNo) {
     fetch(`/api/chat/rooms/${chatRoomNo}/access/v1`, {
         method: "POST"
@@ -171,6 +189,7 @@ function loadMessages(chatRoomNo) {
                 const chatWindow = document.getElementById("chatMessages");
                 chatWindow.innerHTML = '';
                 messages.forEach(msg => {
+                    console.log("msg:" + msg)
                     const messageElement = createMessageElement(msg);
                     chatWindow.appendChild(messageElement);
                 });
@@ -179,13 +198,45 @@ function loadMessages(chatRoomNo) {
     }).catch(error => console.error('Error adding access record:', error));
 }
 
+function leaveChatRoom(chatRoomNo, empNo) {
+    fetch(`/api/chat/rooms/${chatRoomNo}/leave/v1`, {
+        method: "POST"
+    })
+    .then(response => {
+        if (response.ok) {
+            handleExit(chatRoomNo, empNo);
+        } else {
+            alert("채팅방 나가기 실패")
+        }
+        return response.json();
+    })
+    .then(data => {
+        alert(data.message)
+    })
+    .catch(error => console.error("Error : " + error))
+}
+
+function handleExit(chatRoomNo, empNo) {
+    fetch(`/api/chat/rooms/${chatRoomNo}/exit/v1`, {
+        method: "POST",
+        body: JSON.stringify({ empNo: empNo })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to update exit record');
+        }
+    })
+    .catch(error => console.error('Error updating exit record:', error));
+}
+
 function createMessageElement(msg) {
     const messageElement = document.createElement('div');
     messageElement.className = `output ${msg.empNo === currentEmpNo ? 'sent' : 'receive'}`;
+    console.log(msg);
     messageElement.innerHTML = `
         ${msg.empNo === currentEmpNo ? `
             <div class="chat-datetime">
-                ${new Date(msg.msgDt).toLocaleTimeString()}
+                ${new Date(msg.msgDt).toLocaleTimeString('ko-KR', { hour: 'numeric', minute: 'numeric', hour12: true })}
             </div>
             <div class="chat">
                 ${msg.msgContent}
@@ -201,7 +252,7 @@ function createMessageElement(msg) {
                 </div>
             </div>
             <div class="chat-datetime">
-                ${new Date(msg.msgDt).toLocaleTimeString()}
+                ${new Date(msg.msgDt).toLocaleTimeString('ko-KR', { hour: 'numeric', minute: 'numeric', hour12: true })}
             </div>
         `}
     `;
@@ -246,14 +297,29 @@ function inviteUser(chatRoomNo, empNo) {
     })
         .then(response => {
             if (!response.ok) {
-                console.log(response)
                 throw new Error('Failed to invite user');
+            } else {
+                handleEntry(chatRoomNo, empNo)
             }
             return response.json();
         })
         .then(data => {
             console.log('User invited successfully:', data);
             // 추가적인 작업이 필요하다면 여기에 추가
+
         })
         .catch(error => console.error('Error inviting user:', error));
+}
+
+function handleEntry(chatRoomNo, empNo) {
+    fetch(`/api/chat/rooms/${chatRoomNo}/entry/${empNo}/v2`, {
+        method: "POST",
+        body: JSON.stringify({ empNo: empNo })
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to update exit record');
+            }
+        })
+        .catch(error => console.error('Error updating exit record:', error));
 }
