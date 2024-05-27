@@ -21,17 +21,17 @@ public class GlobalLoggedEmpController {
     private final AdminService adminService;
 
     @ModelAttribute
-    public void addAttribute(Principal principal, Model model) {
+    public void addAttributes(Principal principal, Model model) {
         if (principal != null) {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication != null && authentication.isAuthenticated()) {
                 String getEmpId = authentication.getName();
                 boolean isAdmin = authentication.getAuthorities().stream()
                         .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+                model.addAttribute("isAdmin", isAdmin);
                 if (isAdmin) {
-                    // 관리자 일 때
                     AdminDto admin = adminService.getAdmin(getEmpId);
-                    model.addAttribute("isAdmin", admin);
+                    model.addAttribute("admin", admin);
                 } else {
                     EmployeeDto loggedEmp = employeeService.getEmployeeName(getEmpId);
                     model.addAttribute("loggedEmp", loggedEmp);
