@@ -66,7 +66,7 @@ public class EmployeeSecurityConfig implements UserDetailsService {
             default:
                 throw new IllegalArgumentException("존재하지 않는 포지션입니다: " + position);
         }
-        return new CustomDetails(employee.getEmpId(), employee.getEmpPw(), authorities, employee.getFrnNo());
+        return new CustomDetails(employee.getEmpId(), employee.getEmpPw(), authorities, employee.getFrnNo(), employee.getEmpNo());
     }
 
 }

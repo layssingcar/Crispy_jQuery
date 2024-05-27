@@ -9,7 +9,6 @@ const employee = {
     bindEvents: function() {
         const addressButton = document.querySelector('.btn-change-address');
         if (addressButton) {
-            console.log(addressButton);
             addressButton?.addEventListener('click', this.updateFrnAddress);
         }
 
@@ -103,14 +102,13 @@ const employee = {
             frnDetail: detail
         };
 
-        fetch('/api/v1/franchise/updateFrnAddress', {
+        fetch('/api/franchise/frnAddress/v1', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(addressData)
         }).then(response => {
-            console.log(response);
             if (!response.ok) {
                 throw new Error('주소 변경에 실패했습니다.');
             }
@@ -127,14 +125,13 @@ const employee = {
             frnNo: parseInt(document.querySelector(".frnNo").value),
             frnTel: document.querySelector(".frnTel").value,
         }
-        fetch("/api/v1/franchise/updateFrnTel", {
+        fetch("/api/franchise/frnTel/v1", {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(data)
         }).then(response => {
-            console.log(response);
             if (!response.ok) {
                 throw new Error('휴대폰 번호 변경에 실패했습니다.');
             }
@@ -169,7 +166,6 @@ const employee = {
         const frnImgForm = document.getElementById("frn-form")
 
         const formData = new FormData(frnImgForm);
-        console.log("formData: " + formData);
         formData.append('frnNo', frnNo);
 
         const file = document.querySelector(".file-input").files[0];
@@ -177,17 +173,15 @@ const employee = {
             formData.append('file', file);  // 서버에서 요구하는 파라미터 이름('file')에 맞게 설정
         }
 
-        fetch("/api/v1/franchise/updateFrnImg", {
+        fetch("/api/franchise/frnImg/v1", {
             method: "POST",
             body: formData
         }).then(response => {
-            console.log(response)
             if (response.ok) {
                 return response.json();
             }
             throw new Error('Failed to update profile image');
         }).then(data => {
-            console.log(data)
             alert(data.message);
             return location.reload();
         }).catch(error => {
@@ -200,14 +194,13 @@ const employee = {
             empNo: parseInt(document.querySelector(".empNo").value),
             frnOwner: document.querySelector(".frnOwner").value,
         }
-        fetch("/api/v1/franchise/updateFrnOwner", {
+        fetch("/api/franchise/frnOwner/v1", {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(data)
         }).then(response => {
-            console.log(response);
             if (!response.ok) {
                 throw new Error('대표자명 변경에 실패했습니다.');
             }
@@ -228,14 +221,13 @@ const employee = {
             frnEndTime: document.querySelector(".frnEndTime").value
         }
 
-        fetch("/api/v1/franchise/update/operating-time", {
+        fetch("/api/franchise/operatingTime/v1", {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(data)
         }).then(response => {
-            console.log(response);
             if (!response.ok) {
                 throw new Error('운영시간 변경에 실패했습니다.');
             }

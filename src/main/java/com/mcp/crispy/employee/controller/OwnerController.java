@@ -36,7 +36,7 @@ public class OwnerController {
     }
 
     // 관리자가 직원 정보 정보 수정할때 사용하는 페이지 가입승인 필요시 가입승인 버튼 동적으로 생성해줌
-    @GetMapping("/employee")
+    @GetMapping("/employeeDetail")
     public String employee(Principal principal, Model model) {
         EmployeeDto employee = employeeService.getEmployeeName(principal.getName());
         model.addAttribute("employee", employee);
