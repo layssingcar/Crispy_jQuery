@@ -2,12 +2,21 @@ let stompClient = null;
 let currentChatRoomNo = null;
 
 document.addEventListener("DOMContentLoaded", function () {
-    connect();
-    setupEventListeners();
-    loadChatRooms();
+    if (currentEmpNo === null) {
+        alert("로그인이 필요합니다.");
+        window.location.href = "/crispy/login";
+    } else {
+        connect();
+        setupEventListeners();
+        loadChatRooms();
+    }
 });
 
 function setupEventListeners() {
+    if (currentEmpNo === null) {
+        console.error("Employee number is not available. Cannot set up event listeners.");
+        return;
+    }
     const sendButton = document.getElementById("sendButton");
     if (sendButton) {
         sendButton.addEventListener("click", sendMessage);
@@ -77,6 +86,10 @@ function setupEventListeners() {
 }
 
 function connect() {
+    if (currentEmpNo === null) {
+        console.error("Employee number is not available. Cannot set up event listeners.");
+        return;
+    }
     const socket = new SockJS('/chat');
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
@@ -137,12 +150,11 @@ function loadChatRooms() {
             if (chatRoomList) {
                 chatRoomList.innerHTML = '';
                 chatRooms.forEach(chatRoom => {
-                    console.log("charRoom : " + chatRoom)
                     const chatRoomElement = createChatRoomElement(chatRoom);
                     chatRoomList.appendChild(chatRoomElement);
                     loadLatestMessage(chatRoom.chatRoomNo, chatRoomElement)
                 });
-                loadUnreadMessageCounts();
+                fetchUnreadCount();
             }
         })
         .catch(error => console.error('Error loading chat rooms:', error));
@@ -171,7 +183,6 @@ function loadUnreadMessageCounts() {
 }
 function createChatRoomElement(chatRoom) {
     const chatRoomElement = document.createElement('div');
-    console.log(chatRoom);
     chatRoomElement.className = 'msg-room';
     chatRoomElement.dataset.chatId = chatRoom.chatRoomNo;
     chatRoomElement.innerHTML = `
@@ -211,7 +222,6 @@ function loadChatDetails(chatRoomNo) {
     fetch(`/api/chat/rooms/${chatRoomNo}/v1`)
         .then(response => response.json())
         .then(data => {
-            console.log(data);
 
             // 기존 내용을 지우고 새로 추가
             if (chatName) {
@@ -234,9 +244,7 @@ function loadChatDetails(chatRoomNo) {
                 chatName.appendChild(participantNameDiv);
             }
 
-            // Append individual participant elements
             data.participants.forEach(participant => {
-                console.log(participant);
                 const participantElement = document.createElement('div');
                 participantElement.className = 'chat-user-list';
                 participantElement.innerHTML = `
@@ -254,15 +262,10 @@ function loadChatDetails(chatRoomNo) {
 }
 
 function loadMessages(chatRoomNo) {
-    fetch(`/api/chat/rooms/${chatRoomNo}/access/v1`, {
-        method: "POST"
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to add access record');
-            }
-            console.log('Access record added successfully');
-            // 메시지 로드 로직
+    // 접속 시간 업데이트 요청
+    updateAccessTime(chatRoomNo)
+        .then(() => {
+            // 접속 시간 업데이트 후 메시지 로드
             fetch(`/api/chat/rooms/${chatRoomNo}/messages/v1`)
                 .then(response => response.json())
                 .then(messages => {
@@ -275,10 +278,27 @@ function loadMessages(chatRoomNo) {
                         const messageElement = createMessageElement(msg);
                         chatWindow.appendChild(messageElement);
                     });
+                    loadUnreadMessageCounts();
                 })
                 .catch(error => console.error('Error loading messages:', error));
-        }).catch(error => console.error('Error adding access record:', error));
+        })
+        .catch(error => console.error('Error updating access time:', error));
 }
+
+function updateAccessTime(chatRoomNo) {
+    return fetch(`/api/chat/rooms/${chatRoomNo}/access/v1`, {
+        method: "POST"
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to update access time');
+            }
+            // 접속 시간이 업데이트되면 읽지 않은 메시지 개수 갱신
+            fetchUnreadCount();
+        })
+        .catch(error => console.error('Error updating access time:', error));
+}
+
 
 function leaveChatRoom(chatRoomNo, empNo) {
     fetch(`/api/chat/rooms/${chatRoomNo}/leave/v1`, {
@@ -360,7 +380,7 @@ function showMessage(message) {
     const chatWindow = document.getElementById("chatMessages");
     const messageElement = createMessageElement(message);
     chatWindow?.appendChild(messageElement);
-    chatWindow.scrollTop = chatWindow.scrollHeight;
+    // chatWindow.scrollTop = chatWindow?.scrollHeight;
 }
 
 function inviteUser(chatRoomNo, empNo) {

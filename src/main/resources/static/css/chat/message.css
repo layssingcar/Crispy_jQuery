@@ -736,6 +736,7 @@
     /* 다른 스타일 속성들... */
 }
 .unread-count-badge {
+    display: none;
     background-color: red;
     color: white;
     border-radius: 50%;
