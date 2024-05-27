@@ -22,13 +22,12 @@ public class GlobalLoggedEmpController {
 
     @ModelAttribute
     public void addAttribute(Principal principal, Model model) {
-        if(principal != null) {
+        if (principal != null) {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication != null && authentication.isAuthenticated()) {
                 String getEmpId = authentication.getName();
                 boolean isAdmin = authentication.getAuthorities().stream()
                         .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
-
                 if (isAdmin) {
                     // 관리자 일 때
                     AdminDto admin = adminService.getAdmin(getEmpId);
@@ -40,5 +39,4 @@ public class GlobalLoggedEmpController {
             }
         }
     }
-
 }
