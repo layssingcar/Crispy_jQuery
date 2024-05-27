@@ -95,6 +95,7 @@ public class ChatService {
         return message;
     }
 
+    @Transactional
     // 새 채팅방을 생성
     public Integer createChatRoom(ChatRoomDto chatRoom, Integer creatorEmpNo) {
         chatMapper.createChatRoom(chatRoom);
@@ -108,34 +109,37 @@ public class ChatService {
         return chatRoom.getChatRoomNo();
     }
 
+    @Transactional
     // 채팅방에 초대 시 참가자에게 채팅방 번호 부여
     public void addParticipantToRoom(Integer chatRoomNo, CrEmpDto participant) {
         participant.setChatRoomNo(chatRoomNo);
         addParticipant(participant);
     }
 
+    @Transactional
     // 새 채팅방을 생성하고 해당 채팅방에 참가자들을 추가합니다.
     public Integer createAndSetupChatRoom(ChatRoomDto chatRoom, Integer creatorEmpNo) {
         Integer chatRoomNo = createChatRoom(chatRoom, creatorEmpNo);
         for (CrEmpDto participant : chatRoom.getParticipants()) {
             participant.setChatRoomNo(chatRoomNo);
             addParticipant(participant);
+            addEntryRecord(chatRoomNo, participant.getEmpNo());
         }
+
+        addEntryRecord(chatRoomNo, creatorEmpNo);
         return chatRoomNo;
     }
 
     // 채팅방에 참가자 추가
     public void addParticipant(CrEmpDto participant) {
         CrEmpDto existingParticipant = chatMapper.getParticipant(participant.getChatRoomNo(), participant.getEmpNo());
+        participant.setEntryStat(EntryStat.ACTIVE.getStatus());
+        participant.setAlarmStat(AlarmStat.ACTIVE.getStatus());
         if (existingParticipant != null) {
             // 참가자가 이미 존재하면
-            participant.setEntryStat(EntryStat.ACTIVE.getStatus());
-            participant.setAlarmStat(AlarmStat.ACTIVE.getStatus());
             chatMapper.updateParticipantEntryStat(participant);
         } else {
             // 참가자가 존재하지 않으면 추가
-            participant.setEntryStat(EntryStat.ACTIVE.getStatus());
-            participant.setAlarmStat(AlarmStat.ACTIVE.getStatus());
             chatMapper.addParticipant(participant);
         }
     }
@@ -180,6 +184,11 @@ public class ChatService {
         chatMapper.updateExitRecord(chatRoomNo, empNo);
     }
 
+    @Transactional
+    public void addEntryRecord(Integer chatRoomNo, Integer empNo) {
+        chatMapper.insertEntryRecord(chatRoomNo, empNo);
+    }
+
 
     // 각 방마다의 읽지 않은 메시지 개수
     @Transactional
@@ -191,9 +200,11 @@ public class ChatService {
     @Transactional
     public int getUnreadCounts(Integer empNo) {
         List<UnreadMessageCountDto> unreadCounts = chatMapper.countUnreadMessages(empNo);
+        log.info("unreadCounts: {}", unreadCounts);
         return unreadCounts.stream()
                 .filter(Objects::nonNull)
                 .mapToInt(UnreadMessageCountDto::getUnreadCount)
                 .sum();
+
     }
 }
