@@ -12,27 +12,30 @@ import java.security.Principal;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/crispy/atten")
+@RequestMapping("/crispy")
 public class AttendanceController {
 	private final AttendanceService attendanceService;
 
 	@PostMapping(value="/registAtt", produces = "application/json")
 	public ResponseEntity<Integer> insertAttendance(@RequestBody AttendanceDto attendanceDto, Principal principal)
 	{	
-	    attendanceDto.setAttInDt(new Timestamp(attendanceDto.getAttInDt().getTime()));
-	    attendanceDto.setAttOutDt(new Timestamp(attendanceDto.getAttOutDt().getTime()));
+	    attendanceDto.setAttInTime(new Timestamp(attendanceDto.getAttInTime().getTime()));
+	    attendanceDto.setAttOutTime(new Timestamp(attendanceDto.getAttOutTime().getTime()));
 	    
 		int insertCount = attendanceService.insertAttendance(attendanceDto);
 		return ResponseEntity.ok(insertCount);
 	}
 	
-	@ResponseBody
-	@GetMapping(value = "", produces = "application/json") 	
-	public List<AttendanceDto> getAttendenceList(@PathVariable(value = "boardNo") Optional<String> opt, Model model) {
-		List<AttendanceDto> list = attendanceService.getAttendenceList(model, 0);
-		return list;
+	@GetMapping("/attend")
+	public String getAttList(Model model) {
+		model.addAttribute("attenList", attendanceService.getAttList());
+		return "attendance/attendance";
 	}
+	
 }

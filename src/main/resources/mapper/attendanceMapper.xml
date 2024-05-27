@@ -9,17 +9,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<resultMap type="AttendanceDto" id="AttendanceMap">
 		<id property="attNo" column="ATT_NO" />
-		<result property="attInDt" column="ATT_IN_DT"/>
-		<result property="attOutDt" column="ATT_OUT_DT"/>
+		<result property="attInTime" column="ATT_IN_TIME"/>
+		<result property="attOutTime" column="ATT_OUT_TIME"/>
 		<result property="attWorkTime" column="ATT_WORK_TIME"/>
 		<result property="createDt" column="CREATE_DT"/>
 		<result property="creator" column="CREATOR"/>
 		<result property="modifyDt" column="MODIFY_DT"/>
 		<result property="modifier" column="MODIFIER"/>
-		<association property="employee" javaType="EmployeeDto">
-			<id property="empNo" column="EMP_NO" />
-			<result property="empName" column="EMP_NAME" />
-		</association>
+		<result property="empNo" column="EMP_NO"/>
+<!-- 		<association property="employee" javaType="EmployeeDto"> -->
+<!-- 			<id property="empNo" column="EMP_NO" /> -->
+<!-- 			<result property="empName" column="EMP_NAME" /> -->
+<!-- 		</association> -->
 	</resultMap>
 	
 <insert id="insertAttendance" parameterType="AttendanceDto">
@@ -35,8 +36,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         EMP_NO
     ) VALUES (
         ATTENDANCE_SEQ.NEXTVAL,
-        #{attInDt},
-        #{attOutDt},
+       	#{attInTime},
+        #{attOutTime},
         #{attWorkTime},
         CURRENT_DATE,
         #{creator},
@@ -45,5 +46,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         #{empNo}
     )
 </insert>
-	
+
+<select id="getAttList"
+		resultMap="AttendanceMap">
+SELECT * FROM
+	(SELECT ROW_NUMBER() OVER(ORDER BY A.ATT_IN_TIME ASC) AS RN 
+		 , A.ATT_NO
+		 , A.ATT_IN_TIME
+		 , A.ATT_OUT_TIME
+		 , A.ATT_WORK_TIME
+		 , A.CREATE_DT
+		 , A.EMP_NO
+	  FROM ATTENDANCE_T A )
+</select>
+
+
 </mapper>

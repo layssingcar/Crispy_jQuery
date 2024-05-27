@@ -111,7 +111,7 @@
 						  <label class="form-check-label" for="myscheChecked">내 일정</label>                    		
                 		</div>
                 		<hr>
-                		<div id="go-schemenu">개인 근태 관리</div>
+                		<div id="trashsche">휴지통</div>
                 	</div>
     				<div id='calendar'></div>
                 
@@ -358,7 +358,7 @@
       const calendarHeader = {
         left: 'prev,next today',          
         center: 'title',
-        right:''        
+        right:'dayGridMonth,timeGridWeek,listWeek'        
       }
 
       const calendarOpt = {
@@ -379,23 +379,23 @@
         $("#myModal").modal('hide');
       });
 
-//       calendar.on("eventClick", (info)=>{
-//         alert('일정 제목:'+ info.event.title);
-//         alert('일정 시작:'+ info.event.start);
-//         alert('일정 종료:'+ info.event.end);
-//       });
+      calendar.on("eventClick", (info)=>{
+        alert('일정 제목:'+ info.event.title);
+        alert('일정 시작:'+ info.event.start);
+        alert('일정 종료:'+ info.event.end);
+      });
       
       calendar.on("dateClick", (info)=>{
         });
 
       calendar.on("select", (info)=>{
         $('#myModal').modal('show');
-        startDt = new Date(info.startStr.substr(0, 4), info.startStr.substr(5, 2)-1, info.startStr.substr(8, 2));
-        endDt = new Date(info.endStr.substr(0, 4), info.endStr.substr(5, 2)-1, info.endStr.substr(8, 2));
+        startDt = info.startStr.substr(0, 4) + "-" + (info.startStr.substr(5, 2)) + "-" + info.startStr.substr(8, 2);
+        endDt = info.endStr.substr(0, 4) + "-" + (info.endStr.substr(5, 2))  + "-" + info.endStr.substr(8, 2);
       });
 
-      function fnRegistSchedule(){
-        if($("input:radio[name=inlineRadioOptions2]:checked").val() == 'all'){
+      function fnRegistSchedule(){		// 일정 등록 처리 함수
+        if($("input:radio[name=var-elem-radio]:checked").val() == 'all'){
           let schedule = {
               title: $("#sch-title").val(),
               allDay: true, 
@@ -404,12 +404,12 @@
           };
           calendar.addEvent(schedule);
         }
-        else{
+        else if($("input:radio[name=var-elem-radio]:checked").val() != 'all'){
           let schedule = {
               title: $("#sch-title").val(),
               allDay: false, 
-              start: startDt,
-              end: endDt
+              start:  startDt + "T" + $("#start option:selected").val(),
+              end : startDt + "T" + $("#end option:selected").val()
             };
             calendar.addEvent(schedule);
           }
