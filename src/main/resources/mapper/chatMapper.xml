@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mcp.crispy.chat.mapper.ChatMapper">
+
+    <resultMap id="ChatRoomMap" type="ChatRoomDto">
+        <id property="chatRoomNo" column="CHAT_ROOM_NO"/>
+        <result property="chatRoomTitle" column="CHAT_ROOM_TITLE"/>
+        <result property="chatRoomStat" column="CHAT_ROOM_STAT"/>
+        <result property="createDt" column="CREATE_DT"/>
+        <result property="creator" column="CREATOR"/>
+        <result property="modifyDt" column="MODIFY_DT"/>
+        <result property="modifier" column="MODIFIER"/>
+        <collection property="participants" ofType="CrEmpDto">
+            <id property="empNo" column="EMP_NO"/>
+            <result property="entryStat" column="ENTRY_STAT"/>
+            <result property="empName" column="EMP_NAME" />
+            <result property="empProfile" column="EMP_PROFILE" />
+        </collection>
+
+    </resultMap>
+
+    <select id="getChatRooms" resultMap="ChatRoomMap">
+        SELECT DISTINCT
+            C.CHAT_ROOM_NO, C.CHAT_ROOM_TITLE, C.CHAT_ROOM_STAT, C.CREATE_DT,
+            C.CREATOR, C.MODIFY_DT, C.MODIFIER
+        FROM CHAT_ROOM_T C
+                 LEFT JOIN CR_EMP_T P ON C.CHAT_ROOM_NO = P.CHAT_ROOM_NO
+                 LEFT JOIN EMPLOYEE_T E ON P.EMP_NO = E.EMP_NO
+        WHERE (C.CREATOR = #{empNo} AND C.CHAT_ROOM_NO IN (
+            SELECT CHAT_ROOM_NO
+            FROM CR_EMP_T
+            WHERE EMP_NO = #{empNo} AND ENTRY_STAT = 0))
+           OR (P.EMP_NO = #{empNo} AND P.ENTRY_STAT = 0)
+        GROUP BY
+            C.CHAT_ROOM_NO, C.CHAT_ROOM_TITLE, C.CHAT_ROOM_STAT, C.CREATE_DT,
+            C.CREATOR, C.MODIFY_DT, C.MODIFIER
+    </select>
+
+    <select id="getChatRoom" resultMap="ChatRoomMap">
+        SELECT C.CHAT_ROOM_NO, C.CHAT_ROOM_TITLE , C.CHAT_ROOM_STAT, C.CREATE_DT, C.CREATOR,
+               C.MODIFY_DT, C.MODIFIER, P.EMP_NO, P.ENTRY_STAT, E.EMP_NAME
+          FROM CHAT_ROOM_T C
+          LEFT JOIN CR_EMP_T P ON C.CHAT_ROOM_NO = P.CHAT_ROOM_NO
+          LEFT JOIN EMPLOYEE_T E ON P.EMP_NO = E.EMP_NO
+         WHERE C.CHAT_ROOM_NO = #{chatRoomNo}
+           AND (
+               (SELECT COUNT(*) FROM CR_EMP_T WHERE CHAT_ROOM_NO = C.CHAT_ROOM_NO) = 2
+            OR P.ENTRY_STAT = 0
+            )
+    </select>
+
+    <select id="getMessages" resultType="ChatMessageDto">
+        SELECT CM.CHAT_ROOM_NO, CM.EMP_NO, CM.MSG_CONTENT, CM.MSG_DT,
+               CM.CREATOR, CM.CREATE_DT, CM.MODIFIER, CM.MODIFY_DT,
+               E.EMP_PROFILE, E.EMP_NAME
+        FROM CHAT_MESSAGE_T CM
+        LEFT JOIN EMPLOYEE_T E ON CM.EMP_NO = E.EMP_NO
+        WHERE CM.CHAT_ROOM_NO = #{chatRoomNo}
+          AND CM.MSG_DT > (SELECT MAX(ENTRY_DT) FROM ENTRY_EXIT_T WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo})
+        ORDER BY MSG_DT
+    </select>
+
+    <insert id="saveMessage">
+        <selectKey keyProperty="msgNo" resultType="int" order="BEFORE">
+            SELECT CHAT_MESSAGE_SEQ.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO CHAT_MESSAGE_T (MSG_NO, MSG_CONTENT, CHAT_ROOM_NO, EMP_NO, MSG_DT, CREATE_DT)
+        VALUES (#{msgNo}, #{msgContent}, #{chatRoomNo}, #{empNo}, CURRENT_TIMESTAMP ,CURRENT_TIMESTAMP)
+    </insert>
+
+    <insert id="createChatRoom">
+        <selectKey keyProperty="chatRoomNo" resultType="int" order="BEFORE">
+            SELECT CHAT_ROOM_SEQ.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO CHAT_ROOM_T (CHAT_ROOM_NO, CHAT_ROOM_TITLE, CREATOR, CREATE_DT)
+        VALUES (#{chatRoomNo}, #{chatRoomTitle}, #{creator}, CURRENT_TIMESTAMP)
+    </insert>
+
+    <select id="getParticipant" parameterType="map" resultType="CrEmpDto">
+        SELECT CHAT_ROOM_NO, EMP_NO, ENTRY_STAT, ALARM_STAT
+          FROM CR_EMP_T
+         WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo}
+    </select>
+
+    <insert id="addParticipant">
+        INSERT INTO CR_EMP_T (CHAT_ROOM_NO, EMP_NO, ENTRY_STAT, ALARM_STAT)
+        VALUES (#{chatRoomNo}, #{empNo}, #{entryStat}, #{alarmStat})
+    </insert>
+
+    <update id="updateParticipantEntryStat">
+        UPDATE CR_EMP_T SET ENTRY_STAT = #{entryStat}, ALARM_STAT = #{alarmStat}
+        WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo}
+    </update>
+
+    <update id="updateEntryStat">
+        UPDATE CR_EMP_T
+           SET ENTRY_STAT = #{entryStat}, ALARM_STAT = #{alarmStat}
+        WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo}
+    </update>
+
+    <select id="getParticipantsByRoom" resultType="CrEmpDto">
+        SELECT P.CHAT_ROOM_NO, P.EMP_NO, P.ENTRY_STAT, E.EMP_NAME, E.EMP_PROFILE
+        FROM CR_EMP_T P
+                 LEFT JOIN EMPLOYEE_T E ON P.EMP_NO = E.EMP_NO
+        WHERE P.CHAT_ROOM_NO = #{chatRoomNo}
+          AND (
+            (SELECT COUNT(*) FROM CR_EMP_T WHERE CHAT_ROOM_NO = P.CHAT_ROOM_NO) = 2
+                OR P.ENTRY_STAT = 0
+            )
+    </select>
+
+    <insert id="addAccessRecord">
+        insert into CR_ACCESS_T (CHAT_ROOM_NO, EMP_NO, ACCESS_DT)
+        VALUES (#{chatRoomNo}, #{empNo}, CURRENT_TIMESTAMP)
+    </insert>
+
+    <update id="updateAccessRecord">
+        UPDATE CR_ACCESS_T
+           SET ACCESS_DT = CURRENT_TIMESTAMP
+         WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo}
+    </update>
+
+    <select id="checkAccessExists">
+        SELECT COUNT(*)
+          FROM  CR_ACCESS_T
+         WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo}
+    </select>
+
+    <insert id="insertEntryRecord">
+        INSERT INTO ENTRY_EXIT_T(CHAT_ROOM_NO, EMP_NO, ENTRY_DT)
+        VALUES(#{chatRoomNo}, #{empNo}, CURRENT_TIMESTAMP)
+    </insert>
+
+    <update id="updateExitRecord">
+        UPDATE ENTRY_EXIT_T
+        SET EXIT_DT = CURRENT_TIMESTAMP
+        WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo}
+    </update>
+
+    <update id="updateEntryRecord">
+        UPDATE ENTRY_EXIT_T
+        SET ENTRY_DT = CURRENT_TIMESTAMP
+        WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo}
+    </update>
+
+    <select id="checkEntryRecordExists">
+        SELECT COUNT(*)
+        FROM ENTRY_EXIT_T
+        WHERE CHAT_ROOM_NO = ${chatRoomNo} AND EMP_NO = #{empNo}
+    </select>
+
+    <select id="countUnreadMessages" resultType="UnreadMessageCountDto">
+        SELECT CR.CHAT_ROOM_NO, COUNT(*) as unread_count
+          FROM CHAT_ROOM_T CR
+          LEFT JOIN CR_EMP_T CE ON CR.CHAT_ROOM_NO = CE.CHAT_ROOM_NO
+          LEFT JOIN CHAT_MESSAGE_T m ON CR.CHAT_ROOM_NO = m.CHAT_ROOM_NO
+          LEFT JOIN CR_ACCESS_T a ON CR.CHAT_ROOM_NO = a.CHAT_ROOM_NO AND CE.EMP_NO = a.EMP_NO
+         WHERE CE.EMP_NO = #{empNo}
+           AND (m.MSG_DT > a.ACCESS_DT OR a.ACCESS_DT IS NULL)
+           AND CE.ALARM_STAT = 0  -- 알림이 활성화된 경우만 계산
+           AND CE.ENTRY_STAT = 0 -- 입장 상태가 활성화된 경우만 계산
+           AND m.EMP_NO != #{empNo} -- 본인이 보낸 메시지는 제외
+
+        GROUP BY CR.CHAT_ROOM_NO
+    </select>
+</mapper>

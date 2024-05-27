@@ -16,13 +16,13 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/franchise")
+@RequestMapping("/api/franchise")
 public class FranchiseApiController {
 
     private final FranchiseService franchiseService;
     private final EmployeeService employeeService;
 
-    @PostMapping("/register")
+    @PostMapping("/register/v1")
     public ResponseEntity<Map<String, String>> registerFranchise(@RequestBody FranchiseRegistrationRequest request) {
 
         franchiseService.registerFranchiseAndOwner(request.getFranchiseDto(), request.getOwnerRegisterDto());
@@ -31,7 +31,7 @@ public class FranchiseApiController {
 
     // 가맹점 사진 변경
 //    @IsOwner
-    @PostMapping(value = "/updateFrnImg", consumes = "multipart/form-data")
+    @PostMapping(value = "/frnImg/v1", consumes = "multipart/form-data")
     public ResponseEntity<?> insertOrUpdateEmpProfile(@RequestParam("frnNo") Integer frnNo,
                                                       @RequestPart(value = "file", required = false) MultipartFile file) {
         log.info("file: {}", file);
@@ -46,7 +46,7 @@ public class FranchiseApiController {
 
     // 가맹점 번호 변경
 //    @IsOwner
-    @PutMapping("/updateFrnTel")
+    @PutMapping("/frnTel/v1")
     public ResponseEntity<?> changeFrnTel(@RequestBody FranchiseTelDto franchiseTelDto,
                                           Principal principal) {
         FranchiseDto franchise = franchiseService.getFranchise(principal.getName());
@@ -57,7 +57,7 @@ public class FranchiseApiController {
 
     // 가맹점 주소 변경
 //    @IsOwner
-    @PostMapping("/updateFrnAddress")
+    @PostMapping("/frnAddress/v1")
     public ResponseEntity<Map<String, String>> insertOrUpdateAddress(@RequestBody FrnAddressDto frnAddressDto,
                                                                      Principal principal) {
         FranchiseDto franchise = franchiseService.getFranchise(principal.getName());
@@ -68,7 +68,7 @@ public class FranchiseApiController {
 
     //대표자 이름 변경
 //    @IsOwner
-    @PutMapping("/updateFrnOwner")
+    @PutMapping("/frnOwner/v1")
     public ResponseEntity<?> changeFrnOwner(@RequestBody FrnUpdateDto frnUpdateDto,
                                             Principal principal) {
         FranchiseDto franchise = franchiseService.getFranchise(principal.getName());
@@ -81,7 +81,7 @@ public class FranchiseApiController {
         return ResponseEntity.ok(Map.of("message", "대표자명이 성공적으로 변경되었습니다."));
     }
 
-    @PutMapping("/update/operating-time")
+    @PutMapping("/operatingTime/v1")
     public ResponseEntity<?> changeOperatingTime(@RequestBody FrnUpdateDto frnUpdateDto,
                                                  Principal principal) {
         FranchiseDto franchise = franchiseService.getFranchise(principal.getName());

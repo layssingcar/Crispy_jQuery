@@ -20,20 +20,20 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/owner")
+@RequestMapping("/api/owner")
 public class OwnerApiController {
 
     private final OwnerService ownerService;
     private final EmployeeService employeeService;
 
-    @PostMapping("/employee/register")
+    @PostMapping("/employee/register/v1")
     public ResponseEntity<?> registerEmployee(@RequestBody EmployeeRegisterDto employeeRegisterDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         ownerService.registerEmployee(employeeRegisterDto, authentication);
         return ResponseEntity.ok(Map.of("message", "직원이 등록되었습니다."));
     }
 
-    @GetMapping("/employees/{frnNo}")
+    @GetMapping("/employees/{frnNo}/v1")
     public ResponseEntity<?> getAllEmployees(@PathVariable int frnNo) {
         try {
             List<EmployeeDto> employees = ownerService.getEmployeesByFrnNo(frnNo);

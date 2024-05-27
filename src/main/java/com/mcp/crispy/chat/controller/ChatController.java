@@ -6,6 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.security.Principal;
+
 @Slf4j
 @Controller
 @RequiredArgsConstructor
@@ -13,7 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ChatController {
 
     @GetMapping("/chat")
-    public String chat() {
-        return "chat/chat";
+    public String chat(Principal principal) {
+        if (principal != null) {
+            return "chat/chat";
+        } else {
+            return "redirect:/crispy/login";
+        }
     }
 }
