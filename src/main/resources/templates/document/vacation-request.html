@@ -1,0 +1,63 @@
+<div class="vacation">
+    <table>
+        <tbody>
+            <tr>
+                <td colspan="5" rowspan="2" id="doc-title">휴가신청서</td>
+                <th rowspan="2" class="col" id="appr">결&nbsp;&nbsp;재</th>
+                <th class="col appr-col">매니저</th>
+                <th class="col appr-col">점주</th>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <th class="col inp-col">성명</th>
+                <!-- 기안자 출력 -->
+                <td colspan="3"></td>
+
+                <th class="col inp-col">직책</th>
+                <!-- 직책 출력 -->
+                <td colspan="3" class="row"></td>
+            </tr>
+            <tr>
+                <th class="col inp-col">주소</th>
+                <!-- 주소 출력 (도로명주소 + 상세주소) -->
+                <td colspan="7"></td>
+            </tr>
+            <tr>
+                <th class="col inp-col">휴가 기간</th>
+                <!-- 휴가 기간 입력 -->
+                <td colspan="7">2024년 05월 22일 ~ 2024년 05월 30일 (09일간)</td>
+            </tr>
+            <tr>
+                <th class="col inp-col">휴가 사유</th>
+                <td colspan="7">
+                    <!-- 휴가 사유 입력 -->
+                    <input type="text" name="" id="vct-cont" placeholder="휴가 사유를 입력하세요.">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="8">
+                    <div id="doc-cont">
+                        <div>위 본인은 상기의 사유로 휴가를 신청합니다.</div>
+
+                        <!-- 기안일 출력 (2024년 05월 22일 수요일) -->
+                        <div></div>
+
+                        <div class="appr-emp">
+                            <div>신청인:&nbsp;</div>
+
+                            <!-- 기안자 출력 -->
+                            <div id="emp-name"></div>
+                            
+                            <div id="emp-sign">
+                                <span>(인)</span>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

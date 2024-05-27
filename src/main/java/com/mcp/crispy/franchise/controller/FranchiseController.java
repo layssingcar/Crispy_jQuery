@@ -34,10 +34,14 @@ public class FranchiseController {
 //    @IsOwner
     @GetMapping("/franchise")
     public String getFranchise(Principal principal, Model model) {
-        FranchiseDto owner = franchiseService.getFranchise(principal.getName());
-        log.info("Franchise owner : {}", owner.getFrnJoinDt());
-        model.addAttribute("owner", owner);
-        return "franchise/franchise";
+        if(principal != null) {
+            FranchiseDto owner = franchiseService.getFranchise(principal.getName());
+            log.info("Franchise owner : {}", owner.getFrnJoinDt());
+            model.addAttribute("owner", owner);
+            return "franchise/franchise";
+        } else {
+            return "redirect:/crispy/login";
+        }
     }
     
     @GetMapping("franchise-list")

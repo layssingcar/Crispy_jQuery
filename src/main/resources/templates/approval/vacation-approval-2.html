@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
+<link rel="stylesheet" href="/css/approval/vacation-approval-2.css" type="text/css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.16/themes/default-dark/style.min.css" integrity="sha512-CQDjN7GvO35Yq+qvFhfRO6mNhjEHoJ2xGcCV4EOQB10jdBjLKZN5DkXkoNg0VKq4/BfKyMtkqoZ2WmhGnT9Tmw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.16/themes/default/style.min.css" integrity="sha512-A5OJVuNqxRragmJeYTW19bnw9M2WyxoshScX/rGTgZYj5hRXuqwZ+1AVn2d6wYTZPzPXxDeAGlae0XwTQdXjQA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+	<div class="crispy-container">
+		<aside th:replace="~{layout/sidebar :: sidebar}"></aside>
+		<div>
+			<header th:replace="~{layout/navbar :: navbar}"></header>
+			<main>
+				<div class="appr-line">
+					<h1>결재선 선택</h1>
+
+                    <!-- 메인 영역 -->
+                    <div class="main-area">
+                        <div class="tree-box" id="tree"></div>
+                        <div id="select">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/></svg>
+                        </div>
+                        <div class="tree-box" id="select-tree">
+                            <span>hello</span>
+                        </div>
+                    </div>
+
+                    <div class="bottom-area">
+                        <!-- 하단 버튼 -->
+                        <div class="bottom-btn">
+                            <div><button class="btn" id="rollback">뒤로가기</button></div>
+    
+                            <div>
+                                <button class="btn" id="cancel">취소</button>
+                                <button class="btn" id="request">신청하기</button>
+                            </div>
+                        </div>
+                    </div>
+				</div>
+			</main>
+			<footer th:replace="~{layout/footer :: footer}"></footer>
+		</div>
+	</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.16/jstree.min.js" integrity="sha512-ekwRoEshEqHU64D4luhOv/WNmhml94P8X5LnZd9FNOiOfSKgkY12cDFz3ZC6Ws+7wjMPQ4bPf94d+zZ3cOjlig==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        $('#tree').jstree({ 
+            'core' : {
+                'data' : [
+                    { "id" : "owner",   "parent" : "#",       "text" : "점주",   "icon" : "glyphicon glyphicon-home"},
+                    { "id" : "manager", "parent" : "#",       "text" : "매니저", "icon" : "glyphicon glyphicon-home"},
+                    { "id" : "o1",      "parent" : "owner",   "text" : "우혜진", "icon" : "glyphicon glyphicon-picture"},
+                    { "id" : "m1",      "parent" : "manager", "text" : "박종구", "icon" : "glyphicon glyphicon-picture"},
+                    { "id" : "m2",      "parent" : "manager", "text" : "배영욱", "icon" : "glyphicon glyphicon-picture"},
+                    { "id" : "m3",      "parent" : "manager", "text" : "최동환", "icon" : "glyphicon glyphicon-picture"},
+                ]
+            }
+        });
+    </script>
+</body>
+</html>
