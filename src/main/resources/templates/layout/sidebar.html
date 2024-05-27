@@ -36,7 +36,7 @@
                         <li><a href="/crispy/stock-order" class="s-menu">발주 신청</a></li>
                         <li><a href="/crispy/approval-list" class="s-menu">결재 목록 조회</a></li>
                         <li><a href="/crispy/approval-detail" class="s-menu">결재 문서 상세</a></li>
-                        <li><a href="/crispy/vacation-approval" class="s-menu">휴가/휴직 신청</a></li>
+                        <li><a href="/crispy/time-off-approval" class="s-menu">휴가/휴직 신청</a></li>
                     </ul>
                     </div>
                 </li>
@@ -51,14 +51,14 @@
                     <div class="collapse" id="menu-3-collapse">
                     <ul class="">
                         <li><a href="/crispy/login" class="s-menu">로그인</a></li>
-                        <li><a href="/crispy/employee/find-emp-id" class="s-menu">아이디 찾기</a></li>
-                        <li><a href="/crispy/employee/find-emp-id-result" class="s-menu">아이디 찾기 결과</a></li>
-                        <li><a href="/crispy/employee/find-emp-pw" class="s-menu">비밀번호 찾기</a></li>
-                        <li><a href="/crispy/employee/change-emp-pw" class="s-menu">비밀번호 변경</a></li>
+                        <li><a href="/crispy/employee/findEmpId" class="s-menu">아이디 찾기</a></li>
+                        <li><a href="/crispy/employee/findEmpId/result" class="s-menu">아이디 찾기 결과</a></li>
+                        <li><a href="/crispy/employee/findEmpPw" class="s-menu">비밀번호 찾기</a></li>
+                        <li><a href="/crispy/employee/changeEmpPw" class="s-menu">비밀번호 변경</a></li>
                         <li><a href="/crispy/employee/profile" class="s-menu">마이페이지</a></li>
                         <li><a href="/crispy/owner/employees" class="s-menu">직원 관리</a></li>
                         <li><a href="/crispy/owner/employee/register" class="s-menu">직원 등록</a></li>
-                        <li><a href="/crispy/owner/employee" class="s-menu">직원 정보 수정</a></li>
+                        <li><a href="/crispy/owner/employeeDetail" class="s-menu">직원 정보 수정</a></li>
                         <li><a href="/crispy/franchise/register" class="s-menu">가맹점 등록</a></li>
                         <li><a href="/crispy/franchise" class="s-menu">가맹점 상세</a></li>
                     </ul>
@@ -167,21 +167,12 @@
                     </ul>
                     </div>
                 </li>
-
                 <li class="mb-1">
-                    <div class="menu" data-bs-toggle="collapse" data-bs-target="#menu-10-collapse">
-                        <a href="#">
-                            <span>메뉴 10</span>
-                            <i class="fa-solid fa-chevron-down"></i>
+                    <div class="chat-menu" data-bs-toggle="collapse" data-bs-target="#menu-10-collapse">
+                        <a href="/crispy/chat">
+                            <span>채팅</span>
+                            <span id="unreadMessageCountBadge" class="badge">0</span>
                         </a>
-                    </div>
-                    <div class="collapse" id="menu-10-collapse">
-                    <ul class="">
-                        <li><a href="#" class="s-menu">소메뉴 1</a></li>
-                        <li><a href="#" class="s-menu">소메뉴 2</a></li>
-                        <li><a href="#" class="s-menu">소메뉴 3</a></li>
-                        <li><a href="#" class="s-menu">소메뉴 4</a></li>
-                    </ul>
                     </div>
                 </li>
             </ul>

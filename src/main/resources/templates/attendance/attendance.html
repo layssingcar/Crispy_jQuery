@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
+    <link href="/css/employee/employees.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="crispy-container">
+    <aside th:replace="~{layout/sidebar :: sidebar}"></aside>
+    <div>
+        <header th:replace="~{layout/navbar :: navbar}"></header>
+        <main>
+            <div class="employees">
+                <input type="hidden" id="employees-frnNo" th:value="${frnNo}">
+                <div>
+                    <h1>개인 근태 관리</h1>
+                </div>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">날짜</th>
+                        <th scope="col">근무상태</th>
+                        <th scope="col">출근시간</th>
+                        <th scope="col">퇴근시간</th>
+                        <th scope="col">근무시간</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="attendance : ${attenList}">
+                    	<td th:text="${attendance.createDt}"></td>
+                    	<td></td>
+                    	<td th:text="${attendance.attInTime}"></td>
+                    	<td th:text="${attendance.attOutTime}"></td>
+                    	<td th:text="${attendance.attWorkTime}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+        <footer th:replace="~{layout/footer :: footer}"></footer>
+    </div>
+    <!-- 특정 JS -->
+<!--     <script src="/js/owner.js"></script> -->
+</div>
+</body>
+</html>

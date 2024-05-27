@@ -16,6 +16,8 @@ public interface EmployeeMapper {
 
 	Optional<EmployeeDto> findByUsername(String username);
 
+	List<EmployeeDto> findAll();
+
 	Optional<EmployeeDto> findByEmployeeDetailsByEmpNo(Integer empNo);
 
 	List<EmployeeDto> findEmployeeByFranchise(int frnNo);

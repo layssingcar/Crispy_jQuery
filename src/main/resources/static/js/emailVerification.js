@@ -15,12 +15,12 @@ const emailVerify = {
         });
     },
     handleVerificationCode: function (empEmail, action) {
-        let apiUrl = "/api/v1/email/send-verification-code";
+        let apiUrl = "/api/email/verificationCode/verify/v1";
         let requestBody = {empEmail: empEmail, action: action};
         console.log(empEmail);
 
         if (action === "verify-user") {
-            apiUrl = "/api/v1/employee/verify-employee";
+            apiUrl = "/api/employee//verify/email/v1";
             requestBody = {
                 empEmail: empEmail,
                 empName: document.querySelector(".emp-name").value,
@@ -55,7 +55,7 @@ const emailVerify = {
             verifyEmail: document.querySelector(".emp-email").value,
             verifyCode: document.querySelector(".verify-code").value,
         }
-        fetch("/api/v1/email/verify-code", {
+        fetch("/api/email/verificationCode/verify/v1", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(data)

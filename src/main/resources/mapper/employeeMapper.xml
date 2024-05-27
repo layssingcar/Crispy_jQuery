@@ -70,6 +70,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE E.EMP_ID = #{empId}
     </select>
 
+    <select id="findAll" resultType="EmployeeDto">
+        SELECT E.EMP_NO, E.EMP_NAME, E.EMP_PHONE,
+               E.EMP_EMAIL, E.EMP_PROFILE, P.POS_NAME
+          FROM EMPLOYEE_T E
+          LEFT JOIN POSITION_T P ON E.POS_NO = P.POS_NO
+    </select>
+
     <!-- empNo로 해당 사원의 정보 찾기 -->
     <select id="findByEmployeeDetailsByEmpNo" parameterType="EmployeeDto">
             SELECT E.EMP_NO, E.EMP_ID, E.EMP_NAME, E.EMP_PHONE, E.EMP_ZIP, E.EMP_STREET, E.EMP_DETAIL,

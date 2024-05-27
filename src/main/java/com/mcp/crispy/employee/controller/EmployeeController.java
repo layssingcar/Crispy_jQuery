@@ -25,12 +25,12 @@ public class EmployeeController {
 
 	private final EmployeeService employeeService;
 
-	@GetMapping("/find-emp-id")
+	@GetMapping("/findEmpId")
 	public String findUsername() {
 		return "employee/find-emp-id";
 	}
 
-	@PostMapping("/find-emp-id")
+	@PostMapping("/findEmpId")
 	public String findUsernamePost(@ModelAttribute FindEmployeeDto findEmployeeDto, BindingResult result,
 								   RedirectAttributes ra) {
 		if (result.hasErrors()) {
@@ -44,20 +44,20 @@ public class EmployeeController {
 		} else {
 			ra.addFlashAttribute("error", "해당 이메일로 가입된 아이디가 없습니다.");
 		}
-		return "redirect:/crispy/employee/find-emp-id-result";
+		return "redirect:/crispy/employee/findEmpIdResult";
 	}
 
-	@GetMapping("/find-emp-id-result")
+	@GetMapping("/findEmpId/result")
 	public String findUsernameResult() {
 		return "employee/find-emp-id-result";
 	}
 
-	@GetMapping("/find-emp-pw")
+	@GetMapping("/findEmpPw")
 	public String findPassword() {
 		return "employee/find-emp-pw";
 	}
 
-	@GetMapping("/change-emp-pw")
+	@GetMapping("/changeEmpPw")
 	public String changePassword(HttpSession session, Principal principal, Model model) {
 		if(principal != null) {
 			EmployeeDto employee = employeeService.getEmployeeName(principal.getName());

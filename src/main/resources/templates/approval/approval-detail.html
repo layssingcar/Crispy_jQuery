@@ -3,8 +3,9 @@
 <head>
 <th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
 <link rel="stylesheet" href="/css/summernote/summernote-lite.css">
-<link rel="stylesheet" href="/css/approval/approval-detail.css" type="text/css">
-<link rel="stylesheet" href="/css/document/vacation-application.css" type="text/css">
+<link rel="stylesheet" href="/css/approval/approval-detail.css" type="text/css"> <!-- 문서 열람 -->
+<link rel="stylesheet" href="/css/document/time-off-app.css" type="text/css"> <!-- 휴가/휴직 신청서 -->
+<link rel="stylesheet" href="/css/document/stock-order-app.css" type="text/css"> <!-- 발주 신청서 -->
 </head>
 <body>
 	<div class="crispy-container">
@@ -20,7 +21,8 @@
 						<button type="button" class="btn" id="temp-content">결재하기</button>
 					</div>
 
-                    <div th:replace="~{document/vacation-application :: vacation-application}"></div>
+                    <!-- 문서 상세 -->
+                    <div th:replace="~{document/stock-order-app :: stock-order-app}"></div>
 
                     <!-- 파일 선택 -->
                     <!-- <div class="file-attach">

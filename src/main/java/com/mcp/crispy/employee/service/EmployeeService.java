@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 
 import static com.mcp.crispy.common.utils.RandomCodeUtils.generateTempPassword;
 
@@ -32,6 +33,10 @@ public class EmployeeService {
     public EmployeeDto getEmployeeName(String username) {
         return employeeMapper.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("직원이 존재하지 않습니다."));
+    }
+
+    public List<EmployeeDto> getAllEmployees() {
+        return employeeMapper.findAll();
     }
 
     public EmployeeDto getEmployeeDetailsByEmpNo(Integer empNo) {
@@ -70,14 +75,7 @@ public class EmployeeService {
     }
 
 
-    /**
-     * 파라미터에 empId가 존재하면 비밀번호 찾기
-     * empId가 존재하지 않으면 아이디 찾기
-     * @param empName
-     * @param empEmail
-     * @param empId
-     * @return
-     */
+    //  파라미터에 empId가 존재하면 비밀번호 찾기, empId가 존재하지 않으면 아이디 찾기
     public boolean checkEmployeeExists(String empName, String empEmail, String empId) {
         if (empId != null) {
             return employeeMapper.findByEmpNameAndEmpEmailAndEmpId(empName, empEmail, empId).isPresent();
