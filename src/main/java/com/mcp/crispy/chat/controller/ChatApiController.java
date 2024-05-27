@@ -110,8 +110,10 @@ public class ChatApiController {
 
     // 읽지 않은 메시지 개수
     @GetMapping("/rooms/unread-count/v1")
-    public List<UnreadMessageCountDto> getUnreadMessageCount(Authentication authentication) {
+    public ResponseEntity<List<UnreadMessageCountDto>> getUnreadMessageCount(Authentication authentication) {
         CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
-        return chatService.getUnreadMessageCount(userDetails.getEmpNo());
+        List<UnreadMessageCountDto> unreadMessageCount = chatService.getUnreadMessageCount(userDetails.getEmpNo());
+        log.info("unreadMessageCount: {}", unreadMessageCount);
+        return ResponseEntity.ok(unreadMessageCount);
     }
 }
