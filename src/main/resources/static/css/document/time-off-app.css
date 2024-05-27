@@ -1,5 +1,5 @@
-/* 휴가신청서 */
-.vacation > div {
+/* 휴가, 휴직 신청서 */
+.time-off > div {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -7,24 +7,24 @@
 }
 
 /* 테이블 */
-.vacation table {
+.time-off table {
     width: 870px;
     text-align: center;
 }
 
 /* 제목 셀, 데이터 셀 */
-.vacation th, .vacation td {
+.time-off th, .time-off td {
     display: table-cell;
     border: 1px solid black;
 }
 
 /* 전체 열 */
-.vacation .col {
+.time-off .col {
     background-color: rgba(200, 200, 200, 0.2);
 }
 
 /* 문서 제목 */
-.vacation #doc-title {
+.time-off #doc-title {
     border-top: none;
     border-left: none;
     font-size: 3rem;
@@ -32,67 +32,67 @@
 }
 
 /* 결재 */
-.vacation #appr {
+.time-off #appr {
     width: 65px;
     height: 170px;
     writing-mode: vertical-lr;
 }
 
 /* 결재 열 */
-.vacation .appr-col {
+.time-off .appr-col {
     width: 120px;
     height: 50px;
 }
 
 /* 결재 이미지 */
-.vacation .sign-img {
+.time-off .sign-img {
     width: 100px;
     height: 100px;
 }
 
 /* 입력 열 */
-.vacation .inp-col {
+.time-off .inp-col {
     width: 145px;
     height: 50px;
 }
 
 /* 문서 내용 */
-.vacation #doc-cont {
+.time-off #doc-cont {
     display: flex;
     flex-direction: column;
     justify-content: center;
     margin: 65px 0;
 }
 
-.vacation #doc-cont > div:nth-child(1) {
+.time-off #doc-cont > div:nth-child(1) {
     margin-bottom: 85px;
 }
 
-.vacation #doc-cont > div:nth-child(2) {
+.time-off #doc-cont > div:nth-child(2) {
     margin-bottom: 20px;
 }
 
 /* 기안자 서명 */
-.vacation .appr-emp {
+.time-off .appr-emp {
     display: flex;
     justify-content: flex-end;
     align-items: flex-end;
 }
 
 /* 기안자 이름 */
-.vacation #emp-name {
+.time-off #emp-name {
     width: 100px;
     letter-spacing: 0.7rem;
 }
 
 /* 기안자 서명 */
-.vacation #emp-sign {
+.time-off #emp-sign {
     position: relative;
     margin: 0 30px;
 }
 
 /* 서명 이미지 */
-.vacation .appr-emp img {
+.time-off .appr-emp img {
     position: absolute;
     right: -30px;
     bottom: 0px;
@@ -101,13 +101,13 @@
 }
 
 /* 첨부파일 박스 */
-.vacation .attach-file {
+.time-off .attach-file {
     display: flex;
     width: 870px;
     margin-top: 18px;
 }
 
-.vacation .attach-file > div:first-child {
+.time-off .attach-file > div:first-child {
     width: 100px;
     margin-right: 5px;
     padding: 5px;
@@ -116,12 +116,12 @@
 }
 
 /* 첨부파일 목록 */
-.vacation .attach-file > div:last-child {
+.time-off .attach-file > div:last-child {
     padding: 5px;
 }
 
 /* 첨부파일 */
-.vacation .attach-file a {
+.time-off .attach-file a {
     color: var(--sub-color);
     text-decoration: underline;
 }

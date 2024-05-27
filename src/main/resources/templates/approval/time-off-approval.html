@@ -2,8 +2,9 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 <th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
-<link rel="stylesheet" href="/css/summernote/summernote-lite.css">
-<link rel="stylesheet" href="/css/approval/vacation-approval.css" type="text/css">
+<link rel="stylesheet" href="/css/summernote/summernote-lite.css"> <!-- summernote -->
+<link rel="stylesheet" href="/css/approval/time-off-approval.css" type="text/css"> <!-- 휴가/휴직 신청 -->
+<link rel="stylesheet" href="/css/document/time-off-req.css" type="text/css"> <!-- 휴가/휴직 신청서 -->
 </head>
 <body>
 	<div class="crispy-container">
@@ -11,7 +12,7 @@
 		<div>
 			<header th:replace="~{layout/navbar :: navbar}"></header>
 			<main>
-				<div class="vacation-appr">
+				<div class="time-off-appr">
 					<h1>휴가/휴직 신청</h1>
 
 					<!-- 상단 영역 -->
@@ -30,7 +31,9 @@
 
                     <!-- 문서 작성 form -->
                     <form method="post">
-                        <textarea id="summernote" name="editordata"></textarea>
+                        <textarea id="summernote" name="editordata">
+                            <div th:replace="~{document/leave-of-absence-request :: leave-of-absence-request}"></div>
+                        </textarea>
                         
                         <!-- 파일 선택 -->
                         <div class="file-attach">
@@ -62,21 +65,6 @@
     <script>
         $(document).ready(function() {
             $('#summernote').summernote();
-        });
-
-        $('#summernote').summernote({
-            placeholder: 'Hello stand alone ui',
-            tabsize: 2,
-            height: 120,
-            toolbar: [
-            ['style', ['style']],
-            ['font', ['bold', 'underline', 'clear']],
-            ['color', ['color']],
-            ['para', ['ul', 'ol', 'paragraph']],
-            ['table', ['table']],
-            ['insert', ['link', 'picture', 'video']],
-            ['view', ['fullscreen', 'codeview', 'help']]
-            ]
         });
     </script>
 </body>
