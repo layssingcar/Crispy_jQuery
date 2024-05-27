@@ -18,23 +18,24 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/crispy/atten")
+@RequestMapping("/crispy")
 public class AttendanceController {
 	private final AttendanceService attendanceService;
 
 	@PostMapping(value="/registAtt", produces = "application/json")
 	public ResponseEntity<Integer> insertAttendance(@RequestBody AttendanceDto attendanceDto, Principal principal)
 	{	
-	    attendanceDto.setAttInDt(new Timestamp(attendanceDto.getAttInDt().getTime()));
-	    attendanceDto.setAttOutDt(new Timestamp(attendanceDto.getAttOutDt().getTime()));
+	    attendanceDto.setAttInTime(new Timestamp(attendanceDto.getAttInTime().getTime()));
+	    attendanceDto.setAttOutTime(new Timestamp(attendanceDto.getAttOutTime().getTime()));
 	    
 		int insertCount = attendanceService.insertAttendance(attendanceDto);
 		return ResponseEntity.ok(insertCount);
 	}
 	
-	@GetMapping(value="/getAtt", produces="application/json")
+	@GetMapping("/attend")
 	public String getAttList(Model model) {
-		return new String();
+		model.addAttribute("attenList", attendanceService.getAttList());
+		return "attendance/attendance";
 	}
 	
 }

@@ -358,7 +358,7 @@
 					<div class="mainbottom">
 						<div class="area4">
 							<!-- 차트 크기는 부모 크기를 조절하면 거기에 맞게 자동으로 맹글어짐-->
-							<div style="width: 790px; height: 435px; border: 2px solid black">
+							<div style="width: 790px; height: 435px;">
 								<!-- 차트 그릴 위치 지정 canvas webGL(그래픽엔진) 사용 -->
 								<canvas id="myChart"></canvas>
 							</div>
@@ -581,8 +581,8 @@
 
 		    // JSON 데이터를 생성합니다
 		    const data = JSON.stringify({
-		        'attInDt': startTimestamp,
-		        'attOutDt': endTimestamp,
+		        'attInTime': startTimestamp,
+		        'attOutTime': endTimestamp,
 		        'attWorkTime': workingTime,
 		        'createDt': currentDate,
 		        'creator': 1,
@@ -593,7 +593,7 @@
 
 		    $.ajax({
 		        type: 'POST',
-		        url: '/crispy/atten/registAtt',
+		        url: '/crispy/registAtt',
 		        contentType: 'application/json',
 		        dataType: 'json',
 		        data: data
