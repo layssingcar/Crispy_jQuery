@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
-    <link rel="stylesheet" href="/css/approval/approval-list.css" type="text/css">
+    <link rel="stylesheet" href="/css/franchise/franchise-list.css" type="text/css">
 </head>
 <body>
 <div class="crispy-container">
@@ -10,12 +10,12 @@
     <div>
         <header th:replace="~{layout/navbar :: navbar}"></header>
         <main>
-            <div class="approval-list">
+            <div class="franchise-list">
                 <h1>결재 문서</h1>
 
                 <!-- 상단 영역 -->
                 <div class="top-area">
-                    <button type="button" class="btn frnBtn" style="font-size: 1.7rem; margin-right: 95.5rem;">가맹점 등록</button>
+                    <button type="button" class="btn frnBtn" style="font-size: 1.7rem; margin-right: 95.5rem; border-radius: 30px">가맹점 등록</button>
                     <!-- 기안자 검색 -->
                     <div class="container-1">
                         <span class="icon"><i class="fa fa-search"></i></span>
