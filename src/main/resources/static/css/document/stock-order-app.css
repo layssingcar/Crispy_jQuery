@@ -1,0 +1,120 @@
+/* 발주신청서 */
+.order-doc {
+    display: flex;
+    justify-content: center;
+    margin-top: 25px;
+}
+
+.order-doc > div {width: 935px;}
+
+/* 상단 영역 */
+.order-doc .top-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 20px;
+}
+
+/* 테이블 */
+.order-doc table {text-align: center;}
+
+/* 가맹점 정보 테이블 */
+.order-doc .franchise-table {
+    width: 670px;
+    height: 120px;
+}
+
+/* 제목 셀, 데이터 셀 */
+.order-doc th, .order-doc td {
+    display: table-cell;
+    border: 1px solid black;
+}
+
+/* 전체 열 */
+.order-doc .col {
+    background-color: rgba(200, 200, 200, 0.2);
+}
+
+/* 상단 테이블 열 */
+.order-doc .top-col {width: 120px;}
+
+/* 결재 제목 셀 */
+.order-doc #appr {
+    height: 40px;
+    padding-left: 13px;
+    letter-spacing: 10px;
+}
+
+/* 결재 행 */
+.order-doc #sign-tr {height: 100px;}
+
+/* 결재 이미지 */
+.order-doc #sign-img {
+    width: 100px;
+    height: 100px;
+}
+
+/* 발주재고 테이블 */
+.order-doc .stock-order-table {width: 100%;}
+
+/* 발주재고 테이블 행 */
+.order-doc .stock-order-table tr {height: 40px;}
+
+/* 발주재고 테이블 열 */
+.order-doc .stock-order-table tr:first-child > th:nth-child(1) {width: 65px;}
+.order-doc .stock-order-table tr:first-child > th:nth-child(3) {width: 185px;}
+.order-doc .stock-order-table tr:first-child > th:nth-child(4) {width: 215px;}
+.order-doc .stock-order-table tr:first-child > th:nth-child(5) {width: 125px;}
+.order-doc .stock-order-table tr:first-child > th:nth-child(6) {width: 145px;}
+
+/* 단가, 수량, 금액 */
+.order-doc .stock-flex {
+    display: flex;
+    justify-content: center;
+}
+
+/* 합계금액 */
+.order-doc #ls {letter-spacing: 5px;}
+
+/* 문서 내용 */
+.order-doc #doc-cont {
+    display: flex;
+    flex-direction: column;
+    margin: 25px 0;
+}
+
+.order-doc #doc-cont > div:nth-child(1) {
+    margin-bottom: 50px;
+}
+
+.order-doc #doc-cont > div:nth-child(2) {
+    margin-bottom: -25px;
+}
+
+/* 기안자 */
+.order-doc .appr-emp {
+    display: flex;
+    justify-content: flex-end;
+    /* align-items: flex-end; */
+}
+
+/* 기안자 이름 */
+.order-doc #emp-name {
+    width: 100px;
+    letter-spacing: 0.7rem;
+}
+
+/* 기안자 서명 */
+.order-doc #emp-sign {
+    position: relative;
+    margin: 0 30px;
+}
+
+/* 서명 이미지 */
+.order-doc .appr-emp img {
+    position: absolute;
+    right: -30px;
+    bottom: 0px;
+    width: 87px;
+    height: 87px;
+}

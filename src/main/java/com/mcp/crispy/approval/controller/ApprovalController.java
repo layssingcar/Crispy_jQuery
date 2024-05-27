@@ -28,17 +28,17 @@ public class ApprovalController {
 	
 	/** 휴가, 휴직 신청
 	 * 
-	 * @return forward (vacation-approval.html)
+	 * @return forward (time-off-approval.html)
 	 */
-	@GetMapping("vacation-approval")
-	public String vacationAppr() {
-		return "approval/vacation-approval";
+	@GetMapping("time-off-approval")
+	public String timeOffAppr() {
+		return "approval/time-off-approval";
 	}
 	
 	// 결재선 선택 (임시)
-	@GetMapping("vacation-approval-2")
-	public String vacationAppr2() {
-		return "approval/vacation-approval-2";
+	@GetMapping("time-off-approval-2")
+	public String timeOffAppr2() {
+		return "approval/time-off-approval-2";
 	}
 	
 }
