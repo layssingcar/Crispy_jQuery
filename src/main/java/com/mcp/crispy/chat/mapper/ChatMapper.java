@@ -54,7 +54,6 @@ public interface ChatMapper {
     // 안 읽은 메시지 개수 반환
     List<UnreadMessageCountDto> countUnreadMessages(@Param("empNo") Integer empNo);
 
-
-
-
+    // 알림 상태 토글
+    void toggleAlarmStat(@Param("chatRoomNo") Integer chatRoomNo, @Param("empNo") Integer empNo);
 }

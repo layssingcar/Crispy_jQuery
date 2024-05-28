@@ -14,6 +14,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -72,6 +73,7 @@ public class ChatApiController {
     public ChatMessageDto sendMessage(ChatMessageDto message) {
         chatService.sendMessage(message);
         log.info("메소드 호출 테스트");
+
         int totalUnread = chatService.getUnreadCounts(message.getEmpNo());
         messagingTemplate.convertAndSendToUser(message.getEmpNo().toString(), "/queue/unreadCount", totalUnread);
         messagingTemplate.convertAndSend("/topic/roomUpdate", chatService.getChatRooms(message.getEmpNo()));
@@ -80,11 +82,17 @@ public class ChatApiController {
 
     @MessageMapping("/fetchUnreadCount")
     public void fetchUnreadCounts(Authentication authentication) {
-        CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
-        int totalUnread = chatService.getUnreadCounts(userDetails.getEmpNo());
-        log.info("total Unread: {}", totalUnread);
-        // 사용자에게 개수 반환
-        messagingTemplate.convertAndSendToUser(userDetails.getUsername(), "/queue/unreadCount", totalUnread);
+        if (authentication != null && authentication.isAuthenticated()) {
+            if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+                // 관리자는 읽지 않은 메시지 개수를 계산하지 않습니다.
+                return;
+            }
+            CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
+            int totalUnread = chatService.getUnreadCounts(userDetails.getEmpNo());
+            log.info("total Unread: {}", totalUnread);
+            // 사용자에게 개수 반환
+            messagingTemplate.convertAndSendToUser(userDetails.getUsername(), "/queue/unreadCount", totalUnread);
+        }
     }
 
     @PostMapping("/rooms/{chatRoomNo}/access/v1")
@@ -115,5 +123,13 @@ public class ChatApiController {
         List<UnreadMessageCountDto> unreadMessageCount = chatService.getUnreadMessageCount(userDetails.getEmpNo());
         log.info("unreadMessageCount: {}", unreadMessageCount);
         return ResponseEntity.ok(unreadMessageCount);
+    }
+
+    // 알림 상태 토글
+    @PostMapping("/rooms/{chatRoomNo}/toggleAlarm/v1")
+    public ResponseEntity<Void> toggleAlarm(@PathVariable Integer chatRoomNo, Authentication authentication) {
+        CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
+        chatService.toggleAlarmStat(chatRoomNo, userDetails.getEmpNo());
+        return ResponseEntity.ok().build();
     }
 }
