@@ -1,4 +1,4 @@
-<aside th:fragment="sidebar">
+<aside th:fragment="sidebar" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
     <div class="sidebar">
         <!-- 헤더: 로고 이미지 -->
         <div class="side-header">
@@ -55,12 +55,12 @@
                         <li><a href="/crispy/employee/findEmpId/result" class="s-menu">아이디 찾기 결과</a></li>
                         <li><a href="/crispy/employee/findEmpPw" class="s-menu">비밀번호 찾기</a></li>
                         <li><a href="/crispy/employee/changeEmpPw" class="s-menu">비밀번호 변경</a></li>
-                        <li><a href="/crispy/employee/profile" class="s-menu">마이페이지</a></li>
-                        <li><a href="/crispy/owner/employees" class="s-menu">직원 관리</a></li>
-                        <li><a href="/crispy/owner/employee/register" class="s-menu">직원 등록</a></li>
-                        <li><a href="/crispy/owner/employeeDetail" class="s-menu">직원 정보 수정</a></li>
-                        <li><a href="/crispy/franchise/register" class="s-menu">가맹점 등록</a></li>
-                        <li><a href="/crispy/franchise" class="s-menu">가맹점 상세</a></li>
+                        <li sec:authorize="!hasRole('ROLE_ADMIN')"><a href="/crispy/employee/profile" class="s-menu">마이페이지</a></li>
+                        <li sec:authorize="hasRole('ROLE_OWNER')"><a href="/crispy/owner/employees" class="s-menu">직원 관리</a></li>
+                        <li sec:authorize="hasRole('ROLE_OWNER')"><a href="/crispy/owner/employee/register" class="s-menu">직원 등록</a></li>
+                        <li sec:authorize="hasRole('ROLE_OWNER')"><a href="/crispy/owner/employeeDetail" class="s-menu">직원 정보 수정</a></li>
+                        <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="/crispy/franchise/register" class="s-menu">가맹점 등록</a></li>
+                        <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="/crispy/franchise" class="s-menu">가맹점 상세</a></li>
                     </ul>
                     </div>
                 </li>

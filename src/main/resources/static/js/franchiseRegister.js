@@ -42,7 +42,7 @@ const franchiseRegister = {
             ownerRegisterDto: ownerData
         };
 
-        fetch('/api/v1/franchise/register', {
+        fetch('/api/franchise/register/v1', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
