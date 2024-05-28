@@ -112,5 +112,25 @@
         )  AND F.FRN_NO = ${frnNo}
     </update>
 
+    <select id="getFranchiseList" resultType="FranchiseDto">
+        SELECT FRN_NO
+             , FRN_NAME
+             , FRN_OWNER
+             , FRN_TEL
+             , FRN_ZIP
+             , FRN_STREET
+             , FRN_DETAIL
+             , FRN_X
+             , FRN_Y
+             , FRN_START_TIME
+             , FRN_END_TIME
+             , FRN_IMG
+             , FRN_JOIN_DT
+             , CREATE_DT
+             , CREATOR
+             , MODIFY_DT
+             , MODIFIER
+          FROM FRANCHISE_T
+    </select>
 
 </mapper>

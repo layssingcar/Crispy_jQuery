@@ -21,24 +21,6 @@
                         <span class="icon"><i class="fa fa-search"></i></span>
                         <input type="text" name="" id="search" class="form-control" placeholder="가맹점을 입력해주세요.">
                     </div>
-
-                    <!-- 휴가/휴직 구분 -->
-<!--                    <select class="form-select form-select-lg mb-3 m-left" aria-label="Large select example"
-                            name="stockCt">
-                        <option value="">구분</option>
-                        <option value="">휴가신청서</option>
-                        <option value="">휴직신청서</option>
-                    </select>-->
-
-                    <!-- 결재 상태 -->
-<!--                    <select class="form-select form-select-lg mb-3 m-left" aria-label="Large select example"
-                            name="stockCt" id="">
-                        <option value="">결재 상태</option>
-                        <option value="">대기</option>
-                        <option value="">진행중</option>
-                        <option value="">승인</option>
-                        <option value="">반려</option>
-                    </select>-->
                 </div>
 
                 <!-- 테이블 -->
@@ -46,24 +28,23 @@
                     <thead>
                     <tr>
                         <th scope="col">가맹점 명</th>
-                        <th scope="col">대표자</th>
-                        <th scope="col">가맹점</th>
+                        <th scope="col">대표자 명</th>
+                        <th scope="col">가맹점 주소</th>
+                        <th scope="col">가맹점 전화번호</th>
                         <th scope="col" class="col-sort">
                             <span>가맹일</span>
-             <!--               <i class="fa-solid fa-sort"></i>-->
                         </th>
-                        <th scope="col">우편번호</th>
                     </tr>
                     </thead>
 
                     <!-- 리스트 -->
                     <tbody>
-                    <tr>
-                        <td>교촌치킨</td>
-                        <td>홍길동</td>
-                        <td>강남점</td>
-                        <td>2024-05-13</td>
-                        <td>서울시 강남구 1045-2</td>
+                    <tr th:each="frn : ${franchiseList}">
+                        <td th:text="${frn.frnName}">가맹점 명</td>
+                        <td th:text="${frn.frnOwner}">대표자 명</td>
+                        <td th:text="${frn.frnStreet}">주소</td>
+                        <td th:text="${frn.frnTel}">전화번호</td>
+                        <td th:text="${frn.frnJoinDt}">가맹일</td>
                     </tr>
                     </tbody>
 
@@ -112,7 +93,7 @@
                 <div class="row g-3">
                     <div class="col-sm-6">
                         <label for="franchiseName" class="form-label">가맹점 명</label>
-                        <input type="text" class="form-control" id="franchiseName" placeholder="가맹점 명을 입력해주세요." required>
+                        <input type="text" class="form-control" id="franchiseName" th:value="${franchiseList[0].frnName}" placeholder="가맹점 명을 입력해주세요." required>
                     </div>
                     <div class="col-sm-6">
                         <label for="ownerName" class="form-label">대표자 명</label>
@@ -178,12 +159,13 @@
 </body>
 <script>
     /* 모달 */
-    $('tr td').on('click', function() {
+    $('tr td').on('click', function () {
         $('#exampleModal').modal('show');
     });
 
-    $('.frnBtn').on('click', function() {
-        window.location.href ="/crispy/franchise/register";
+    $('.frnBtn').on('click', function () {
+        window.location.href = "/crispy/franchise/register";
     })
+
 </script>
 </html>
