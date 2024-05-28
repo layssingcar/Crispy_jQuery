@@ -6,11 +6,13 @@ import com.mcp.crispy.stock.dto.StockDto;
 import com.mcp.crispy.stock.service.StockService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import java.security.Principal;
@@ -26,7 +28,7 @@ public class StockController {
 
 	/**
 	 * 재고 현황 조회
-	 * 우혜진 (2024. 05. 28.)
+	 * 우혜진 (24. 05. 28.)
 	 *
 	 * @param authentication
 	 * @param model
@@ -44,6 +46,18 @@ public class StockController {
 
 		return "stock/stock-list";
 
+	}
+
+	/**
+	 * 재고 상세 조회
+	 * 우혜진 (24. 05. 28.)
+	 *
+	 * @param stockNo
+	 * @return result
+	 */
+	@GetMapping(value = "stock-detail", produces = "application/json")
+	public ResponseEntity<StockDto> getStockDetail(@RequestParam("stockNo") int stockNo) {
+		return ResponseEntity.ok(stockService.getStockDetail(stockNo));
 	}
 	
 	/** 발주 신청

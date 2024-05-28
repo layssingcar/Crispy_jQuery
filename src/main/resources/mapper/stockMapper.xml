@@ -13,4 +13,11 @@
         ORDER BY S.STOCK_NAME
     </select>
 
+    <!-- 재고 상세 조회 -->
+    <select id="getStockDetail">
+        SELECT *
+        FROM STOCK_T
+        WHERE STOCK_NO = #{stockNo}
+    </select>
+
 </mapper>
