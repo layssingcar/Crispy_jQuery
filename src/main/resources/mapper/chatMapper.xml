@@ -15,20 +15,21 @@
         <result property="modifier" column="MODIFIER"/>
         <collection property="participants" ofType="CrEmpDto">
             <id property="empNo" column="EMP_NO"/>
-            <result property="entryStat" column="ENTRY_STAT"/>
+            <result property="entryStat" column="ENTRY_STAT" typeHandler="com.mcp.crispy.common.typehandler.EntryStatTypeHandler"/>
+            <result property="alarmStat" column="ALARM_STAT" typeHandler="com.mcp.crispy.common.typehandler.EntryStatTypeHandler"/>
             <result property="empName" column="EMP_NAME" />
             <result property="empProfile" column="EMP_PROFILE" />
         </collection>
 
     </resultMap>
-
     <select id="getChatRooms" resultMap="ChatRoomMap">
         SELECT DISTINCT
             C.CHAT_ROOM_NO, C.CHAT_ROOM_TITLE, C.CHAT_ROOM_STAT, C.CREATE_DT,
-            C.CREATOR, C.MODIFY_DT, C.MODIFIER
-        FROM CHAT_ROOM_T C
-                 LEFT JOIN CR_EMP_T P ON C.CHAT_ROOM_NO = P.CHAT_ROOM_NO
-                 LEFT JOIN EMPLOYEE_T E ON P.EMP_NO = E.EMP_NO
+            C.CREATOR, C.MODIFY_DT, C.MODIFIER, CM.MSG_DT
+          FROM CHAT_ROOM_T C
+          LEFT JOIN CR_EMP_T P ON C.CHAT_ROOM_NO = P.CHAT_ROOM_NO
+          LEFT JOIN EMPLOYEE_T E ON P.EMP_NO = E.EMP_NO
+          LEFT JOIN CHAT_MESSAGE_T CM ON C.CHAT_ROOM_NO = CM.CHAT_ROOM_NO
         WHERE (C.CREATOR = #{empNo} AND C.CHAT_ROOM_NO IN (
             SELECT CHAT_ROOM_NO
             FROM CR_EMP_T
@@ -36,7 +37,8 @@
            OR (P.EMP_NO = #{empNo} AND P.ENTRY_STAT = 0)
         GROUP BY
             C.CHAT_ROOM_NO, C.CHAT_ROOM_TITLE, C.CHAT_ROOM_STAT, C.CREATE_DT,
-            C.CREATOR, C.MODIFY_DT, C.MODIFIER
+            C.CREATOR, C.MODIFY_DT, C.MODIFIER, CM.MSG_DT
+        ORDER BY CM.MSG_DT DESC
     </select>
 
     <select id="getChatRoom" resultMap="ChatRoomMap">
@@ -87,17 +89,20 @@
 
     <insert id="addParticipant">
         INSERT INTO CR_EMP_T (CHAT_ROOM_NO, EMP_NO, ENTRY_STAT, ALARM_STAT)
-        VALUES (#{chatRoomNo}, #{empNo}, #{entryStat}, #{alarmStat})
+        VALUES (#{chatRoomNo}, #{empNo}, #{entryStat, typeHandler=com.mcp.crispy.common.typehandler.EntryStatTypeHandler}, #{alarmStat, typeHandler=com.mcp.crispy.common.typehandler.AlarmStatTypeHandler})
     </insert>
 
     <update id="updateParticipantEntryStat">
-        UPDATE CR_EMP_T SET ENTRY_STAT = #{entryStat}, ALARM_STAT = #{alarmStat}
+        UPDATE CR_EMP_T
+           SET ENTRY_STAT = #{entryStat, typeHandler=com.mcp.crispy.common.typehandler.EntryStatTypeHandler},
+               ALARM_STAT = #{alarmStat, typeHandler=com.mcp.crispy.common.typehandler.AlarmStatTypeHandler}
         WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo}
     </update>
 
     <update id="updateEntryStat">
         UPDATE CR_EMP_T
-           SET ENTRY_STAT = #{entryStat}, ALARM_STAT = #{alarmStat}
+           SET ENTRY_STAT = #{entryStat, typeHandler=com.mcp.crispy.common.typehandler.EntryStatTypeHandler},
+               ALARM_STAT = #{alarmStat, typeHandler=com.mcp.crispy.common.typehandler.AlarmStatTypeHandler}
         WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo}
     </update>
 
@@ -162,8 +167,16 @@
            AND (m.MSG_DT > a.ACCESS_DT OR a.ACCESS_DT IS NULL)
            AND CE.ALARM_STAT = 0  -- 알림이 활성화된 경우만 계산
            AND CE.ENTRY_STAT = 0 -- 입장 상태가 활성화된 경우만 계산
-           AND m.EMP_NO != #{empNo} -- 본인이 보낸 메시지는 제외
-
+           AND M.EMP_NO != #{empNo}
         GROUP BY CR.CHAT_ROOM_NO
     </select>
+
+    <update id="toggleAlarmStat">
+        UPDATE CR_EMP_T
+        SET ALARM_STAT = CASE ALARM_STAT
+            WHEN 0 THEN 1
+            ELSE 0
+            END
+        WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo}
+    </update>
 </mapper>

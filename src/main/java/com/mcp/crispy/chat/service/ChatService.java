@@ -64,6 +64,7 @@ public class ChatService {
         // 채팅방의 모든 참가자 조회
         List<CrEmpDto> participants = chatMapper.getParticipantsByRoom(message.getChatRoomNo());
 
+        log.info("participants: {}", participants);
         // 1:1 채팅방 확인 및 상태 업데이트
         if (participants.size() == 2) {
             // 모든 참가자의 상태 업데이트 (보내는 사람 제외)
@@ -71,11 +72,13 @@ public class ChatService {
             participants.stream()
                     .filter(participant -> !participant.getEmpNo().equals(finalMessage.getEmpNo()))
                     .forEach(participant -> {
-                        if (participant.getEntryStat() == EntryStat.INACTIVE.getStatus()) { // 참가자가 '나간 상태'일 경우
-                            participant.setEntryStat(EntryStat.ACTIVE.getStatus()); // 상태를 '활성화'로 변경
+                        if (participant.getEntryStat() == EntryStat.of(EntryStat.INACTIVE.getStatus())) { // 참가자가 '나간 상태'일 경우
+                            participant.setEntryStat(EntryStat.of(EntryStat.ACTIVE.getStatus())); // 상태를 '활성화'로 변경
+                            participant.setAlarmStat(AlarmStat.of(AlarmStat.ACTIVE.getStatus())); // 상태를 '활성화'로 변경
                             chatMapper.updateParticipantEntryStat(participant); // DB 업데이트
                             chatMapper.updateEntryRecord(finalMessage.getChatRoomNo(), participant.getEmpNo());
                             log.info("finalMessage: {}", participant.getEmpNo());
+
                         }
                     });
         }
@@ -102,8 +105,8 @@ public class ChatService {
         CrEmpDto crEmpDto = CrEmpDto.builder()
                 .chatRoomNo(chatRoom.getChatRoomNo())
                 .empNo(creatorEmpNo)
-                .entryStat(EntryStat.ACTIVE.getStatus())
-                .alarmStat(AlarmStat.ACTIVE.getStatus())
+                .entryStat(EntryStat.of(EntryStat.ACTIVE.getStatus()))
+                .alarmStat(AlarmStat.of(AlarmStat.ACTIVE.getStatus()))
                 .build();
         chatMapper.addParticipant(crEmpDto);
         return chatRoom.getChatRoomNo();
@@ -133,8 +136,8 @@ public class ChatService {
     // 채팅방에 참가자 추가
     public void addParticipant(CrEmpDto participant) {
         CrEmpDto existingParticipant = chatMapper.getParticipant(participant.getChatRoomNo(), participant.getEmpNo());
-        participant.setEntryStat(EntryStat.ACTIVE.getStatus());
-        participant.setAlarmStat(AlarmStat.ACTIVE.getStatus());
+        participant.setEntryStat(EntryStat.of(EntryStat.ACTIVE.getStatus()));
+        participant.setAlarmStat(AlarmStat.of(AlarmStat.ACTIVE.getStatus()));
         if (existingParticipant != null) {
             // 참가자가 이미 존재하면
             chatMapper.updateParticipantEntryStat(participant);
@@ -146,11 +149,12 @@ public class ChatService {
 
     // 참가자 입장 상태 관리
     public void updateEntryStat(Integer chatRoomNo, Integer empNo) {
+        log.info("EntryStat: {}", chatRoomNo);
         CrEmpDto participant = CrEmpDto.builder()
                 .chatRoomNo(chatRoomNo)
                 .empNo(empNo)
-                .entryStat(EntryStat.INACTIVE.getStatus())
-                .alarmStat(AlarmStat.INACTIVE.getStatus())
+                .entryStat(EntryStat.of(EntryStat.INACTIVE.getStatus()))
+                .alarmStat(AlarmStat.of(AlarmStat.INACTIVE.getStatus()))
                 .build();
         chatMapper.updateEntryStat(participant);
     }
@@ -205,6 +209,11 @@ public class ChatService {
                 .filter(Objects::nonNull)
                 .mapToInt(UnreadMessageCountDto::getUnreadCount)
                 .sum();
+    }
 
+    // 알림 상태 토글
+    @Transactional
+    public void toggleAlarmStat(Integer chatRoomNo, Integer empNo) {
+        chatMapper.toggleAlarmStat(chatRoomNo, empNo);
     }
 }
