@@ -5,10 +5,16 @@ const stockPrice = document.querySelector(".stock-price > span:first-child");   
 const stockUnit = document.querySelector(".stock-price > span:last-child");     // 재고단위
 const stockImg = document.querySelector(".stock-img");                          // 재고이미지
 const stockDetail = document.querySelector(".stock-detail");                    // 재고설명
+const modal = document.querySelector(".modal");                                 // 재고상세모달
+const btnClose = document.querySelector(".btn-close");                          // 닫기버튼
 
 // 재고 상세 조회
 stockRows.forEach(stockRow => {
     stockRow.addEventListener("click", e => {
+
+        // 팝업 레이어 열기
+        modal.style.display = "block";
+
         const stockNo = stockRow.dataset.stockNo;
 
         fetch ("/crispy/stock-detail?stockNo=" + stockNo)
@@ -20,6 +26,7 @@ stockRows.forEach(stockRow => {
                 stockDetail.innerHTML = result.stockDetail;
                 stockImg.src = result.stockImg;
             })
+
     })
 })
 
@@ -29,3 +36,7 @@ checkList.forEach(checkbox => {
         e.stopPropagation();
     })
 })
+
+// 팝업 레이어 닫기
+btnClose.addEventListener("click", () =>
+    modal.style.display = "none");
