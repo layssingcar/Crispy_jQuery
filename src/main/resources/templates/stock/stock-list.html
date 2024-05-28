@@ -54,21 +54,30 @@
                             </tr>
                         </thead>
 
-                        <!-- 리스트 -->
                         <tbody>
-                            <tr>
-                                <td scope="row"><input type="checkbox"></td>
-                                <td><img src="/img/crispy1.png" alt="재고 1 이미지"></td>
-                                <td>재고 1</td>
-                                <td>카테고리 1</td>
+                            <!-- 리스트 -->
+                            <tr th:each="stock : ${stockDtoList}">
+                                <td><input type="checkbox"></td>
+
+                                <!-- 재고 이미지 -->
+                                <td><img th:src="${stock.stockImg}" alt="재고 1 이미지"></td>
+
+                                <!-- 재고명 -->
+                                <td th:text="${stock.stockName}"></td>
+
+                                <!-- 카테고리 -->
+                                <td th:text="${stock.stockCtName}"></td>
+
                                 <td>
-                                    <span class="strong">8,000</span>
+                                    <!-- 수량 -->
+                                    <span class="strong" th:text="${stock.isCount}"></span>
                                     <span>개</span>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
 
+                    <!-- 페이지네이션 -->
                     <nav aria-label="Page navigation example">
                         <ul class="pagination pagination-lg">
                             <li class="page-item">
