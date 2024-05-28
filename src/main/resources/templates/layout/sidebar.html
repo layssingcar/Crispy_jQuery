@@ -1,4 +1,4 @@
-<aside th:fragment="sidebar" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<aside th:fragment="sidebar">
     <div class="sidebar">
         <!-- 헤더: 로고 이미지 -->
         <div class="side-header">
@@ -11,72 +11,37 @@
 
                 <li class="mb-1">
                     <div class="menu" data-bs-toggle="collapse" data-bs-target="#menu-1-collapse">
-                        <a href="#"><span>메뉴 1</span></a>
-                    </div>
-                    <div class="collapse" id="menu-1-collapse">
-                    <ul class="">
-                        <li><a href="#" class="s-menu">소메뉴 1</a></li>
-                        <li><a href="#" class="s-menu">소메뉴 2</a></li>
-                        <li><a href="#" class="s-menu">소메뉴 3</a></li>
-                        <li><a href="#" class="s-menu">소메뉴 4</a></li>
-                    </ul>
+                        <a href=""><span>마이페이지</span></a>
                     </div>
                 </li>
 
                 <li class="mb-1">
                     <div class="menu" data-bs-toggle="collapse" data-bs-target="#menu-2-collapse">
-                        <a href="#">
-                            <span>우혜진 [임시]</span>
-                            <i class="fa-solid fa-chevron-down"></i>
+                        <a href="/crispy/calendar">
+                            <span>캘린더</span>
                         </a>
-                    </div>
-                    <div class="collapse" id="menu-2-collapse">
-                    <ul class="">
-                        <li><a href="/crispy/stock-list" class="s-menu">재고 현황</a></li>
-                        <li><a href="/crispy/stock-order" class="s-menu">발주 신청</a></li>
-                        <li><a href="/crispy/approval-list" class="s-menu">결재 목록 조회</a></li>
-                        <li><a href="/crispy/approval-detail" class="s-menu">결재 문서 상세</a></li>
-                        <li><a href="/crispy/time-off-approval" class="s-menu">휴가/휴직 신청</a></li>
-                    </ul>
                     </div>
                 </li>
 
                 <li class="mb-1">
                     <div class="menu" data-bs-toggle="collapse" data-bs-target="#menu-3-collapse">
                         <a href="#">
-                            <span>배영욱 [임시]</span>
-                            <i class="fa-solid fa-chevron-down"></i>
+                            <span>근태관리</span>
                         </a>
-                    </div>
-                    <div class="collapse" id="menu-3-collapse">
-                    <ul class="">
-                        <li><a href="/crispy/login" class="s-menu">로그인</a></li>
-                        <li><a href="/crispy/employee/findEmpId" class="s-menu">아이디 찾기</a></li>
-                        <li><a href="/crispy/employee/findEmpId/result" class="s-menu">아이디 찾기 결과</a></li>
-                        <li><a href="/crispy/employee/findEmpPw" class="s-menu">비밀번호 찾기</a></li>
-                        <li><a href="/crispy/employee/changeEmpPw" class="s-menu">비밀번호 변경</a></li>
-                        <li sec:authorize="!hasRole('ROLE_ADMIN')"><a href="/crispy/employee/profile" class="s-menu">마이페이지</a></li>
-                        <li sec:authorize="hasRole('ROLE_OWNER')"><a href="/crispy/owner/employees" class="s-menu">직원 관리</a></li>
-                        <li sec:authorize="hasRole('ROLE_OWNER')"><a href="/crispy/owner/employee/register" class="s-menu">직원 등록</a></li>
-                        <li sec:authorize="hasRole('ROLE_OWNER')"><a href="/crispy/owner/employeeDetail" class="s-menu">직원 정보 수정</a></li>
-                        <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="/crispy/franchise/register" class="s-menu">가맹점 등록</a></li>
-                        <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="/crispy/franchise" class="s-menu">가맹점 상세</a></li>
-                    </ul>
                     </div>
                 </li>
 
                 <li class="mb-1">
                     <div class="menu" data-bs-toggle="collapse" data-bs-target="#menu-4-collapse">
                         <a href="#">
-                            <span>가맹점</span>
+                            <span>휴가관리</span>
                             <i class="fa-solid fa-chevron-down"></i>
                         </a>
                     </div>
                     <div class="collapse" id="menu-4-collapse">
                     <ul class="">
-                        <li><a href="/crispy/franchise-list" class="s-menu">가맹점 관리</a></li>
-                        <li><a href="/crispy/franchise/register" class="s-menu">가맹점 등록</a></li>
-                        <li><a href="/crispy/franchise" class="s-menu">가맹점 상세</a></li>
+                        <li><a href="/crispy/franchise-list" class="s-menu">휴가휴직 신청</a></li>
+                        <li><a href="/crispy/franchise/register" class="s-menu">신청 내역</a></li>
                     </ul>
                     </div>
                 </li>
@@ -84,67 +49,14 @@
                 <li class="mb-1">
                     <div class="menu" data-bs-toggle="collapse" data-bs-target="#menu-5-collapse">
                         <a href="#">
-                            <span>메뉴 5</span>
+                            <span>게시판</span>
                             <i class="fa-solid fa-chevron-down"></i>
                         </a>
                     </div>
                     <div class="collapse" id="menu-5-collapse">
                     <ul class="">
-                        <li><a href="#" class="s-menu">소메뉴 1</a></li>
-                        <li><a href="#" class="s-menu">소메뉴 2</a></li>
-                        <li><a href="#" class="s-menu">소메뉴 3</a></li>
-                        <li><a href="#" class="s-menu">소메뉴 4</a></li>
-                    </ul>
-                    </div>
-                </li>
-
-                <li class="mb-1">
-                    <div class="menu" data-bs-toggle="collapse" data-bs-target="#menu-6-collapse">
-                        <a href="#">
-                            <span>메뉴 6</span>
-                            <i class="fa-solid fa-chevron-down"></i>
-                        </a>
-                    </div>
-                    <div class="collapse" id="menu-6-collapse">
-                    <ul class="">
-                        <li><a href="#" class="s-menu">소메뉴 1</a></li>
-                        <li><a href="#" class="s-menu">소메뉴 2</a></li>
-                        <li><a href="#" class="s-menu">소메뉴 3</a></li>
-                        <li><a href="#" class="s-menu">소메뉴 4</a></li>
-                    </ul>
-                    </div>
-                </li>
-
-                <li class="mb-1">
-                    <div class="menu" data-bs-toggle="collapse" data-bs-target="#menu-7-collapse">
-                        <a href="#">
-                            <span>메뉴 7</span>
-                            <i class="fa-solid fa-chevron-down"></i>
-                        </a>
-                    </div>
-                    <div class="collapse" id="menu-7-collapse">
-                    <ul class="">
-                        <li><a href="#" class="s-menu">소메뉴 1</a></li>
-                        <li><a href="#" class="s-menu">소메뉴 2</a></li>
-                        <li><a href="#" class="s-menu">소메뉴 3</a></li>
-                        <li><a href="#" class="s-menu">소메뉴 4</a></li>
-                    </ul>
-                    </div>
-                </li>
-
-                <li class="mb-1">
-                    <div class="menu" data-bs-toggle="collapse" data-bs-target="#menu-8-collapse">
-                        <a href="#">
-                            <span>메뉴 8</span>
-                            <i class="fa-solid fa-chevron-down"></i>
-                        </a>
-                    </div>
-                    <div class="collapse" id="menu-8-collapse">
-                    <ul class="">
-                        <li><a href="#" class="s-menu">소메뉴 1</a></li>
-                        <li><a href="#" class="s-menu">소메뉴 2</a></li>
-                        <li><a href="#" class="s-menu">소메뉴 3</a></li>
-                        <li><a href="#" class="s-menu">소메뉴 4</a></li>
+                        <li><a href="#" class="s-menu">공지사항</a></li>
+                        <li><a href="#" class="s-menu">자유게시판</a></li>
                     </ul>
                     </div>
                 </li>
@@ -154,7 +66,7 @@
                 <li class="mb-1">
                     <div class="menu" data-bs-toggle="collapse" data-bs-target="#menu-9-collapse">
                         <a href="#">
-                            <span>메뉴 9</span>
+                            <span>직원관리</span>
                             <i class="fa-solid fa-chevron-down"></i>
                         </a>
                     </div>
@@ -168,13 +80,45 @@
                     </div>
                 </li>
                 <li class="mb-1">
-                    <div class="chat-menu" data-bs-toggle="collapse" data-bs-target="#menu-10-collapse">
-                        <a href="/crispy/chat">
-                            <span>채팅</span>
-                            <span id="unreadMessageCountBadge" class="badge">0</span>
+                    <div class="menu" data-bs-toggle="collapse" data-bs-target="#menu-10-collapse">
+                        <a href="#">
+                            <span>재고관리</span>
+                            <i class="fa-solid fa-chevron-down"></i>
                         </a>
                     </div>
+                    <div class="collapse" id="menu-10-collapse">
+                        <ul class="">
+                            <li><a href="#" class="s-menu">소메뉴 1</a></li>
+                            <li><a href="#" class="s-menu">소메뉴 2</a></li>
+                            <li><a href="#" class="s-menu">소메뉴 3</a></li>
+                            <li><a href="#" class="s-menu">소메뉴 4</a></li>
+                        </ul>
+                    </div>
                 </li>
+                <li class="mb-1">
+                    <div class="menu" data-bs-toggle="collapse" data-bs-target="#menu-11-collapse">
+                        <a href="#">
+                            <span>가맹점관리</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </a>
+                    </div>
+                    <div class="collapse" id="menu-11-collapse">
+                        <ul class="">
+                            <li><a href="#" class="s-menu">소메뉴 1</a></li>
+                            <li><a href="#" class="s-menu">소메뉴 2</a></li>
+                            <li><a href="#" class="s-menu">소메뉴 3</a></li>
+                            <li><a href="#" class="s-menu">소메뉴 4</a></li>
+                        </ul>
+                    </div>
+                </li>
+<!--                <li class="mb-1">-->
+<!--                    <div class="chat-menu" data-bs-toggle="collapse" data-bs-target="#menu-10-collapse">-->
+<!--                        <a href="/crispy/chat">-->
+<!--                            <span>채팅</span>-->
+<!--                            <span id="unreadMessageCountBadge" class="badge">0</span>-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                </li>-->
             </ul>
         </div>
     </div>

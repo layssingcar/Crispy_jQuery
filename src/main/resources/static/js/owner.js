@@ -113,7 +113,7 @@ const owner = {
     editEmployee: function(empNo) {
         console.log('Edit Employee:', empNo);
         sessionStorage.setItem('selectedEmpNo', empNo);
-        window.location.href = '/crispy/owner/employee';
+        window.location.href = '/crispy/owner/employeeDetail';
     },
 
     deleteEmployee: function(empNo) {
