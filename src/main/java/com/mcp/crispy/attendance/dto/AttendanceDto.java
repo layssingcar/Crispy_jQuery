@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class AttendanceDto {
 	private int attNo;
-	private Timestamp attInTime;
-	private Timestamp attOutTime;
+	private String attInTime;
+	private String attOutTime;
 	private String attWorkTime;
 	private Date createDt;
 	private int creator;

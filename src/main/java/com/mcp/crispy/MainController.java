@@ -50,4 +50,9 @@ public class MainController {
 	public String calendarTest() {
 		return "calendar/calendar";
 	}
+	
+	@GetMapping("/trash")
+	public String trashTest() {
+		return "trash/trash";
+	}
 }

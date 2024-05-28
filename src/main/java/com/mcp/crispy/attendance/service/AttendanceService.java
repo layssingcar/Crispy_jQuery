@@ -29,7 +29,7 @@ public class AttendanceService {
 	@Transactional(readOnly = true)
 	public List<AttendanceDto> getAttList() {
 		List<AttendanceDto> attenList = attendanceMapper.getAttList(); 
-		String workingTimeForm;
+		String inWorkForm, outWorkForm, workingTimeForm;
 		for(int i = 0; i < attenList.size(); i++) {
 			
 			workingTimeForm = attenList.get(i).getAttWorkTime().substring(0 ,2) + "h" +  
