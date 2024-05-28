@@ -25,5 +25,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .addResourceLocations("file:///Users/baeyeong-ug/Desktop/image/profiles/");
         registry.addResourceHandler("/franchise/**")
                 .addResourceLocations("file:///Users/baeyeong-ug/Desktop/image/profiles/");
+        registry.addResourceHandler("/crispy_img/**")
+                .addResourceLocations("file:///C:/GDJ77/mcp/crispy_img/");
     }
 }
