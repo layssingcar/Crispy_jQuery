@@ -25,9 +25,6 @@ public class AttendanceController {
 	@PostMapping(value="/registAtt", produces = "application/json")
 	public ResponseEntity<Integer> insertAttendance(@RequestBody AttendanceDto attendanceDto, Principal principal)
 	{	
-	    attendanceDto.setAttInTime(new Timestamp(attendanceDto.getAttInTime().getTime()));
-	    attendanceDto.setAttOutTime(new Timestamp(attendanceDto.getAttOutTime().getTime()));
-	    
 		int insertCount = attendanceService.insertAttendance(attendanceDto);
 		return ResponseEntity.ok(insertCount);
 	}

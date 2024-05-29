@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -104,5 +105,9 @@ public class FranchiseService {
     @Transactional
     public void changeOperatingTime(FrnUpdateDto frnUpdateDto, Integer modifier) {
         franchiseMapper.updateOperatingTime(frnUpdateDto.getFrnStartTime(), frnUpdateDto.getFrnEndTime(), modifier, frnUpdateDto.getFrnNo());
+    }
+
+    public List<FranchiseDto> getFranchiseList() {
+        return franchiseMapper.getFranchiseList();
     }
 }

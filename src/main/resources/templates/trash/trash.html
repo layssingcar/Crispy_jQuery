@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
+    <link href="/css/employee/employees.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="crispy-container">
+    <aside th:replace="~{layout/sidebar :: sidebar}"></aside>
+    <div>
+        <header th:replace="~{layout/navbar :: navbar}"></header>
+        <main>
+            <div class="employees">
+                <input type="hidden" id="employees-frnNo" th:value="${frnNo}">
+                <div>
+                    <h1>휴지통</h1>
+                </div>
+                <table class="table">
+                    <thead>
+                    <tr>
+                    	<th>전체선택 &nbsp;<input type="checkbox"></th>
+                        <th scope="col">작성자</th>
+                        <th scope="col">일정제목</th>
+                        <th scope="col">일정내용</th>
+                        <th scope="col">일정삭제시간</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                    	<td ><input type="checkbox"></td>
+                    	<td >최동환</td>
+                    	<td>보내줘</td>
+                    	<td >나를 집으로</td>
+                    	<td>2024-05-28 17:46</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+        <footer th:replace="~{layout/footer :: footer}"></footer>
+    </div>
+    <!-- 특정 JS -->
+<!--     <script src="/js/owner.js"></script> -->
+</div>
+</body>
+</html>
