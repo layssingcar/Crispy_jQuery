@@ -7,12 +7,15 @@ import com.mcp.crispy.chat.dto.UnreadMessageCountDto;
 import com.mcp.crispy.chat.mapper.ChatMapper;
 import com.mcp.crispy.chat.service.ChatService;
 import com.mcp.crispy.common.userdetails.CustomDetails;
+import com.mcp.crispy.employee.dto.EmployeeDto;
+import com.mcp.crispy.employee.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +30,7 @@ import java.util.Map;
 public class ChatApiController {
 
     private final ChatService chatService;
+    private final EmployeeService employeeService;
     private final SimpMessagingTemplate messagingTemplate;
     private final ChatMapper chatMapper;
 
@@ -58,7 +62,9 @@ public class ChatApiController {
     @PostMapping("/rooms/{chatRoomNo}/invite/v1")
     public ResponseEntity<?> inviteParticipant(@PathVariable Integer chatRoomNo, @RequestBody CrEmpDto participant) {
         chatService.addParticipantToRoom(chatRoomNo, participant);
-        return ResponseEntity.ok().build(); // or return appropriate response
+        List<CrEmpDto> participants = chatService.getParticipants(chatRoomNo); // 전체 참가자 목록 가져오기
+        messagingTemplate.convertAndSend("/topic/roomParticipants/" + chatRoomNo, participants);
+        return ResponseEntity.ok().body(Map.of("message", "초대가 완료되었습니다."));
     }
 
     @PostMapping("/rooms/{chatRoomNo}/leave/v1")
@@ -71,16 +77,21 @@ public class ChatApiController {
     @MessageMapping("/chat")
     @SendTo("/topic/messages")
     public ChatMessageDto sendMessage(ChatMessageDto message) {
-        chatService.sendMessage(message);
-        log.info("메소드 호출 테스트");
-
-        int totalUnread = chatService.getUnreadCounts(message.getEmpNo());
-        messagingTemplate.convertAndSendToUser(message.getEmpNo().toString(), "/queue/unreadCount", totalUnread);
-        messagingTemplate.convertAndSend("/topic/roomUpdate", chatService.getChatRooms(message.getEmpNo()));
+        chatService.sendMessageAndUpdate(message);
         return message;
     }
 
+    @MessageMapping("/roomUpdate")
+    public void roomUpdate(Authentication authentication) {
+        if(authentication != null && authentication.isAuthenticated()) {
+            CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
+            List<ChatRoomDto> chatRooms = chatService.getChatRooms(userDetails.getEmpNo());
+            messagingTemplate.convertAndSendToUser(userDetails.getUsername(), "/queue/roomUpdate", chatRooms);
+        }
+    }
+
     @MessageMapping("/fetchUnreadCount")
+    @SendToUser("/queue/unreadCount")
     public void fetchUnreadCounts(Authentication authentication) {
         if (authentication != null && authentication.isAuthenticated()) {
             if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
@@ -99,6 +110,8 @@ public class ChatApiController {
     public ResponseEntity<Void> addAccessRecord(@PathVariable Integer chatRoomNo, Authentication authentication) {
         CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
         chatService.handleAccess(chatRoomNo, userDetails.getEmpNo());
+        int totalUnread = chatService.getUnreadCounts(userDetails.getEmpNo());
+        messagingTemplate.convertAndSendToUser(userDetails.getUsername(), "/queue/unreadCount", totalUnread);
         return ResponseEntity.ok().build();
     }
 
@@ -117,7 +130,7 @@ public class ChatApiController {
     }
 
     // 읽지 않은 메시지 개수
-    @GetMapping("/rooms/unread-count/v1")
+    @GetMapping("/rooms/unreadCount/v1")
     public ResponseEntity<List<UnreadMessageCountDto>> getUnreadMessageCount(Authentication authentication) {
         CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
         List<UnreadMessageCountDto> unreadMessageCount = chatService.getUnreadMessageCount(userDetails.getEmpNo());
@@ -132,4 +145,55 @@ public class ChatApiController {
         chatService.toggleAlarmStat(chatRoomNo, userDetails.getEmpNo());
         return ResponseEntity.ok().build();
     }
+
+    /**
+     * 나를 제외한 전 직원 목록 호출
+     * @param authentication
+     * @return
+     */
+    @GetMapping("/employees/v1")
+    public ResponseEntity<List<EmployeeDto>> getAllEmployees(Authentication authentication) {
+        CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();;
+        List<EmployeeDto> employees = employeeService.getAllEmployees(userDetails.getEmpNo());
+        return ResponseEntity.ok(employees);
+    }
+
+    /**
+     * 05.28 - 배영욱 chat.html
+     * 채팅 초대 할때 검색하는 메소드
+     * @param employeeDto
+     * @param authentication
+     * @return employees
+     */
+    @PostMapping("/employees/search/v1")
+    public ResponseEntity<List<EmployeeDto>> searchEmployees(@RequestBody EmployeeDto employeeDto, Authentication authentication) {
+        CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
+        List<EmployeeDto> employees = employeeService.getSearchEmployees(employeeDto, userDetails.getEmpNo());
+        log.info("employees: {}", employees);
+        return ResponseEntity.ok(employees);
+    }
+
+    /**
+     * 채팅방 내에 존재하는 직원을 제외한 초대목록
+     * @param chatRoomNo
+     * @return
+     */
+    @GetMapping("/inviteEmployee/{chatRoomNo}/v1")
+    public ResponseEntity<List<EmployeeDto>> getInviteEmployees(@PathVariable Integer chatRoomNo) {
+        List<EmployeeDto> inviteEmployees = employeeService.getInviteEmployees(chatRoomNo);
+        return ResponseEntity.ok(inviteEmployees);
+    }
+
+
+    @MessageMapping("/fetchChatRooms")
+    @SendToUser("/queue/chatRooms")
+    public void fetchChatRooms(Authentication authentication) {
+        CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
+        List<ChatRoomDto> chatRooms = chatService.getChatRooms(userDetails.getEmpNo());
+        log.info("Fetching chat rooms for user: {}", userDetails.getUsername()); // 추가된 로그
+        log.info("Fetching chat rooms for user: {}", chatRooms.toString());
+        // 사용자에게 채팅방 목록 전송
+        messagingTemplate.convertAndSendToUser(userDetails.getUsername(), "/queue/chatRooms", chatRooms);
+    }
+
 }
