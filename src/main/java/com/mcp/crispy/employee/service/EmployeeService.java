@@ -35,8 +35,8 @@ public class EmployeeService {
                 .orElseThrow(() -> new UsernameNotFoundException("직원이 존재하지 않습니다."));
     }
 
-    public List<EmployeeDto> getAllEmployees() {
-        return employeeMapper.findAll();
+    public List<EmployeeDto> getAllEmployees(Integer empNo) {
+        return employeeMapper.findAllExceptCurrentUser(empNo);
     }
 
     public EmployeeDto getEmployeeDetailsByEmpNo(Integer empNo) {
@@ -87,6 +87,7 @@ public class EmployeeService {
     /**
      * 주소가 존재하면 업데이트
      * 주소가 존재하지 않으면 정보 삽입
+     *
      * @param empAddressDto
      */
     @Transactional
@@ -97,14 +98,15 @@ public class EmployeeService {
     /**
      * 서명이 존재하면 업데이트
      * 서명이 존재하지 않으면 삽입
+     *
      * @param employeeSignDto
      */
     @Transactional
     public void insertOrUpdateEmpSign(EmployeeSignDto employeeSignDto) {
         String signData = employeeSignDto.getEmpSign();
         int empNo = employeeSignDto.getEmpNo();
-        if(signData != null && !signData.isEmpty()) {
-            try{
+        if (signData != null && !signData.isEmpty()) {
+            try {
                 String fileName = imageService.storeSignatureImage(signData, empNo);
                 String storedUrl = "/upload/" + fileName;
                 employeeSignDto.setEmpSign(storedUrl);
@@ -117,9 +119,9 @@ public class EmployeeService {
     }
 
     /**
-     *
      * 프로필 이미지가 존재하면 업데이트
      * 프로필 이미지가 존재하지 않으면 삽입
+     *
      * @param empNo
      * @param file
      * @throws IOException
@@ -127,7 +129,7 @@ public class EmployeeService {
     @Transactional
     public void insertOrUpdateEmpProfile(Integer empNo,
                                          MultipartFile file) throws IOException {
-        if(file != null && !file.isEmpty()) {
+        if (file != null && !file.isEmpty()) {
             String storedProfileImage = imageService.storeProfileImage(file);
             String storedUrl = "/profiles/" + storedProfileImage;
             EmployeeProfileDto employeeProfileDto = EmployeeProfileDto.builder()
@@ -172,11 +174,18 @@ public class EmployeeService {
     // 재직 상태 변경
     @Transactional
     public void changeEmpStat(Integer empStat, Integer empNo, Integer modifier) {
-        if(empNo == null) {
+        if (empNo == null) {
             throw new IllegalArgumentException("해당하는 직원이 존재하지 않습니다.");
         }
         employeeMapper.updateEmpStat(EmpStatus.fromValue(empStat), modifier, empNo);
     }
 
+    // 사용자 초대 검색 메소드
+    public List<EmployeeDto> getSearchEmployees(EmployeeDto employeeDto, Integer empNo) {
+        return employeeMapper.searchEmployees(employeeDto.getEmpName(), empNo);
+    }
 
+    public List<EmployeeDto> getInviteEmployees(Integer chatRoomNo) {
+        return employeeMapper.inviteEmployees(chatRoomNo);
+    }
 }
