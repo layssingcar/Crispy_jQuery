@@ -2,11 +2,15 @@ package com.mcp.crispy.chat.service;
 
 import com.mcp.crispy.chat.dto.*;
 import com.mcp.crispy.chat.mapper.ChatMapper;
+import com.mcp.crispy.common.userdetails.CustomDetails;
 import com.mcp.crispy.employee.dto.EmployeeDto;
 import com.mcp.crispy.employee.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +25,7 @@ public class ChatService {
 
     private final ChatMapper chatMapper;
     private final EmployeeService employeeService;
+    private final SimpMessagingTemplate messagingTemplate;
 
     // 사용자 번호를 기반으로 채팅방 목록을 조회
     public List<ChatRoomDto> getChatRooms(Integer empNo) {
@@ -48,6 +53,11 @@ public class ChatService {
         return chatRoom;
     }
 
+    // 채팅방 인원 호출
+    public List<CrEmpDto> getParticipants(Integer chatRoomNo) {
+        return chatMapper.getParticipantsByRoom(chatRoomNo);
+    }
+
     // 채팅방 번호와 사용자 번호를 기반으로 메시지 목록을 조회
     @Transactional
     public List<ChatMessageDto> getMessages(Integer chatRoomNo, Integer empNo) {
@@ -56,8 +66,7 @@ public class ChatService {
 
     // 메시지를 저장하고 관련된 모든 참가자의 상태를 업데이트
     @Transactional
-    public ChatMessageDto sendMessage(ChatMessageDto message) {
-
+    public ChatMessageDto sendMessageAndUpdate(ChatMessageDto message) {
         // 메시지 저장 및 사용자 정보 풍부화
         message = saveMessage(message);
 
@@ -65,9 +74,9 @@ public class ChatService {
         List<CrEmpDto> participants = chatMapper.getParticipantsByRoom(message.getChatRoomNo());
 
         log.info("participants: {}", participants);
+
         // 1:1 채팅방 확인 및 상태 업데이트
         if (participants.size() == 2) {
-            // 모든 참가자의 상태 업데이트 (보내는 사람 제외)
             ChatMessageDto finalMessage = message;
             participants.stream()
                     .filter(participant -> !participant.getEmpNo().equals(finalMessage.getEmpNo()))
@@ -78,13 +87,41 @@ public class ChatService {
                             chatMapper.updateParticipantEntryStat(participant); // DB 업데이트
                             chatMapper.updateEntryRecord(finalMessage.getChatRoomNo(), participant.getEmpNo());
                             log.info("finalMessage: {}", participant.getEmpNo());
-
                         }
                     });
         }
 
+        // 메시지를 보낸 사용자와 수신자의 상태 업데이트
+        updateSenderAndReceiverStatus(message);
+
         log.info("Message sent and participants updated: {}", message);
         return message;
+    }
+
+    @Transactional
+    public void updateSenderAndReceiverStatus(ChatMessageDto message) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            CustomDetails senderDetails = (CustomDetails) auth.getPrincipal();
+            int totalUnread = getUnreadCounts(message.getEmpNo());
+            messagingTemplate.convertAndSendToUser(senderDetails.getUsername(), "/queue/unreadCount", totalUnread);
+
+            List<ChatRoomDto> chatRooms = getChatRooms(message.getEmpNo());
+            messagingTemplate.convertAndSendToUser(senderDetails.getUsername(), "/queue/roomUpdate", chatRooms);
+
+            List<CrEmpDto> participants = getParticipants(message.getChatRoomNo());
+            for (CrEmpDto participant : participants) {
+                if (!participant.getEmpNo().equals(message.getEmpNo())) {
+                    messagingTemplate.convertAndSendToUser(participant.getEmpId(), "/queue/messages", message);
+                    messagingTemplate.convertAndSendToUser(participant.getEmpId(), "/queue/roomUpdate", chatRooms);
+
+                    int receiverUnread = getUnreadCounts(participant.getEmpNo());
+                    messagingTemplate.convertAndSendToUser(participant.getEmpId(), "/queue/unreadCount", receiverUnread);
+                }
+            }
+        } else {
+            log.error("인증상태가 잘못되었습니다.");
+        }
     }
 
     @Transactional

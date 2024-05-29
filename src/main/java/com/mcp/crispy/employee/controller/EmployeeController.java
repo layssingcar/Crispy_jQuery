@@ -65,8 +65,6 @@ public class EmployeeController {
 		} else if (session.getAttribute("empId") != null) {
 			String findEmpId = (String) session.getAttribute("empId");
 			model.addAttribute("empId", findEmpId);
-		} else {
-			return "redirect:/crispy/login";
 		}
 		return "employee/change-emp-pw";
 	}
@@ -74,15 +72,11 @@ public class EmployeeController {
 	// 직원 혹은 관리자 개인이 들어가는 마이 페이지
 	@GetMapping("/profile")
 	public String getEmployee(Principal principal, Model model) {
-		if(principal != null) {
 			EmployeeDto employee = employeeService.getEmployeeName(principal.getName());
 			log.info("address : {} {} {}", employee.getEmpZip(), employee.getEmpStreet(), employee.getEmpDetail());
 			log.info("empSign : {}", employee.getEmpSign());
 			model.addAttribute("employee", employee);
 			return "employee/employee-profile";
-		} else {
-			return "redirect:/crispy/login";
-		}
 	}
 
 }

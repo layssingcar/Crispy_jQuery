@@ -70,11 +70,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE E.EMP_ID = #{empId}
     </select>
 
-    <select id="findAll" resultType="EmployeeDto">
+    <!-- 현재 로그인한 유저 빼고 검색-->
+    <select id="findAllExceptCurrentUser" parameterType="int" resultType="EmployeeDto">
         SELECT E.EMP_NO, E.EMP_NAME, E.EMP_PHONE,
-               E.EMP_EMAIL, E.EMP_PROFILE, P.POS_NAME
+               E.EMP_EMAIL, E.EMP_PROFILE, P.POS_NAME, F.FRN_NAME
           FROM EMPLOYEE_T E
           LEFT JOIN POSITION_T P ON E.POS_NO = P.POS_NO
+          LEFT JOIN  FRANCHISE_T F ON E.FRN_NO = F.FRN_NO
+        WHERE E.EMP_NO != #{currentEmpNo}
+        ORDER BY E.EMP_NAME, P.POS_NAME DESC
     </select>
 
     <!-- empNo로 해당 사원의 정보 찾기 -->
@@ -208,4 +212,30 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             MODIFIER = #{modifier}
         WHERE EMP_NO = #{empNo}
     </update>
+
+    <select id="searchEmployees" parameterType="EmployeeDto" resultType="EmployeeDto">
+        SELECT E.EMP_NO, E.EMP_NAME, P.POS_NAME, F.FRN_NAME, E.EMP_PROFILE
+        FROM EMPLOYEE_T E
+        LEFT JOIN POSITION_T P ON E.POS_NO = P.POS_NO
+        LEFT JOIN FRANCHISE_T F ON E.FRN_NO = F.FRN_NO
+        WHERE 1=1
+        <if test="empName != null and empName != ''">
+            AND E.EMP_NAME LIKE '%' || #{empName} || '%'
+        </if>
+          <!-- 로그인한 사용자 제외 -->
+        <if test="currentEmpNo != null">
+            AND E.EMP_NO != #{currentEmpNo}
+        </if>
+    </select>
+
+    <select id="inviteEmployees" resultType="EmployeeDto">
+        SELECT E.EMP_NO, E.EMP_NAME, E.EMP_PHONE,
+               E.EMP_EMAIL, E.EMP_PROFILE, P.POS_NAME, F.FRN_NAME
+          FROM EMPLOYEE_T E
+          JOIN POSITION_T P ON E.POS_NO = P.POS_NO
+          JOIN FRANCHISE_T F ON E.FRN_NO = F.FRN_NO
+          LEFT JOIN CR_EMP_T CE ON CE.EMP_NO = E.EMP_NO AND CE.CHAT_ROOM_NO = #{chatRoomNo} AND ENTRY_STAT = 0
+         WHERE CE.EMP_NO IS NULL
+    </select>
+
 </mapper>
