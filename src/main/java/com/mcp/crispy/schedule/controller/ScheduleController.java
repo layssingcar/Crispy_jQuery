@@ -1,25 +1,46 @@
 package com.mcp.crispy.schedule.controller;
 
-import com.mcp.crispy.attendance.dto.AttendanceDto;
-import com.mcp.crispy.attendance.service.AttendanceService;
-import com.mcp.crispy.schedule.service.ScheduleService;
+import java.security.Principal;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.security.Principal;
-import java.sql.Timestamp;
-import java.util.List;
-import java.util.Optional;
+import com.mcp.crispy.schedule.dto.ScheduleDto;
+import com.mcp.crispy.schedule.service.ScheduleService;
+
+import lombok.RequiredArgsConstructor;
+
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/crispy/atten")
+@RequestMapping("/crispy")
 public class ScheduleController {
 	private final ScheduleService scheduleService;
 	
+	@PostMapping(value="/registSche", produces = "application/json")
+	public ResponseEntity<Integer> insertSchedule(@RequestBody ScheduleDto scheduleeDto, Principal principal)
+	{	
+		int insertCount = scheduleService.insertSchedule(scheduleeDto);
+		return ResponseEntity.ok(insertCount);
+	}
+	
+	@GetMapping("/sche")
+	public String getScheList(Model model) {
+		model.addAttribute("scheList", scheduleService.getScheList());
+		return "schedule/schedule";
+	}
+	
+	@ResponseBody
+	@GetMapping(value = "/getScheById", produces = "application/json")
+	public ScheduleDto getScheById(@RequestParam("scheId") String scheId, Model model) {
+		return scheduleService.getScheById(scheId);
+	}
 	
 }

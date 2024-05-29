@@ -14,9 +14,13 @@ import java.sql.Timestamp;
 @Builder
 public class AnnualDto {
 	private int annNo;
+	private String annId;
 	private int annCtNo;
-	private Timestamp annStartTime;
-	private Timestamp annEndTime;
+	private String annTitle;
+	private String annContent;
+	private int annTotal;
+	private String annStartTime;
+	private String annEndTime;
 	private Date createDt;
 	private int creator;
 	private Date modifyDt;

@@ -8,6 +8,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<resultMap type="ScheduleDto" id="ScheduleMap">
 		<id property="scheNo" column="SCHE_NO" />
+		<result property="scheId" column="SCHE_ID"/>
 		<result property="scheDiv" column="SCHE_DIV"/>
 		<result property="scheTitle" column="SCHE_TITLE"/>
 		<result property="scheContent" column="SCHE_CONTENT"/>
@@ -17,10 +18,51 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="creator" column="CREATOR"/>
 		<result property="modifyDt" column="MODIFY_DT"/>
 		<result property="modifier" column="MODIFIER"/>
-		<association property="employee" javaType="EmployeeDto">
-			<id property="empNo" column="EMP_NO" />
-			<result property="empName" column="EMP_NAME" />
-		</association>
+		<result property="scheStat" column="SCHE_STAT"/>
+		<result property="empNo" column="EMP_NO"/>
+<!-- 		<association property="employee" javaType="EmployeeDto"> -->
+<!-- 			<id property="empNo" column="EMP_NO" /> -->
+<!-- 			<result property="empName" column="EMP_NAME" /> -->
+<!-- 		</association> -->
 	</resultMap>
+
+<insert id="insertSchedule" parameterType="ScheduleDto">
+    INSERT INTO SCHEDULE_T (
+        SCHE_NO,
+        SCHE_ID,
+        SCHE_DIV,
+        SCHE_TITLE,
+        SCHE_CONTENT,
+        SCHE_START_TIME,
+        SCHE_END_TIME,
+        CREATE_DT,
+        CREATOR,
+        MODIFY_DT,
+        MODIFIER,
+        SCHE_STAT,
+        EMP_NO
+    ) VALUES (
+        SCHEDULE_SEQ.NEXTVAL,
+       	#{scheId},
+       	#{scheDiv},
+        #{scheTitle},
+        #{scheContent},
+        #{scheStartTime},
+        #{scheEndTime},
+        CURRENT_DATE,
+        #{creator},
+        CURRENT_DATE,
+        #{modifier},
+        #{scheStat},
+        #{empNo}
+    )
+</insert>
+
+<select id="getScheById"
+	resultMap="ScheduleMap">
+	SELECT * 
+		FROM SCHEDULE_T
+	WHERE SCHE_ID = #{scheId}
+</select>
 
 </mapper>

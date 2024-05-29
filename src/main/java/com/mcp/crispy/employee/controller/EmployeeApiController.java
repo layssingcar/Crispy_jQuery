@@ -130,7 +130,7 @@ public class EmployeeApiController {
 
     @GetMapping("/employees/v1")
     public ResponseEntity<List<EmployeeDto>> getAllEmployees() {
-        List<EmployeeDto> employees = employeeService.getAllEmployees();
+        List<EmployeeDto> employees = employeeService.getAllEmployees(1);
         return ResponseEntity.ok(employees);
     }
 }
