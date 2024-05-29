@@ -129,8 +129,8 @@
 /* 재고 상세 모달 */
 .stock-list .modal {
     position: absolute;
-    top: 365px;
-    display: block;
+    top: 240px;
+    display: none;
     height: 345px;
     font-size: 1.7rem;
 }
