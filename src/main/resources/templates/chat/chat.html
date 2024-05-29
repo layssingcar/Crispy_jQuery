@@ -34,10 +34,9 @@
                                     </div>
 
                                     <!-- 채팅방 분류 (주요, 일반, 요청 등) -->
-                                    <div class="chat-search">
-                                        <input type="search" class="form-control" id="search" placeholder="검색"/>
-                                    </div>
-
+                                        <div class="chat-search">
+                                            <input type="search" class="form-control" id="search" placeholder="검색"/>
+                                        </div>
                                     <!-- 채팅방 목록 -->
                                     <div>
                                         <div>
@@ -106,7 +105,6 @@
                                             <div class="profile-image">
                                                 <a role="button" class="send-message" data-bs-toggle="modal"
                                                    data-bs-target="#invite-modal">
-
                                                     <div><img src="/img/question.png"></div>
                                                     <span>새로운 사용자 초대</span>
                                                 </a>
@@ -153,8 +151,9 @@
                                             <input type="text" class="form-control" id="chatRoomTitle" required>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="inviteUser" class="form-label">초대할 사용자</label>
-                                            <input type="text" class="form-control" id="inviteUser" placeholder="사용자 이름 또는 ID 검색">
+                                            <label for="create-inviteUser" class="form-label">초대할 사용자</label>
+                                            <input type="text" class="form-control" id="create-inviteUser" placeholder="사용자 이름 또는 ID 검색">
+                                            <div id="selectedUserList" class="selected-user-list"></div>
                                         </div>
                                         <div id="userList" class="mb-3"></div> <!-- 사용자 목록 표시 영역 -->
                                         <div class="btn-chat-create">
@@ -180,13 +179,12 @@
                                         <div class="mb-3">
                                             <label for="recipient" class="form-label">받는 사람</label>
                                             <input type="text" class="form-control" id="recipient" placeholder="사용자 이름 또는 ID 검색">
+                                            <div id="selectedUserLists" class="selected-user-list"></div>
                                         </div>
                                         <div class="search-results">
                                         </div>
+                                        <button type="submit">초대</button>
                                     </form>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="">초대</button>
                                 </div>
                             </div>
                         </div>
@@ -198,7 +196,7 @@
         <footer th:replace="~{layout/footer :: footer}"></footer>
     </div>
 </div>
-<script src="/js/createChatRoom.js"></script>
-<script src="/js/message.js"></script>
+<script src="/js/chat/createChatRoom.js"></script>
+<script src="/js/chat/invite.js"></script>
 </body>
 </html>

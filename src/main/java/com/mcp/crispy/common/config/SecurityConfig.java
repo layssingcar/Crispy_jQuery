@@ -56,6 +56,9 @@ public class SecurityConfig {
 					.requestMatchers("/resources/**","/css/**", "/js/**", "/img/**").permitAll()
 					.requestMatchers("/api/v1/email/**").permitAll()
 					.requestMatchers("/api/v1/employee/**").permitAll()
+					.requestMatchers("/app/**").permitAll()
+					.requestMatchers("/user/**").permitAll()
+					.requestMatchers("/topic/**").permitAll()
 					.requestMatchers("/crispy/login", "/crispy/logout", "/crispy/signup",
 									 "/crispy/employee/find/username","/crispy/employee/find/username/result",
 									 "/crispy/employee/find/password", "/crispy/employee/change/password").permitAll()

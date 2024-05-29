@@ -13,6 +13,7 @@ public class CrEmpDto { //채팅방 참가자 DTO
     private Integer chatRoomNo;
     private Integer empNo;
     private String empName;
+    private String empId;
     private String empProfile;
     private EntryStat entryStat;
     private AlarmStat alarmStat;
