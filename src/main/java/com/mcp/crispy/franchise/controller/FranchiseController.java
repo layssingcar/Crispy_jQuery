@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.security.Principal;
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -44,8 +45,10 @@ public class FranchiseController {
         }
     }
     
-    @GetMapping("franchise-list")
-    public String listFranchise() {
+    @GetMapping("/franchise-list")
+    public String listFranchise(Model model, FranchiseDto franchiseDto) {
+        List<FranchiseDto> franchiseList = franchiseService.getFranchiseList();
+        model.addAttribute("franchiseList", franchiseList);
     	return "franchise/franchise-list";
     }
     
