@@ -54,21 +54,32 @@
                             </tr>
                         </thead>
 
-                        <!-- 리스트 -->
                         <tbody>
-                            <tr>
-                                <td scope="row"><input type="checkbox"></td>
-                                <td><img src="/img/crispy1.png" alt="재고 1 이미지"></td>
-                                <td>재고 1</td>
-                                <td>카테고리 1</td>
+                            <!-- 리스트 -->
+                            <tr class="stock-row" th:each="stock : ${stockDtoList}" th:data-stock-no="${stock.stockNo}">
+
+                                <!-- 체크박스 -->
+                                <td><input type="checkbox"></td>
+
+                                <!-- 재고 이미지 -->
+                                <td><img th:src="${stock.stockImg}" alt="재고 1 이미지"></td>
+
+                                <!-- 재고명 -->
+                                <td th:text="${stock.stockName}"></td>
+
+                                <!-- 카테고리 -->
+                                <td th:text="${stock.stockCtName}"></td>
+
                                 <td>
-                                    <span class="strong">8,000</span>
+                                    <!-- 수량 -->
+                                    <span class="strong" th:text="${stock.isCount}"></span>
                                     <span>개</span>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
 
+                    <!-- 페이지네이션 -->
                     <nav aria-label="Page navigation example">
                         <ul class="pagination pagination-lg">
                             <li class="page-item">
@@ -95,20 +106,20 @@
                     </nav>
 
                     <!-- 재고 상세 모달 -->
-                    <div class="modal" style="display: block;">
+                    <div class="modal">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
 
                                     <!-- 재고명 -->
-                                    <h2 class="modal-title">고추바사삭</h2>
+                                    <h2 class="modal-title"></h2>
 
                                     <!-- 단가 -->
                                     <div class="stock-price">
-                                        <span>500</span>
+                                        <span></span>
                                         <span>원</span>
                                         <span>&nbsp;/&nbsp;</span>
-                                        <span>30g</span>
+                                        <span></span>
                                     </div>
 
                                     <!-- 닫기 버튼 -->
@@ -117,13 +128,10 @@
                                 <div class="modal-body">
 
                                     <!-- 재고 이미지 -->
-                                    <img src="/img/crispy1.png" alt="재고 이미지">
+                                    <img src="" alt="재고 이미지" class="stock-img">
 
                                     <!-- 재고 설명 -->
-                                    <div>
-                                        한 번도 안 먹은 사람은 있어도 한 번만 먹은 사람은 없다는 그 메뉴
-                                        1초에 1마리씩 팔리는 1초 치킨, 매콤 바삭 고추바사삭!
-                                    </div>
+                                    <div class="stock-detail"></div>
                                 </div>
                             </div>
                         </div>
@@ -133,5 +141,7 @@
 			<footer th:replace="~{layout/footer :: footer}"></footer>
 		</div>
 	</div>
+
+    <script src="/js/stock/stockList.js"></script>
 </body>
 </html>

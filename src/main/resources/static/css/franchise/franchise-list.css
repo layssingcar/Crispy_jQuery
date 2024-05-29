@@ -105,4 +105,33 @@
 
 .form-control {
     margin-bottom: 5px;
+    font-size: 1.4rem;
 }
+
+.form-label {
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.btn-close {
+    background-color: white !important;
+    --bs-btn-close-opacity: 0.5;
+    font-size: 15px;
+}
+
+.create, .modify {
+    font-size: 1.2rem;
+}
+
+#delete-btn {
+    font-size: 15px;
+    background-color: #888888 !important;
+    border-color: #888888 !important;
+}
+
+#modify-btn {
+    font-size: 15px;
+}
+
+
+
