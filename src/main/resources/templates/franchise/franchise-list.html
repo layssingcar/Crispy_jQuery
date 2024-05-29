@@ -44,7 +44,7 @@
                         <td th:text="${frn.frnOwner}">대표자 명</td>
                         <td th:text="${frn.frnStreet}">주소</td>
                         <td th:text="${frn.frnTel}">전화번호</td>
-                        <td th:text="${frn.frnJoinDt}">가맹일</td>
+                        <td th:text="${#temporals.format(frn.frnJoinDt.toLocalDate(), 'yyyy-MM-dd')}">가맹일</td>
                     </tr>
                     </tbody>
 
