@@ -78,10 +78,14 @@
       background-color: var(--main-color) !important;
       color: #fff !important;
     }
-    #shce-insert{
-    font-size: 18px !important;
-    }
     
+	.modal-footer > button{
+	font-size:1.8rem !important;
+	}
+	#btn-delete{
+	  background-color: var(--sub-color) !important;
+	  border-color : var(--sub-color) !important;
+	}
   </style>          
 </head>
 <body>
@@ -111,7 +115,7 @@
 						  <label class="form-check-label" for="myscheChecked">내 일정</label>                    		
                 		</div>
                 		<hr>
-                		<div id="trashsche">휴지통</div>
+                		<a href="/crispy/trash" id="trashsche">휴지통</a>
                 	</div>
     				<div id='calendar'></div>
                 
@@ -120,10 +124,14 @@
 			      <div class="modal fade insertModal" id="myModal">
 			        <div class="modal-dialog">
 			          <div class="modal-content">
-			          
+<!-- 			          	<input type="hidden" data-bs-target="#myModal" data-bs-whatever="일정 등록" id="modalTitle"> -->
+<!-- 			          	<input type="hidden" data-bs-target="#myModal" data-bs-whatever="일정 정보" id="modalTitle"> -->
+<!-- 			          	<input type="hidden" data-bs-target="#myModal" data-bs-whatever="일정 수정" id="modalTitle"> -->
 			            <!-- Modal Header -->
-			            <div class="modal-header"><h2 class="modal-title">일정 등록</h2></div>
-			            
+			            <div class="modal-header">
+			            	<h2 class="modal-title">일정 등록</h2>
+		                	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		                </div>
 			            <!-- Modal body -->
 			            <div class="modal-body">
 			              <div class="form-group">
@@ -218,12 +226,15 @@
 			              </div>
 			            </div>
 			            <!-- Modal footer -->
-			            <div class="modal-footer"><button type="button" class="btn btn-primary float-right insertBtn" id="shce-insert" onclick="fnRegistSchedule();">등록</button></div>         
+			            <div class="modal-footer">
+			            	<button type="button" class="btn btn-primary float-right insertBtn" id="btn-insert" onclick="fnRegistSchedule();">등록</button>
+			            	<button type="button" class="btn btn-primary float-right modifyBtn" id="btn-modify">수정</button>
+			            	<button type="button" class="btn btn-primary float-right deleteBtn" id="btn-delete">삭제</button>
+			            </div>         
 			          </div>
 			        </div>
 			      </div>
 			    </form>     
-			               
 			               
             </div> <!-- mainarea 끝-->
         </main>
@@ -232,11 +243,16 @@
     <!-- 특정 JS -->
  <script>
       ////////////////////////     모달 설정
-	 $("#myModal").on("hidden.bs.modal", function () {
+      const myModal = $("#myModal");
+      const startOpt = $('#start option');
+      const endOpt = $('#end option');
+      const startOptIndex = startOpt.index($("#start option:selected"));
+    	  
+      myModal.on("hidden.bs.modal", function () {
         $("#form-modal")[0].reset();
       });
       
-	 $("#myModal").on("show.bs.modal", function(){
+      myModal.on("show.bs.modal", function(){
 		    // 초기 체크 상태에 따라 show/hide 설정
 		    if ($("#radio-notice").is(':checked')) {
 	            $("#vac-type, #vac-elem").hide();
@@ -248,8 +264,8 @@
 		            $("#vac-type, #vac-elem").hide();
 	            	$(".form-group-start, .form-group-end").show();
             	 	$("#start").off();									// 일정구분 라디오 초기화	
-            	 	$('#start option').eq(0).prop('selected', true);	// 시작시간 초기화
-            	 	$('#end option').eq(0).prop('selected', true);		// 종료시간 초기화
+            	 	startOpt.eq(0).prop('selected', true);	// 시작시간 초기화
+            	 	endOpt.eq(0).prop('selected', true);		// 종료시간 초기화
             	 	$("#end").attr("disabled", false);
 		            $("#vac-all").prop("checked", true);
             	 	
@@ -268,74 +284,74 @@
 			            	$("#end").attr("disabled", true);
 			            	
 			            	if($("#btnradio2").is(":checked"))
-			            		$('#start option').eq(10).prop('selected', true);
+			            		startOpt.eq(10).prop('selected', true);
 			            	else if($("#btnradio1").is(":checked"))
-			            		$('#start option').eq(0).prop('selected', true);
+			            		startOpt.eq(0).prop('selected', true);
 			            	
 			            	$("#btnradio2").off('click').on('click', function(){
-			            		$('#start option').eq(10).prop('selected', true);
-			            		if(($( "#start option" ).index($("#start option:selected")) + 7) >= $("#start option").length)
-			            			$('#end option').eq($( "#start option" ).length - 1).prop('selected', true);
+			            		startOpt.eq(10).prop('selected', true);
+			            		if((startOptIndex + 7) >= startOpt.length)
+			            			endOpt.eq(startOpt.length - 1).prop('selected', true);
 			            		else
-			            			$('#end option').eq($("#start option").index($("#start option:selected")) + 7).prop('selected', true);
+			            			endOpt.eq(startOptIndex + 7).prop('selected', true);
 			            	})
 			            	
 			            	$("#btnradio1").off('click').on('click', function(){
-			            		$('#start option').eq(0).prop('selected', true);
-			            		if(($( "#start option" ).index($("#start option:selected")) + 7) >= $("#start option").length)
-			            			$('#end option').eq($( "#start option" ).length - 1).prop('selected', true);
+			            		startOpt.eq(0).prop('selected', true);
+			            		if((startOptIndex + 7) >= startOpt.length)
+			            			endOpt.eq(startOpt.length - 1).prop('selected', true);
 			            		else
-			            			$('#end option').eq($("#start option").index($("#start option:selected")) + 7).prop('selected', true);
+			            			endOpt.eq(startOptIndex + 7).prop('selected', true);
 			            	})
 			            	
 			            	$("#start").off('change').on('change', function(){
-			            		if(($( "#start option" ).index($("#start option:selected")) + 7) >= $("#start option").length)
-			            			$('#end option').eq($( "#start option" ).length - 1).prop('selected', true);
+			            		if((startOptIndex + 7) >= startOpt.length)
+			            			endOpt.eq(startOpt.length - 1).prop('selected', true);
 			            		else
-			            			$('#end option').eq($("#start option").index($("#start option:selected")) + 7).prop('selected', true);
+			            			endOpt.eq(startOptIndex + 7).prop('selected', true);
 			            	})
 			            	
-		            		if(($( "#start option" ).index($("#start option:selected")) + 7) >= $("#start option").length)
-		            			$('#end option').eq($( "#start option" ).length - 1).prop('selected', true);
+		            		if((startOptIndex + 7) >= startOpt.length)
+		            			endOpt.eq(startOpt.length - 1).prop('selected', true);
 		            		else
-		            			$('#end option').eq($("#start option").index($("#start option:selected")) + 7).prop('selected', true);
+		            			endOpt.eq(startOptIndex + 7).prop('selected', true);
 			            	
 		 		        } else if($("#vac-quat").is(':checked')){	// 반반차
 		 		        	$(".form-group-start, .form-group-end").show();
 			            	$("#end").attr("disabled", true);
 			            	
 			            	if($("#btnradio2").is(":checked"))
-			            		$('#start option').eq(10).prop('selected', true);
+			            		startOpt.eq(10).prop('selected', true);
 			            	else if($("#btnradio1").is(":checked"))
-			            		$('#start option').eq(0).prop('selected', true);
+			            		startOpt.eq(0).prop('selected', true);
 			            	
 			            	$("#btnradio2").off('click').on('click', function(){
-			            		$('#start option').eq(10).prop('selected', true);
-			            		if(($( "#start option" ).index($("#start option:selected")) + 3) >= $("#start option").length)
-			            			$('#end option').eq($( "#start option" ).length - 1).prop('selected', true);
+			            		startOpt.eq(10).prop('selected', true);
+			            		if((startOptIndex + 3) >= startOpt.length)
+			            			endOpt.eq(startOpt.length - 1).prop('selected', true);
 			            		else
-			            			$('#end option').eq($("#start option").index($("#start option:selected")) + 3).prop('selected', true);
+			            			endOpt.eq(startOptIndex + 3).prop('selected', true);
 			            	})
 			            	
 			            	$("#btnradio1").off('click').on('click', function(){
-			            		$('#start option').eq(0).prop('selected', true);
-			            		if(($( "#start option" ).index($("#start option:selected")) + 3) >= $("#start option").length)
-			            			$('#end option').eq($( "#start option" ).length - 1).prop('selected', true);
+			            		startOpt.eq(0).prop('selected', true);
+			            		if((startOptIndex + 3) >= startOpt.length)
+			            			endOpt.eq(startOpt.length - 1).prop('selected', true);
 			            		else
-			            			$('#end option').eq($("#start option").index($("#start option:selected")) + 3).prop('selected', true);
+			            			endOpt.eq(startOptIndex + 3).prop('selected', true);
 			            	})
 			            	
 			            	$("#start").off('change').on('change', function(){
-			            		if(($( "#start option" ).index($("#start option:selected")) + 3) >= $("#start option").length)
-			            			$('#end option').eq($( "#start option" ).length - 1).prop('selected', true);
+			            		if((startOptIndex + 3) >= startOpt.length)
+			            			endOpt.eq(startOpt.length - 1).prop('selected', true);
 			            		else
-			            			$('#end option').eq($("#start option").index($("#start option:selected")) + 3).prop('selected', true);
+			            			endOpt.eq(startOptIndex + 3).prop('selected', true);
 			            	})
 			            	
-		            		if(($( "#start option" ).index($("#start option:selected")) + 3) >= $("#start option").length)
-		            			$('#end option').eq($( "#start option" ).length - 1).prop('selected', true);
+		            		if((startOptIndex + 3) >= startOpt.length)
+		            			endOpt.eq(startOpt.length - 1).prop('selected', true);
 		            		else
-		            			$('#end option').eq($("#start option").index($("#start option:selected")) + 3).prop('selected', true);
+		            			endOpt.eq(startOptIndex + 3).prop('selected', true);
 		 		        }
 		            })
 		        }
@@ -376,22 +392,28 @@
       ////////////////////////		캘린더 기능
       calendar.on("eventAdd", ()=>{
         alert('일정을 등록했다!');
-        $("#myModal").modal('hide');
+        myModal.modal('hide');
       });
 
       calendar.on("eventClick", (info)=>{
-        alert('일정 제목:'+ info.event.title);
-        alert('일정 시작:'+ info.event.start);
-        alert('일정 종료:'+ info.event.end);
+    	$(".modal-title").text("일정 정보");
+    	$("#btn-insert").hide();
+    	$("#btn-modify").show();
+    	$("#btn-delete").show();
+ 	  	myModal.modal('show');
       });
       
       calendar.on("dateClick", (info)=>{
         });
 
       calendar.on("select", (info)=>{
-        $('#myModal').modal('show');
-        startDt = info.startStr.substr(0, 4) + "-" + (info.startStr.substr(5, 2)) + "-" + info.startStr.substr(8, 2);
-        endDt = info.endStr.substr(0, 4) + "-" + (info.endStr.substr(5, 2))  + "-" + info.endStr.substr(8, 2);
+   	 	$(".modal-title").text("일정 등록");  
+    	$("#btn-insert").show();
+    	$("#btn-modify").hide();
+    	$("#btn-delete").hide();
+  	  	myModal.modal('show');
+        startDt = info.startStr;
+        endDt = info.endStr;
       });
 
       function fnRegistSchedule(){		// 일정 등록 처리 함수
@@ -400,7 +422,8 @@
               title: $("#sch-title").val(),
               allDay: true, 
               start: startDt,
-              end : endDt
+              end : endDt,
+              description:'일정'
           };
           calendar.addEvent(schedule);
         }
@@ -409,13 +432,15 @@
               title: $("#sch-title").val(),
               allDay: false, 
               start:  startDt + "T" + $("#start option:selected").val(),
-              end : startDt + "T" + $("#end option:selected").val()
+              end : startDt + "T" + $("#end option:selected").val(),
+              description:'일정'
             };
             calendar.addEvent(schedule);
           }
         calendar.unselect();
       };
 
+      // 체크박스 관련 함수
       function fnClickCheckAll(){
     	  if ($('#allscheChecked').is(':checked')){
       	    $('.form-check-input').prop('checked', true);
