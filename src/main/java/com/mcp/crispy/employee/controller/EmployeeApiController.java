@@ -147,6 +147,4 @@ public class EmployeeApiController {
         log.info("empStatus: {}", employeeUpdateDto.getEmpStat().getValue());
         return ResponseEntity.ok(Map.of("message", "직책이 변경되었습니다."));
     }
-
-
 }

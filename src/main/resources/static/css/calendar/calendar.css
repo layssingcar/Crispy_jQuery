@@ -1,0 +1,81 @@
+  .mainarea{
+    margin:5px auto !important;
+    width:100%;
+    display:flex !important;
+    justify-content: space-around !important;
+    }
+  	#calendarOpt{
+  	width:200px;
+  	font-size:20px;
+  	text-align:start;
+  	}
+  	#allsche, #shopsche, #mysche, #go-schemenu{
+	margin-left:15px;
+  	}
+    #calendar{
+    width:1000px;
+    position: relative;
+    color: black !important; 
+    font-size:medium !important;
+    }
+    
+   	#profile-cal{
+  	width:200px;
+  	height:200px;
+  	display:flex;
+  	justify-content: center;
+  	margin-top:10px;
+  	margin-bottom:100px;
+  	}
+    
+    .fc-col-header a{
+      color:#000000 !important; 
+    }
+    .fc-scrollgrid-sync-inner a{
+      color:#000000 !important; 
+      text-decoration: none !important;
+    }
+    .fc-day-sat a{ 
+        color:#0000FF !important; 
+    }
+    .fc-day-sun a{ 
+        color:#FF0000 !important; 
+    }
+    .fc-toolbar-title{
+      padding-right: 160px;
+    }
+    .form-group{
+      margin-bottom: 10px;
+    }
+    .modal-content{
+    font-size:18px !important; 
+    }
+    .modal-content input{
+    font-size:14px !important; 
+    }
+    .form-check-label{
+    margin-top:2px;
+    }
+    .form-control{
+    font-size:14px !important;
+    }
+	.form-control option{
+	font-size:14px !important; 
+	}
+	.btn-outline-primary{
+	border-color: var(--main-color) !important;	
+	color: #000 !important;
+	}
+	
+    .btn-group input:checked + label {
+      background-color: var(--main-color) !important;
+      color: #fff !important;
+    }
+    
+	.modal-footer > button{
+	font-size:1.8rem !important;
+	}
+	#btn-delete{
+	  background-color: var(--sub-color) !important;
+	  border-color : var(--sub-color) !important;
+	}

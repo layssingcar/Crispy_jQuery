@@ -4,89 +4,7 @@
     <th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
     <!-- 특정 페이지 css -->
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
-  <style>
-    .mainarea{
-    margin:5px auto !important;
-    width:100%;
-    display:flex !important;
-    justify-content: space-around !important;
-    }
-  	#calendarOpt{
-  	width:200px;
-  	font-size:20px;
-  	text-align:start;
-  	}
-  	#allsche, #shopsche, #mysche, #go-schemenu{
-	margin-left:15px;
-  	}
-    #calendar{
-    width:1000px;
-    position: relative;
-    color: black !important; 
-    font-size:medium !important;
-    }
-    
-   	#profile-cal{
-  	width:200px;
-  	height:200px;
-  	display:flex;
-  	justify-content: center;
-  	margin-top:10px;
-  	margin-bottom:100px;
-  	}
-    
-    .fc-col-header a{
-      color:#000000 !important; 
-    }
-    .fc-scrollgrid-sync-inner a{
-      color:#000000 !important; 
-      text-decoration: none !important;
-    }
-    .fc-day-sat a{ 
-        color:#0000FF !important; 
-    }
-    .fc-day-sun a{ 
-        color:#FF0000 !important; 
-    }
-    .fc-toolbar-title{
-      padding-right: 160px;
-    }
-    .form-group{
-      margin-bottom: 10px;
-    }
-    .modal-content{
-    font-size:18px !important; 
-    }
-    .modal-content input{
-    font-size:14px !important; 
-    }
-    .form-check-label{
-    margin-top:2px;
-    }
-    .form-control{
-    font-size:14px !important;
-    }
-	.form-control option{
-	font-size:14px !important; 
-	}
-	.btn-outline-primary{
-	border-color: var(--main-color) !important;	
-	color: #000 !important;
-	}
-	
-    .btn-group input:checked + label {
-      background-color: var(--main-color) !important;
-      color: #fff !important;
-    }
-    
-	.modal-footer > button{
-	font-size:1.8rem !important;
-	}
-	#btn-delete{
-	  background-color: var(--sub-color) !important;
-	  border-color : var(--sub-color) !important;
-	}
-  </style>          
+	<link href="/css/calendar/calendar.css" rel="stylesheet">   
 </head>
 <body>
 
@@ -124,9 +42,6 @@
 			      <div class="modal fade insertModal" id="myModal">
 			        <div class="modal-dialog">
 			          <div class="modal-content">
-<!-- 			          	<input type="hidden" data-bs-target="#myModal" data-bs-whatever="일정 등록" id="modalTitle"> -->
-<!-- 			          	<input type="hidden" data-bs-target="#myModal" data-bs-whatever="일정 정보" id="modalTitle"> -->
-<!-- 			          	<input type="hidden" data-bs-target="#myModal" data-bs-whatever="일정 수정" id="modalTitle"> -->
 			            <!-- Modal Header -->
 			            <div class="modal-header">
 			            	<h2 class="modal-title">일정 등록</h2>
@@ -148,9 +63,13 @@
 							  <input class="form-check-input" type="radio" name="notice-or-vac" id="radio-notice" value="notice" checked>
 							  <label class="form-check-label" for="radio-notice">공지</label>
 							</div>
+							 <div class="form-check form-check-inline">
+							  <input class="form-check-input" type="radio" name="notice-or-vac" id="radio-mysche" value="mysche">
+							  <label class="form-check-label" for="radio-mysche">개인</label>
+							</div>
 							<div class="form-check form-check-inline">
 							  <input class="form-check-input" type="radio" name="notice-or-vac" id="radio-vac" value="vac">
-							  <label class="form-check-label" for="radio-vac">휴가</label>
+							  <label class="form-check-label" for="radio-vac">연차</label>
 							</div>
 			              </div>
 			              <div class="form-group" id="vac-type">
@@ -241,219 +160,8 @@
         <footer th:replace="~{layout/footer :: footer}"></footer>
     </div>
     <!-- 특정 JS -->
- <script>
-      ////////////////////////     모달 설정
-      const myModal = $("#myModal");
-      const startOpt = $('#start option');
-      const endOpt = $('#end option');
-      const startOptIndex = startOpt.index($("#start option:selected"));
-    	  
-      myModal.on("hidden.bs.modal", function () {
-        $("#form-modal")[0].reset();
-      });
-      
-      myModal.on("show.bs.modal", function(){
-		    // 초기 체크 상태에 따라 show/hide 설정
-		    if ($("#radio-notice").is(':checked')) {
-	            $("#vac-type, #vac-elem").hide();
-            	$(".form-group-start, .form-group-end").show();
-		    }
-		    
-		    $("input[name='notice-or-vac']").off('click').on('click', function() {		// 공지, 휴가 라디오 버튼 눌렀을 때 
-		        if ($("#radio-notice").is(':checked')) {		// 공지
-		            $("#vac-type, #vac-elem").hide();
-	            	$(".form-group-start, .form-group-end").show();
-            	 	$("#start").off();									// 일정구분 라디오 초기화	
-            	 	startOpt.eq(0).prop('selected', true);	// 시작시간 초기화
-            	 	endOpt.eq(0).prop('selected', true);		// 종료시간 초기화
-            	 	$("#end").attr("disabled", false);
-		            $("#vac-all").prop("checked", true);
-            	 	
-	        } else if ($("#radio-vac").is(':checked')) {		// 휴가
-		            $("#vac-type, #vac-elem").show();
-		            
-		            if($("#vac-all").is(':checked')){	// 연차
-		            	$(".form-group-start, .form-group-end").hide();
-		            	$("#end").attr("disabled", false);
-		            }
-		            $("input[name='var-elem-radio']").off('click').on('click', function(){		// 휴가 종류 라디오 버튼 눌렀을 때 
-		            	 if ($("#vac-all").is(':checked')) {	// 연차
-		            		 $(".form-group-start, .form-group-end").hide();
-		 		        } else if ($("#vac-half").is(':checked')){	// 반차
-		 		        	$(".form-group-start, .form-group-end").show();
-			            	$("#end").attr("disabled", true);
-			            	
-			            	if($("#btnradio2").is(":checked"))
-			            		startOpt.eq(10).prop('selected', true);
-			            	else if($("#btnradio1").is(":checked"))
-			            		startOpt.eq(0).prop('selected', true);
-			            	
-			            	$("#btnradio2").off('click').on('click', function(){
-			            		startOpt.eq(10).prop('selected', true);
-			            		if((startOptIndex + 7) >= startOpt.length)
-			            			endOpt.eq(startOpt.length - 1).prop('selected', true);
-			            		else
-			            			endOpt.eq(startOptIndex + 7).prop('selected', true);
-			            	})
-			            	
-			            	$("#btnradio1").off('click').on('click', function(){
-			            		startOpt.eq(0).prop('selected', true);
-			            		if((startOptIndex + 7) >= startOpt.length)
-			            			endOpt.eq(startOpt.length - 1).prop('selected', true);
-			            		else
-			            			endOpt.eq(startOptIndex + 7).prop('selected', true);
-			            	})
-			            	
-			            	$("#start").off('change').on('change', function(){
-			            		if((startOptIndex + 7) >= startOpt.length)
-			            			endOpt.eq(startOpt.length - 1).prop('selected', true);
-			            		else
-			            			endOpt.eq(startOptIndex + 7).prop('selected', true);
-			            	})
-			            	
-		            		if((startOptIndex + 7) >= startOpt.length)
-		            			endOpt.eq(startOpt.length - 1).prop('selected', true);
-		            		else
-		            			endOpt.eq(startOptIndex + 7).prop('selected', true);
-			            	
-		 		        } else if($("#vac-quat").is(':checked')){	// 반반차
-		 		        	$(".form-group-start, .form-group-end").show();
-			            	$("#end").attr("disabled", true);
-			            	
-			            	if($("#btnradio2").is(":checked"))
-			            		startOpt.eq(10).prop('selected', true);
-			            	else if($("#btnradio1").is(":checked"))
-			            		startOpt.eq(0).prop('selected', true);
-			            	
-			            	$("#btnradio2").off('click').on('click', function(){
-			            		startOpt.eq(10).prop('selected', true);
-			            		if((startOptIndex + 3) >= startOpt.length)
-			            			endOpt.eq(startOpt.length - 1).prop('selected', true);
-			            		else
-			            			endOpt.eq(startOptIndex + 3).prop('selected', true);
-			            	})
-			            	
-			            	$("#btnradio1").off('click').on('click', function(){
-			            		startOpt.eq(0).prop('selected', true);
-			            		if((startOptIndex + 3) >= startOpt.length)
-			            			endOpt.eq(startOpt.length - 1).prop('selected', true);
-			            		else
-			            			endOpt.eq(startOptIndex + 3).prop('selected', true);
-			            	})
-			            	
-			            	$("#start").off('change').on('change', function(){
-			            		if((startOptIndex + 3) >= startOpt.length)
-			            			endOpt.eq(startOpt.length - 1).prop('selected', true);
-			            		else
-			            			endOpt.eq(startOptIndex + 3).prop('selected', true);
-			            	})
-			            	
-		            		if((startOptIndex + 3) >= startOpt.length)
-		            			endOpt.eq(startOpt.length - 1).prop('selected', true);
-		            		else
-		            			endOpt.eq(startOptIndex + 3).prop('selected', true);
-		 		        }
-		            })
-		        }
-		    });
-		});
-
-      const fntest = ()=>{    // 고른 시간 이후의 시간대만 표시되도록 하는 함수
-        var index = $("#start option").index($("#start option:selected")); // 내가 고른 셀렉트의 인덱스
-        var maxsize = $("#start option").length;
-        for(var i = index + 1; i < maxsize; i++)
-        {
-          var newOption = $('<option>').attr('value', $("#start option:eq(" + i + ")").val()).text($("#start option:eq(" + i + ")").val());
-          $("#end").append(newOption);
-        }
-      }
-
-      ////////////////////////     캘린더 설정
-      let startDt, endDt;
-      const calendarEl = document.getElementById('calendar');
-      const calendarHeader = {
-        left: 'prev,next today',          
-        center: 'title',
-        right:'dayGridMonth,timeGridWeek,listWeek'        
-      }
-
-      const calendarOpt = {
-        headerToolbar: calendarHeader,
-        initialView: 'dayGridMonth',
-        selectable:true,    // 달력 날짜 드래그
-        locale:'kr',      // 달력 언어 설정
-        editable:true,
-        dayMaxEventRows:true
-      }
-
-      const calendar = new FullCalendar.Calendar(calendarEl, calendarOpt);
-      calendar.render();
-
-      ////////////////////////		캘린더 기능
-      calendar.on("eventAdd", ()=>{
-        alert('일정을 등록했다!');
-        myModal.modal('hide');
-      });
-
-      calendar.on("eventClick", (info)=>{
-    	$(".modal-title").text("일정 정보");
-    	$("#btn-insert").hide();
-    	$("#btn-modify").show();
-    	$("#btn-delete").show();
- 	  	myModal.modal('show');
-      });
-      
-      calendar.on("dateClick", (info)=>{
-        });
-
-      calendar.on("select", (info)=>{
-   	 	$(".modal-title").text("일정 등록");  
-    	$("#btn-insert").show();
-    	$("#btn-modify").hide();
-    	$("#btn-delete").hide();
-  	  	myModal.modal('show');
-        startDt = info.startStr;
-        endDt = info.endStr;
-      });
-
-      function fnRegistSchedule(){		// 일정 등록 처리 함수
-        if($("input:radio[name=var-elem-radio]:checked").val() == 'all'){
-          let schedule = {
-              title: $("#sch-title").val(),
-              allDay: true, 
-              start: startDt,
-              end : endDt,
-              description:'일정'
-          };
-          calendar.addEvent(schedule);
-        }
-        else if($("input:radio[name=var-elem-radio]:checked").val() != 'all'){
-          let schedule = {
-              title: $("#sch-title").val(),
-              allDay: false, 
-              start:  startDt + "T" + $("#start option:selected").val(),
-              end : startDt + "T" + $("#end option:selected").val(),
-              description:'일정'
-            };
-            calendar.addEvent(schedule);
-          }
-        calendar.unselect();
-      };
-
-      // 체크박스 관련 함수
-      function fnClickCheckAll(){
-    	  if ($('#allscheChecked').is(':checked')){
-      	    $('.form-check-input').prop('checked', true);
-      	  } else {
-      	    $('.form-check-input').prop('checked', false);
-      	  }
-      }
-      
-      function fnClickCheckSingle(){
-    	  if($('#allscheChecked').is(':checked'))
-    		  $('#allscheChecked').prop('checked', false);
-      }
-    </script>    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+	<script src="/js/calendar/calendar.js"></script> 
 </div>
 </body>
 </html>

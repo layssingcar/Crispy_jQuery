@@ -14,11 +14,12 @@ import java.sql.Timestamp;
 @Builder
 public class ScheduleDto {
 	private int scheNo;
+	private String scheId;
 	private int scheDiv;
 	private String scheTitle;
 	private String scheContent;
-	private Timestamp scheStartTime;
-	private Timestamp scheEndTime;
+	private String scheStartTime;
+	private String scheEndTime;
 	private Date createDt;
 	private int creator;
 	private Date modifyDt;
