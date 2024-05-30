@@ -58,3 +58,231 @@
 .area5 .approval-list tbody:last-child tr {
     border-bottom: #fff;
 }
+
+.mainarea {
+	width: 100%;
+	height: 100%;
+	max-width: 1660px;
+}
+
+.maintop {
+	display: flex !important;
+}
+
+.maintop>div {
+	margin: 10px auto;
+}
+
+.mainbottom {
+	display: flex;
+}
+
+.mainbottom>div {
+	margin: 10px auto;
+}
+
+.area1 {
+	width: 500px;
+	height: 320px;
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: column;
+	border: 2px var(--main-color) solid;
+	border-radius: 7px;
+}
+
+.area2 {
+	width: 550px;
+	height: 320px;
+	border: 2px var(--main-color) solid;
+	border-radius: 7px;
+}
+
+.area3 {
+	width: 500px;
+	height: 320px;
+	border: 2px var(--main-color) solid;
+	border-radius: 7px;
+}
+
+.area4 {
+	width: 800px;
+	height: 440px;
+	border: 2px var(--main-color) solid;
+	border-radius: 7px;
+}
+
+.area5 {
+	width: 800px;
+	height: 440px;
+	border: 2px var(--main-color) solid;
+	border-radius: 7px;
+}
+
+.area1>div {
+	margin: auto 5px;
+}
+
+.area1-profile {
+	width: 240px;
+	height: 180px;
+	display: flex;
+	justify-content: center;
+}
+
+.area1-info {
+	width: 240px;
+	height: 120px;
+	font-size: 20px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.area1-inoutBtn {
+	width: 240px;
+	height: 60px;
+}
+
+.area1-qr {
+	width: 240px;
+	height: 240px;
+}
+
+.btn-workfin {
+	display: flex;
+	justify-content: space-between;
+}
+
+#btn-work, #btn-finish {
+	width: 100px;
+	font-size: 20px;
+	margin: auto 10px;
+	margin-top: 10px;
+}
+
+#btn-work {
+	border-color: rgba(0, 0, 255, 0.9) !important;
+	border: 2px solid;
+	background-color: rgba(0, 0, 255, 0.9) !important;
+	color: white !important;
+}
+
+#btn-finish {
+	border-color: rgba(255, 0, 0, 0.9) !important;
+	border: 2px solid;
+	background-color: rgba(255, 0, 0, 0.9) !important;
+	color: white !important;
+}
+
+#btn-work:disabled{
+	border-color: rgba(0, 0, 255, 0.1) !important;
+}
+#btn-finish:disabled {
+	border-color: rgba(255, 0, 0, 0.1) !important;
+}
+
+.area1-qr>img {
+	margin: auto 10px;
+	border: 2px black solid;
+}
+
+.area1-info>div {
+	margin-left: 30px;
+}
+
+#work-start, #work-fin {
+	font-size: 15px;
+}
+
+#calendar {
+	margin: 10px auto;
+	width: 90%;
+	height: 95%;
+	color: black !important;
+	font-size: 15px;
+}
+
+.fc-col-header a {
+	color: #000000 !important;
+}
+
+.fc-scrollgrid-sync-inner a {
+	color: #000000 !important;
+	text-decoration: none !important;
+}
+
+.fc-day-sat a {
+	color: #0000FF !important;
+}
+
+.fc-day-sun a {
+	color: #FF0000 !important;
+}
+
+.fc-toolbar-title {
+	font-size: 20px !important;
+}
+
+.progress {
+	height: 30px;
+	font-size: 1.5rem;
+	line-height: 30px;
+	position:relative;
+}
+.progress-bar {
+	z-index:1;
+}
+.progress-text{
+	color:black;
+	text-align: center;
+	z-index:2;
+	position:absolute;
+	left:0px;
+	right:0px;
+}
+  
+.weather{
+  width:1600px !important;
+  display:flex;
+  font-size:2.0rem;
+  align-items:center;
+  justify-content: flex-end;
+}
+.weather > div{
+  margin-left: 10px;
+}
+
+.weather > #weather-icon{
+  object-fit: cover;
+}
+
+#noti {
+	margin-right:15px;
+	font-size: 1.7rem;
+	top: -100px;
+}
+
+.area2 table {
+	margin-left: 5px;
+	margin-top: 20px;
+	width: 53rem;
+	height: 25px
+}
+
+.area2 .table th, .table td {
+	text-align: center;
+	vertical-align: middle;
+}
+.area2 .board-list .top-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top:15px;
+    margin-left:10px;
+}
+.area2 .board-list h1 {
+    writing-mode: horizontal-tb; /* Ensure writing mode is horizontal */
+    transform: none; /* Reset any transforms if applied */
+    white-space: nowrap; /* Prevent text from breaking to the next line */
+}

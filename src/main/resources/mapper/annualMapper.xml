@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mcp.crispy.annual.mapper.AnnualMapper">
+
+	<resultMap type="AnnualDto" id="AnnualMap">
+		<id property="annNo" column="ANN_NO" />
+		<result property="annId" column="ANN_ID"/>
+		<result property="annCtNo" column="ANN_CT_NO"/>
+		<result property="annTitle" column="ANN_TITLE"/>
+		<result property="annContent" column="ANN_CONTENT"/>
+		<result property="annTotal" column="ANN_TOTAl"/>
+		<result property="annStartTime" column="ANN_START_TIME"/>
+		<result property="annEndTime" column="ANN_END_TIME"/>
+		<result property="createDt" column="CREATE_DT"/>
+		<result property="creator" column="CREATOR"/>
+		<result property="modifyDt" column="MODIFY_DT"/>
+		<result property="modifier" column="MODIFIER"/>
+		<result property="empNo" column="EMP_NO"/>
+<!-- 		<association property="employee" javaType="EmployeeDto"> -->
+<!-- 			<id property="empNo" column="EMP_NO" /> -->
+<!-- 			<result property="empName" column="EMP_NAME" /> -->
+<!-- 		</association> -->
+	</resultMap>
+
+<insert id="insertAnnual" parameterType="AnnualDto">
+    INSERT INTO ANNUAL_T (
+        ANN_NO,
+        ANN_ID,
+        ANN_CT_NO,
+        ANN_TITLE,
+        ANN_CONTENT,
+        ANN_TOTAl,
+        ANN_START_TIME,
+        ANN_END_TIME,
+        CREATE_DT,
+        CREATOR,
+        MODIFY_DT,
+        MODIFIER,
+        EMP_NO
+    ) VALUES (
+        ATTENDANCE_SEQ.NEXTVAL,
+        #{annId},
+        #{annCtNo},
+        #{annTitle},
+        #{annContent},
+        #{annTotal},
+       	#{annStartTime},
+        #{annEndTime},
+        CURRENT_DATE,
+        #{creator},
+        CURRENT_DATE,
+        #{modifier},
+        #{empNo}
+    )
+</insert>
+
+<select id="getAnnById"
+	resultMap="AnnualMap">
+	SELECT * 
+		FROM ANNUAL_T
+	WHERE ANN_ID = #{annId}
+</select>
+
+<select id="getAnnList"
+	resultMap="AnnualMap">
+	SELECT *
+		FROM ANNUAL_T
+</select>
+
+</mapper>

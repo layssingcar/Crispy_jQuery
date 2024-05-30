@@ -83,6 +83,8 @@ const invite = {
             const listImg = document.createElement("img");
             listImg.className = 'modal-profile-image';
             listImg.src = user.empProfile;
+            const userDiv = document.createElement("div");
+            userDiv.className = 'modal-user-div';
             const listItem = document.createElement('span');
             listItem.className = 'ms-3';
             listItem.textContent = `${user.empName} (${user.posName}) - ${user.frnName}`;
@@ -91,12 +93,12 @@ const invite = {
             listCheckbox.type = "checkbox";
             listCheckbox.value = user.empNo;
             listCheckbox.checked = this.selectedUserIds.has(user.empNo.toString());
-            listCheckbox.addEventListener('change', () => this.handleUserSelection(user, selectCheckbox));
-            listDiv.appendChild(listCheckbox);
+            listCheckbox.addEventListener('change', () => this.handleUserSelection(user, listCheckbox));
+            userDiv.appendChild(listItem);
+            userDiv.appendChild(listCheckbox);
 
             listDiv.appendChild(listImg);
-            listDiv.appendChild(listItem);
-            listDiv.appendChild(listCheckbox);
+            listDiv.appendChild(userDiv);
             this.resultsContainer.appendChild(listDiv);
         });
     },
@@ -190,11 +192,8 @@ const invite = {
 
 document.addEventListener("DOMContentLoaded", function () {
     const inviteModalElement = document.getElementById('invite-modal');
-
-    // 모달에 이벤트 리스너 추가
     inviteModalElement.addEventListener('show.bs.modal', function (event) {
-        // 채팅방 번호 설정 (예제로 1을 할당, 실제에선 선택된 채팅방 번호로 설정 필요)
-        invite.currentChatRoomNo = currentChatRoomNo; // 예시로 1을 설정하였으나, 실제 채팅방 번호로 변경 필요
-        invite.init(); // 사용자 목록 로드
+        invite.currentChatRoomNo = message.currentChatRoomNo;
+        invite.init();
     });
 });

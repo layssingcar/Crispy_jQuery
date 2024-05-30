@@ -16,7 +16,9 @@ public class OwnerRegisterDto {
     private String empName;
     private String empEmail;
     private String empPhone;
+    private String empProfile;
     private EmpStatus empStatus;
     private int posNo;
     private int frnNo;
+
 }

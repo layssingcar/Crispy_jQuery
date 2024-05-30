@@ -1,5 +1,6 @@
 package com.mcp.crispy.employee.dto;
 
+import com.mcp.crispy.chat.dto.EntryStat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,13 +23,10 @@ public class EmployeeDto {
     private String empStreet;
     private String empDetail;
     private String empProfile;
-
     // 결재 서명
     private String empSign;
-
     // 연차
     private int empAnnual;
-
     // 재직 상태
     private EmpStatus empStat;
     private Date empInDt;
@@ -39,4 +37,6 @@ public class EmployeeDto {
     private int frnNo;
     private String frnName;
     private String posName;
+    private Integer chatRoomNo;
+    private EntryStat entryStat;
 }

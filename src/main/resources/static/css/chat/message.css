@@ -444,7 +444,7 @@
 }
 
 .message .sent .chat {
-    background-color: #3797F0;
+    background-color: var(--main-color);
     color: white;
 }
 
@@ -756,5 +756,11 @@
 .invite-info {
     display: flex;
     align-items: center;
+    justify-content: space-between;
+}
+
+.modal-user-div {
+    display: flex;
+    width: 100%;
     justify-content: space-between;
 }
