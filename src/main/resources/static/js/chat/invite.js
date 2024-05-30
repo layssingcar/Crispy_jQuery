@@ -93,7 +93,7 @@ const invite = {
             listCheckbox.type = "checkbox";
             listCheckbox.value = user.empNo;
             listCheckbox.checked = this.selectedUserIds.has(user.empNo.toString());
-            listCheckbox.addEventListener('change', () => this.handleUserSelection(user, selectCheckbox));
+            listCheckbox.addEventListener('change', () => this.handleUserSelection(user, listCheckbox));
             userDiv.appendChild(listItem);
             userDiv.appendChild(listCheckbox);
 
@@ -192,11 +192,11 @@ const invite = {
 
 document.addEventListener("DOMContentLoaded", function () {
     const inviteModalElement = document.getElementById('invite-modal');
-
     // 모달에 이벤트 리스너 추가
     inviteModalElement.addEventListener('show.bs.modal', function (event) {
         // 채팅방 번호 설정 (예제로 1을 할당, 실제에선 선택된 채팅방 번호로 설정 필요)
-        invite.currentChatRoomNo = currentChatRoomNo; // 예시로 1을 설정하였으나, 실제 채팅방 번호로 변경 필요
+        invite.currentChatRoomNo = message.currentChatRoomNo; // 예시로 1을 설정하였으나, 실제 채팅방 번호로 변경 필요
+        console.log(currentChatRoomNo);
         invite.init(); // 사용자 목록 로드
     });
 });
