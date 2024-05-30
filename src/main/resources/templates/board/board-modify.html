@@ -1,95 +1,95 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-<th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
-<link rel="stylesheet" href="/css/summernote/summernote-lite.css">
+	<th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
+	<link rel="stylesheet" href="/css/summernote/summernote-lite.css">
 
-<!-- 특정 페이지 css -->
-<link href="/css/board/board-modify.css" rel="stylesheet">
+	<!-- 특정 페이지 css -->
+	<link href="/css/board/board-modify.css" rel="stylesheet">
 </head>
 <body>
 
-	<div class="crispy-container">
-		<aside th:replace="~{layout/sidebar :: sidebar}"></aside>
-		<div>
-			<header th:replace="~{layout/navbar :: navbar}"></header>
-			<main>
-				<div class="main">
-					<form id="frm-board-add" action="/dokky/add-form" method="POST"
-						class="my-3">
-						<input type="hidden" id="boardNo" value="${board.boardNo}">
-						<!-- 제목 -->
-						<h1 class="border-bottom py-2">게시물 수정하기</h1>
-						<div class="col-md-5">
-							<label for="cate" class="form-label">카테고리</label> <select
-								class="form-select" id="cate" required="">
-								<option value="">카테고리</option>
-								<option>공지사항</option>
-								<option>자유게시판</option>
-							</select>
-						</div>
-						<label for="boardTitle" class="form-label">제목</label> <input
-							type="text" name="boardTitle" id="boardTitle"
-							class="form-control" style="white-space: pre-line;"
-							placeholder="제목은 15자 내외로 입력해주세요." maxlength="15" />
-						<!-- 내용 -->
-						<div class="mb-3">
+<div class="crispy-container">
+	<aside th:replace="~{layout/sidebar :: sidebar}"></aside>
+	<div>
+		<header th:replace="~{layout/navbar :: navbar}"></header>
+		<main>
+			<div class="main">
+				<form id="frm-board-add" action="/dokky/add-form" method="POST"
+					  class="my-3">
+					<input type="hidden" id="boardNo" value="${board.boardNo}">
+					<!-- 제목 -->
+					<h1 class="border-bottom py-2">게시물 수정하기</h1>
+					<div class="col-md-5">
+						<label for="cate" class="form-label">카테고리</label> <select
+							class="form-select" id="cate" required="">
+						<option value="">카테고리</option>
+						<option>공지사항</option>
+						<option>자유게시판</option>
+					</select>
+					</div>
+					<label for="boardTitle" class="form-label">제목</label> <input
+						type="text" name="boardTitle" id="boardTitle"
+						class="form-control" style="white-space: pre-line;"
+						placeholder="제목은 15자 내외로 입력해주세요." maxlength="15" />
+					<!-- 내용 -->
+					<div class="mb-3">
 						<form method="post" id="content-form">
-							<label for="boardContent" class="form-label mt-2">내용</label>							
+							<label for="boardContent" class="form-label mt-2">내용</label>
 							<textarea id="summernote" name="editordata" class="boardContent"></textarea>
+					</div>
+
+					<!-- 파일 선택 -->
+					<div class="file-attach">
+						<div class="mb-3">
+							<input class="form-control" type="file" id="formFileMultiple"
+								   multiple>
 						</div>
+					</div>
+					<div class="d-flex justify-content-end" id="btn">
+						<input type="hidden" name="userNo"
+							   value="${sessionScope.user.userNo}"> <a type="submit"
+																	   id="cancelBtn" class="btn btn-primary btn-lg ">취소</a>
+						<button type="submit" id="addBtn" class="btn btn-primary btn-lg ">등록</button>
+					</div>
+				</form>
+			</div>
+		</main>
+		<footer th:replace="~{layout/footer :: footer}"></footer>
+	</div>
+	<!-- 특정 JS -->
 
-							<!-- 파일 선택 -->
-							<div class="file-attach">
-								<div class="mb-3">
-									<input class="form-control" type="file" id="formFileMultiple"
-										multiple>
-								</div>
-							</div>
-							<div class="d-flex justify-content-end" id="btn">
-								<input type="hidden" name="userNo"
-									value="${sessionScope.user.userNo}"> <a type="submit"
-									id="cancelBtn" class="btn btn-primary btn-lg ">취소</a>
-								<button type="submit" id="addBtn" class="btn btn-primary btn-lg ">등록</button>
-							</div>
-						</form>
-				</div>
-			</main>
-			<footer th:replace="~{layout/footer :: footer}"></footer>
-		</div>
-		<!-- 특정 JS -->
+	<script src="/js/summernote/summernote-lite.js"></script>
+	<script src="/js/summernote/lang/summernote-ko-KR.js"></script>
+	<script>
+		$(document).ready(function() {
+			$('#summernote').summernote();
+		});
+		$('#summernote').summernote('fontSize', 20);
 
-		<script src="/js/summernote/summernote-lite.js"></script>
-		<script src="/js/summernote/lang/summernote-ko-KR.js"></script>
-		<script>
-        $(document).ready(function() {
-            $('#summernote').summernote();
-        });
-        $('#summernote').summernote('fontSize', 20);
+		$('#summernote').summernote({
+			placeholder: '500자',
+			tabsize: 2,
+			height: 400,
+			toolbar: [
+				['style', ['style']],
+				['font', ['bold', 'underline', 'clear']],
+				['color', ['color']],
+				['para', ['ul', 'ol', 'paragraph']],
+				['table', ['table']],
+				['insert', ['link', 'picture', 'video']],
+				['view', ['fullscreen', 'codeview', 'help']]
+			],
+			callbacks: {
+				onInit: function() {
+					$('#summernote').next().find('.note-placeholder').css('font-size', '16px');
+				}
+			},   width: '100%'
+		});
+	</script>
+	<script>
 
-        $('#summernote').summernote({
-            placeholder: '500자',
-            tabsize: 2,
-            height: 400,
-            toolbar: [
-            ['style', ['style']],
-            ['font', ['bold', 'underline', 'clear']],
-            ['color', ['color']],
-            ['para', ['ul', 'ol', 'paragraph']],
-            ['table', ['table']],
-            ['insert', ['link', 'picture', 'video']],
-            ['view', ['fullscreen', 'codeview', 'help']]
-            ],
-            callbacks: {
-                onInit: function() {
-                    $('#summernote').next().find('.note-placeholder').css('font-size', '16px');
-                }
-            },   width: '100%' 
-        });
-    </script>
-		<script>
-	  
-	    
+
 		$('#cancelBtn').on('click', () => {
 			window.location.href="/board/board-detail";
 		})
@@ -98,23 +98,23 @@
 		})
 		/* 게시물 등록 예외처리 */
 		const fnRegisterBoard = (evt) => {
-		  if(document.getElementById('boardTitle').value === '') {
-		    alert('제목 입력은 필수입니다.');
-		    evt.preventDefault();
-		    return;
-		  }else if(document.getElementById('boardContent').value === '') {
-			alert('내용 입력은 필수입니다.');
-			evt.preventDefault();
-			return;
-		   }else{
-			   alert("게시물이 등록되었습니다.");
-		   }
+			if(document.getElementById('boardTitle').value === '') {
+				alert('제목 입력은 필수입니다.');
+				evt.preventDefault();
+				return;
+			}else if(document.getElementById('boardContent').value === '') {
+				alert('내용 입력은 필수입니다.');
+				evt.preventDefault();
+				return;
+			}else{
+				alert("게시물이 등록되었습니다.");
+			}
 		}
-		
+
 		document.getElementById('frm-board-add').addEventListener('submit', (evt) => {
-		  fnRegisterBoard(evt);
+			fnRegisterBoard(evt);
 		});
-  </script>
-	</div>
+	</script>
+</div>
 </body>
 </html>
