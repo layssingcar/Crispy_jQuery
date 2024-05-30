@@ -83,6 +83,8 @@ const invite = {
             const listImg = document.createElement("img");
             listImg.className = 'modal-profile-image';
             listImg.src = user.empProfile;
+            const userDiv = document.createElement("div");
+            userDiv.className = 'modal-user-div';
             const listItem = document.createElement('span');
             listItem.className = 'ms-3';
             listItem.textContent = `${user.empName} (${user.posName}) - ${user.frnName}`;
@@ -92,11 +94,11 @@ const invite = {
             listCheckbox.value = user.empNo;
             listCheckbox.checked = this.selectedUserIds.has(user.empNo.toString());
             listCheckbox.addEventListener('change', () => this.handleUserSelection(user, selectCheckbox));
-            listDiv.appendChild(listCheckbox);
+            userDiv.appendChild(listItem);
+            userDiv.appendChild(listCheckbox);
 
             listDiv.appendChild(listImg);
-            listDiv.appendChild(listItem);
-            listDiv.appendChild(listCheckbox);
+            listDiv.appendChild(userDiv);
             this.resultsContainer.appendChild(listDiv);
         });
     },
