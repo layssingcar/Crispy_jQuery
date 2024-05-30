@@ -1,5 +1,3 @@
-let currentChatRoomNo = null;
-
 const message = {
     stompClient: null,
     currentChatRoomNo: null,
