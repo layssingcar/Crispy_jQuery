@@ -8,7 +8,7 @@
              , BOARD_TITLE
              , BOARD_CONTENT
              , BOARD_HIT
-             , BOARD_CREATE_DT
+             , CREATE_DT
         FROM BOARD_T
     </select>
 
@@ -17,7 +17,7 @@
              , BOARD_TITLE
              , BOARD_CONTENT
              , BOARD_HIT
-             , BOARD_CREATE_DT
+             , CREATE_DT
         FROM BOARD_T
     </select>
 

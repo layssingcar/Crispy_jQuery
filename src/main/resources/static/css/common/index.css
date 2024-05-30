@@ -264,6 +264,8 @@
 }
 
 .area2 table {
+	width: -webkit-fill-available;
+	font-size: 1.5rem;
 	margin-left: 5px;
 	margin-top: 20px;
 	width: 53rem;
@@ -285,4 +287,8 @@
     writing-mode: horizontal-tb; /* Ensure writing mode is horizontal */
     transform: none; /* Reset any transforms if applied */
     white-space: nowrap; /* Prevent text from breaking to the next line */
+}
+.area2 .board-list tbody tr:hover td {
+	background-color: rgba(200, 200, 200, 0.2);
+	cursor: pointer;
 }
