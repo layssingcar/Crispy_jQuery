@@ -29,7 +29,11 @@ public class AnnualService {
 	@Transactional(readOnly = true)
 	public List<AnnualDto> getAnnList() {
 		List<AnnualDto> annList = annualMapper.getAnnList(); 
-		
 		return annList;
+	}
+	
+	@Transactional(readOnly = true)
+	public AnnualDto getAnnById(String id) {
+		return annualMapper.getAnnById(id);
 	}
 }

@@ -96,6 +96,106 @@
 
       ////////////////////////     캘린더 설정
       let startDt, endDt;
+      let loadEventList = [];
+      
+     function fnLoadCalendarData(){
+		$.ajax({
+			type:'GET',
+			url:'/crispy/getAnnList',
+			contentType: 'application/json',
+			dataType:'json'
+		})
+		.done(function(annList){
+			console.log(annList);
+			$.ajax({
+				type:'GET',
+				url:'/crispy/getScheList',
+				contentType: 'application/json',
+				dataType:'json'
+			})
+			.done(function(scheList){
+				console.log(scheList);
+				$(scheList).each(function(){
+					if(this.scheDiv == 0){
+						console.log("공지 저장함");
+						loadEventList.push({
+							id: this.scheId,
+							title:this.scheTitle,
+							start:this.scheStartTime,
+							end:this.scheEndTime,
+			              	allDay: true, 
+			              	backgroundColor : "rgba(255, 0, 0, 0.7)",
+			              	borderColor: "rgba(255, 0, 0, 0.7)"							
+						});
+					}
+					else if(this.scheDiv == 1){
+						console.log("개인 저장함");
+						loadEventList.push({
+							id: this.scheId,
+							title:this.scheTitle,
+							start:this.scheStartTime,
+							end:this.scheEndTime,
+			              	allDay: true, 
+			              	backgroundColor : "rgba(0, 0, 255, 0.7)",
+			              	borderColor: "rgba(0, 0, 255, 0.7)"								
+						});						
+					}
+				});
+				
+				$(annList).each(function(){
+					if(this.annCtNo == 0){
+						console.log("연차 저장함");
+						loadEventList.push({
+							id: this.annId,
+							title:this.annTitle,
+							start:this.annStartTime,
+							end:this.annEndTime,
+			              	allDay: true, 
+          		  			backgroundColor : "rgba(0, 135, 0, 0.7)",
+	              			borderColor: "rgba(0, 135, 0, 0.7)"								
+						});
+					}
+					else if(this.annCtNo == 1){
+						console.log("반차 저장함");
+						loadEventList.push({
+							id: this.annId,
+							title:this.annTitle,
+							start:this.annStartTime,
+							end:this.annEndTime,
+             			 	allDay: false, 
+          		  			backgroundColor : "rgba(0, 135, 0, 0.7)",
+	              			borderColor: "rgba(0, 135, 0, 0.7)"							
+						});					
+					}
+					else if(this.annCtNo == 2){
+						console.log("반반차 저장함");
+						loadEventList.push({
+							id: this.annId,
+							title:this.annTitle,
+							start:this.annStartTime,
+							end:this.annEndTime,
+			              	allDay: false, 
+		          		  	backgroundColor : "rgba(0, 135, 0, 0.7)",
+		              		borderColor: "rgba(0, 135, 0, 0.7)"						
+						});							
+					}					
+				});		
+				for(var i = 0; i < loadEventList.length; i++)
+					{
+						calendar.addEvent(loadEventList[i]);
+						console.log(i + "번째:" + loadEventList[i]);			
+					}
+					calendar.refetchEvents();
+			})
+			.fail(function(){
+				alert("연차 불러오기 실패");	
+			})
+		})
+		.fail(function(){
+			alert("일정 불러오기 실패");
+		})
+	 }
+      
       const calendarEl = document.getElementById('calendar');
       const calendarHeader = {
         left: 'prev,next today',          
@@ -109,12 +209,14 @@
         selectable:true,    // 달력 날짜 드래그
         locale:'kr',      // 달력 언어 설정
         editable:true,
-        dayMaxEventRows:true
+        dayMaxEventRows:true,
+        events : loadEventList
       }
 
       const calendar = new FullCalendar.Calendar(calendarEl, calendarOpt);
       calendar.render();
-
+      
+	  fnLoadCalendarData();
       ////////////////////////		캘린더 기능
       calendar.on("eventAdd", ()=>{
         myModal.modal('hide');
@@ -125,25 +227,47 @@
     	$("#btn-insert").hide();
     	$("#btn-modify").show();
     	$("#btn-delete").show();
-    	console.log(info.event.id);
-    	$.ajax({
-			type:'GET',
-			url: '/crispy/getScheById',
-	        contentType: 'application/json',
-			data:'scheId=' + info.event.id,
-			dataType:'json'
-	    })
-		.done(function(data){
-			$("#sch-title").val(data.scheTitle);
-			$("#sch-content").val(data.scheContent);
-			$("#sch-title, #sch-content").attr("disabled", true);
-			
-	 	  	myModal.modal('show');
-		})
-		.fail(function(jqXHR){
-			alert("실패");
-			alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
-		})    
+    	console.log(info.event.id.substring(0, 2));
+    	
+    	if(info.event.id.substring(0, 2) == "일정"){
+	    	$.ajax({
+				type:'GET',
+				url: '/crispy/getScheById',
+		        contentType: 'application/json',
+				data:'scheId=' + info.event.id,
+				dataType:'json'
+		    })
+			.done(function(data){
+				$("#sch-title").val(data.scheTitle);
+				$("#sch-content").val(data.scheContent);
+	//			$("#sch-title, #sch-content").attr("disabled", true);
+		 	  	myModal.modal('show');
+			})
+			.fail(function(jqXHR){
+				alert("실패");
+				alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
+			})    
+		}
+		else if(info.event.id.substring(0, 2) == "연차"){
+	    	$.ajax({
+				type:'GET',
+				url: '/crispy/getAnnById',
+		        contentType: 'application/json',
+				data:'annId=' + info.event.id,
+				dataType:'json'
+		    })
+			.done(function(data){
+				$("#sch-title").val(data.annTitle);
+				$("#sch-content").val(data.annContent);
+	//			$("#sch-title, #sch-content").attr("disabled", true);
+		 	  	myModal.modal('show');
+			})
+			.fail(function(jqXHR){
+				alert("실패");
+				alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
+			})    			
+		}
+    	
       });
       
       calendar.on("dateClick", (info)=>{
@@ -159,50 +283,56 @@
         endDt = info.endStr;
       });
 
+      
       function fnRegistSchedule() {		// 일정 등록 처리 함수
+      let selectScheType = $("input:radio[name=notice-or-vac]:checked").val();	// 공지,개인,연차
+      let selectVacType = $("input:radio[name=var-elem-radio]:checked").val();	// 연차,반차,반반차,
       let schedule;
-      const selectScheType = $("input:radio[name=notice-or-vac]:checked").val();
-      const selectVacType = $("input:radio[name=var-elem-radio]:checked").val();
       
       	if(selectScheType == 'notice'){
 	         schedule = {
-				  id: (calendar.getEvents()).length,
+				  id: "일정" + (calendar.getEvents()).length,
 	              title: $("#sch-title").val(),
-	              allDay: true, 
 	              start: startDt + "T" + $("#start option:selected").val(),
 	              end : endDt + "T" + $("#end option:selected").val(),
-	              backgroundColor : "red"
+	              allDay: true, 
+	              backgroundColor : "rgba(255, 0, 0, 0.7)",
+	              borderColor: "rgba(255, 0, 0, 0.7)"
 	          };			
 		}
+		
 		else if(selectScheType == 'mysche') {
 	         schedule = {
-				  id: (calendar.getEvents()).length,
+				  id: "일정" + (calendar.getEvents()).length,
 	              title: $("#sch-title").val(),
-	              allDay: true, 
 	              start: startDt + "T" + $("#start option:selected").val(),
 	              end : endDt + "T" + $("#end option:selected").val(),
-	              backgroundColor : "blue"
+	              allDay: true, 
+  	              backgroundColor : "rgba(0, 0, 255, 0.7)",
+	              borderColor: "rgba(0, 0, 255, 0.7)"
 	          };			
 		} 
 		else if(selectScheType == 'vac') {
 	        if(selectVacType == 'all'){ // 전체일정
 	         schedule = {
-				  id: (calendar.getEvents()).length,
+				  id: "연차" + (calendar.getEvents()).length,
 	              title: $("#sch-title").val(),
-	              allDay: true, 
 	              start: startDt,
 	              end : endDt,
-	              backgroundColor : "green"
+	              allDay: true, 
+	              backgroundColor : "rgba(0, 135, 0, 0.7)",
+	              borderColor: "rgba(0, 135, 0, 0.7)"
 	          };
 	        }
 	        else if(selectVacType != 'all'){	// 지정시간일정
 	          schedule = {
-				  id: (calendar.getEvents()).length,
+				  id: "연차" + (calendar.getEvents()).length,
 	              title: $("#sch-title").val(),
-	              allDay: false, 
 	              start:  startDt + "T" + $("#start option:selected").val(),
 	              end : startDt + "T" + $("#end option:selected").val(),
-	              backgroundColor : "green"
+	              allDay: false, 
+          		  backgroundColor : "rgba(0, 135, 0, 0.7)",
+	              borderColor: "rgba(0, 135, 0, 0.7)"
 	            };
 	          }
 		}
@@ -233,24 +363,26 @@
       // 모달 ajax
       function fnAddScheduleAndAnnual(idNum){
 	 	const currentDate = moment().format('YYYY-MM-DD');
+      let selectScheType = $("input:radio[name=notice-or-vac]:checked").val();	// 공지,개인,연차
+      let selectVacType = $("input:radio[name=var-elem-radio]:checked").val();	// 연차,반차,반반차,
 	 	
 		let annCt, schDiv;
-		if($("input:radio[name=var-elem-radio]:checked").val() == 'all')
+		if(selectVacType == 'all')
 			annCt = 0;
-		else if($("input:radio[name=var-elem-radio]:checked").val() == 'half')
+		else if(selectVacType == 'half')
 			annCt = 1;
-		else if($("input:radio[name=var-elem-radio]:checked").val() == 'quat')
+		else if(selectVacType == 'quat')
 			annCt = 2;
 			
-		if($("input:radio[name=notice-or-vac]:checked").val() == 'vac'){
+		if(selectScheType == 'vac'){
 	    const data = JSON.stringify({
 		        'annId': idNum,
 		        'annCtNo': annCt,
 		        'annTitle': $("#sch-title").val(),
 		        'annContent': $("#sch-content").val(),
 		        'annTotal': 15,
-		        'annStartTime':  startOpt.val(),
-		        'annEndTime':  endOpt.val(),
+		        'annStartTime':  startDt + "T" + startOpt.val(),
+		        'annEndTime':  endDt + "T" + endOpt.val(),
 		        'createDt': currentDate,
 		        'creator': 1,
 		        'modifyDt': currentDate, 
@@ -272,12 +404,11 @@
 				alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
 			})     
 		}
-		else if($("input:radio[name=notice-or-vac]:checked").val() == 'notice'
-		|| $("input:radio[name=notice-or-vac]:checked").val() == 'mysche'){
+		else if(selectScheType == 'notice' || selectScheType == 'mysche'){
 			
-		if($("input:radio[name=notice-or-vac]:checked").val() == 'notice')
+		if(selectScheType == 'notice')
 			schDiv = 0;
-		else if($("input:radio[name=notice-or-vac]:checked").val() == 'mysche')
+		else if(selectScheType == 'mysche')
 			schDiv = 1;
 			
 	    const data = JSON.stringify({
@@ -285,8 +416,8 @@
 		        'scheDiv': schDiv,
 		        'scheTitle': $("#sch-title").val(),
 		        'scheContent': $("#sch-content").val(),
-		        'scheStartTime': startOpt.val(),
-		        'scheEndTime': endOpt.val(),
+		        'scheStartTime': startDt + "T" + startOpt.val(), 
+		        'scheEndTime': endDt + "T" + endOpt.val(),
 		        'createDt': currentDate,
 		        'creator': 1,
 		        'modifyDt': currentDate, 

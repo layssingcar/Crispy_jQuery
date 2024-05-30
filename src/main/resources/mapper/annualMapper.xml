@@ -19,10 +19,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="creator" column="CREATOR"/>
 		<result property="modifyDt" column="MODIFY_DT"/>
 		<result property="modifier" column="MODIFIER"/>
-		<association property="employee" javaType="EmployeeDto">
-			<id property="empNo" column="EMP_NO" />
-			<result property="empName" column="EMP_NAME" />
-		</association>
+		<result property="empNo" column="EMP_NO"/>
+<!-- 		<association property="employee" javaType="EmployeeDto"> -->
+<!-- 			<id property="empNo" column="EMP_NO" /> -->
+<!-- 			<result property="empName" column="EMP_NAME" /> -->
+<!-- 		</association> -->
 	</resultMap>
 
 <insert id="insertAnnual" parameterType="AnnualDto">
@@ -56,5 +57,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         #{empNo}
     )
 </insert>
+
+<select id="getAnnById"
+	resultMap="AnnualMap">
+	SELECT * 
+		FROM ANNUAL_T
+	WHERE ANN_ID = #{annId}
+</select>
+
+<select id="getAnnList"
+	resultMap="AnnualMap">
+	SELECT *
+		FROM ANNUAL_T
+</select>
 
 </mapper>

@@ -1,6 +1,7 @@
 package com.mcp.crispy.schedule.controller;
 
 import java.security.Principal;
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -31,10 +32,10 @@ public class ScheduleController {
 		return ResponseEntity.ok(insertCount);
 	}
 	
-	@GetMapping("/sche")
-	public String getScheList(Model model) {
-		model.addAttribute("scheList", scheduleService.getScheList());
-		return "schedule/schedule";
+	@ResponseBody
+	@GetMapping(value="/getScheList", produces="application/json")
+	public List<ScheduleDto> getScheList() {
+		return scheduleService.getScheList();
 	}
 	
 	@ResponseBody
