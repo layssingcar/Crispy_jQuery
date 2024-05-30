@@ -13,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -99,6 +98,13 @@ public class EmployeeApiController {
         return ResponseEntity.ok(Map.of("message", "휴대폰번호가 변경되었습니다."));
     }
 
+    /**
+     * 직원 이름 변경
+     * 배영욱 (24. 05. 20)
+     * @param employeeUpdateDto
+     * @param principal
+     * @return
+     */
     @PutMapping("/empName/v1")
     public ResponseEntity<Map<String, String>> changeEmpName(@RequestBody EmployeeUpdateDto employeeUpdateDto,
                                            Principal principal) {
@@ -108,6 +114,13 @@ public class EmployeeApiController {
         return ResponseEntity.ok(Map.of("message", "이름이 변경되었습니다."));
     }
 
+    /**
+     * 직책 변경
+     * 배영욱 (24. 05. 20)
+     * @param employeeUpdateDto
+     * @param principal
+     * @return
+     */
     @PutMapping("/posNo/v1")
     public ResponseEntity<Map<String, String>> changePosNo(@RequestBody EmployeeUpdateDto employeeUpdateDto,
                                            Principal principal) {
@@ -118,6 +131,13 @@ public class EmployeeApiController {
         return ResponseEntity.ok(Map.of("message", "직책이 변경되었습니다."));
     }
 
+    /**
+     * 재직 상태 변경
+     * 배영욱 (24. 05. 21)
+     * @param employeeUpdateDto
+     * @param principal
+     * @return
+     */
     @PutMapping("/empStat/v1")
     public ResponseEntity<Map<String, String>> changeEmpStat(@RequestBody EmployeeUpdateDto employeeUpdateDto,
                                            Principal principal) {
@@ -126,11 +146,5 @@ public class EmployeeApiController {
         log.info("empStatus: {}", employeeUpdateDto.getEmpStat());
         log.info("empStatus: {}", employeeUpdateDto.getEmpStat().getValue());
         return ResponseEntity.ok(Map.of("message", "직책이 변경되었습니다."));
-    }
-
-    @GetMapping("/employees/v1")
-    public ResponseEntity<List<EmployeeDto>> getAllEmployees() {
-        List<EmployeeDto> employees = employeeService.getAllEmployees();
-        return ResponseEntity.ok(employees);
     }
 }
