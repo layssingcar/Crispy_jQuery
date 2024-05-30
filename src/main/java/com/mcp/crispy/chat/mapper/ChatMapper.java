@@ -7,6 +7,7 @@ import com.mcp.crispy.chat.dto.UnreadMessageCountDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 
 @Mapper
@@ -56,4 +57,10 @@ public interface ChatMapper {
 
     // 알림 상태 토글
     void toggleAlarmStat(@Param("chatRoomNo") Integer chatRoomNo, @Param("empNo") Integer empNo);
+
+    // 마지막 접속시간
+    Date getLastAccessTime(@Param("chatRoomNo") Integer chatRoomNo, @Param("empNo") Integer empNo);
+
+    //
+    List<ChatMessageDto> getUnreadMessages(@Param("chatRoomNo") Integer chatRoomNo, @Param("empNo") Integer empNo);
 }

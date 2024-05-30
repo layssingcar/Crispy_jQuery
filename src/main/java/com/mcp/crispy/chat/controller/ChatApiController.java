@@ -20,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +35,13 @@ public class ChatApiController {
     private final SimpMessagingTemplate messagingTemplate;
     private final ChatMapper chatMapper;
 
+
+    /**
+     * 채팅방 목록  가져오기
+     * 배영욱 (24. 05. 24)
+     * @param authentication
+     * @return
+     */
     @GetMapping("/rooms/v1")
     public List<ChatRoomDto> getChatRooms(Authentication authentication) {
         CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
@@ -41,24 +49,50 @@ public class ChatApiController {
         return chatService.getChatRooms(userDetails.getEmpNo());
     }
 
+    /**
+     * 특정 채팅방 조회
+     * 배영욱 (24. 05. 24)
+     * @param chatRoomNo
+     * @return
+     */
     @GetMapping("/rooms/{chatRoomNo}/v1")
     public ChatRoomDto getChatRoom(@PathVariable Integer chatRoomNo) {
         return chatService.getChatRoom(chatRoomNo);
     }
 
+    /**
+     * 메시지 가져오기
+     * 배영욱 (24. 05. 26)
+     * @param chatRoomNo
+     * @param authentication
+     * @return
+     */
     @GetMapping("/rooms/{chatRoomNo}/messages/v1")
     public List<ChatMessageDto> getMessages(@PathVariable Integer chatRoomNo, Authentication authentication) {
         CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
         return chatService.getMessages(chatRoomNo, userDetails.getEmpNo());
     }
 
-    // 채팅방 생성
+    /**
+     * 채팅방 생성
+     * 배영욱 (24. 05. 26)
+     * @param chatRoom
+     * @param creatorEmpNo
+     * @return
+     */
     @PostMapping("/rooms/{creatorEmpNo}/v1")
     public ResponseEntity<?> createChatRoom(@RequestBody ChatRoomDto chatRoom, @PathVariable Integer creatorEmpNo) {
         Integer chatRoomNo = chatService.createAndSetupChatRoom(chatRoom, creatorEmpNo);
         return ResponseEntity.ok().body(Map.of("message", "채팅방 생성 및 초대 완료, 방 번호: " + chatRoomNo));
     }
 
+    /**
+     * 유저 초대
+     * 배영욱 (24. 05. 28)
+     * @param chatRoomNo
+     * @param participant
+     * @return
+     */
     @PostMapping("/rooms/{chatRoomNo}/invite/v1")
     public ResponseEntity<?> inviteParticipant(@PathVariable Integer chatRoomNo, @RequestBody CrEmpDto participant) {
         chatService.addParticipantToRoom(chatRoomNo, participant);
@@ -67,6 +101,13 @@ public class ChatApiController {
         return ResponseEntity.ok().body(Map.of("message", "초대가 완료되었습니다."));
     }
 
+    /**
+     * 채팅방 나가기
+     * 배영욱 (24. 05. 26)
+     * @param chatRoomNo
+     * @param authentication
+     * @return
+     */
     @PostMapping("/rooms/{chatRoomNo}/leave/v1")
     public ResponseEntity<Map<String, String>> leaveChatRoom(@PathVariable Integer chatRoomNo, Authentication authentication) {
         CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
@@ -74,6 +115,12 @@ public class ChatApiController {
         return ResponseEntity.ok().body(Map.of("message","채팅방을 나갔습니다."));
     }
 
+    /**
+     * 메시지 보내기
+     * 배영욱 (24. 05. 28)
+     * @param message
+     * @return
+     */
     @MessageMapping("/chat")
     @SendTo("/topic/messages")
     public ChatMessageDto sendMessage(ChatMessageDto message) {
@@ -81,6 +128,11 @@ public class ChatApiController {
         return message;
     }
 
+    /**
+     * 방 업데이트
+     * 배영욱 (24. 05. 28)
+     * @param authentication
+     */
     @MessageMapping("/roomUpdate")
     public void roomUpdate(Authentication authentication) {
         if(authentication != null && authentication.isAuthenticated()) {
@@ -90,6 +142,11 @@ public class ChatApiController {
         }
     }
 
+    /**
+     * 안 읽은 메시지 개수 계산
+     * 배영욱 (24. 05. 28)
+     * @param authentication
+     */
     @MessageMapping("/fetchUnreadCount")
     @SendToUser("/queue/unreadCount")
     public void fetchUnreadCounts(Authentication authentication) {
@@ -106,15 +163,30 @@ public class ChatApiController {
         }
     }
 
+    /**
+     * 채팅방 접속시간 저장
+     * 배영욱 (24. 05. 28)
+     * @param chatRoomNo
+     * @param authentication
+     * @return
+     */
     @PostMapping("/rooms/{chatRoomNo}/access/v1")
-    public ResponseEntity<Void> addAccessRecord(@PathVariable Integer chatRoomNo, Authentication authentication) {
+    public ResponseEntity<?> addAccessRecord(@PathVariable Integer chatRoomNo, Authentication authentication) {
         CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
         chatService.handleAccess(chatRoomNo, userDetails.getEmpNo());
         int totalUnread = chatService.getUnreadCounts(userDetails.getEmpNo());
+        log.info("총 갯수 몇개: {}", totalUnread);
         messagingTemplate.convertAndSendToUser(userDetails.getUsername(), "/queue/unreadCount", totalUnread);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(Map.of("unreadCount", totalUnread));
     }
 
+    /**
+     * 입장 시간 관리
+     * 배영욱 (24. 05. 26)
+     * @param chatRoomNo
+     * @param empNo
+     * @return
+     */
     @PostMapping("/rooms/{chatRoomNo}/entry/{empNo}/v2")
     public ResponseEntity<Void> handleEntryRecord(@PathVariable Integer chatRoomNo, @PathVariable Integer empNo) {
         chatService.handleEntryRecord(chatRoomNo, empNo);
@@ -122,6 +194,13 @@ public class ChatApiController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * 퇴장 시간 관리
+     * 배영욱 (24. 05. 24)
+     * @param chatRoomNo
+     * @param authentication
+     * @return
+     */
     @PostMapping("/rooms/{chatRoomNo}/exit/v1")
     public ResponseEntity<Void> handleExitRecord(@PathVariable Integer chatRoomNo, Authentication authentication) {
         CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
@@ -129,7 +208,13 @@ public class ChatApiController {
         return ResponseEntity.ok().build();
     }
 
-    // 읽지 않은 메시지 개수
+
+    /**
+     * 읽지 않은 메시지 개수 계산
+     * 배영욱 (24. 05. 27)
+     * @param authentication
+     * @return
+     */
     @GetMapping("/rooms/unreadCount/v1")
     public ResponseEntity<List<UnreadMessageCountDto>> getUnreadMessageCount(Authentication authentication) {
         CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
@@ -138,7 +223,13 @@ public class ChatApiController {
         return ResponseEntity.ok(unreadMessageCount);
     }
 
-    // 알림 상태 토글
+    /**
+     * 알림 상태 토글
+     * 배영욱 (24. 05. 28)
+     * @param chatRoomNo
+     * @param authentication
+     * @return
+     */
     @PostMapping("/rooms/{chatRoomNo}/toggleAlarm/v1")
     public ResponseEntity<Void> toggleAlarm(@PathVariable Integer chatRoomNo, Authentication authentication) {
         CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
@@ -148,6 +239,7 @@ public class ChatApiController {
 
     /**
      * 나를 제외한 전 직원 목록 호출
+     * 배영욱 (24. 05. 28)
      * @param authentication
      * @return
      */
@@ -159,8 +251,8 @@ public class ChatApiController {
     }
 
     /**
-     * 05.28 - 배영욱 chat.html
      * 채팅 초대 할때 검색하는 메소드
+     * 배영욱 (24. 05. 28)
      * @param employeeDto
      * @param authentication
      * @return employees
@@ -175,6 +267,7 @@ public class ChatApiController {
 
     /**
      * 채팅방 내에 존재하는 직원을 제외한 초대목록
+     * 배영욱 (24. 05. 28)
      * @param chatRoomNo
      * @return
      */
@@ -185,6 +278,11 @@ public class ChatApiController {
     }
 
 
+    /**
+     * 채팅방 목록 전송
+     * 배영욱 (24. 05. 28)
+     * @param authentication
+     */
     @MessageMapping("/fetchChatRooms")
     @SendToUser("/queue/chatRooms")
     public void fetchChatRooms(Authentication authentication) {
@@ -194,6 +292,27 @@ public class ChatApiController {
         log.info("Fetching chat rooms for user: {}", chatRooms.toString());
         // 사용자에게 채팅방 목록 전송
         messagingTemplate.convertAndSendToUser(userDetails.getUsername(), "/queue/chatRooms", chatRooms);
+    }
+
+    /**
+     * 마지막 접속 시간 계산
+     * 배영욱 (24. 05. 28)
+     * @param chatRoomNo
+     * @param authentication
+     * @return
+     */
+    @GetMapping("/rooms/{chatRoomNo}/lastAccessTime/v1")
+    public ResponseEntity<Date> getLastAccessTime(@PathVariable Integer chatRoomNo, Authentication authentication) {
+        CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
+        Date lastAccessTime = chatService.getLastAccessTime(chatRoomNo, userDetails.getEmpNo());
+        return ResponseEntity.ok(lastAccessTime);
+    }
+
+    @GetMapping("/rooms/{chatRoomNo}/unreadMessages/v1")
+    public ResponseEntity<List<ChatMessageDto>> getUnreadMessages(@PathVariable Integer chatRoomNo, Authentication authentication) {
+        CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
+        List<ChatMessageDto> unreadMessages = chatService.getUnreadMessages(chatRoomNo, userDetails.getEmpNo());
+        return ResponseEntity.ok(unreadMessages);
     }
 
 }
