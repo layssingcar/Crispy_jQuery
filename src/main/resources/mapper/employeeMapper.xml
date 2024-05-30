@@ -20,7 +20,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="empProfile" column="EMP_PROFILE"/>
         <result property="empSign" column="EMP_SIGN"/>
         <result property="empAnnual" column="EMP_ANNUAL"/>
-        <result property="empStat" column="EMP_STAT"/>
+        <result property="empStat" column="EMP_STAT" typeHandler="com.mcp.crispy.common.typehandler.EmpStatusTypeHandler"/>
         <result property="empInDt" column="EMP_IN_DT"/>
         <result property="empOutDt" column="EMP_OUT_DT"/>
         <result property="createDt" column="CREATE_DT"/>
@@ -41,6 +41,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 EMP_NAME,
                 EMP_EMAIL,
                 EMP_PHONE,
+                EMP_PROFILE,
                 EMP_IN_DT,
                 EMP_STAT,
                 FRN_NO,
@@ -51,6 +52,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         #{empName},
         #{empEmail},
         #{empPhone},
+        #{empProfile},
         #{empInDt},
         #{empStat, typeHandler=com.mcp.crispy.common.typehandler.EmpStatusTypeHandler},
         #{frnNo},

@@ -65,6 +65,8 @@ const createChatRoom = {
             const listImg = document.createElement("img");
             listImg.className = 'modal-profile-image';
             listImg.src = user.empProfile;
+            const userDiv = document.createElement("div");
+            userDiv.className = 'modal-user-div';
             const listItem = document.createElement('span');
             listItem.className = 'ms-3';
             listItem.textContent = `${user.empName} (${user.posName}) - ${user.frnName}`;
@@ -75,9 +77,11 @@ const createChatRoom = {
             listCheckbox.checked = this.selectedUserIds.has(user.empNo.toString());
             listCheckbox.addEventListener('change', () => this.handleCheckboxChange(user, listCheckbox));
 
+            userDiv.appendChild(listItem);
+            userDiv.appendChild(listCheckbox);
+
             listDiv.appendChild(listImg);
-            listDiv.appendChild(listItem);
-            listDiv.appendChild(listCheckbox);
+            listDiv.appendChild(userDiv);
             list.appendChild(listDiv);
         });
 

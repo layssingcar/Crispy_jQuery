@@ -8,7 +8,6 @@ import com.mcp.crispy.employee.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -67,13 +66,9 @@ public class ChatService {
     // 메시지를 저장하고 관련된 모든 참가자의 상태를 업데이트
     @Transactional
     public ChatMessageDto sendMessageAndUpdate(ChatMessageDto message) {
-        // 메시지 저장 및 사용자 정보 풍부화
-        message = saveMessage(message);
 
         // 채팅방의 모든 참가자 조회
         List<CrEmpDto> participants = chatMapper.getParticipantsByRoom(message.getChatRoomNo());
-
-        log.info("participants: {}", participants);
 
         // 1:1 채팅방 확인 및 상태 업데이트
         if (participants.size() == 2) {
@@ -91,8 +86,16 @@ public class ChatService {
                     });
         }
 
+        // 메시지 저장
+        message = saveMessage(message);
+
         // 메시지를 보낸 사용자와 수신자의 상태 업데이트
         updateSenderAndReceiverStatus(message);
+
+        for (CrEmpDto participant : participants) {
+            List<ChatRoomDto> chatRooms = getChatRooms(participant.getEmpNo());
+            messagingTemplate.convertAndSendToUser(participant.getEmpId(), "/queue/roomUpdate", chatRooms);
+        }
 
         log.info("Message sent and participants updated: {}", message);
         return message;
@@ -103,18 +106,26 @@ public class ChatService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
             CustomDetails senderDetails = (CustomDetails) auth.getPrincipal();
+
+            // 송신자에게 읽지 않은 메시지 개수 업데이트
             int totalUnread = getUnreadCounts(message.getEmpNo());
             messagingTemplate.convertAndSendToUser(senderDetails.getUsername(), "/queue/unreadCount", totalUnread);
 
+            // 송신자에게 채팅방 목록 업데이트
             List<ChatRoomDto> chatRooms = getChatRooms(message.getEmpNo());
             messagingTemplate.convertAndSendToUser(senderDetails.getUsername(), "/queue/roomUpdate", chatRooms);
 
+            // 해당 채팅방의 참가자 목록 가져오기
             List<CrEmpDto> participants = getParticipants(message.getChatRoomNo());
             for (CrEmpDto participant : participants) {
                 if (!participant.getEmpNo().equals(message.getEmpNo())) {
+                    // 수신자에게 새로운 메시지 전송
                     messagingTemplate.convertAndSendToUser(participant.getEmpId(), "/queue/messages", message);
+
+                    // 수신자에게 채팅방 목록 업데이트
                     messagingTemplate.convertAndSendToUser(participant.getEmpId(), "/queue/roomUpdate", chatRooms);
 
+                    // 수신자에게 읽지 않은 메시지 개수 업데이트
                     int receiverUnread = getUnreadCounts(participant.getEmpNo());
                     messagingTemplate.convertAndSendToUser(participant.getEmpId(), "/queue/unreadCount", receiverUnread);
                 }
@@ -123,6 +134,7 @@ public class ChatService {
             log.error("인증상태가 잘못되었습니다.");
         }
     }
+
 
     @Transactional
     public ChatMessageDto saveMessage(ChatMessageDto message) {
@@ -197,12 +209,12 @@ public class ChatService {
     }
 
     // 접속 기록 관리 최초 삽입 이후 시간 업데이트
-    @Async
     @Transactional
     public void handleAccess(Integer chatRoomNo, Integer empNo) {
         Integer count = chatMapper.checkAccessExists(chatRoomNo, empNo);
         if(count != null && count > 0) {
             chatMapper.updateAccessRecord(chatRoomNo, empNo);
+            log.info("access 업데이트");
         } else {
             chatMapper.addAccessRecord(chatRoomNo, empNo);
         }
@@ -252,5 +264,13 @@ public class ChatService {
     @Transactional
     public void toggleAlarmStat(Integer chatRoomNo, Integer empNo) {
         chatMapper.toggleAlarmStat(chatRoomNo, empNo);
+    }
+
+    public Date getLastAccessTime(Integer chatRoomNo, Integer empNo) {
+        return chatMapper.getLastAccessTime(chatRoomNo, empNo);
+    }
+
+    public List<ChatMessageDto> getUnreadMessages(Integer chatRoomNo, Integer empNo) {
+        return chatMapper.getUnreadMessages(chatRoomNo, empNo);
     }
 }
