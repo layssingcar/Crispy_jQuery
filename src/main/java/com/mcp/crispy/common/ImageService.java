@@ -21,6 +21,9 @@ public class ImageService {
     @Value("${file.upload-dir.profile}")
     private String profilePath;
 
+    @Value("${file.default-profile-img}")
+    private String defaultProfileImage;
+
     public String storeProfileImage(MultipartFile file) throws IOException {
         if(file.isEmpty()) {
             throw new IllegalStateException("업로드된 파일이 없습니다.");
@@ -47,5 +50,20 @@ public class ImageService {
 
         return fileName;
     }
+
+    public String storeDefaultProfileImage() throws IOException {
+        Path defaultImagePath = Paths.get(defaultProfileImage, "anonymous.png"); // 명확한 파일 경로 지정
+
+        if(!Files.exists(defaultImagePath)) {
+            throw new IllegalStateException("기본 프로필 이미지 파일이 없습니다.");
+        }
+
+        String storedFileName = UUID.randomUUID() + "_default_profile.png";
+        Path destinationPath = Paths.get(profilePath).resolve(storedFileName);
+
+        Files.copy(defaultImagePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
+        return storedFileName;
+    }
+
 
 }

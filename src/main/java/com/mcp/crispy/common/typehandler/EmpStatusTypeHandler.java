@@ -18,11 +18,7 @@ public class EmpStatusTypeHandler extends BaseTypeHandler<EmpStatus> {
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, EmpStatus parameter, JdbcType jdbcType) throws SQLException {
         log.info("Setting EmpStatus: Index={}, Value={}", i, parameter.getValue());
-        if (parameter == null) {
-            ps.setNull(i, java.sql.Types.INTEGER);
-        } else {
-            ps.setInt(i, parameter.getValue());
-        }
+        ps.setInt(i, parameter.getValue());
     }
 
     @Override

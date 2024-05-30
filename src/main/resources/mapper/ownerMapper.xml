@@ -13,6 +13,7 @@
         EMP_NAME,
         EMP_EMAIL,
         EMP_PHONE,
+        EMP_PROFILE,
         POS_NO,
         FRN_NO
         )
@@ -23,6 +24,7 @@
         #{empName},
         #{empEmail},
         #{empPhone},
+        #{empProfile},
         #{posNo},
         #{frnNo}
         )

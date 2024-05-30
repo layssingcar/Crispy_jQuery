@@ -18,6 +18,7 @@ public class EmployeeRegisterDto {
     private String empName;
     private String empEmail;
     private String empPhone;
+    private String empProfile;
     private EmpStatus empStat;
     private Date empInDt;
     private Position posNo;

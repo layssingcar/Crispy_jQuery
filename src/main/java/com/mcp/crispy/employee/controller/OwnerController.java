@@ -1,5 +1,6 @@
 package com.mcp.crispy.employee.controller;
 
+import com.mcp.crispy.common.annotation.IsOwner;
 import com.mcp.crispy.common.userdetails.CustomDetails;
 import com.mcp.crispy.employee.dto.EmployeeDto;
 import com.mcp.crispy.employee.service.EmployeeService;
@@ -21,12 +22,13 @@ public class OwnerController {
 
     private final EmployeeService employeeService;
 
+    @IsOwner
     @GetMapping("/employee/register")
     public String registerEmployee() {
         return "owner/employee-register";
     }
 
-//    @IsOwner
+    @IsOwner
     @GetMapping("/employees")
     public String getListEmployees(Authentication authentication, Model model) {
         CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();

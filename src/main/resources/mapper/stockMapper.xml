@@ -5,12 +5,21 @@
 
     <!-- 재고 현황 조회 -->
     <select id="getStockList">
-        SELECT S.STOCK_NO, S.STOCK_IMG, S.STOCK_NAME, C.STOCK_CT_NAME, I.IS_COUNT
+        SELECT ROW_NUMBER() OVER(ORDER BY S.STOCK_NAME) RN,
+                S.STOCK_NO, S.STOCK_IMG, S.STOCK_NAME, C.STOCK_CT_NAME, I.IS_COUNT
         FROM STOCK_T S
             JOIN STOCK_CATEGORY_T C ON S.STOCK_CT_NO = C.STOCK_CT_NO
             JOIN INVENTORY_STAT_T I ON S.STOCK_NO = I.STOCK_NO
         WHERE I.FRN_NO = #{frnNo}
-        ORDER BY S.STOCK_NAME
+    </select>
+
+    <!-- 전체 재고 항목 수 조회 -->
+    <select id="getStockCount">
+        SELECT COUNT(*)
+        FROM STOCK_T S
+            JOIN STOCK_CATEGORY_T C ON S.STOCK_CT_NO = C.STOCK_CT_NO
+            JOIN INVENTORY_STAT_T I ON S.STOCK_NO = I.STOCK_NO
+        WHERE I.FRN_NO = #{frnNo}
     </select>
 
     <!-- 재고 상세 조회 -->

@@ -25,85 +25,81 @@
                         <!-- 카테고리 선택 -->
                         <select class="form-select form-select-lg mb-3 m-left" aria-label="Large select example" name="stockCt" id="">
                             <option value="">카테고리 선택</option>
-                            <option value="">카테고리 1</option>
-                            <option value="">카테고리 2</option>
-                            <option value="">카테고리 3</option>
-                            <option value="">카테고리 4</option>
-                            <option value="">카테고리 5</option>
+                            <option value=""></option>
                         </select>
 
                         <!-- 발주 신청 -->
 						<button type="button" class="btn m-left" id="order">발주 신청</button>
 					</div>
 
-					<!-- 테이블 -->
-					<table class="table">
-                        <thead>
+                    <div class="stock-list-container" th:fragment="stock-list-container">
+                        <!-- 테이블 -->
+                        <table class="table">
+                            <thead>
                             <tr>
                                 <th scope="col"><input type="checkbox"></th>
                                 <th scope="col">재고 이미지</th>
                                 <th scope="col" class="col-sort">
                                     <span>재고명</span>
-                                    <i class="fa-solid fa-sort" id="name-sort"></i>
+                                    <i class="fa-solid fa-sort"></i>
                                 </th>
                                 <th scope="col">카테고리</th>
                                 <th scope="col" class="col-sort">
                                     <span>수량</span>
-                                    <i class="fa-solid fa-sort" id="count-sort"></i>
+                                    <i class="fa-solid fa-sort"></i>
                                 </th>
                             </tr>
-                        </thead>
+                            </thead>
 
-                        <tbody>
-                            <!-- 리스트 -->
-                            <tr class="stock-row" th:each="stock : ${stockDtoList}" th:data-stock-no="${stock.stockNo}">
+                            <tbody>
+                                <!-- 리스트 -->
+                                <tr class="stock-row" th:each="stock : ${stockDtoList.items}" th:data-stock-no="${stock.stockNo}">
 
-                                <!-- 체크박스 -->
-                                <td><input type="checkbox"></td>
+                                    <!-- 체크박스 -->
+                                    <td><input type="checkbox"></td>
 
-                                <!-- 재고 이미지 -->
-                                <td><img th:src="${stock.stockImg}" alt="재고 1 이미지"></td>
+                                    <!-- 재고 이미지 -->
+                                    <td><img th:src="${stock.stockImg}" alt="재고 1 이미지"></td>
 
-                                <!-- 재고명 -->
-                                <td th:text="${stock.stockName}"></td>
+                                    <!-- 재고명 -->
+                                    <td th:text="${stock.stockName}"></td>
 
-                                <!-- 카테고리 -->
-                                <td th:text="${stock.stockCtName}"></td>
+                                    <!-- 카테고리 -->
+                                    <td th:text="${stock.stockCtName}"></td>
 
-                                <td>
-                                    <!-- 수량 -->
-                                    <span class="strong" th:text="${stock.isCount}"></span>
-                                    <span>개</span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                    <td>
+                                        <!-- 수량 -->
+                                        <span class="strong" th:text="${stock.isCount}"></span>
+                                        <span>개</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-                    <!-- 페이지네이션 -->
-                    <nav aria-label="Page navigation example">
-                        <ul class="pagination pagination-lg">
-                            <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item"><a class="page-link" href="#">4</a></li>
-                            <li class="page-item"><a class="page-link" href="#">5</a></li>
-                            <li class="page-item"><a class="page-link" href="#">6</a></li>
-                            <li class="page-item"><a class="page-link" href="#">7</a></li>
-                            <li class="page-item"><a class="page-link" href="#">8</a></li>
-                            <li class="page-item"><a class="page-link" href="#">9</a></li>
-                            <li class="page-item"><a class="page-link" href="#">10</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
+                        <!-- 페이지네이션 -->
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination pagination-lg">
+                                <li class="page-item">
+                                    <a class="page-link" href="#" aria-label="Previous" data-page-no="1">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+
+                                <!-- 페이지 이동 버튼 -->
+                                <th:block th:each="pageNo : ${#numbers.sequence(stockDtoList.startPage, stockDtoList.endPage)}">
+                                    <li class="page-item">
+                                        <a class="page-link" href="#" th:text="${pageNo}" th:data-page-no="${pageNo}">1</a>
+                                    </li>
+                                </th:block>
+
+                                <li class="page-item">
+                                    <a class="page-link" href="#" aria-label="Next" th:data-page-no="${stockDtoList.totalPage}">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
 
                     <!-- 재고 상세 모달 -->
                     <div class="modal">

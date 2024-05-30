@@ -63,19 +63,7 @@
 }
 
 /* 재고명, 수량 정렬 */
-.stock-list .col-sort {position: relative;}
-
-.stock-list #name-sort {
-    position: absolute;
-    top: 7px;
-    right: 53px;
-}
-
-.stock-list #count-sort {
-    position: absolute;
-    top: 7px;
-    right: 97px;
-}
+.stock-list .fa-sort {margin-left: 5px;}
 
 /* 데이터 셀 */
 .stock-list td {
@@ -128,8 +116,9 @@
 
 /* 재고 상세 모달 */
 .stock-list .modal {
-    position: absolute;
-    top: 240px;
+    position: fixed;
+    top: 220px;
+    left: 115px;
     display: none;
     height: 345px;
     font-size: 1.7rem;
