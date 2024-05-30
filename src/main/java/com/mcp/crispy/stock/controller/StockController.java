@@ -1,7 +1,7 @@
 package com.mcp.crispy.stock.controller;
 
 import com.mcp.crispy.common.userdetails.CustomDetails;
-import com.mcp.crispy.employee.dto.EmployeeDto;
+import com.mcp.crispy.common.page.PageResponse;
 import com.mcp.crispy.stock.dto.StockDto;
 import com.mcp.crispy.stock.service.StockService;
 import lombok.RequiredArgsConstructor;
@@ -13,10 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttribute;
-
-import java.security.Principal;
-import java.util.List;
 
 @Controller
 @RequestMapping("crispy")
@@ -31,20 +27,46 @@ public class StockController {
 	 * 우혜진 (24. 05. 28.)
 	 *
 	 * @param authentication
+	 * @param page
 	 * @param model
 	 * @return forward (stock-list.html)
 	 */
 	@GetMapping("stock-list")
-	public String stockList(Authentication authentication, Model model) {
+	public String stockList(Authentication authentication,
+							@RequestParam(value = "page", defaultValue = "1") int page,
+							Model model) {
 
 		CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
 		int frnNo = userDetails.getFrnNo();
 
-		List<StockDto> stockDtoList = stockService.getStockList(frnNo);
-		stockDtoList.forEach(stock -> log.info(stock.toString()));
+		PageResponse<StockDto> stockDtoList = stockService.getStockList(frnNo, page, 10);
 		model.addAttribute("stockDtoList", stockDtoList);
 
-		return "stock/stock-list";
+		return "/stock/stock-list";
+
+	}
+
+	/**
+	 * 재고 항목 조회
+	 * 우혜진 (24. 05. 29.)
+	 *
+	 * @param authentication
+	 * @param page
+	 * @param model
+	 * @return result
+	 */
+	@GetMapping("stock-items")
+	public String stockItems(Authentication authentication,
+							 @RequestParam(value = "page", defaultValue = "1") int page,
+							 Model model) {
+
+		CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
+		int frnNo = userDetails.getFrnNo();
+
+		PageResponse<StockDto> stockDtoList = stockService.getStockList(frnNo, page, 10);
+		model.addAttribute("stockDtoList", stockDtoList);
+
+		return "/stock/stock-list :: stock-list-container";
 
 	}
 
