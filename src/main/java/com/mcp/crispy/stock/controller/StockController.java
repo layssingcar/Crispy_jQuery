@@ -3,6 +3,7 @@ package com.mcp.crispy.stock.controller;
 import com.mcp.crispy.common.userdetails.CustomDetails;
 import com.mcp.crispy.common.page.PageResponse;
 import com.mcp.crispy.stock.dto.StockDto;
+import com.mcp.crispy.stock.dto.StockOptionDto;
 import com.mcp.crispy.stock.service.StockService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,20 +28,21 @@ public class StockController {
 	 * 우혜진 (24. 05. 28.)
 	 *
 	 * @param authentication
-	 * @param page
+	 * @param stockOptionDto
 	 * @param model
 	 * @return forward (stock-list.html)
 	 */
 	@GetMapping("stock-list")
 	public String stockList(Authentication authentication,
-							@RequestParam(value = "page", defaultValue = "1") int page,
+							StockOptionDto stockOptionDto,
 							Model model) {
 
 		CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
-		int frnNo = userDetails.getFrnNo();
+		stockOptionDto.setFrnNo(userDetails.getFrnNo());
 
-		PageResponse<StockDto> stockDtoList = stockService.getStockList(frnNo, page, 10);
+		PageResponse<StockDto> stockDtoList = stockService.getStockList(stockOptionDto, 10);
 		model.addAttribute("stockDtoList", stockDtoList);
+		model.addAttribute("stockCtList", stockService.getStockCtList());
 
 		return "/stock/stock-list";
 
@@ -51,19 +53,19 @@ public class StockController {
 	 * 우혜진 (24. 05. 29.)
 	 *
 	 * @param authentication
-	 * @param page
+	 * @param stockOptionDto
 	 * @param model
 	 * @return result
 	 */
 	@GetMapping("stock-items")
 	public String stockItems(Authentication authentication,
-							 @RequestParam(value = "page", defaultValue = "1") int page,
+							 StockOptionDto stockOptionDto,
 							 Model model) {
 
 		CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
-		int frnNo = userDetails.getFrnNo();
+		stockOptionDto.setFrnNo(userDetails.getFrnNo());
 
-		PageResponse<StockDto> stockDtoList = stockService.getStockList(frnNo, page, 10);
+		PageResponse<StockDto> stockDtoList = stockService.getStockList(stockOptionDto, 10);
 		model.addAttribute("stockDtoList", stockDtoList);
 
 		return "/stock/stock-list :: stock-list-container";
