@@ -290,9 +290,8 @@
 
       calendar.on("eventClick", (info)=>{
     	$(".modal-title").text("일정 정보");
-    	$("#btn-insert").hide();
-    	$("#btn-modify").show();
-    	$("#btn-delete").show();
+    	$("#btn-insert, #btn-update, #btn-cancle").hide();
+    	$("#btn-modify, #btn-delete").show();
   		fnShowSelectEvent(info);
       });
       
@@ -302,8 +301,7 @@
       calendar.on("select", (info)=>{
    	 	$(".modal-title").text("일정 등록");  
     	$("#btn-insert").show();
-    	$("#btn-modify").hide();
-    	$("#btn-delete").hide();
+    	$("#btn-modify, #btn-delete, #btn-update, #btn-cancle").hide();
   	  	myModal.modal('show');
         startDt = info.startStr;
         endDt = info.endStr;
@@ -464,5 +462,30 @@
 					alert("일정 저장 실패");
 					alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
 				})     			
-		}
+			}
 	  }
+	  
+	  
+	  // 일정 수정 관련
+	  function fnModifySchedule(){
+    	$(".modal-title").text("일정 수정");
+    	$("#btn-insert, #btn-modify, #btn-delete").hide();
+    	$("#btn-update, #btn-cancle").show();
+    	fnSetModalDetailToggle(0);		
+	  }
+	  
+	  // 일정 삭제 관련
+	  function fnDeleteSchedule(){
+		
+	  }
+	  
+	  // 일정 업데이트 관련
+	  function fnUpdateSchedule(){
+		
+	  }
+	  
+  	  // 일정 업데이트 취소
+	  function fnCancleUpdateSchedule(){
+		
+	  }
+	  
