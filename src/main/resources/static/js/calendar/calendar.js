@@ -2,9 +2,14 @@
       const myModal = $("#myModal");
       const startOpt = $('#start option');
       const endOpt = $('#end option');
+      const radioBtnsByNotiorVac = document.getElementsByName('notice-or-vac');
+      const radioBtnsByVacType = document.getElementsByName('var-elem-radio');
     	  
       myModal.on("hidden.bs.modal", function () {
         $("#form-modal")[0].reset();
+        fnSetModalDetailToggle(0);
+	 	startOpt.eq(0).prop('selected', true);	// 시작시간 초기화
+	 	endOpt.eq(0).prop('selected', true);		// 종료시간 초기화
       });
       
       myModal.on("show.bs.modal", function(){
@@ -24,7 +29,7 @@
             	 	$("#end").attr("disabled", false);
 		            $("#vac-all").prop("checked", true);
             	 	
-	        } else if ($("#radio-vac").is(':checked')) {		// 휴가
+	        	} else if ($("#radio-vac").is(':checked')) {		// 휴가
 		            $("#vac-type, #vac-elem").show();
 		            
 		            if($("#vac-all").is(':checked')){	// 연차
@@ -106,7 +111,6 @@
 			dataType:'json'
 		})
 		.done(function(annList){
-			console.log(annList);
 			$.ajax({
 				type:'GET',
 				url:'/crispy/getScheList',
@@ -117,7 +121,6 @@
 				console.log(scheList);
 				$(scheList).each(function(){
 					if(this.scheDiv == 0){
-						console.log("공지 저장함");
 						loadEventList.push({
 							id: this.scheId,
 							title:this.scheTitle,
@@ -129,7 +132,6 @@
 						});
 					}
 					else if(this.scheDiv == 1){
-						console.log("개인 저장함");
 						loadEventList.push({
 							id: this.scheId,
 							title:this.scheTitle,
@@ -144,7 +146,6 @@
 				
 				$(annList).each(function(){
 					if(this.annCtNo == 0){
-						console.log("연차 저장함");
 						loadEventList.push({
 							id: this.annId,
 							title:this.annTitle,
@@ -156,7 +157,6 @@
 						});
 					}
 					else if(this.annCtNo == 1){
-						console.log("반차 저장함");
 						loadEventList.push({
 							id: this.annId,
 							title:this.annTitle,
@@ -168,7 +168,6 @@
 						});					
 					}
 					else if(this.annCtNo == 2){
-						console.log("반반차 저장함");
 						loadEventList.push({
 							id: this.annId,
 							title:this.annTitle,
@@ -181,11 +180,9 @@
 					}					
 				});		
 				for(var i = 0; i < loadEventList.length; i++)
-					{
 						calendar.addEvent(loadEventList[i]);
-						console.log(i + "번째:" + loadEventList[i]);			
-					}
-					calendar.refetchEvents();
+						
+				calendar.refetchEvents();
 			})
 			.fail(function(){
 				alert("연차 불러오기 실패");	
@@ -209,8 +206,7 @@
         selectable:true,    // 달력 날짜 드래그
         locale:'kr',      // 달력 언어 설정
         editable:true,
-        dayMaxEventRows:true,
-        events : loadEventList
+        dayMaxEventRows:true
       }
 
       const calendar = new FullCalendar.Calendar(calendarEl, calendarOpt);
@@ -218,56 +214,85 @@
       
 	  fnLoadCalendarData();
       ////////////////////////		캘린더 기능
+    	function fnSetSelectByValue(selectId, value){
+			for(var i = 0; i < selectId.length; i++){
+				if(selectId.eq(i).val() == value){
+					selectId.eq(i).prop('selected', true);
+					break;
+				}
+			}
+		}
+		
+		function fnSetModalDetailToggle(state){
+			$("#sch-title, #sch-content").prop("disabled", state);
+			startOpt.prop("disabled", state);
+			endOpt.prop("disabled", state);
+		  	$("input[name='notice-or-vac']").prop("disabled", state);
+		  	$("input[name='var-elem-radio']").prop("disabled", state);			
+		}
+		
+		function fnShowSelectEvent(info){
+	 	if(info.event.id.substring(0, 2) == "일정"){
+		    	$.ajax({
+					type:'GET',
+					url: '/crispy/getScheById',
+			        contentType: 'application/json',
+					data:'scheId=' + info.event.id,
+					dataType:'json'
+			    })
+				.done(function(data){
+					$("#sch-title").val(data.scheTitle);
+					$("#sch-content").val(data.scheContent);
+				  	fnSetSelectByValue(startOpt, data.scheStartTime.substring(11, 17));
+				  	fnSetSelectByValue(endOpt, data.scheEndTime.substring(11, 17));
+					fnSetModalDetailToggle(1);
+					radioBtnsByNotiorVac[data.scheDiv].checked = true;
+			 	  	myModal.modal('show');
+				})
+				.fail(function(jqXHR){
+					alert("실패");
+					alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
+				})    
+			}
+			else if(info.event.id.substring(0, 2) == "연차"){
+		    	$.ajax({
+					type:'GET',
+					url: '/crispy/getAnnById',
+			        contentType: 'application/json',
+					data:'annId=' + info.event.id,
+					dataType:'json'
+			    })
+				.done(function(data){
+					$("#sch-title").val(data.annTitle);
+					$("#sch-content").val(data.annContent);
+				  	fnSetSelectByValue(startOpt, data.annStartTime.substring(11, 17));
+				  	fnSetSelectByValue(endOpt, data.annEndTime.substring(11, 17));
+					fnSetModalDetailToggle(1);
+					radioBtnsByNotiorVac[2].checked = true;
+					radioBtnsByVacType[data.annCtNo].checked = true;
+			 	  	myModal.modal('show');
+			 	  	
+			 	  	if(data.annCtNo != 0)
+						$("#vac-type, #vac-elem").show();
+					else
+						$("#vac-type, #vac-elem").hide();
+				})
+				.fail(function(jqXHR){
+					alert("실패");
+					alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
+				})    			
+			}			
+		}
+		
       calendar.on("eventAdd", ()=>{
         myModal.modal('hide');
       });
 
       calendar.on("eventClick", (info)=>{
     	$(".modal-title").text("일정 정보");
-    	$("#btn-insert").hide();
-    	$("#btn-modify").show();
-    	$("#btn-delete").show();
-    	console.log(info.event.id.substring(0, 2));
-    	
-    	if(info.event.id.substring(0, 2) == "일정"){
-	    	$.ajax({
-				type:'GET',
-				url: '/crispy/getScheById',
-		        contentType: 'application/json',
-				data:'scheId=' + info.event.id,
-				dataType:'json'
-		    })
-			.done(function(data){
-				$("#sch-title").val(data.scheTitle);
-				$("#sch-content").val(data.scheContent);
-	//			$("#sch-title, #sch-content").attr("disabled", true);
-		 	  	myModal.modal('show');
-			})
-			.fail(function(jqXHR){
-				alert("실패");
-				alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
-			})    
-		}
-		else if(info.event.id.substring(0, 2) == "연차"){
-	    	$.ajax({
-				type:'GET',
-				url: '/crispy/getAnnById',
-		        contentType: 'application/json',
-				data:'annId=' + info.event.id,
-				dataType:'json'
-		    })
-			.done(function(data){
-				$("#sch-title").val(data.annTitle);
-				$("#sch-content").val(data.annContent);
-	//			$("#sch-title, #sch-content").attr("disabled", true);
-		 	  	myModal.modal('show');
-			})
-			.fail(function(jqXHR){
-				alert("실패");
-				alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
-			})    			
-		}
-    	
+    	$("#btn-insert, #btn-update, #btn-cancle").hide();
+    	$("#btn-modify, #btn-delete").show();
+  		fnShowSelectEvent(info);
       });
       
       calendar.on("dateClick", (info)=>{
@@ -276,13 +301,11 @@
       calendar.on("select", (info)=>{
    	 	$(".modal-title").text("일정 등록");  
     	$("#btn-insert").show();
-    	$("#btn-modify").hide();
-    	$("#btn-delete").hide();
+    	$("#btn-modify, #btn-delete, #btn-update, #btn-cancle").hide();
   	  	myModal.modal('show');
         startDt = info.startStr;
         endDt = info.endStr;
       });
-
       
       function fnRegistSchedule() {		// 일정 등록 처리 함수
       let selectScheType = $("input:radio[name=notice-or-vac]:checked").val();	// 공지,개인,연차
@@ -336,7 +359,6 @@
 	            };
 	          }
 		}
-     	console.log(schedule.id);
         calendar.addEvent(schedule);
       	fnAddScheduleAndAnnual(schedule.id);
         calendar.unselect();
@@ -361,34 +383,21 @@
       }
       
       // 모달 ajax
-      function fnAddScheduleAndAnnual(idNum){
-	 	const currentDate = moment().format('YYYY-MM-DD');
-      let selectScheType = $("input:radio[name=notice-or-vac]:checked").val();	// 공지,개인,연차
-      let selectVacType = $("input:radio[name=var-elem-radio]:checked").val();	// 연차,반차,반반차,
-	 	
-		let annCt, schDiv;
-		if(selectVacType == 'all')
-			annCt = 0;
-		else if(selectVacType == 'half')
-			annCt = 1;
-		else if(selectVacType == 'quat')
-			annCt = 2;
-			
-		if(selectScheType == 'vac'){
+      function fnAnnAjax(idNum, endTime, ctNo, currentDate){
 	    const data = JSON.stringify({
 		        'annId': idNum,
-		        'annCtNo': annCt,
+		        'annCtNo': ctNo,
 		        'annTitle': $("#sch-title").val(),
 		        'annContent': $("#sch-content").val(),
 		        'annTotal': 15,
-		        'annStartTime':  startDt + "T" + startOpt.val(),
-		        'annEndTime':  endDt + "T" + endOpt.val(),
+		        'annStartTime':  startDt + "T" + $("#start option:selected").val(),
+		        'annEndTime':  endTime + "T" + $("#end option:selected").val(),
 		        'createDt': currentDate,
 		        'creator': 1,
 		        'modifyDt': currentDate, 
 		        'modifier': 1,
 		        'empNo': 1
-		    });
+		    });			
 		    $.ajax({
 		        type: 'POST',
 		        url: '/crispy/registAnn',
@@ -402,42 +411,81 @@
 			.fail(function(jqXHR){
 				alert("연차 저장 실패");
 				alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
-			})     
+			})    		
+	  }
+      
+      function fnAddScheduleAndAnnual(idNum){
+	  	const currentDate = moment().format('YYYY-MM-DD');
+	  	let selectScheType = $("input:radio[name=notice-or-vac]:checked").val();	// 공지,개인,연차
+	  	let selectVacType = $("input:radio[name=var-elem-radio]:checked").val();	// 연차,반차,반반차,
+	 	
+		let annCt, schDiv;
+		if(selectVacType == 'all')
+			annCt = 0;
+		else
+			annCt = (selectVacType == 'half') ? 1 : 2;
+			
+		if(selectScheType == 'vac'){
+			if(selectVacType == 'all')
+ 				fnAnnAjax(idNum,endDt, annCt, currentDate);
+			else
+				fnAnnAjax(idNum,startDt, annCt, currentDate);
 		}
 		else if(selectScheType == 'notice' || selectScheType == 'mysche'){
-			
-		if(selectScheType == 'notice')
-			schDiv = 0;
-		else if(selectScheType == 'mysche')
-			schDiv = 1;
-			
-	    const data = JSON.stringify({
-		        'scheId': idNum,
-		        'scheDiv': schDiv,
-		        'scheTitle': $("#sch-title").val(),
-		        'scheContent': $("#sch-content").val(),
-		        'scheStartTime': startDt + "T" + startOpt.val(), 
-		        'scheEndTime': endDt + "T" + endOpt.val(),
-		        'createDt': currentDate,
-		        'creator': 1,
-		        'modifyDt': currentDate, 
-		        'modifier': 1,
-		        'scheStat': annCt,
-		        'empNo': 1
-		    });
-		    $.ajax({
-		        type: 'POST',
-		        url: '/crispy/registSche',
-		        contentType: 'application/json',
-		        dataType: 'json',
-		        data: data
-		    })
-			.done(function(data){
-				alert("일정 저장 성공");
-			})
-			.fail(function(jqXHR){
-				alert("일정 저장 실패");
-				alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
-			})     			
-		}
+			schDiv = (selectScheType == 'notice') ? 0 : 1;
+
+		    const data = JSON.stringify({
+			        'scheId': idNum,
+			        'scheDiv': schDiv,
+			        'scheTitle': $("#sch-title").val(),
+			        'scheContent': $("#sch-content").val(),
+			        'scheStartTime': startDt + "T" + $("#start option:selected").val(), 
+			        'scheEndTime': endDt + "T" + $("#end option:selected").val(),
+			        'createDt': currentDate,
+			        'creator': 1,
+			        'modifyDt': currentDate, 
+			        'modifier': 1,
+			        'scheStat': 0,
+			        'empNo': 1
+			    });
+			    $.ajax({
+			        type: 'POST',
+			        url: '/crispy/registSche',
+			        contentType: 'application/json',
+			        dataType: 'json',
+			        data: data
+			    })
+				.done(function(data){
+					alert("일정 저장 성공");
+				})
+				.fail(function(jqXHR){
+					alert("일정 저장 실패");
+					alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
+				})     			
+			}
 	  }
+	  
+	  
+	  // 일정 수정 관련
+	  function fnModifySchedule(){
+    	$(".modal-title").text("일정 수정");
+    	$("#btn-insert, #btn-modify, #btn-delete").hide();
+    	$("#btn-update, #btn-cancle").show();
+    	fnSetModalDetailToggle(0);		
+	  }
+	  
+	  // 일정 삭제 관련
+	  function fnDeleteSchedule(){
+		
+	  }
+	  
+	  // 일정 업데이트 관련
+	  function fnUpdateSchedule(){
+		
+	  }
+	  
+  	  // 일정 업데이트 취소
+	  function fnCancleUpdateSchedule(){
+		
+	  }
+	  

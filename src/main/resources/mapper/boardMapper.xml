@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mcp.crispy.board.mapper.BoardMapper">
+    <resultMap type="BoardDto" id="BoardMap">
+    <id property="boardNo" column="BOARD_NO" />
+    <result property="boardCtNo" column="BOARD_CT_NO" />
+    <result property="boardTitle" column="BOARD_TITLE" />
+    <result property="boardContent" column="BOARD_CONTENT" />
+    <result property="boardHit" column="BOARD_HIT" />
+    <result property="createDt" column="CREATE_DT" />
+    <result property="creator" column="CREATOR" />
+    <result property="modifyDt" column="MODIFY_DT" />
+    <result property="modifier" column="MODIFIER" />
+    <association property="employee" javaType="EmployeeDto">
+        <id property="empNo" column="EMP_NO" />
+        <result property="empId" column="EMP_ID" />
+        <result property="empName" column="EMP_NAME" />
+        <result property="empProfile" column="EMP_PROFILE" />
+    </association>
+    </resultMap>
+
+
+    <select id="getFreeBoardList">
+        SELECT BOARD_NO
+             , BOARD_TITLE
+             , BOARD_CONTENT
+             , BOARD_HIT
+             , CREATE_DT
+        FROM BOARD_T
+    </select>
+
+    <select id="getNotiBoardList">
+        SELECT BOARD_NO
+             , BOARD_TITLE
+             , BOARD_CONTENT
+             , BOARD_HIT
+             , CREATE_DT
+        FROM BOARD_T
+    </select>
+
+    <insert id="insertBoard" parameterType="BoardDto">
+        <selectKey order="BEFORE" keyProperty="boardNo" resultType="int">
+        SELECT BOARD_SEQ.NEXTVAL
+        FROM DUAL
+        </selectKey>
+        INSERT INTO BOARD_T (
+              BOARD_NO
+            , BOARD_CT_NO
+            , BOARD_TITLE
+            , BOARD_CONTENT
+            , EMP_NO
+            , CREATE_DT
+            , MODIFY_DT
+        ) VALUES (
+            , #{boardNo}
+            , #{boardCtNo}
+            , #{boardTitle}
+            , #{boardContent}
+            , #{empNo}
+            , CURRENT_TIMESTAMP
+            , CURRENT_TIMESTAMP
+        )
+    </insert>
+
+
+    <select id="getBoardByNo" resultMap="BoardMap">
+        SELECT B.BOARD_NO
+             , B.BOARD_CT_NO
+             , B.BOARD_TITLE
+             , B.BOARD_CONTENT
+             , B.BOARD_HIT
+             , B.CREATE_DT
+             , B.MODIFY_DT
+             , B.EMP_NO
+             , E.EMP_NAME
+             , E.EMP_PROFILE
+        FROM BOARD_T B
+                 INNER JOIN EMPLOYEE_T E
+                            ON B.EMP_NO = E.EMP_NO
+        WHERE B.BOARD_NO = #{boardNo}
+
+    </select>
+
+    <delete id="deleteBoard">
+        DELETE
+        FROM BOARD_T
+        WHERE BOARD_NO = #{boardNo}
+    </delete>
+    <delete id="deleteBoardFile">
+        DELETE
+        FROM BOARD_FILE_T
+        WHERE BOARD_FILE_NO = #{boardFileNo}
+    </delete>
+
+    <insert id="insertBoardFile"
+            parameterType="BoardFileDto">
+        INSERT INTO BOARD_FIEL_T (
+          BOARD_FILE_NO
+        , BOARD_PATH
+        , BOARD_RENAME
+        , BOARD_ORIGIN
+        , BOARD_NO
+        ) VALUES (
+          BOARD_FILE_SEQ.NEXTVAL
+        , #{boardPath}
+        , #{boardRename}
+        , #{boardOrigin}
+        , #{boardNo}
+        )
+    </insert>
+
+
+</mapper>
