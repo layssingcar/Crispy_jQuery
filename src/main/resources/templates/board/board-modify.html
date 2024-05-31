@@ -15,9 +15,9 @@
 		<header th:replace="~{layout/navbar :: navbar}"></header>
 		<main>
 			<div class="main">
-				<form id="frm-board-add" action="/dokky/add-form" method="POST"
+				<form id="frm-board-add" action="@{/crispy/modify-form}" method="POST"
 					  class="my-3">
-					<input type="hidden" id="boardNo" value="${board.boardNo}">
+					<input type="hidden" id="boardNo" th:value="${board.boardNo}">
 					<!-- 제목 -->
 					<h1 class="border-bottom py-2">게시물 수정하기</h1>
 					<div class="col-md-5">
