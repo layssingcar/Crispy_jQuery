@@ -230,6 +230,60 @@
 		  	$("input[name='notice-or-vac']").prop("disabled", state);
 		  	$("input[name='var-elem-radio']").prop("disabled", state);			
 		}
+		
+		function fnShowSelectEvent(info){
+	 	if(info.event.id.substring(0, 2) == "일정"){
+		    	$.ajax({
+					type:'GET',
+					url: '/crispy/getScheById',
+			        contentType: 'application/json',
+					data:'scheId=' + info.event.id,
+					dataType:'json'
+			    })
+				.done(function(data){
+					$("#sch-title").val(data.scheTitle);
+					$("#sch-content").val(data.scheContent);
+				  	fnSetSelectByValue(startOpt, data.scheStartTime.substring(11, 17));
+				  	fnSetSelectByValue(endOpt, data.scheEndTime.substring(11, 17));
+					fnSetModalDetailToggle(1);
+					radioBtnsByNotiorVac[data.scheDiv].checked = true;
+			 	  	myModal.modal('show');
+				})
+				.fail(function(jqXHR){
+					alert("실패");
+					alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
+				})    
+			}
+			else if(info.event.id.substring(0, 2) == "연차"){
+		    	$.ajax({
+					type:'GET',
+					url: '/crispy/getAnnById',
+			        contentType: 'application/json',
+					data:'annId=' + info.event.id,
+					dataType:'json'
+			    })
+				.done(function(data){
+					$("#sch-title").val(data.annTitle);
+					$("#sch-content").val(data.annContent);
+				  	fnSetSelectByValue(startOpt, data.annStartTime.substring(11, 17));
+				  	fnSetSelectByValue(endOpt, data.annEndTime.substring(11, 17));
+					fnSetModalDetailToggle(1);
+					radioBtnsByNotiorVac[2].checked = true;
+					radioBtnsByVacType[data.annCtNo].checked = true;
+			 	  	myModal.modal('show');
+			 	  	
+			 	  	if(data.annCtNo != 0)
+						$("#vac-type, #vac-elem").show();
+					else
+						$("#vac-type, #vac-elem").hide();
+				})
+				.fail(function(jqXHR){
+					alert("실패");
+					alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
+				})    			
+			}			
+		}
+		
       calendar.on("eventAdd", ()=>{
         myModal.modal('hide');
       });
@@ -239,57 +293,7 @@
     	$("#btn-insert").hide();
     	$("#btn-modify").show();
     	$("#btn-delete").show();
-    	
-    	if(info.event.id.substring(0, 2) == "일정"){
-	    	$.ajax({
-				type:'GET',
-				url: '/crispy/getScheById',
-		        contentType: 'application/json',
-				data:'scheId=' + info.event.id,
-				dataType:'json'
-		    })
-			.done(function(data){
-				$("#sch-title").val(data.scheTitle);
-				$("#sch-content").val(data.scheContent);
-			  	fnSetSelectByValue(startOpt, data.scheStartTime.substring(11, 17));
-			  	fnSetSelectByValue(endOpt, data.scheEndTime.substring(11, 17));
-				fnSetModalDetailToggle(1);
-				radioBtnsByNotiorVac[data.scheDiv].checked = true;
-		 	  	myModal.modal('show');
-			})
-			.fail(function(jqXHR){
-				alert("실패");
-				alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
-			})    
-		}
-		else if(info.event.id.substring(0, 2) == "연차"){
-	    	$.ajax({
-				type:'GET',
-				url: '/crispy/getAnnById',
-		        contentType: 'application/json',
-				data:'annId=' + info.event.id,
-				dataType:'json'
-		    })
-			.done(function(data){
-				$("#sch-title").val(data.annTitle);
-				$("#sch-content").val(data.annContent);
-			  	fnSetSelectByValue(startOpt, data.annStartTime.substring(11, 17));
-			  	fnSetSelectByValue(endOpt, data.annEndTime.substring(11, 17));
-				fnSetModalDetailToggle(1);
-				radioBtnsByNotiorVac[2].checked = true;
-				radioBtnsByVacType[data.annCtNo].checked = true;
-		 	  	myModal.modal('show');
-		 	  	
-		 	  	if(data.annCtNo != 0)
-					$("#vac-type, #vac-elem").show();
-				else
-					$("#vac-type, #vac-elem").hide();
-			})
-			.fail(function(jqXHR){
-				alert("실패");
-				alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
-			})    			
-		}
+  		fnShowSelectEvent(info);
       });
       
       calendar.on("dateClick", (info)=>{
