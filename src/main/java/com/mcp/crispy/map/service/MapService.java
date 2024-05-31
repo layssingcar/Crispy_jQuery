@@ -12,7 +12,7 @@ import java.util.List;
 public class MapService {
 
     private final MapMapper mapMapper;
-
+ 
     public List<MapDto> getMapList() {
         return mapMapper.getMapList();
     }
