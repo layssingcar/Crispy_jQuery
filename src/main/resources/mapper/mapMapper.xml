@@ -2,6 +2,28 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.mcp.crispy.map.mapper.MapMapper">
-
-
+    <select id="getMapList">
+            SELECT F.FRN_NAME
+                 , F.FRN_X
+                 , F.FRN_Y
+                 , F.FRN_START_TIME
+                 , F.FRN_END_TIME
+                 , F.FRN_TEL
+                 , F.FRN_NO
+                 , S.SAL_PRICE
+                 , S2.STOCK_CT_NAME
+                 , S1.STOCK_NO
+                 , S1.STOCK_NAME
+                 , I.IS_COUNT
+            FROM FRANCHISE_T
+      INNER JOIN SALES_T S
+              ON F.FRN_NO = S.FRN_NO
+      INNER JOIN INVENTORY_STAT_T I
+              ON S.FRN_NO = I.FRN_NO
+      INNER JOIN STOCK_T S1
+              ON I.STOCK_NO = S1.STOCK_NO
+      INNER JOIN STOCK_CATEGORY_T S2
+              ON S2.STOCK_CT_NO = S1.STOCK_CT_NO
+           WHERE 1 = 1
+    </select>
 </mapper>

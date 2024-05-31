@@ -1,5 +1,7 @@
 package com.mcp.crispy.map.controller;
 
+import com.mcp.crispy.map.dto.MapDto;
+import com.mcp.crispy.map.service.MapService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -15,14 +17,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MapController {
 
+    private final MapService mapService;
+
     /**
      * 박종구 - 가맹점 목록 및 정보조회 (카카오 맵)
      * 2024-05-31
-     * @param
+     * @param model
      * @return forward (franchise/franchise-map.html)
      */
     @GetMapping("franchise-map")
-    public String mapFranchise() {
+    public String mapFranchise(Model model) {
+        List<MapDto> mapList = mapService.getMapList();
+        model.addAttribute("mapList", mapList);
         return "franchise/franchise-map";
     }
 }
