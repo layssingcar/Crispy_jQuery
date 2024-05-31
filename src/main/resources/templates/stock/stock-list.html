@@ -23,9 +23,14 @@
 						</div>
                         
                         <!-- 카테고리 선택 -->
-                        <select class="form-select form-select-lg mb-3 m-left" aria-label="Large select example" name="stockCt" id="">
-                            <option value="">카테고리 선택</option>
-                            <option value=""></option>
+                        <select class="form-select form-select-lg mb-3 m-left" id="stock-ct" aria-label="Large select example" name="stockCt">
+                            <option value="0">카테고리 선택</option>
+
+                            <!-- 카테고리 옵션 -->
+                            <th:block th:each="stockCt : ${stockCtList}">
+                                <option th:value="${stockCt.stockCtNo}" th:text="${stockCt.stockCtName}"></option>
+                            </th:block>
+
                         </select>
 
                         <!-- 발주 신청 -->
@@ -88,7 +93,7 @@
                                 <!-- 페이지 이동 버튼 -->
                                 <th:block th:each="pageNo : ${#numbers.sequence(stockDtoList.startPage, stockDtoList.endPage)}">
                                     <li class="page-item">
-                                        <a class="page-link" href="#" th:text="${pageNo}" th:data-page-no="${pageNo}">1</a>
+                                        <a class="page-link" href="#" th:text="${pageNo}" th:data-page-no="${pageNo}"></a>
                                     </li>
                                 </th:block>
 
