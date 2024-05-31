@@ -76,15 +76,7 @@ const getStockItemsFn = async (optionObj) => {
 
 // 카테고리 구분 조회
 document.querySelector("#stock-ct").addEventListener("change", e => {
-    const stockCtNo = e.target.value;   // 카테고리번호
-
-    // 카테고리 미선택
-    if (stockCtNo === '') {
-        getStockItemsFn({"pageNo" : 1});
-        return;
-    }
-
-    const optionObj = {"stockCtNo" : stockCtNo}
+    const optionObj = {"stockCtNo" : e.target.value}
     getStockItemsFn(optionObj);
 })
 
