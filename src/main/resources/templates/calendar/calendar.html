@@ -147,8 +147,12 @@
 			            <!-- Modal footer -->
 			            <div class="modal-footer">
 			            	<button type="button" class="btn btn-primary float-right insertBtn" id="btn-insert" onclick="fnRegistSchedule();">등록</button>
-			            	<button type="button" class="btn btn-primary float-right modifyBtn" id="btn-modify">수정</button>
-			            	<button type="button" class="btn btn-primary float-right deleteBtn" id="btn-delete">삭제</button>
+			            	
+			            	<button type="button" class="btn btn-primary float-right modifyBtn" id="btn-modify" onclick="fnModifySchedule();">수정</button>
+			            	<button type="button" class="btn btn-primary float-right deleteBtn" id="btn-delete" onclick="fnDeleteSchedule();">삭제</button>
+			            	
+			            	<button type="button" class="btn btn-primary float-right updateBtn" id="btn-update" onclick="fnUpdateSchedule();">확인</button>
+			            	<button type="button" class="btn btn-primary float-right cancleBtn" id="btn-cancle" onclick="fnCancleUpdateSchedule();">취소</button>
 			            </div>         
 			          </div>
 			        </div>
