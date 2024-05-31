@@ -37,7 +37,7 @@
 
     <!-- 재고 상세 조회 -->
     <select id="getStockDetail">
-        SELECT *
+        SELECT STOCK_NAME, STOCK_PRICE, STOCK_UNIT, STOCK_IMG, STOCK_DETAIL
         FROM STOCK_T
         WHERE STOCK_NO = #{stockNo}
     </select>
