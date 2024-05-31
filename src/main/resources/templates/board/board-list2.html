@@ -38,10 +38,10 @@
 					<tbody>
 					<tr th:each="noti : ${notiList}">
 						<td th:text="${noti.boardNo}">자유게시판 번호</td>
-						<td th:text="${noti.boardTitle}">제묵</td>
+						<td th:text="${noti.boardTitle}">제목</td>
 						<td th:text="${noti.boardContent}">내용</td>
 						<td th:text="${noti.boardHit}">조회수</td>
-						<td th:text="${noti.boardCreateDt}">조회수</td>
+						<td th:text="${noti.createDt}">작성일</td>
 					</tr>
 					</tbody>
 
