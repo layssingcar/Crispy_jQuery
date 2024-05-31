@@ -93,7 +93,7 @@
                                 <!-- 페이지 이동 버튼 -->
                                 <th:block th:each="pageNo : ${#numbers.sequence(stockDtoList.startPage, stockDtoList.endPage)}">
                                     <li class="page-item">
-                                        <a class="page-link" href="#" th:text="${pageNo}" th:data-page-no="${pageNo}">1</a>
+                                        <a class="page-link" href="#" th:text="${pageNo}" th:data-page-no="${pageNo}"></a>
                                     </li>
                                 </th:block>
 
