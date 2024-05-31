@@ -51,9 +51,4 @@ public class FranchiseController {
         model.addAttribute("franchiseList", franchiseList);
     	return "franchise/franchise-list";
     }
-    
-    @GetMapping("franchise-map")
-    public String mapFranchise() {
-    	return "franchise/franchise-map";
-    }
 }
