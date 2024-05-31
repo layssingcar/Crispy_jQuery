@@ -46,7 +46,10 @@ const addPageLinkEventFn = pageNo => {
     pageLinks.forEach((pageLink) => {
         pageLink.addEventListener("click", e => {
             e.preventDefault(); // a 태그 기본 동작 방지
-            getStockItemsFn(pageLink.dataset.pageNo);
+
+            const pageNo = pageLink.dataset.pageNo;
+            const optionObj = {"pageNo" : pageNo}
+            getStockItemsFn(optionObj);
         })
 
         // active 클래스 추가
@@ -56,14 +59,36 @@ const addPageLinkEventFn = pageNo => {
 }
 
 // 재고 항목 리스트
-const getStockItemsFn = async (pageNo) => {
-    const response = await fetch(`/crispy/stock-items?page=${pageNo}`);
+const getStockItemsFn = async (optionObj) => {
+    const params = new URLSearchParams(); // URL 쿼리 문자열 객체
+
+    for (let key in optionObj)
+        params.append(key, optionObj[key])
+
+    const response = await fetch(`/crispy/stock-items?${params.toString()}`);
     const html = await response.text();
     document.querySelector(".stock-list-container").outerHTML = html;
+
+    // 이벤트 재추가
     addStockRowEventFn();
-    addPageLinkEventFn(pageNo);
+    addPageLinkEventFn(optionObj.pageNo === undefined ? 1 : optionObj.pageNo);
 }
 
+// 카테고리 구분 조회
+document.querySelector("#stock-ct").addEventListener("change", e => {
+    const stockCtNo = e.target.value;   // 카테고리번호
+
+    // 카테고리 미선택
+    if (stockCtNo === '') {
+        getStockItemsFn({"pageNo" : 1});
+        return;
+    }
+
+    const optionObj = {"stockCtNo" : stockCtNo}
+    getStockItemsFn(optionObj);
+})
+
+// 초기화
 document.addEventListener("DOMContentLoaded", function () {
     addStockRowEventFn();
     addPageLinkEventFn(1);
