@@ -41,19 +41,19 @@
                         <!-- 테이블 -->
                         <table class="table">
                             <thead>
-                            <tr>
-                                <th scope="col"><input type="checkbox"></th>
-                                <th scope="col">재고 이미지</th>
-                                <th scope="col" class="col-sort">
-                                    <span>재고명</span>
-                                    <i class="fa-solid fa-sort" id="stock-name-sort"></i>
-                                </th>
-                                <th scope="col">카테고리</th>
-                                <th scope="col" class="col-sort">
-                                    <span>수량</span>
-                                    <i class="fa-solid fa-sort"></i>
-                                </th>
-                            </tr>
+                                <tr>
+                                    <th scope="col"><input type="checkbox" id="a"></th>
+                                    <th scope="col">재고 이미지</th>
+                                    <th scope="col" class="col-sort">
+                                        <span>재고명</span>
+                                        <i class="fa-solid fa-sort" id="stock-name-sort"></i>
+                                    </th>
+                                    <th scope="col">카테고리</th>
+                                    <th scope="col" class="col-sort">
+                                        <span>수량</span>
+                                        <i class="fa-solid fa-sort" id="is-count-sort"></i>
+                                    </th>
+                                </tr>
                             </thead>
 
                             <tbody>
@@ -61,7 +61,7 @@
                                 <tr class="stock-row" th:each="stock : ${stockDtoList.items}" th:data-stock-no="${stock.stockNo}">
 
                                     <!-- 체크박스 -->
-                                    <td><input type="checkbox"></td>
+                                    <td><input type="checkbox" class="b"></td>
 
                                     <!-- 재고 이미지 -->
                                     <td><img th:src="${stock.stockImg}" alt="재고 1 이미지"></td>

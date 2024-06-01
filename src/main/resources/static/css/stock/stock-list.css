@@ -62,6 +62,12 @@
     text-align: center;
 }
 
+/* 제목 셀 */
+.stock-list thead th:nth-child(1) {width: 90px;}
+.stock-list thead th:nth-child(2) {width: 280px;}
+.stock-list thead th:nth-child(4) {width: 240px;}
+.stock-list thead th:nth-child(5) {width: 215px;}
+
 /* 재고명, 수량 정렬 */
 .stock-list .fa-sort {
     margin-left: 5px;
