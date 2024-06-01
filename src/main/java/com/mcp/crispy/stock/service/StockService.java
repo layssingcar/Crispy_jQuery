@@ -20,7 +20,7 @@ public class StockService {
     public PageResponse<StockDto> getStockList(StockOptionDto stockOptionDto, int limit) {
 
         // 현재 페이지 번호
-        int page = Math.max(stockOptionDto.getPage(), 1);
+        int page = Math.max(stockOptionDto.getPageNo(), 1);
 
         // 전체 재고 항목 수
         int totalCount = stockMapper.getStockCount(stockOptionDto);
