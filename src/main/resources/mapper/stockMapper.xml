@@ -5,41 +5,50 @@
 
     <!-- 전체 재고 항목 수 조회 -->
     <select id="getStockCount">
-        SELECT COUNT(*)
-        FROM STOCK_T S
-            JOIN STOCK_CATEGORY_T C ON S.STOCK_CT_NO = C.STOCK_CT_NO
-            JOIN INVENTORY_STAT_T I ON S.STOCK_NO = I.STOCK_NO
-        WHERE I.FRN_NO = #{frnNo}
+            SELECT COUNT(*)
+            FROM STOCK_T S
+            JOIN STOCK_CATEGORY_T C
+              ON S.STOCK_CT_NO = C.STOCK_CT_NO
+            JOIN INVENTORY_STAT_T I
+              ON S.STOCK_NO = I.STOCK_NO
+           WHERE 1 = 1
+             AND I.FRN_NO = #{frnNo}
         <if test="stockCtNo != 0">
-            AND S.STOCK_CT_NO = #{stockCtNo}
+             AND S.STOCK_CT_NO = #{stockCtNo}
         </if>
     </select>
 
     <!-- 재고 현황 조회 -->
     <select id="getStockList">
-        SELECT ROW_NUMBER() OVER(ORDER BY S.STOCK_NAME ASC) RN,
-                S.STOCK_NO, S.STOCK_IMG, S.STOCK_NAME, C.STOCK_CT_NAME, I.IS_COUNT
-        FROM STOCK_T S
-            JOIN STOCK_CATEGORY_T C ON S.STOCK_CT_NO = C.STOCK_CT_NO
-            JOIN INVENTORY_STAT_T I ON S.STOCK_NO = I.STOCK_NO
-        WHERE I.FRN_NO = #{frnNo}
+            SELECT ROW_NUMBER() OVER(ORDER BY S.STOCK_NAME) RN
+                 , S.STOCK_NO, S.STOCK_IMG, S.STOCK_NAME
+                 , C.STOCK_CT_NAME
+                 , I.IS_COUNT
+            FROM STOCK_T S
+            JOIN STOCK_CATEGORY_T C
+              ON S.STOCK_CT_NO = C.STOCK_CT_NO
+            JOIN INVENTORY_STAT_T I
+              ON S.STOCK_NO = I.STOCK_NO
+           WHERE 1 = 1
+             AND I.FRN_NO = #{frnNo}
         <if test="stockCtNo != 0">
-            AND S.STOCK_CT_NO = #{stockCtNo}
+             AND S.STOCK_CT_NO = #{stockCtNo}
         </if>
     </select>
 
     <!-- 재고 카테고리 목록 조회 -->
     <select id="getStockCtList">
-        SELECT STOCK_CT_NO, STOCK_CT_NAME
-        FROM STOCK_CATEGORY_T
+            SELECT STOCK_CT_NO, STOCK_CT_NAME
+            FROM STOCK_CATEGORY_T
         ORDER BY STOCK_CT_NAME ASC
     </select>
 
     <!-- 재고 상세 조회 -->
     <select id="getStockDetail">
-        SELECT STOCK_NAME, STOCK_PRICE, STOCK_UNIT, STOCK_IMG, STOCK_DETAIL
-        FROM STOCK_T
-        WHERE STOCK_NO = #{stockNo}
+            SELECT STOCK_NAME, STOCK_PRICE, STOCK_UNIT, STOCK_IMG, STOCK_DETAIL
+            FROM STOCK_T
+           WHERE 1 = 1
+             AND STOCK_NO = #{stockNo}
     </select>
 
 </mapper>
