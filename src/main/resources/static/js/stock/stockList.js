@@ -1,6 +1,13 @@
 const modal = document.querySelector(".modal");         // 재고 상세 모달
 const btnClose = document.querySelector(".btn-close");  // 닫기 버튼
-let stockNameSort = '1';    // 재고명 정렬 상태 플래그
+
+// 페이지네이션 옵션 객체
+const optionObj = {
+    "pageNo": 1,
+    "stockCtNo": 0,
+    "sortKey": "stockName",
+    "sortOrder": 'ASC'
+};
 
 // 팝업 레이어 닫기
 btnClose.addEventListener("click", () =>
@@ -49,7 +56,7 @@ const addPageLinkEventFn = pageNo => {
             e.preventDefault(); // a 태그 기본 동작 방지
 
             const pageNo = pageLink.dataset.pageNo;
-            const optionObj = {"pageNo" : pageNo}
+            optionObj["pageNo"] = pageNo;
             getStockItemsFn(optionObj);
         })
 
@@ -73,29 +80,46 @@ const getStockItemsFn = async (optionObj) => {
     // 이벤트 재추가
     addStockRowEventFn();
     addPageLinkEventFn(optionObj.pageNo === undefined ? 1 : optionObj.pageNo);
-    stockNameSortFn();
+    addSortEventFn();
 }
 
 // 카테고리 구분 조회
 document.querySelector("#stock-ct").addEventListener("change", e => {
-    const optionObj = {"stockCtNo" : e.target.value}
+    optionObj["stockCtNo"] = e.target.value;
     getStockItemsFn(optionObj);
 })
 
-// 재고명 정렬
-const stockNameSortFn = () => {
+// 정렬 (재고명, 수량)
+const addSortEventFn = () => {
+    // 재고명 정렬
     document.querySelector("#stock-name-sort").addEventListener("click", e => {
-        stockNameSort = (stockNameSort === '1') ? '2' : '1';
-        console.log(stockNameSort);
-        const optionObj = {"stockNameSort" : stockNameSort};
+        if (optionObj["sortKey"] === "stockName")
+            optionObj["sortOrder"] = (optionObj["sortOrder"] === 'ASC') ? 'DESC' : 'ASC';
+
+        else {
+            optionObj["sortKey"] = "stockName";
+            optionObj["sortOrder"] = 'ASC';
+        }
+
         getStockItemsFn(optionObj);
     })
 
+    // 수량 정렬
+    document.querySelector("#is-count-sort").addEventListener("click", e => {
+        if (optionObj["sortKey"] === "isCount")
+            optionObj["sortOrder"] = (optionObj["sortOrder"] === 'ASC') ? 'DESC' : 'ASC';
+
+        else {
+            optionObj["sortKey"] = "isCount";
+            optionObj["sortOrder"] = 'ASC';
+        }
+        getStockItemsFn(optionObj);
+    })
 }
 
 // 초기화
 document.addEventListener("DOMContentLoaded", function () {
     addStockRowEventFn();
     addPageLinkEventFn(1);
-    stockNameSortFn();
+    addSortEventFn();
 })

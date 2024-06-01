@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class StockOptionDto {
-    private int frnNo;              // 가맹점번호
-    private int pageNo;             // 페이지번호
-    private int stockCtNo;          // 카테고리번호
-    private int stockNameSort;      // 재고명
-    private int isCountSort;        // 재고수량
+    private int frnNo;         // 가맹점번호
+    private int pageNo;        // 페이지번호
+    private int stockCtNo;     // 카테고리번호
+    private String sortKey;    // 정렬기준
+    private String sortOrder;  // 정렬순서
 }

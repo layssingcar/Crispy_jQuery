@@ -21,9 +21,13 @@
     <!-- 재고 현황 조회 -->
     <select id="getStockList">
             SELECT ROW_NUMBER() OVER(
-                   ORDER BY S.STOCK_NAME
+                   ORDER BY
                    <choose>
-                       <when test="stockNameSort == 2">DESC</when>
+                       <when test="sortKey == 'isCount'">I.IS_COUNT</when>
+                       <otherwise>S.STOCK_NAME</otherwise>
+                   </choose>
+                   <choose>
+                       <when test="sortOrder == 'DESC'">DESC</when>
                        <otherwise>ASC</otherwise>
                    </choose>
                    ) RN
