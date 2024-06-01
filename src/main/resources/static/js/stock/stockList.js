@@ -6,7 +6,7 @@ const optionObj = {
     "pageNo": 1,
     "stockCtNo": 0,
     "sortKey": "stockName",
-    "sortOrder": 'ASC'
+    "sortOrder": "ASC"
 };
 
 // 팝업 레이어 닫기
@@ -86,6 +86,9 @@ const getStockItemsFn = async (optionObj) => {
 // 카테고리 구분 조회
 document.querySelector("#stock-ct").addEventListener("change", e => {
     optionObj["stockCtNo"] = e.target.value;
+    optionObj["pageNo"] = 1;
+    optionObj["sortKey"] = "stockName";
+    optionObj["sortOrder"] = "ASC";
     getStockItemsFn(optionObj);
 })
 
@@ -94,11 +97,11 @@ const addSortEventFn = () => {
     // 재고명 정렬
     document.querySelector("#stock-name-sort").addEventListener("click", e => {
         if (optionObj["sortKey"] === "stockName")
-            optionObj["sortOrder"] = (optionObj["sortOrder"] === 'ASC') ? 'DESC' : 'ASC';
+            optionObj["sortOrder"] = (optionObj["sortOrder"] === "ASC") ? "DESC" : "ASC";
 
         else {
             optionObj["sortKey"] = "stockName";
-            optionObj["sortOrder"] = 'ASC';
+            optionObj["sortOrder"] = "ASC";
         }
 
         getStockItemsFn(optionObj);
@@ -107,12 +110,13 @@ const addSortEventFn = () => {
     // 수량 정렬
     document.querySelector("#is-count-sort").addEventListener("click", e => {
         if (optionObj["sortKey"] === "isCount")
-            optionObj["sortOrder"] = (optionObj["sortOrder"] === 'ASC') ? 'DESC' : 'ASC';
+            optionObj["sortOrder"] = (optionObj["sortOrder"] === "ASC") ? "DESC" : "ASC";
 
         else {
             optionObj["sortKey"] = "isCount";
-            optionObj["sortOrder"] = 'ASC';
+            optionObj["sortOrder"] = "ASC";
         }
+
         getStockItemsFn(optionObj);
     })
 }
