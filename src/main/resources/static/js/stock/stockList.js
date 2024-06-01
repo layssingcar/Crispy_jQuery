@@ -1,5 +1,6 @@
 const modal = document.querySelector(".modal");         // 재고 상세 모달
 const btnClose = document.querySelector(".btn-close");  // 닫기 버튼
+let stockNameSort = '1';    // 재고명 정렬 상태 플래그
 
 // 팝업 레이어 닫기
 btnClose.addEventListener("click", () =>
@@ -72,6 +73,7 @@ const getStockItemsFn = async (optionObj) => {
     // 이벤트 재추가
     addStockRowEventFn();
     addPageLinkEventFn(optionObj.pageNo === undefined ? 1 : optionObj.pageNo);
+    stockNameSortFn();
 }
 
 // 카테고리 구분 조회
@@ -80,8 +82,20 @@ document.querySelector("#stock-ct").addEventListener("change", e => {
     getStockItemsFn(optionObj);
 })
 
+// 재고명 정렬
+const stockNameSortFn = () => {
+    document.querySelector("#stock-name-sort").addEventListener("click", e => {
+        stockNameSort = (stockNameSort === '1') ? '2' : '1';
+        console.log(stockNameSort);
+        const optionObj = {"stockNameSort" : stockNameSort};
+        getStockItemsFn(optionObj);
+    })
+
+}
+
 // 초기화
 document.addEventListener("DOMContentLoaded", function () {
     addStockRowEventFn();
     addPageLinkEventFn(1);
+    stockNameSortFn();
 })

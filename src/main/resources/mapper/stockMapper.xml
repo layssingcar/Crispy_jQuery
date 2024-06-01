@@ -20,10 +20,16 @@
 
     <!-- 재고 현황 조회 -->
     <select id="getStockList">
-            SELECT ROW_NUMBER() OVER(ORDER BY S.STOCK_NAME) RN
-                 , S.STOCK_NO, S.STOCK_IMG, S.STOCK_NAME
-                 , C.STOCK_CT_NAME
-                 , I.IS_COUNT
+            SELECT ROW_NUMBER() OVER(
+                 ORDER BY S.STOCK_NAME
+                 <choose>
+                     <when test="stockNameSort == 2">DESC</when>
+                     <otherwise>ASC</otherwise>
+                 </choose>
+                 ) RN
+               , S.STOCK_NO, S.STOCK_IMG, S.STOCK_NAME
+               , C.STOCK_CT_NAME
+               , I.IS_COUNT
             FROM STOCK_T S
             JOIN STOCK_CATEGORY_T C
               ON S.STOCK_CT_NO = C.STOCK_CT_NO

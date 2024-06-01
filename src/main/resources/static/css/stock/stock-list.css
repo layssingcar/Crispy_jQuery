@@ -63,7 +63,10 @@
 }
 
 /* 재고명, 수량 정렬 */
-.stock-list .fa-sort {margin-left: 5px;}
+.stock-list .fa-sort {
+    margin-left: 5px;
+    cursor: pointer;
+}
 
 /* 데이터 셀 */
 .stock-list td {
