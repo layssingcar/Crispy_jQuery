@@ -8,6 +8,7 @@ import java.util.List;
 @Mapper
 public interface MapMapper {
 
+    // 가맹점 목록 및 정보조회
     List<MapDto> getMapList();
 
 }
