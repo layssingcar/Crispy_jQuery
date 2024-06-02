@@ -30,29 +30,37 @@ const employee = {
         this.setupEditableField(".btn-edit-empName", ".empName", ".btn-change-empName");
         this.setupEditableField(".btn-edit-empPhone", ".empPhone", ".btn-change-empPhone");
         this.setupEditableField(".btn-edit-empEmail", ".empEmail", ".btn-change-empEmail");
-
+        this.setupEditableField(".btn-edit-address", ".zipcode, .street-address, .detail-address", ".btn-change-address", true);
     },
-    setupEditableField: function(editButtonId, inputId, changeButtonId) {
+    setupEditableField: function(editButtonId, inputId, changeButtonId, isAddress = false) {
         const editButton = document.querySelector(editButtonId);
-        const inputElement = document.querySelector(inputId);
+        const inputElements = document.querySelectorAll(inputId);
         const changeButton = document.querySelector(changeButtonId);
-
-        let originalValue = inputElement.value;
+        const searchAddressButton = document.querySelector('.search-address');
 
         editButton?.addEventListener("click", () => {
-            inputElement.readOnly = false;
-            inputElement.focus();
+            inputElements.forEach(inputElement => {
+                inputElement.readOnly = false;
+                inputElement.focus();
+            });
             changeButton.style.display = 'inline';
             editButton.style.display = 'none';
             changeButton.disabled = true;
 
-            originalValue = inputElement.value;
+            if (isAddress) {
+                searchAddressButton.disabled = false;
+            }
         });
 
-        inputElement.addEventListener("input", () => {
-            changeButton.disabled = inputElement.value.trim() === originalValue.trim();
+        inputElements.forEach(inputElement => {
+            inputElement.addEventListener("input", () => {
+                const originalValues = Array.from(inputElements).map(input => input.defaultValue.trim());
+                const currentValues = Array.from(inputElements).map(input => input.value.trim());
+                changeButton.disabled = JSON.stringify(originalValues) === JSON.stringify(currentValues);
+            });
         });
     },
+
     updateAddress: function() {
         const empNo = document.querySelector(".empNo").value;
         const zipCode = document.querySelector('.zipcode').value;
@@ -66,10 +74,10 @@ const employee = {
             empDetail: detail
         };
 
-        fetch('/api/employee/address/v1', {
+        Auth.authenticatedFetch('/api/employee/address/v1', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify(addressData)
         }).then(response => {
@@ -80,6 +88,7 @@ const employee = {
             return response.json();
         }).then(data => {
             alert(data.message);
+            location.reload();
         }).catch(error => {
             console.error('Error updating address:', error);
             alert('주소 변경에 실패하였습니다.');
@@ -130,7 +139,7 @@ const employee = {
             empNo: parseInt(document.querySelector(".empNo").value),
             empPhone: document.querySelector(".empPhone").value,
         }
-        fetch("/api/employee/empPhone/v1", {
+        Auth.authenticatedFetch("/api/employee/empPhone/v1", {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -143,10 +152,9 @@ const employee = {
                 return response.json();
             }).then(data => {
             alert(data.message);
-            return location.reload();
+            location.reload();
         }).catch(error => {
-            console.error('Error updating address:', error);
-            alert('주소 변경에 실패하였습니다.');
+            alert('휴대폰 번호 변경에 실패하였습니다.');
         });
     },
     updateEmpSign: function () {
@@ -158,7 +166,7 @@ const employee = {
             empNo: empNo,
             empSign: empSign
         }
-        fetch('/api/employee/empSign/v1', {
+        Auth.authenticatedFetch('/api/employee/empSign/v1', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -166,15 +174,14 @@ const employee = {
             body: JSON.stringify(data)
         }).then(response => {
             if (!response.ok) {
-                throw new Error('Failed to update the address');
+                throw new Error('전자 서명 업데이트에 실패했습니다.');
             }
             return response.json();
         }).then(data => {
             alert(data.message);
             return location.reload();
         }).catch(error => {
-            console.error('Error updating address:', error);
-            alert('주소 변경에 실패하였습니다.');
+            alert(error);
         });
     },
     setupProfileImageUpload: function () {
@@ -207,7 +214,7 @@ const employee = {
             formData.append('file', file);  // 서버에서 요구하는 파라미터 이름('file')에 맞게 설정
         }
 
-        fetch("/api/employee/profileImg/v1", {
+        Auth.authenticatedFetch("/api/employee/profileImg/v1", {
             method: "POST",
             body: formData
         }).then(response => {
@@ -227,7 +234,8 @@ const employee = {
             empNo: parseInt(document.querySelector(".empNo").value),
             empName: document.querySelector(".empName").value,
         }
-        fetch("/api/employee/empName/v1", {
+        console.log(data)
+        Auth.authenticatedFetch("/api/employee/empName/v1", {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -242,7 +250,6 @@ const employee = {
             alert(data.message);
             return location.reload();
         }).catch(error => {
-            console.error('Error updating address:', error);
             alert('성함 변경에 실패하였습니다.');
         });
     },
@@ -252,7 +259,7 @@ const employee = {
             empNo: parseInt(document.querySelector(".empNo").value),
             posNo: selectedCheck,
         }
-        fetch("/api/employee/posNo/v1", {
+        Auth.authenticatedFetch("/api/employee/posNo/v1", {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -277,7 +284,7 @@ const employee = {
             empNo: parseInt(document.querySelector(".empNo").value),
             empStat: selectedCheck,
         }
-        fetch("/api/employee/empStat/v1", {
+        Auth.authenticatedFetch("/api/employee/empStat/v1", {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -296,6 +303,100 @@ const employee = {
             alert('재직 상태 변경에 실패하였습니다.');
         });
     },
+}
+document.querySelector('.editFormButton').addEventListener('click', function() {
+    toggleEditMode(true);
+});
+
+document.querySelector('.saveFormButton').addEventListener('click', function() {
+    saveForm();
+});
+
+function toggleEditMode(editMode) {
+    const inputs = document.querySelectorAll('.form-control');
+    const editButtons = document.querySelectorAll('.emp-modify-btn button, .btn-edit-address');
+    const changeAddressButton = document.querySelector('.btn-change-address');
+    const searchAddressButton = document.querySelector('.search-address');
+    const editFormButton = document.querySelector('.editFormButton');
+    const saveFormButton = document.querySelector('.saveFormButton');
+
+    inputs.forEach(input => {
+        input.readOnly = !editMode;
+    });
+
+    editButtons.forEach(button => {
+        button.style.display = editMode ? 'none' : 'inline-block';
+    });
+
+    changeAddressButton.style.display = editMode ? 'inline-block' : 'none';
+    searchAddressButton.disabled = !editMode;
+    searchAddressButton.style.display = editMode ? 'inline-block' : 'none';
+
+    editFormButton.style.display = editMode ? 'none' : 'inline-block';
+    saveFormButton.style.display = editMode ? 'inline-block' : 'none';
+}
+
+function saveForm() {
+    const empNo = document.querySelector('.empNo').value;
+    const empName = document.querySelector('.empName')?.value;
+    const empEmail = document.querySelector('.empEmail').value;
+    const empPhone = document.querySelector('.empPhone').value;
+    const empZip = document.querySelector('.zipcode').value;
+    const empStreet = document.querySelector('.street-address').value;
+    const empDetail = document.querySelector('.detail-address').value;
+    const posNo = document.querySelector("input[name='position']:checked")?.value;
+    const empStat = document.querySelector("input[name='empStat']:checked")?.value;
+
+    const data = {
+        empNo: empNo,
+        empName: empName,
+        empEmail: empEmail,
+        empPhone: empPhone,
+        empZip: empZip,
+        empStreet: empStreet,
+        empDetail: empDetail,
+        posNo: posNo,
+        empStat: empStat
+    };
+
+    const token = getCookie('accessToken');
+
+    Auth.authenticatedFetch(`/api/employee/form/v1`, {
+        method: "PUT",
+        headers: {
+            "Content-Type" : "application/json",
+            "Authorization": `Bearer ${token}` // ensure the token is included
+        },
+        body: JSON.stringify(data)
+    })
+        .then(response => {
+            if (response.status === 401) {
+                // 401 응답 처리
+                alert('인증되지 않은 사용자입니다. 다시 로그인해 주세요.');
+                window.location.href = '/login'; // 로그인 페이지로 리디렉션
+            } else {
+                return response.json();
+            }
+        })
+        .then(data => {
+            if (data.message) {
+                alert(data.message)
+                toggleEditMode(false);
+                location.reload()
+            } else {
+                alert('저장 중 오류가 발생했습니다.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('저장 중 오류가 발생했습니다.');
+        });
+}
+
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
 }
 document.addEventListener("DOMContentLoaded", function () {
     employee.init();

@@ -4,7 +4,6 @@ import com.mcp.crispy.employee.dto.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +25,7 @@ public interface EmployeeMapper {
 	Optional<FindEmployeeDto> findByEmpEmail(@Param("empEmail")String email, @Param("empName")String empName);
 
 	//비밀번호 변경
-	void updateEmpPw(@Param("empId")String username, @Param("empPw")String password);
+	void updateEmpPw(@Param("empId") String empId, @Param("empPw")String empPw, @Param("modifier") Integer modifier);
 
 	// 닉네임, 이메일에 해당하는 직원의 정보 찾기
 	Optional<FindEmployeeDto> findByEmpNameAndEmpEmail(@Param("empName") String empName, @Param("empEmail") String empEmail);
@@ -37,29 +36,39 @@ public interface EmployeeMapper {
 	// empNo에 맞는 직원 찾기
 	Optional<EmployeeDto> findEmployeeByEmpNo(Integer empNo);
 
-	// 주소 데이터가 존재하면 Update 존재하지 않으면 Insert
-	void insertOrUpdateAddress(EmpAddressDto empAddressDto);
+	// 번호에 맞는 직원 호출
+	int countByEmpNo(Integer empNo);
 
-	// 서명 데이터가 존재하면 Update 존재하지 않으면 Insert
-	void insertOrUpdateEmpSign(EmployeeSignDto employeeSignDto);
+	// 주소 수정
+	void updateAddress(@Param("updateDto") EmployeeUpdateDto employeeUpdateDto, @Param("modifier") Integer modifier);
 
-	// 프로필 이미지 데이터가 존재하면 Update 존재하지 않으면 Insert
-	void insertOrUpdateEmpProfile(EmployeeProfileDto employeeProfileDto);
+	// 전자 서명 수정
+	void updateEmpSign(EmployeeUpdateDto employeeUpdateDto);
 
-	// 전화번호 변경
-	void updateEmpPhone(@Param("empPhone") String empPhone, @Param("modifyDt") Date modifyDt,
-						@Param("modifier") Integer modifier, @Param("empNo") Integer empNo);
-	// 이름 변경
-	void updateEmpName(@Param("empName") String empName, @Param("modifyDt") Date modifyDt,
-					   @Param("modifier") Integer modifier, @Param("empNo") Integer empNo);
-	// 직책 변경
-	void updatePosNo(@Param("posNo") Position posNo, @Param("modifyDt") Date modifyDt,
-					 @Param("modifier") Integer modifier, @Param("empNo") Integer empNo);
+	// 프로필 수정
+	void updateEmpProfile(@Param("empProfile") String empProfile, @Param("empNo") Integer empNo,
+						  @Param("modifier") Integer modifier);
 
-	// 상태 변경
-	void updateEmpStat(@Param("empStat") EmpStatus empStat, @Param("modifier") Integer modifier, @Param("empNo") Integer empNo);
+	// 전화번호 수정
+	void updateEmpPhone(@Param("empPhone") String empPhone, @Param("empNo") Integer empNo,
+						@Param("modifier") Integer modifier);
+	// 이름 수정
+	void updateEmpName(@Param("empName") String empName, @Param("empNo") Integer empNo,
+					   @Param("modifier") Integer modifier);
+	// 직책 수정
+	void updatePosNo(@Param("posNo") Position posNo, @Param("empNo") Integer empNo,
+					 @Param("modifier") Integer modifier);
 
+	// 상태 수정
+	void updateEmpStat(@Param("empStat") EmpStatus empStat, @Param("empNo") Integer empNo,
+					   @Param("modifier") Integer modifier);
+
+	// 직원 검색
 	List<EmployeeDto> searchEmployees(@Param("empName") String empName, @Param("currentEmpNo") Integer empNo);
 
+	// 직원 초대
 	List<EmployeeDto> inviteEmployees(@Param("chatRoomNo") Integer chatRoomNo);
+
+	// 폼 수정 메소드
+	void updateFormEmployee(@Param("updateDto")EmployeeUpdateDto employeeUpdateDto, @Param("modifier")Integer modifier);
 }

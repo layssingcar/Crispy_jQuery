@@ -4,9 +4,16 @@
 <mapper namespace="com.mcp.crispy.admin.mapper.AdminMapper">
     <insert id="insertAdmin" parameterType="AdminDto">
         <selectKey keyProperty="adminNo" resultType="int" order="BEFORE">
-            SELECT ADMIN_SEQ.NEXTVAL FROM DUAL
+            SELECT ADMIN_SEQ.NEXTVAL
+            FROM DUAL
         </selectKey>
-        INSERT INTO ADMIN_T (ADMIN_NO, ADMIN_ID, ADMIN_PW)
-        VALUES (#{adminNo}, #{adminId}, #{adminPw})
+        INSERT INTO ADMIN_T (
+              ADMIN_NO
+            , ADMIN_ID
+            , ADMIN_PW
+        ) VALUES (
+              #{adminNo}
+            , #{adminId}
+            , #{adminPw})
     </insert>
 </mapper>
