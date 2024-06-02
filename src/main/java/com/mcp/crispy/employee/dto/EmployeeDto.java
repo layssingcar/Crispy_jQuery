@@ -13,6 +13,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Data
 public class EmployeeDto {
+
     private Integer empNo;
     private String empId;
     private String empPw;
@@ -39,4 +40,6 @@ public class EmployeeDto {
     private String posName;
     private Integer chatRoomNo;
     private EntryStat entryStat;
+    private String accessToken;
+    private String refreshToken;
 }
