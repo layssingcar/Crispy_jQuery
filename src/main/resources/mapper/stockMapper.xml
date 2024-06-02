@@ -67,4 +67,18 @@
                AND STOCK_NO = #{stockNo}
     </select>
 
+    <!-- 발주 재고 목록 조회 -->
+    <select id="getSelectStock">
+            SELECT C.STOCK_CT_NO, C.STOCK_CT_NAME
+                 , S.STOCK_NO, S.STOCK_NAME, S.STOCK_PRICE, S.STOCK_UNIT
+              FROM STOCK_T S
+              JOIN STOCK_CATEGORY_T C
+                ON S.STOCK_CT_NO = C.STOCK_CT_NO
+             WHERE 1=1
+               AND STOCK_NO IN
+               <foreach collection="list" item="stockNo" open="(" close=")" separator=", ">
+                   #{stockNo}
+               </foreach>
+          ORDER BY S.STOCK_NAME ASC
+    </select>
 </mapper>

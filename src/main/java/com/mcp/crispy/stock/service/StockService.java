@@ -57,4 +57,9 @@ public class StockService {
         return stockMapper.getStockDetail(stockNo);
     }
 
+    // 발주 재고 목록 조회
+    public List<StockDto> getStockList(List<Integer> stockNoList) {
+        return stockMapper.getSelectStock(stockNoList);
+    }
+
 }

@@ -1,5 +1,6 @@
 const modal = document.querySelector(".modal");         // 재고 상세 모달
 const btnClose = document.querySelector(".btn-close");  // 닫기 버튼
+const stockNoSet = new Set();   // 재고번호 Set
 
 // 페이지네이션 옵션 객체
 const optionObj = {
@@ -12,8 +13,8 @@ const optionObj = {
 
 // 재고 항목
 const addStockRowEventFn = () => {
-    const stockRows = document.querySelectorAll(".stock-row");           // 재고 항목
-    const checkList = document.querySelectorAll(".stock-row input");     // 체크박스 리스트
+    const stockRows = document.querySelectorAll(".stock-row");      // 재고 항목
+    const selectItem = document.querySelectorAll(".select-item");   // 체크박스 아이템
 
     // 재고 상세 조회
     stockRows.forEach(stockRow => {
@@ -25,10 +26,30 @@ const addStockRowEventFn = () => {
     })
 
     // 체크박스
-    checkList.forEach(checkbox => {
-        checkbox.addEventListener("click", e => {
+    selectItem.forEach(item => {
+        item.addEventListener("click", e => {
             e.stopPropagation(); // 이벤트 버블링 중단
         })
+
+        item.addEventListener("change", e => {
+            const stockNo = e.target.closest("tr").dataset.stockNo;
+            if (item.checked) stockNoSet.add(stockNo);
+            else stockNoSet.delete(stockNo);
+        })
+
+        if (stockNoSet.has(item.closest("tr").dataset.stockNo))
+            item.checked = true;
+    })
+
+    // 체크박스 전체 선택
+    document.querySelector("#select-all").addEventListener("change", e => {
+        selectItem.forEach(item => {
+            item.checked = e.target.checked;
+
+            const stockNo = item.closest("tr").dataset.stockNo;
+            if (item.checked) stockNoSet.add(stockNo);
+            else stockNoSet.delete(stockNo);
+        });
     })
 }
 
@@ -130,4 +151,22 @@ document.addEventListener("DOMContentLoaded", function () {
     addStockRowEventFn();
     addPageLinkEventFn(1);
     addSortEventFn();
+})
+
+// 발주 신청
+document.querySelector("#order").addEventListener("click", () => {
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = "/crispy/stock-order";
+
+    stockNoSet.forEach(stockNo => {
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "stockNo";
+        input.value = stockNo;
+        form.append(input);
+    });
+
+    document.querySelector("body").append(form);
+    form.submit();
 })

@@ -22,4 +22,7 @@ public interface StockMapper {
     // 재고 상세 조회
     StockDto getStockDetail(int stockNo);
 
+    // 발주 재고 목록 조회
+    List<StockDto> getSelectStock(List<Integer> stockNoList);
+
 }
