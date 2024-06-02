@@ -87,3 +87,9 @@
     margin-top: 20px;
     width: 420px !important;
 }
+
+.error-message {
+    display: none;
+    color: red;
+    font-size: 1.5rem;
+}

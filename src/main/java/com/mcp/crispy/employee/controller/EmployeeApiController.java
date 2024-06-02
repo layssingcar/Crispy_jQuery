@@ -8,16 +8,20 @@ import com.mcp.crispy.employee.dto.FindEmployeeDto;
 import com.mcp.crispy.employee.dto.PasswordChangeDto;
 import com.mcp.crispy.employee.service.EmployeeService;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
@@ -85,15 +89,27 @@ public class EmployeeApiController {
      * @return ResponseEntity
      */
     @PutMapping("/empPw/v1")
-    public ResponseEntity<Map<String, String>> changeEmployeePassword(@RequestBody PasswordChangeDto passwordChangeDto, HttpServletResponse response) {
+    public ResponseEntity<Map<String, String>> changeEmployeePassword(@Valid @RequestBody PasswordChangeDto passwordChangeDto,
+                                                                      BindingResult bindingResult,
+                                                                      HttpServletResponse response) {
+
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                String field = error.getField();
+                String message = error.getDefaultMessage();
+                errors.put(field, message);
+            }
+            return ResponseEntity.badRequest().body(errors);
+        }
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         EmployeeDto employee = employeeService.getEmployeeName(auth.getName());
-        employeeService.updateEmployeePassword(passwordChangeDto.getEmpId(), passwordChangeDto.getNewPassword(), employee.getEmpNo());
+        employeeService.updateEmployeePassword(passwordChangeDto.getEmpId(), passwordChangeDto, employee.getEmpNo());
         CookieUtil.deleteCookie(response, "accessToken");
         CookieUtil.deleteCookie(response, "refreshToken");
         return ResponseEntity.ok(Map.of("message", "비밀번호가 성공적으로 업데이트 되었습니다. 다시 로그인 해주세요."));
     }
-
 
     /**
      * 주소 변경

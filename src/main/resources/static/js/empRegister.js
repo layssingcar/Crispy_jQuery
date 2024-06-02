@@ -5,13 +5,15 @@ const empRegister = {
             _this.registerEmployee();
         });
     },
+
     registerEmployee: function () {
+
         const employeeData = {
-            empId: document.getElementById("emp-register-empId").value,
-            empName: document.getElementById("emp-register-empName").value,
-            empPhone: document.getElementById("emp-register-empPhone").value,
-            empEmail: document.getElementById("emp-register-empEmail").value,
-            empInDt: document.getElementById("emp-register-empInDt").value,
+            empId: document.querySelector(".empId").value,
+            empName: document.querySelector(".empName").value,
+            empPhone: document.querySelector(".empPhone").value,
+            empEmail: document.querySelector(".empEmail").value,
+            empInDt: document.querySelector(".empInDt")?.value,
             posNo: parseInt(document.querySelector("input[name='posNo']:checked")?.value, 10)
         };
 
@@ -21,18 +23,37 @@ const empRegister = {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(employeeData)
-        }).then(response => response.json())
-            .then(data => {
+        }).then(response => {
+            if (response.status === 400) {
+                return response.json().then(errors => {
+                    this.displayValidationErrors(errors);
+                    throw new Error("Validation errors");
+                });
+            }
+            return response.json();
+        }).then(data => {
+            if (data.message) {
                 alert("직원 등록이 완료되었습니다.");
                 window.location.href = "/crispy/owner/employees"; // 성공 페이지로 이동
-            })
-            .catch(error => {
-                console.error("Error:", error);
+            }
+        }).catch(error => {
+            if (error.message !== "Validation errors") {
                 alert("등록에 실패했습니다.");
-            });
+            }
+        });
+    },
+
+    displayValidationErrors: function (errors) {
+        Object.keys(errors).forEach(field => {
+            const errorContainer = document.querySelector(`.${field}-error`);
+            if (errorContainer) {
+                errorContainer.textContent = errors[field];
+                errorContainer.style.display = 'block';
+            }
+        });
     },
 }
 
 document.addEventListener("DOMContentLoaded", function () {
     empRegister.init();
-})
+});

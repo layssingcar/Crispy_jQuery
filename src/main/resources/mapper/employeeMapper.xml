@@ -55,7 +55,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             , #{empEmail}
             , #{empPhone}
             , #{empProfile}
-            , #{empInDt}
+            , #{empInDt, jdbcType=DATE}
             , #{empStat, typeHandler=com.mcp.crispy.common.typehandler.EmpStatusTypeHandler}
             , #{frnNo}
             , #{posNo, typeHandler=com.mcp.crispy.common.typehandler.PositionTypeHandler}
@@ -341,4 +341,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             WHERE 1 = 1
               AND E.EMP_NO = #{updateDto.empNo}
     </update>
+
+    <!-- 아이디 중복 검증 -->
+    <select id="existsByEmpId"
+            resultType="boolean">
+            SELECT CASE WHEN COUNT(*) > 0
+            THEN 1
+            ELSE 0 END
+            FROM EMPLOYEE_T E
+            WHERE 1 = 1
+            AND E.EMP_ID = #{empId}
+    </select>
+
+    <!-- 이메일 중복 검증 -->
+    <select id="existsByEmpEmail"
+            resultType="boolean">
+        SELECT CASE WHEN COUNT(*) > 0
+                        THEN 1
+                    ELSE 0 END
+        FROM EMPLOYEE_T E
+        WHERE 1 = 1
+          AND E.EMP_EMAIL = #{empEmail}
+    </select>
 </mapper>

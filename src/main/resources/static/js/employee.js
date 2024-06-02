@@ -96,7 +96,7 @@ const employee = {
     },
     changePassword: function () {
         const passwordForm = document.getElementById("passwordForm");
-        if(passwordForm) {
+        if (passwordForm) {
             passwordForm.addEventListener("submit", function (e) {
                 e.preventDefault();
 
@@ -105,7 +105,8 @@ const employee = {
                     currentPassword: document.getElementById("current-pw").value,
                     newPassword: document.getElementById("new-pw").value,
                     confirmPassword: document.getElementById("confirm-pw").value
-                }
+                };
+
                 // 서버로 데이터 전송
                 fetch("/api/employee/empPw/v1", {
                     method: 'PUT',
@@ -115,23 +116,37 @@ const employee = {
                     body: JSON.stringify(data)
                 })
                     .then(response => {
-                        if(!response.ok) {
+                        if (!response.ok) {
                             return response.json().then(data => Promise.reject(data));
                         }
-                        alert("비밀번호가 성공적으로 변경 되었습니다.");
+
+                        // 모든 에러 필드를 숨김
+                        const errorFields = document.querySelectorAll('.error-message');
+                        errorFields.forEach(errorField => {
+                            errorField.style.display = 'none';
+                            errorField.textContent = '';
+                        });
+
+                        alert("비밀번호가 성공적으로 변경되었습니다.");
                         location.href = "/crispy/login";
-                        return response.json();
                     })
                     .catch(error => {
+                        // 검증 실패 시 에러 메시지 표시
+                        const errorFields = document.querySelectorAll('.error-message');
+                        errorFields.forEach(errorField => {
+                            errorField.style.display = 'none';
+                            errorField.textContent = '';
+                        });
+
                         Object.entries(error).forEach(([key, value]) => {
                             const errorContainer = document.getElementById(`${key}-error`);
-                            if(errorContainer) {
+                            if (errorContainer) {
                                 errorContainer.textContent = value;
                                 errorContainer.style.display = "block";
                             }
-                        })
-                    })
-            })
+                        });
+                    });
+            });
         }
     },
     changeEmpPhone: function () {
@@ -304,11 +319,11 @@ const employee = {
         });
     },
 }
-document.querySelector('.btn-edit-form').addEventListener('click', function() {
+document.querySelector('.btn-edit-form')?.addEventListener('click', function() {
     toggleEditMode(true);
 });
 
-document.querySelector('.btn-save-form').addEventListener('click', function() {
+document.querySelector('.btn-save-form')?.addEventListener('click', function() {
     saveForm();
 });
 

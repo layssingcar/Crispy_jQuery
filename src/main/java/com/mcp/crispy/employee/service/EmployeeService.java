@@ -1,6 +1,7 @@
 package com.mcp.crispy.employee.service;
 
 import com.mcp.crispy.common.ImageService;
+import com.mcp.crispy.common.validator.PasswordChangeValidator;
 import com.mcp.crispy.email.service.EmailService;
 import com.mcp.crispy.employee.dto.*;
 import com.mcp.crispy.employee.mapper.EmployeeMapper;
@@ -28,6 +29,8 @@ public class EmployeeService {
     private final OwnerNameService ownerNameService;
     private final ImageService imageService;
     private final PasswordEncoder passwordEncoder;
+    private final PasswordChangeValidator passwordChangeValidator;
+
 
 
     // 직원 아이디로 직원 정보 가져오기
@@ -55,10 +58,18 @@ public class EmployeeService {
 
     // 비밀번호 변경 ( 자신이 변경하는 거 )
     @Transactional
-    public void updateEmployeePassword(String empId, String empPw, Integer modifier) {
-        String encodedPassword = passwordEncoder.encode(empPw);
+    public void updateEmployeePassword(String empId, PasswordChangeDto passwordChangeDto,Integer modifier) {
+        EmployeeDto employeeDto = employeeMapper.findByUsername(empId)
+                .orElseThrow(() -> new UsernameNotFoundException("직원이 존재하지 않습니다."));
+
+        log.info("passwordChangeDto: {} {}", passwordChangeDto.getNewPassword(), passwordChangeDto.getConfirmPassword());
+        passwordChangeValidator.validatePassword(passwordChangeDto, employeeDto);
+
+        String encodedPassword = passwordEncoder.encode(passwordChangeDto.getNewPassword());
         employeeMapper.updateEmpPw(empId, encodedPassword, modifier);
     }
+
+
 
     // 임시 비밀번호로 변경 ( 관리자가 변경해주는 거)
     @Async
@@ -73,7 +84,6 @@ public class EmployeeService {
         employeeMapper.updateEmpPw(employee.getEmpId(), encodedPassword, modifier);
         emailService.sendTempPasswordEmail(email, tempPassword);
     }
-
 
     //  파라미터에 empId가 존재하면 비밀번호 찾기, empId가 존재하지 않으면 아이디 찾기
     public boolean checkEmployeeExists(String empName, String empEmail, String empId) {
@@ -198,5 +208,17 @@ public class EmployeeService {
     @Transactional
     public void updateFormEmployee(EmployeeUpdateDto employeeUpdateDto, Integer modifier) {
         employeeMapper.updateFormEmployee(employeeUpdateDto, modifier);
+    }
+
+    // 아이디 중복 검증
+    @Transactional
+    public boolean existsByEmpId(String empId) {
+        return employeeMapper.existsByEmpId(empId);
+    }
+
+    // 이메일 중복 검증
+    @Transactional
+    public boolean existsByEmail(String email) {
+        return employeeMapper.existsByEmpEmail(email);
     }
 }

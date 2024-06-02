@@ -40,4 +40,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(Map.of("error", ex.getMessage()));
     }
 
+    @ExceptionHandler(PasswordException.class)
+    public ResponseEntity<Map<String, String >> handlePasswordException(PasswordException ex) {
+        return ResponseEntity.badRequest().body(Map.of(ex.getField(), ex.getMessage()));
+    }
+
 }

@@ -71,4 +71,9 @@ public interface EmployeeMapper {
 
 	// 폼 수정 메소드
 	void updateFormEmployee(@Param("updateDto")EmployeeUpdateDto employeeUpdateDto, @Param("modifier")Integer modifier);
+
+	// 아이디 중복 검증
+	boolean existsByEmpId(String empId);
+	// 이메일 중복 검증
+	boolean existsByEmpEmail(String empEmail);
 }
