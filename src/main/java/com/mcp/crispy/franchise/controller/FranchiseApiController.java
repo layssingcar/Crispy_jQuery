@@ -32,7 +32,7 @@ public class FranchiseApiController {
     @PostMapping("/register/v1")
     public ResponseEntity<Map<String, String>> registerFranchise(@Valid @RequestBody FranchiseRegistrationRequest request) {
 
-        franchiseService.registerFranchiseAndOwner(request.getFranchiseRegisterDto(), request.getOwnerRegisterDto());
+        franchiseService.registerFranchiseAndOwner(request.getFranchise(), request.getOwner());
         return ResponseEntity.ok(Map.of("message", "가맹점 등록이 성공적으로 되었습니다."));
     }
 
