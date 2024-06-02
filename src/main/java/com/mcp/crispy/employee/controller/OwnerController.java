@@ -1,7 +1,7 @@
 package com.mcp.crispy.employee.controller;
 
+import com.mcp.crispy.auth.domain.EmployeePrincipal;
 import com.mcp.crispy.common.annotation.IsOwner;
-import com.mcp.crispy.common.userdetails.CustomDetails;
 import com.mcp.crispy.employee.dto.EmployeeDto;
 import com.mcp.crispy.employee.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
@@ -22,22 +22,43 @@ public class OwnerController {
 
     private final EmployeeService employeeService;
 
+    /**
+     * 직원 등록
+     * 배영욱 (24.05.15)
+     * @return forward (employee-register.html)
+     */
     @IsOwner
     @GetMapping("/employee/register")
     public String registerEmployee() {
         return "owner/employee-register";
     }
 
+    /**
+     * 직원 목록
+     * 배영욱 (24. 05. 15)
+     * @param authentication 인증 정보
+     * @param model 모델 객체
+     * @return forward (employees.html)
+     */
     @IsOwner
     @GetMapping("/employees")
     public String getListEmployees(Authentication authentication, Model model) {
-        CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
+        EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
         int frnNo = userDetails.getFrnNo();
         model.addAttribute("frnNo", frnNo);
         return "owner/employees";
     }
 
-    // 관리자가 직원 정보 정보 수정할때 사용하는 페이지 가입승인 필요시 가입승인 버튼 동적으로 생성해줌
+    /**
+     * 직원 상세 정보
+     * 관리자가 직원 정보를 수정할 수 있는 페이지. 가입 승인 버튼을 동적으로 생성.
+     * 배영욱(24. 05. 20)
+     *
+     * @param principal 현재 인증된 사용자 정보
+     * @param model 모델 객체
+     * @return forward employee-detail.html
+     */
+    @IsOwner
     @GetMapping("/employeeDetail")
     public String employee(Principal principal, Model model) {
         EmployeeDto employee = employeeService.getEmployeeName(principal.getName());

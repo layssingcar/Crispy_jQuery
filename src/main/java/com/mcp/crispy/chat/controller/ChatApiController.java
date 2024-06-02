@@ -1,12 +1,12 @@
 package com.mcp.crispy.chat.controller;
 
+import com.mcp.crispy.auth.domain.EmployeePrincipal;
 import com.mcp.crispy.chat.dto.ChatMessageDto;
 import com.mcp.crispy.chat.dto.ChatRoomDto;
 import com.mcp.crispy.chat.dto.CrEmpDto;
 import com.mcp.crispy.chat.dto.UnreadMessageCountDto;
 import com.mcp.crispy.chat.mapper.ChatMapper;
 import com.mcp.crispy.chat.service.ChatService;
-import com.mcp.crispy.common.userdetails.CustomDetails;
 import com.mcp.crispy.employee.dto.EmployeeDto;
 import com.mcp.crispy.employee.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +44,7 @@ public class ChatApiController {
      */
     @GetMapping("/rooms/v1")
     public List<ChatRoomDto> getChatRooms(Authentication authentication) {
-        CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
+        EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
 
         return chatService.getChatRooms(userDetails.getEmpNo());
     }
@@ -69,7 +69,7 @@ public class ChatApiController {
      */
     @GetMapping("/rooms/{chatRoomNo}/messages/v1")
     public List<ChatMessageDto> getMessages(@PathVariable Integer chatRoomNo, Authentication authentication) {
-        CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
+        EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
         return chatService.getMessages(chatRoomNo, userDetails.getEmpNo());
     }
 
@@ -110,7 +110,7 @@ public class ChatApiController {
      */
     @PostMapping("/rooms/{chatRoomNo}/leave/v1")
     public ResponseEntity<Map<String, String>> leaveChatRoom(@PathVariable Integer chatRoomNo, Authentication authentication) {
-        CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
+        EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
         chatService.updateEntryStat(chatRoomNo, userDetails.getEmpNo());
         return ResponseEntity.ok().body(Map.of("message","채팅방을 나갔습니다."));
     }
@@ -136,7 +136,7 @@ public class ChatApiController {
     @MessageMapping("/roomUpdate")
     public void roomUpdate(Authentication authentication) {
         if(authentication != null && authentication.isAuthenticated()) {
-            CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
+            EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
             List<ChatRoomDto> chatRooms = chatService.getChatRooms(userDetails.getEmpNo());
             messagingTemplate.convertAndSendToUser(userDetails.getUsername(), "/queue/roomUpdate", chatRooms);
         }
@@ -155,7 +155,7 @@ public class ChatApiController {
                 // 관리자는 읽지 않은 메시지 개수를 계산하지 않습니다.
                 return;
             }
-            CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
+            EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
             int totalUnread = chatService.getUnreadCounts(userDetails.getEmpNo());
             log.info("total Unread: {}", totalUnread);
             // 사용자에게 개수 반환
@@ -172,7 +172,7 @@ public class ChatApiController {
      */
     @PostMapping("/rooms/{chatRoomNo}/access/v1")
     public ResponseEntity<?> addAccessRecord(@PathVariable Integer chatRoomNo, Authentication authentication) {
-        CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
+        EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
         chatService.handleAccess(chatRoomNo, userDetails.getEmpNo());
         int totalUnread = chatService.getUnreadCounts(userDetails.getEmpNo());
         log.info("총 갯수 몇개: {}", totalUnread);
@@ -203,7 +203,7 @@ public class ChatApiController {
      */
     @PostMapping("/rooms/{chatRoomNo}/exit/v1")
     public ResponseEntity<Void> handleExitRecord(@PathVariable Integer chatRoomNo, Authentication authentication) {
-        CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
+        EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
         chatService.handleExitRecord(chatRoomNo, userDetails.getEmpNo());
         return ResponseEntity.ok().build();
     }
@@ -217,7 +217,7 @@ public class ChatApiController {
      */
     @GetMapping("/rooms/unreadCount/v1")
     public ResponseEntity<List<UnreadMessageCountDto>> getUnreadMessageCount(Authentication authentication) {
-        CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
+        EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
         List<UnreadMessageCountDto> unreadMessageCount = chatService.getUnreadMessageCount(userDetails.getEmpNo());
         log.info("unreadMessageCount: {}", unreadMessageCount);
         return ResponseEntity.ok(unreadMessageCount);
@@ -232,7 +232,7 @@ public class ChatApiController {
      */
     @PostMapping("/rooms/{chatRoomNo}/toggleAlarm/v1")
     public ResponseEntity<Void> toggleAlarm(@PathVariable Integer chatRoomNo, Authentication authentication) {
-        CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
+        EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
         chatService.toggleAlarmStat(chatRoomNo, userDetails.getEmpNo());
         return ResponseEntity.ok().build();
     }
@@ -245,7 +245,7 @@ public class ChatApiController {
      */
     @GetMapping("/employees/v1")
     public ResponseEntity<List<EmployeeDto>> getAllEmployees(Authentication authentication) {
-        CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();;
+        EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();;
         List<EmployeeDto> employees = employeeService.getAllEmployees(userDetails.getEmpNo());
         return ResponseEntity.ok(employees);
     }
@@ -259,7 +259,7 @@ public class ChatApiController {
      */
     @PostMapping("/employees/search/v1")
     public ResponseEntity<List<EmployeeDto>> searchEmployees(@RequestBody EmployeeDto employeeDto, Authentication authentication) {
-        CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
+        EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
         List<EmployeeDto> employees = employeeService.getSearchEmployees(employeeDto, userDetails.getEmpNo());
         log.info("employees: {}", employees);
         return ResponseEntity.ok(employees);
@@ -286,7 +286,7 @@ public class ChatApiController {
     @MessageMapping("/fetchChatRooms")
     @SendToUser("/queue/chatRooms")
     public void fetchChatRooms(Authentication authentication) {
-        CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
+        EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
         List<ChatRoomDto> chatRooms = chatService.getChatRooms(userDetails.getEmpNo());
         log.info("Fetching chat rooms for user: {}", userDetails.getUsername()); // 추가된 로그
         log.info("Fetching chat rooms for user: {}", chatRooms.toString());
@@ -303,14 +303,14 @@ public class ChatApiController {
      */
     @GetMapping("/rooms/{chatRoomNo}/lastAccessTime/v1")
     public ResponseEntity<Date> getLastAccessTime(@PathVariable Integer chatRoomNo, Authentication authentication) {
-        CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
+        EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
         Date lastAccessTime = chatService.getLastAccessTime(chatRoomNo, userDetails.getEmpNo());
         return ResponseEntity.ok(lastAccessTime);
     }
 
     @GetMapping("/rooms/{chatRoomNo}/unreadMessages/v1")
     public ResponseEntity<List<ChatMessageDto>> getUnreadMessages(@PathVariable Integer chatRoomNo, Authentication authentication) {
-        CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
+        EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
         List<ChatMessageDto> unreadMessages = chatService.getUnreadMessages(chatRoomNo, userDetails.getEmpNo());
         return ResponseEntity.ok(unreadMessages);
     }
