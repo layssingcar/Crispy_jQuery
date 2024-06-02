@@ -1,6 +1,6 @@
 package com.mcp.crispy.employee.controller;
 
-import com.mcp.crispy.email.service.AuthenticationService;
+import com.mcp.crispy.email.service.EmailVerificationService;
 import com.mcp.crispy.employee.dto.*;
 import com.mcp.crispy.employee.service.EmployeeService;
 import jakarta.servlet.http.HttpSession;
@@ -22,7 +22,7 @@ import java.util.Map;
 public class EmployeeApiController {
 
     private final EmployeeService employeeService;
-    private final AuthenticationService authenticationService;
+    private final EmailVerificationService emailVerificationService;
 
     /**
      * 아이디 찾기, 비밀번호 찾기 메소드
@@ -35,7 +35,7 @@ public class EmployeeApiController {
         if(!employeeExists) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "일치하는 회원 정보가 없습니다."));
         }
-        authenticationService.sendAndSaveVerificationCode(findEmployeeDto.getEmpEmail());
+        emailVerificationService.sendAndSaveVerificationCode(findEmployeeDto.getEmpEmail());
         return ResponseEntity.ok().body(Map.of("message", "인증 코드가 발송되었습니다."));
     }
 
@@ -98,13 +98,6 @@ public class EmployeeApiController {
         return ResponseEntity.ok(Map.of("message", "휴대폰번호가 변경되었습니다."));
     }
 
-    /**
-     * 직원 이름 변경
-     * 배영욱 (24. 05. 20)
-     * @param employeeUpdateDto
-     * @param principal
-     * @return
-     */
     @PutMapping("/empName/v1")
     public ResponseEntity<Map<String, String>> changeEmpName(@RequestBody EmployeeUpdateDto employeeUpdateDto,
                                            Principal principal) {
@@ -114,13 +107,6 @@ public class EmployeeApiController {
         return ResponseEntity.ok(Map.of("message", "이름이 변경되었습니다."));
     }
 
-    /**
-     * 직책 변경
-     * 배영욱 (24. 05. 20)
-     * @param employeeUpdateDto
-     * @param principal
-     * @return
-     */
     @PutMapping("/posNo/v1")
     public ResponseEntity<Map<String, String>> changePosNo(@RequestBody EmployeeUpdateDto employeeUpdateDto,
                                            Principal principal) {
@@ -131,13 +117,6 @@ public class EmployeeApiController {
         return ResponseEntity.ok(Map.of("message", "직책이 변경되었습니다."));
     }
 
-    /**
-     * 재직 상태 변경
-     * 배영욱 (24. 05. 21)
-     * @param employeeUpdateDto
-     * @param principal
-     * @return
-     */
     @PutMapping("/empStat/v1")
     public ResponseEntity<Map<String, String>> changeEmpStat(@RequestBody EmployeeUpdateDto employeeUpdateDto,
                                            Principal principal) {

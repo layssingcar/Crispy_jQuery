@@ -16,10 +16,11 @@ import static com.mcp.crispy.common.utils.RandomCodeUtils.generateVerificationCo
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AuthenticationService {
+public class EmailVerificationService {
 
     private final EmailVerificationMapper emailVerificationMapper;
     private final EmailService emailService;
+
     //인증번호 전송 및 인증테이블에 저장
     @Transactional
     public void sendAndSaveVerificationCode(String verifyEmail) {
