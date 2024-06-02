@@ -25,6 +25,7 @@ public class EmployeeService {
 
     private final EmployeeMapper employeeMapper;
     private final EmailService emailService;
+    private final OwnerNameService ownerNameService;
     private final ImageService imageService;
     private final PasswordEncoder passwordEncoder;
 
@@ -155,6 +156,7 @@ public class EmployeeService {
         int count = employeeMapper.countByEmpNo(empNo);
         if (count > 0) {
             employeeMapper.updateEmpName(empName, empNo, modifier);
+            ownerNameService.updateFrnOwnerIfEmployee(empNo, empName, modifier);
         } else {
             throw new IllegalArgumentException("해당하는 직원이 존재하지 않습니다.");
         }

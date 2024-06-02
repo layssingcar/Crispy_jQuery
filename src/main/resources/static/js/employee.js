@@ -304,11 +304,11 @@ const employee = {
         });
     },
 }
-document.querySelector('.editFormButton').addEventListener('click', function() {
+document.querySelector('.btn-edit-form').addEventListener('click', function() {
     toggleEditMode(true);
 });
 
-document.querySelector('.saveFormButton').addEventListener('click', function() {
+document.querySelector('.btn-save-form').addEventListener('click', function() {
     saveForm();
 });
 
@@ -317,8 +317,8 @@ function toggleEditMode(editMode) {
     const editButtons = document.querySelectorAll('.emp-modify-btn button, .btn-edit-address');
     const changeAddressButton = document.querySelector('.btn-change-address');
     const searchAddressButton = document.querySelector('.search-address');
-    const editFormButton = document.querySelector('.editFormButton');
-    const saveFormButton = document.querySelector('.saveFormButton');
+    const btnEditForm = document.querySelector('.btn-edit-form');
+    const btnSaveForm = document.querySelector('.btn-save-form');
 
     inputs.forEach(input => {
         input.readOnly = !editMode;
@@ -328,12 +328,12 @@ function toggleEditMode(editMode) {
         button.style.display = editMode ? 'none' : 'inline-block';
     });
 
-    changeAddressButton.style.display = editMode ? 'inline-block' : 'none';
+    changeAddressButton.style.display = editMode ? 'none' : 'none';
     searchAddressButton.disabled = !editMode;
     searchAddressButton.style.display = editMode ? 'inline-block' : 'none';
 
-    editFormButton.style.display = editMode ? 'none' : 'inline-block';
-    saveFormButton.style.display = editMode ? 'inline-block' : 'none';
+    btnEditForm.style.display = editMode ? 'none' : 'inline-block';
+    btnSaveForm.style.display = editMode ? 'inline-block' : 'none';
 }
 
 function saveForm() {
