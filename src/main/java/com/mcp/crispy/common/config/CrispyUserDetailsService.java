@@ -31,7 +31,7 @@ public class CrispyUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         // 관리자 검색
-        AdminDto admin = adminMapper.findByUsername(username);
+        AdminDto admin = adminMapper.selectAdmin(username);
         if (admin != null) {
             // 관리자 권한 설정
             List<GrantedAuthority> authorities = new ArrayList<>();

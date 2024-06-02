@@ -11,8 +11,7 @@ public class AdminService {
 
     private final AdminMapper adminMapper;
 
-
     public AdminDto getAdmin(String adminId) {
-        return adminMapper.findByUsername(adminId);
+        return adminMapper.selectAdmin(adminId);
     }
 }
