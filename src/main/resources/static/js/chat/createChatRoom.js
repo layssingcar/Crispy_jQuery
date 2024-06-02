@@ -27,7 +27,7 @@ const createChatRoom = {
     },
 
     loadUserList: function() {
-        fetch(`/api/chat/employees/v1`)
+        fetch(`/api/chat/others/v1`)
             .then(response => response.json())
             .then(data => this.displayUserList(data))
             .catch(error => console.error('Error fetching user list:', error));

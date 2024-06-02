@@ -243,7 +243,7 @@ public class ChatApiController {
      * @param authentication
      * @return
      */
-    @GetMapping("/employees/v1")
+    @GetMapping("/others/v1")
     public ResponseEntity<List<EmployeeDto>> getAllEmployees(Authentication authentication) {
         EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();;
         List<EmployeeDto> employees = employeeService.getAllEmployees(userDetails.getEmpNo());
