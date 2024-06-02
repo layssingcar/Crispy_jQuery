@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FranchiseRegistrationRequest {
-    private FranchiseDto franchiseDto;
+    private FranchiseRegisterDto franchiseRegisterDto;
     private OwnerRegisterDto ownerRegisterDto;
 }
