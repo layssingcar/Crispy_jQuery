@@ -16,6 +16,9 @@
                <if test="stockCtNo != 0">
                    AND S.STOCK_CT_NO = #{stockCtNo}
                </if>
+               <if test="stockNameSearch != null">
+                   AND S.STOCK_NAME LIKE '%' || #{stockNameSearch} || '%'
+               </if>
     </select>
 
     <!-- 재고 현황 조회 -->
@@ -43,6 +46,9 @@
                AND I.FRN_NO = #{frnNo}
                <if test="stockCtNo != 0">
                    AND S.STOCK_CT_NO = #{stockCtNo}
+               </if>
+               <if test="stockNameSearch != null">
+                   AND S.STOCK_NAME LIKE '%' || #{stockNameSearch} || '%'
                </if>
     </select>
 

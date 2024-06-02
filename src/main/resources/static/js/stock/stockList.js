@@ -7,6 +7,7 @@ const optionObj = {
     "stockCtNo": 0,         // 카테고리번호
     "sortKey": "stockName", // 정렬기준
     "sortOrder": "ASC",     // 정렬순서
+    "stockNameSearch": ""   // 재고명검색
 };
 
 // 재고 항목
@@ -53,6 +54,13 @@ const addPageLinkEventFn = pageNo => {
             pageLink.parentElement.classList.add("active");
     })
 }
+
+// 재고명 검색
+document.querySelector("#search").addEventListener("input", e => {
+    optionObj["stockNameSearch"] = e.target.value;
+    optionObj["pageNo"] = 1;
+    getStockItemsFn(optionObj);
+})
 
 // 카테고리 구분 조회
 document.querySelector("#stock-ct").addEventListener("change", e => {
