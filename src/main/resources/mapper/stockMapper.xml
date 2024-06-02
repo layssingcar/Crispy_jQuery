@@ -7,9 +7,9 @@
     <select id="getStockCount">
             SELECT COUNT(*)
               FROM STOCK_T S
-              JOIN STOCK_CATEGORY_T C
+        INNER JOIN STOCK_CATEGORY_T C
                 ON S.STOCK_CT_NO = C.STOCK_CT_NO
-              JOIN INVENTORY_STAT_T I
+        INNER JOIN INVENTORY_STAT_T I
                 ON S.STOCK_NO = I.STOCK_NO
              WHERE 1=1
                AND I.FRN_NO = #{frnNo}
@@ -38,9 +38,9 @@
                  , C.STOCK_CT_NAME
                  , I.IS_COUNT
               FROM STOCK_T S
-              JOIN STOCK_CATEGORY_T C
+        INNER JOIN STOCK_CATEGORY_T C
                 ON S.STOCK_CT_NO = C.STOCK_CT_NO
-              JOIN INVENTORY_STAT_T I
+        INNER JOIN INVENTORY_STAT_T I
                 ON S.STOCK_NO = I.STOCK_NO
              WHERE 1=1
                AND I.FRN_NO = #{frnNo}
@@ -72,7 +72,7 @@
             SELECT C.STOCK_CT_NO, C.STOCK_CT_NAME
                  , S.STOCK_NO, S.STOCK_NAME, S.STOCK_PRICE, S.STOCK_UNIT
               FROM STOCK_T S
-              JOIN STOCK_CATEGORY_T C
+        INNER JOIN STOCK_CATEGORY_T C
                 ON S.STOCK_CT_NO = C.STOCK_CT_NO
              WHERE 1=1
                AND STOCK_NO IN
