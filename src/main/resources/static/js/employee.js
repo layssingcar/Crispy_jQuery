@@ -10,7 +10,7 @@ const employee = {
     bindEvents: function() {
         const addressButton = document.querySelector('.btn-change-address');
         if (addressButton) {
-            addressButton?.addEventListener('click', this.updateAddress);
+            addressButton?.addEventListener('click', this.updateAddress.bind(this));
         }
         const empSignButton = document.getElementById("save-signature");
         empSignButton?.addEventListener("click", this.updateEmpSign);
@@ -81,17 +81,32 @@ const employee = {
             },
             body: JSON.stringify(addressData)
         }).then(response => {
-
-            if (!response.ok) {
-                throw new Error('Failed to update the address');
+            if (response.status === 400) {
+                return response.json().then(errors => {
+                    this.displayValidationErrors(errors);
+                    throw new Error("Validation errors");
+                });
             }
             return response.json();
         }).then(data => {
             alert(data.message);
             location.reload();
         }).catch(error => {
-            console.error('Error updating address:', error);
-            alert('주소 변경에 실패하였습니다.');
+            if (error.message === "Validation errors") {
+                console.error('Validation errors:', error);
+            }
+        });
+    },
+
+    displayValidationErrors: function (errors) {
+        Object.keys(errors).forEach(field => {
+            console.log(errors[field])
+            const errorContainer = document.querySelector(`.${field}-error`);
+            if (errorContainer) {
+                console.log(errorContainer);
+                errorContainer.textContent = errors[field];
+                errorContainer.style.display = 'block';
+            }
         });
     },
     changePassword: function () {
@@ -150,9 +165,10 @@ const employee = {
         }
     },
     changeEmpPhone: function () {
+        const empPhone = document.querySelector(".empPhone").value;
         const data = {
+            empPhone: empPhone,
             empNo: parseInt(document.querySelector(".empNo").value),
-            empPhone: document.querySelector(".empPhone").value,
         }
         Auth.authenticatedFetch("/api/employee/empPhone/v1", {
             method: "PUT",
@@ -162,14 +178,20 @@ const employee = {
             body: JSON.stringify(data)
         }).then(response => {
                 if (!response.ok) {
-                    throw new Error('휴대폰 번호 변경에 실패했습니다.');
+                    return response.json().then(err => {
+                        const errorMessages = Object.values(err).join("\n");
+                        throw new Error(errorMessages);
+                    });
+                } else {
+                    return response.json()
                 }
-                return response.json();
             }).then(data => {
             alert(data.message);
             location.reload();
         }).catch(error => {
-            alert('휴대폰 번호 변경에 실패하였습니다.');
+            const errorElement = document.querySelector(".empPhone-error");
+            errorElement.style.display = 'block';
+            errorElement.textContent = error.message;
         });
     },
     updateEmpSign: function () {

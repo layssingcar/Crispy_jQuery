@@ -55,7 +55,7 @@
 .employee-profile-form .update-img {
     display: none;
     position: absolute;
-    top: 27%;
+    top: 22%;
     color: #fff;
 }
 
@@ -325,9 +325,22 @@
     margin-left: 10px;
 }
 
+.form-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
 .form-buttons button {
-    width: 100px;
+    width: 200px;
     border-radius: 7px;
     padding: 5px 10px;
     border: 0;
+}
+
+.error-message {
+    display: none;
+    color: red;
+    font-size: 1.5rem;
+    margin-top: 0 !important;
 }

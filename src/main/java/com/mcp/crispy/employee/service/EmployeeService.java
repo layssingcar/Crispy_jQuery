@@ -96,7 +96,7 @@ public class EmployeeService {
 
     // 주소 정보 수정
     @Transactional
-    public void updateAddress(EmployeeUpdateDto employeeUpdateDto, Integer modifier) {
+    public void updateAddress(EmpAddressUpdateDto employeeUpdateDto, Integer modifier) {
         int empNo = employeeUpdateDto.getEmpNo();
         int count = employeeMapper.countByEmpNo(empNo);
 

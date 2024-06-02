@@ -189,7 +189,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <!-- 주소 수정 -->
     <update id="updateAddress"
-            parameterType="EmployeeUpdateDto">
+            parameterType="EmpAddressUpdateDto">
             UPDATE EMPLOYEE_T E
             SET E.EMP_ZIP = #{updateDto.empZip},
                 E.EMP_STREET = #{updateDto.empStreet},
@@ -224,7 +224,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <!-- 전화번호 수정 -->
     <update id="updateEmpPhone"
-            parameterType="EmployeeUpdateDto">
+            parameterType="EmpPhoneUpdateDto">
             UPDATE EMPLOYEE_T E
             SET E.EMP_PHONE = #{empPhone},
                 E.MODIFY_DT = CURRENT_DATE,

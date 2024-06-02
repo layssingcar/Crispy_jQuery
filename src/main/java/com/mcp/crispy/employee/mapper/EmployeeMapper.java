@@ -40,7 +40,7 @@ public interface EmployeeMapper {
 	int countByEmpNo(Integer empNo);
 
 	// 주소 수정
-	void updateAddress(@Param("updateDto") EmployeeUpdateDto employeeUpdateDto, @Param("modifier") Integer modifier);
+	void updateAddress(@Param("updateDto") EmpAddressUpdateDto empAddressUpdateDto, @Param("modifier") Integer modifier);
 
 	// 전자 서명 수정
 	void updateEmpSign(EmployeeUpdateDto employeeUpdateDto);

@@ -2,10 +2,7 @@ package com.mcp.crispy.employee.controller;
 
 import com.mcp.crispy.common.utils.CookieUtil;
 import com.mcp.crispy.email.service.EmailVerificationService;
-import com.mcp.crispy.employee.dto.EmployeeDto;
-import com.mcp.crispy.employee.dto.EmployeeUpdateDto;
-import com.mcp.crispy.employee.dto.FindEmployeeDto;
-import com.mcp.crispy.employee.dto.PasswordChangeDto;
+import com.mcp.crispy.employee.dto.*;
 import com.mcp.crispy.employee.service.EmployeeService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -114,14 +111,14 @@ public class EmployeeApiController {
     /**
      * 주소 변경
      * 배영욱 (24. 06. 02)
-     * @param employeeUpdateDto 직원 정보 업데이트 DTO
+     * @param empAddressUpdateDto 직원 주소 업데이트 DTO
      * @return ResponseEntity
      */
     @PostMapping("/address/v1")
-    public ResponseEntity<Map<String, String>> updateAddress(@RequestBody EmployeeUpdateDto employeeUpdateDto) {
+    public ResponseEntity<Map<String, String>> updateAddress(@Valid @RequestBody EmpAddressUpdateDto empAddressUpdateDto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         EmployeeDto employee = employeeService.getEmployeeName(auth.getName());
-        employeeService.updateAddress(employeeUpdateDto, employee.getEmpNo());
+        employeeService.updateAddress(empAddressUpdateDto, employee.getEmpNo());
         return ResponseEntity.ok(Map.of("message", "주소가 성공적으로 수정 되었습니다."));
     }
 
@@ -163,14 +160,14 @@ public class EmployeeApiController {
     /**
      * 휴대폰 번호 변경
      * 배영욱 (24. 06. 02)
-     * @param employeeUpdateDto 직원 정보 업데이트 DTO
+     * @param empPhoneUpdateDto 직원 휴대폰 번호 업데이트 DTO
      * @return ResponseEntity
      */
     @PutMapping("/empPhone/v1")
-    public ResponseEntity<Map<String, String>> changeEmpPhone(@RequestBody EmployeeUpdateDto employeeUpdateDto) {
+    public ResponseEntity<Map<String, String>> changeEmpPhone(@Valid @RequestBody EmpPhoneUpdateDto empPhoneUpdateDto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         EmployeeDto employee = employeeService.getEmployeeName(auth.getName());
-        employeeService.changeEmpPhone(employeeUpdateDto.getEmpPhone(), employeeUpdateDto.getEmpNo(), employee.getEmpNo());
+        employeeService.changeEmpPhone(empPhoneUpdateDto.getEmpPhone(), empPhoneUpdateDto.getEmpNo(), employee.getEmpNo());
         return ResponseEntity.ok(Map.of("message", "휴대폰번호가 변경되었습니다."));
 
     }
