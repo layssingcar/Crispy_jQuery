@@ -76,10 +76,20 @@ public class JwtUtil {
                     .build()
                     .parseSignedClaims(token.replace(TOKEN_PREFIX, ""))
                     .getPayload();
+        } catch (ExpiredJwtException e) {
+            log.error("JWT expired at: {}. Current time: {}", e.getClaims().getExpiration(), new Date());
+            throw e; // re-throw the exception to be handled by the filter
         } catch (JwtException | IllegalArgumentException e) {
             log.error("Invalid JWT token: {}", e.getMessage());
             return null;
         }
+    }
+
+    public int getExpiryDurationFromToken(String token) {
+        Claims claims = verify(token);
+        long expirationMillis = claims.getExpiration().getTime();
+        long currentMillis = System.currentTimeMillis();
+        return (int) ((expirationMillis - currentMillis) / 1000);
     }
 
     public String getUsernameFromToken(String token) {

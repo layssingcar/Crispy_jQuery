@@ -6,6 +6,7 @@ import com.mcp.crispy.auth.domain.EmployeePrincipal;
 import com.mcp.crispy.auth.domain.LoginRequest;
 import com.mcp.crispy.auth.service.AuthenticationService;
 import com.mcp.crispy.common.config.CrispyUserDetailsService;
+import com.mcp.crispy.common.utils.CookieUtil;
 import com.mcp.crispy.common.utils.JwtUtil;
 import com.mcp.crispy.employee.dto.EmployeeDto;
 import jakarta.servlet.http.Cookie;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/crispy/api/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -113,7 +114,7 @@ public class AuthController {
             return ResponseEntity.ok(adminPrincipal.getAdmin());
         }
 
-        return ResponseEntity.status(401).body(null);
+        return ResponseEntity.status(401).body("Invalid user type");
     }
 
     /**
@@ -125,17 +126,8 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse response) {
         // 쿠키에서 토큰 삭제
-        Cookie accessTokenCookie = new Cookie("accessToken", null);
-        accessTokenCookie.setPath("/");
-        accessTokenCookie.setHttpOnly(false);
-        accessTokenCookie.setMaxAge(0);
-        response.addCookie(accessTokenCookie);
-
-        Cookie refreshTokenCookie = new Cookie("refreshToken", null);
-        refreshTokenCookie.setPath("/");
-        refreshTokenCookie.setHttpOnly(false);
-        refreshTokenCookie.setMaxAge(0);
-        response.addCookie(refreshTokenCookie);
+        CookieUtil.deleteCookie(response, "accessToken");
+        CookieUtil.deleteCookie(response, "refreshToken");
 
         log.info("로그아웃 성공: 쿠키 삭제 완료");
 
@@ -150,17 +142,20 @@ public class AuthController {
      * @param response HTTP 응답 객체
      */
     private void setTokensAndCookies(String accessToken, String refreshToken, HttpServletResponse response) {
+        // JWT에서 직접 만료 시간을 추출하여 쿠키의 유효기간을 설정
+        int accessTokenMaxAge = jwtUtil.getExpiryDurationFromToken(accessToken);
+        int refreshTokenMaxAge = jwtUtil.getExpiryDurationFromToken(refreshToken);
         // 쿠키에 새 토큰 저장
         Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
         accessTokenCookie.setPath("/");
         accessTokenCookie.setHttpOnly(false);
-        accessTokenCookie.setMaxAge(60 * 60); // 1시간 유효
+        accessTokenCookie.setMaxAge(accessTokenMaxAge);
         response.addCookie(accessTokenCookie);
 
         Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
         refreshTokenCookie.setPath("/");
         refreshTokenCookie.setHttpOnly(false);
-        refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7); // 7일 유효
+        refreshTokenCookie.setMaxAge(refreshTokenMaxAge);
         response.addCookie(refreshTokenCookie);
 
         log.info("새로운 AccessToken: {}", accessToken);

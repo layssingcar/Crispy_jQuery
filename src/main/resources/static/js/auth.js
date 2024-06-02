@@ -2,6 +2,7 @@ const Auth = {
     init: function() {
         this.setupLogin();
         this.setupLogout();
+        this.autoLogin();
     },
 
     setupLogin: function() {
@@ -23,16 +24,18 @@ const Auth = {
 
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
+        const rememberMe = document.getElementById('remember-me').checked;
         console.log("로그인 요청 호출됨");
         try {
-            const response = await fetch('/crispy/api/auth/login/v1', {
+            const response = await fetch('/api/auth/login/v1', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     username: username,
-                    password: password
+                    password: password,
+                    rememberMe: rememberMe
                 }),
                 credentials: 'include' // 쿠키를 포함하도록 설정
             });
@@ -48,6 +51,12 @@ const Auth = {
             if (contentType && contentType.indexOf('application/json') !== -1) {
                 const data = await response.json();
                 console.log('로그인 성공:', data);
+                // 자동 로그인 설정 저장
+                if (rememberMe) {
+                    localStorage.setItem('rememberMe', 'true');
+                } else {
+                    localStorage.removeItem('rememberMe');
+                }
                 // 메인 페이지로 리다이렉트
                 window.location.href = '/crispy/main';
             } else {
@@ -63,7 +72,7 @@ const Auth = {
     logout: async function() {
         console.log("로그아웃 요청 호출됨");
         try {
-            const response = await fetch('/crispy/api/auth/logout', {
+            const response = await fetch('/api/auth/logout', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -73,6 +82,7 @@ const Auth = {
 
             if (response.ok) {
                 console.log('로그아웃 성공');
+                localStorage.removeItem('rememberMe'); // 자동 로그인 설정 제거
                 // 로그인 페이지로 리다이렉트
                 window.location.href = '/crispy/login';
             } else {
@@ -102,6 +112,13 @@ const Auth = {
         return this.getCookie('refreshToken');
     },
 
+    autoLogin: async function() {
+        const rememberMe = localStorage.getItem('rememberMe') === 'true';
+        if (rememberMe) {
+            await this.refreshAccessToken();
+        }
+    },
+
     authenticatedFetch: async function(url, options = {}) {
         const accessToken = this.getAccessToken();
         console.log("Fetch: ", accessToken);
@@ -113,27 +130,34 @@ const Auth = {
         options.headers['Authorization'] = 'Bearer ' + accessToken;
         console.log("Headers: ", options.headers);
 
-        const response = await fetch(url, options);
+        let response = await fetch(url, options);
         console.log("Response: ", response);
 
         if (response.status === 401) {
+            console.log('액세스 토큰 만료됨. 리프레시 토큰으로 재발급 시도.');
             const newAccessToken = await this.refreshAccessToken();
             if (newAccessToken) {
                 options.headers['Authorization'] = 'Bearer ' + newAccessToken;
-                return fetch(url, options);
+                response = await fetch(url, options); // 다시 요청 보내기
+            } else {
+                localStorage.removeItem('rememberMe'); // 자동 로그인 설정 제거
+                window.location.href = '/crispy/login';
             }
         }
-        console.log(response);
         return response;
     },
 
     refreshAccessToken: async function() {
         const refreshToken = this.getRefreshToken();
-        const response = await fetch('/crispy/api/auth/refresh', {
+        if (!refreshToken) {
+            window.location.href = '/crispy/login';
+            return null;
+        }
+
+        const response = await fetch('/api/auth/refresh', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + refreshToken
+                'Content-Type': 'application/json'
             },
             credentials: 'include' // 쿠키를 포함하도록 설정
         });
@@ -143,41 +167,11 @@ const Auth = {
             this.saveTokens(data.accessToken, data.refreshToken);
             return data.accessToken;
         } else {
-            console.error('Failed to refresh access token');
+            console.error('리프레시 토큰을 통한 액세스 토큰 재발급 실패');
+            localStorage.removeItem('rememberMe'); // 자동 로그인 설정 제거
             window.location.href = '/crispy/login';
             return null;
         }
-    },
-
-    checkAuthentication: function() {
-        const accessToken = this.getAccessToken();
-        if (!accessToken) {
-            window.location.href = '/crispy/login';
-        } else {
-            this.fetchUserInfo();
-        }
-    },
-
-    fetchUserInfo: function() {
-        this.authenticatedFetch('/crispy/api/auth/me')
-            .then(response => {
-                console.log(response);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch user info');
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('User data:', data);
-                console.log("작동중?");
-                // 사용자 데이터를 사용하여 페이지를 설정합니다.
-                document.getElementById('empId').innerText = data.empId;
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                // 로그인 페이지로 리다이렉트 또는 에러 처리
-                window.location.href = '/crispy/login';
-            });
     }
 };
 

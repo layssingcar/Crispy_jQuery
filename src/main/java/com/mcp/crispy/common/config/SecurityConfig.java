@@ -54,9 +54,10 @@ public class SecurityConfig {
 						.requestMatchers("/topic/**").permitAll()
 						.requestMatchers("/css/**", "/js/**", "/img/**", "/resources/**",
 								"/profiles/**", "/upload/**", "/franchise/**", "/crispy_img/**").permitAll()  // 인증 없이 접근 가능
-						.requestMatchers("/crispy/login", "/crispy/logout", "/crispy/signup",
+						.requestMatchers("/", "/crispy", "/crispy/", "/CRISPY", "/CRISPY/").permitAll()
+						.requestMatchers("/","/crispy/login", "/crispy/logout", "/crispy/signup",
 								"/crispy/employee/find/username","/crispy/employee/find/username/result",
-								"/crispy/employee/find/password", "/crispy/employee/change/password").permitAll()
+								"/crispy/employee/find/password", "/crispy/employee/change/changeEmpPw").permitAll()
 						.anyRequest().authenticated()) // 2024.06.02 JWT 사용으로 인한 인증 요청으로 변경
 				.formLogin(login -> login
 						.loginPage("/crispy/login"))
