@@ -33,7 +33,9 @@ public class EmployeeDto {
     private Date empInDt;
     private Date empOutDt;
     private Date createDt;
+    private Integer creator;
     private Date modifyDt;
+    private Integer modifier;
     private Position posNo;
     private int frnNo;
     private String frnName;

@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,6 +27,8 @@ public class EmployeeRequestDto {
     private String posName;
     private EmpStatus empStat;
     private Position posNo;
+    private Date createDt;
+    private Integer creator;
 
     @JsonProperty("empStat")
     public String getEmpStatDesc() {
