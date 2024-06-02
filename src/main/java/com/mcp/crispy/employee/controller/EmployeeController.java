@@ -6,6 +6,8 @@ import com.mcp.crispy.employee.service.EmployeeService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -72,11 +74,19 @@ public class EmployeeController {
 	// 직원 혹은 관리자 개인이 들어가는 마이 페이지
 	@GetMapping("/profile")
 	public String getEmployee(Principal principal, Model model) {
-			EmployeeDto employee = employeeService.getEmployeeName(principal.getName());
-			log.info("address : {} {} {}", employee.getEmpZip(), employee.getEmpStreet(), employee.getEmpDetail());
-			log.info("empSign : {}", employee.getEmpSign());
-			model.addAttribute("employee", employee);
-			return "employee/employee-profile";
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		boolean isAdmin = authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+		if (isAdmin) {
+			return "redirect:/error/403";
+		}
+
+
+		EmployeeDto employee = employeeService.getEmployeeName(principal.getName());
+		log.info("address : {} {} {}", employee.getEmpZip(), employee.getEmpStreet(), employee.getEmpDetail());
+		log.info("empSign : {}", employee.getEmpSign());
+		model.addAttribute("employee", employee);
+		return "employee/employee-profile";
 	}
 
 }
