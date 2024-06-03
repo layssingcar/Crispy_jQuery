@@ -21,8 +21,7 @@ public class AnnualService {
 	private final AnnualMapper annualMapper;
 	
 	@Transactional
-	public int insertAnnual(AnnualDto annualDto)
-	{
+	public int insertAnnual(AnnualDto annualDto){
 		return annualMapper.insertAnnual(annualDto);
 	}
 	
@@ -35,5 +34,10 @@ public class AnnualService {
 	@Transactional(readOnly = true)
 	public AnnualDto getAnnById(String id) {
 		return annualMapper.getAnnById(id);
+	}
+	
+	@Transactional
+	public int modifyAnnual(AnnualDto annualDto){
+		return annualMapper.modifyAnnual(annualDto);
 	}
 }

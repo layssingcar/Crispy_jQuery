@@ -12,4 +12,5 @@ public interface AnnualMapper {
 	int insertAnnual(AnnualDto scheduleDto);
 	List<AnnualDto> getAnnList();
 	AnnualDto getAnnById(String id);
+	int modifyAnnual(AnnualDto scheduleDto);
 }

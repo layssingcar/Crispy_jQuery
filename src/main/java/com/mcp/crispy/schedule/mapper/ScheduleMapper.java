@@ -11,4 +11,5 @@ public interface ScheduleMapper {
 	int insertSchedule(ScheduleDto scheduleDto);
 	List<ScheduleDto> getScheList();
 	ScheduleDto getScheById(String id);
+	int modifySchedule(ScheduleDto scheduleDto);
 }

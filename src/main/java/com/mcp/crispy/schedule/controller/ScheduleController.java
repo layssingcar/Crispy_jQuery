@@ -44,4 +44,10 @@ public class ScheduleController {
 		return scheduleService.getScheById(scheId);
 	}
 	
+	@PostMapping(value="/modifySche", produces = "application/json")
+	public ResponseEntity<Integer> modifySchedule(@RequestBody ScheduleDto scheduleDto, Principal principal){
+		int modifyCount = scheduleService.modifySchedule(scheduleDto);
+		return ResponseEntity.ok(modifyCount);
+	}
+	
 }

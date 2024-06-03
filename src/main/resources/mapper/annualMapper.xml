@@ -69,6 +69,39 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	resultMap="AnnualMap">
 	SELECT *
 		FROM ANNUAL_T
+	WHERE ANN_CT_NO != 3;
 </select>
+
+
+<update id="modifyAnnual"
+		parameterType="AnnualDto">
+		UPDATE ANNUAL_T
+		SET	ANN_ID = #{annId},
+			ANN_CT_NO = #{annCtNo},
+			ANN_TITLE = #{annTitle},
+			ANN_CONTENT = #{annContent},
+			ANN_START_TIME = #{annStartTime},
+			ANN_END_TIME = #{annEndTime},
+			MODIFY_DT = CURRENT_DATE
+		WHERE EMP_NO = #{empNo} AND ANN_ID = #{annId}
+</update>
+
+
+<update id="deleteAnnual">
+	UPDATE ANNUAL_T
+	SET	ANN_CT_NO = #{annCtNo},
+	MODIFY_DT = CURRENT_DATE
+	WHERE EMP_NO = #{empNo} AND ANN_ID = #{annId}
+</update>
+
+
+<delete id="completeDeleteAnnual">
+	DELETE 
+		FROM ANNUAL_T 
+	WHERE ANN_ID = #{annId}
+</delete>
+
+
+
 
 </mapper>

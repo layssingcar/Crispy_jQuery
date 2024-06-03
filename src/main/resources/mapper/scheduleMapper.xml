@@ -69,6 +69,33 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		resultMap="ScheduleMap">
 	SELECT * 
 		FROM SCHEDULE_T
+	WHERE SCHE_STAT != 1;
 </select>
+
+<update id="modifySchedule"
+		parameterType="ScheduleDto">
+	UPDATE SCHEDULE_T
+		SET	SCHE_DIV = #{scheDiv},
+			SCHE_TITLE = #{scheTitle},
+			SCHE_CONTENT = #{scheContent},
+			SCHE_START_TIME = #{scheStartTime},
+			SCHE_END_TIME = #{scheEndTime},
+			MODIFY_DT = CURRENT_DATE
+		WHERE EMP_NO = #{empNo} AND SCHE_ID = #{scheId}
+</update>
+
+<update id="deleteSchedule">
+	UPDATE ANNUAL_T
+	SET	SCHE_STAT = #{scheStat},
+		MODIFY_DT = CURRENT_DATE
+	WHERE EMP_NO = #{empNo} AND SCHE_ID = #{scheId}
+</update>
+
+
+<delete id="completeDeleteSchedule">
+	DELETE 
+		FROM ANNUAL_T 
+	WHERE ANN_ID = #{annId}
+</delete>
 
 </mapper>

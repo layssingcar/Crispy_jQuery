@@ -24,28 +24,4 @@ import lombok.RequiredArgsConstructor;
 public class CalendarController {
 	private final CalendarService calendarService;
 
-	@PostMapping(value="/registCmt", produces = "application/json")
-	public ResponseEntity<Integer> insertCalendar()
-	{	
-		return ResponseEntity.ok(0);
-	}
-	
-	@ResponseBody
-	@GetMapping(value = "/getCmt/{boardNo}", produces = "application/json") 	// 전체 댓글 가져오기
-	public List<CalendarDto> getCalendarList(@PathVariable(value = "boardNo") Optional<String> opt, Model model) {
-		List<CalendarDto> list = calendarService.getCalendarList(model, 0);
-		return list;
-	}
-	
-	@ResponseBody
-	@DeleteMapping(value = "/deleteCmt/{commentNo}", produces = "application/json") // 삭제할때 쓰는거
-	public int deleteCalendar(@PathVariable(value = "commentNo") Optional<String> opt) {
-		return 0;
-	}
-	
-	@PostMapping(value="/modifyCmt", produces = "application/json")
-	public ResponseEntity<Integer> modifyCalendar()
-	{	
-		return ResponseEntity.ok(0);
-	}
 }

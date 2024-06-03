@@ -42,4 +42,11 @@ public class AnnualController {
 	public AnnualDto getAnnById(@RequestParam("annId") String annId, Model model) {
 		return annualService.getAnnById(annId);
 	}
+	
+	@PostMapping(value="/moidfyAnn", produces = "application/json")
+	public ResponseEntity<Integer> modifyAnnual(@RequestBody AnnualDto annualDto, Principal principal)
+	{	
+		int modifyCount = annualService.modifyAnnual(annualDto);
+		return ResponseEntity.ok(modifyCount);
+	}
 }

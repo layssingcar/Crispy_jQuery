@@ -4,6 +4,8 @@
       const endOpt = $('#end option');
       const radioBtnsByNotiorVac = document.getElementsByName('notice-or-vac');
       const radioBtnsByVacType = document.getElementsByName('var-elem-radio');
+      
+      let selectScheduleId;
     	  
       myModal.on("hidden.bs.modal", function () {
         $("#form-modal")[0].reset();
@@ -293,6 +295,9 @@
     	$("#btn-insert, #btn-update, #btn-cancle").hide();
     	$("#btn-modify, #btn-delete").show();
   		fnShowSelectEvent(info);
+  		selectScheduleId = info.event.id;
+  		startDt = info.event.startStr;
+  		endDt = info.event.endStr;
       });
       
       calendar.on("dateClick", (info)=>{
@@ -383,7 +388,39 @@
       }
       
       // 모달 ajax
-      function fnAnnAjax(idNum, endTime, ctNo, currentDate){
+      function fnDeleteAnnAjax(){
+		
+	  }
+      
+      function fnModifyAnnAjax(endTime, ctNo, currentDate){
+	    const data = JSON.stringify({
+		        'annId': selectScheduleId,
+		        'annCtNo': ctNo,
+		        'annTitle': $("#sch-title").val(),
+		        'annContent': $("#sch-content").val(),
+		        'annStartTime':  startDt + "T" + $("#start option:selected").val(),
+		        'annEndTime':  endTime + "T" + $("#end option:selected").val(),
+		        'modifyDt': currentDate, 
+		        'empNo': 17
+		    });			
+		    $.ajax({
+		        type: 'POST',
+		        url: '/crispy/moidfyAnn',
+		        contentType: 'application/json',
+		        dataType: 'json',
+		        data: data
+		    })
+			.done(function(data){
+				alert("연차 저장 성공");
+			})
+			.fail(function(jqXHR){
+				alert("연차 저장 실패");
+				alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
+			})  		
+	  }
+      
+      
+      function fnAddAnnAjax(idNum, endTime, ctNo, currentDate){
 	    const data = JSON.stringify({
 		        'annId': idNum,
 		        'annCtNo': ctNo,
@@ -396,7 +433,7 @@
 		        'creator': 1,
 		        'modifyDt': currentDate, 
 		        'modifier': 1,
-		        'empNo': 1
+		        'empNo': 17
 		    });			
 		    $.ajax({
 		        type: 'POST',
@@ -413,6 +450,7 @@
 				alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
 			})    		
 	  }
+
       
       function fnAddScheduleAndAnnual(idNum){
 	  	const currentDate = moment().format('YYYY-MM-DD');
@@ -427,9 +465,9 @@
 			
 		if(selectScheType == 'vac'){
 			if(selectVacType == 'all')
- 				fnAnnAjax(idNum,endDt, annCt, currentDate);
+ 				fnAddAnnAjax(idNum,endDt, annCt, currentDate);
 			else
-				fnAnnAjax(idNum,startDt, annCt, currentDate);
+				fnAddAnnAjax(idNum,startDt, annCt, currentDate);
 		}
 		else if(selectScheType == 'notice' || selectScheType == 'mysche'){
 			schDiv = (selectScheType == 'notice') ? 0 : 1;
@@ -446,7 +484,7 @@
 			        'modifyDt': currentDate, 
 			        'modifier': 1,
 			        'scheStat': 0,
-			        'empNo': 1
+			        'empNo': 17
 			    });
 			    $.ajax({
 			        type: 'POST',
@@ -481,11 +519,53 @@
 	  
 	  // 일정 업데이트 관련
 	  function fnUpdateSchedule(){
-		
+		const currentDate = moment().format('YYYY-MM-DD');
+	  	let selectScheType = $("input:radio[name=notice-or-vac]:checked").val();	// 공지,개인,연차
+	  	let selectVacType = $("input:radio[name=var-elem-radio]:checked").val();	// 연차,반차,반반차,
+	 	
+		let annCt, schDiv;
+		if(selectVacType == 'all')
+			annCt = 0;
+		else
+			annCt = (selectVacType == 'half') ? 1 : 2;
+			
+		if(selectScheType == 'vac'){
+			if(selectVacType == 'all')
+ 				fnModifyAnnAjax(endDt, annCt, currentDate);
+			else
+				fnModifyAnnAjax(startDt, annCt, currentDate);
+		}
+		else if(selectScheType == 'notice' || selectScheType == 'mysche'){
+			schDiv = (selectScheType == 'notice') ? 0 : 1;
+		    const data = JSON.stringify({
+			        'scheId': selectScheduleId,
+			        'scheDiv': schDiv,
+			        'scheTitle': $("#sch-title").val(),
+			        'scheContent': $("#sch-content").val(),
+			        'scheStartTime': startDt + "T" + $("#start option:selected").val(), 
+			        'scheEndTime': endDt + "T" + $("#end option:selected").val(),
+			        'modifyDt': currentDate, 
+			        'empNo': 17
+			    });
+			    $.ajax({
+			        type: 'POST',
+			        url: '/crispy/modifySche',
+			        contentType: 'application/json',
+			        dataType: 'json',
+			        data: data
+			    })
+				.done(function(data){
+					alert("일정 수정 성공");
+				})
+				.fail(function(jqXHR){
+					alert("일정 수정 실패");
+					alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
+				})     			
+			}		
 	  }
 	  
   	  // 일정 업데이트 취소
 	  function fnCancleUpdateSchedule(){
-		
+		 myModal.modal('hide');
 	  }
 	  
