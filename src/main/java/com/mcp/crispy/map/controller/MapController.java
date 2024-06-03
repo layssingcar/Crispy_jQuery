@@ -22,7 +22,7 @@ public class MapController {
     private final MapService mapService;
 
     /**
-     * 박종구 - kakao map 지도 화면
+     * 박종구 - Kakao Map View
      * 2024-05-31
      * @return forward (franchise/franchise-map.html)
      */
@@ -41,6 +41,6 @@ public class MapController {
     public Map<String, Object> franchiseMap(Model model) {
         List<MapDto> mapList = mapService.getMapList();
         model.addAttribute("mapList", mapList);
-        return Map.of("message", mapList);
+        return Map.of("mapList", mapList);
     }
 }

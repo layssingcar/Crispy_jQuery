@@ -4,7 +4,7 @@
 <mapper namespace="com.mcp.crispy.map.mapper.MapMapper">
     <!-- 가맹점 목록 및 정보조회 -->
     <select id="getMapList">
-            SELECT F.FRN_NAME, F.FRN_X, F.FRN_Y, F.FRN_START_TIME, F.FRN_END_TIME, F.FRN_TEL, F.FRN_NO
+            SELECT F.FRN_NAME, F.FRN_X, F.FRN_Y, F.FRN_START_TIME, F.FRN_END_TIME, F.FRN_TEL, F.FRN_NO, F.FRN_STREET, F.FRN_DETAIL
                  , S.SAL_PRICE
                  , S2.STOCK_CT_NAME
                  , S1.STOCK_NO, S1.STOCK_NAME
