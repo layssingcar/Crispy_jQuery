@@ -40,4 +40,12 @@ public class AnnualService {
 	public int modifyAnnual(AnnualDto annualDto){
 		return annualMapper.modifyAnnual(annualDto);
 	}
+	@Transactional
+	public int deleteAnnual(AnnualDto annualDto){
+		return annualMapper.deleteAnnual(annualDto);
+	}
+	@Transactional
+	public int completeDeleteAnnual(int scheduleId){
+		return annualMapper.completeDeleteAnnual(scheduleId);
+	}
 }

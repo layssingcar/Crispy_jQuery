@@ -60,7 +60,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 <select id="getAnnById"
 	resultMap="AnnualMap">
-	SELECT * 
+	SELECT *
 		FROM ANNUAL_T
 	WHERE ANN_ID = #{annId}
 </select>
@@ -69,7 +69,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	resultMap="AnnualMap">
 	SELECT *
 		FROM ANNUAL_T
-	WHERE ANN_CT_NO != 3;
+	WHERE ANN_CT_NO != 3
 </select>
 
 
@@ -87,7 +87,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 </update>
 
 
-<update id="deleteAnnual">
+<update id="deleteAnnual"
+		parameterType="AnnualDto">
 	UPDATE ANNUAL_T
 	SET	ANN_CT_NO = #{annCtNo},
 	MODIFY_DT = CURRENT_DATE

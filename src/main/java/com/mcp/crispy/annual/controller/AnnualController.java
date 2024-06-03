@@ -49,4 +49,17 @@ public class AnnualController {
 		int modifyCount = annualService.modifyAnnual(annualDto);
 		return ResponseEntity.ok(modifyCount);
 	}
+	@PostMapping(value="/deleteAnn", produces = "application/json")
+	public ResponseEntity<Integer> deleteAnnual(@RequestBody AnnualDto annualDto, Principal principal)
+	{	
+		int deleteCount = annualService.deleteAnnual(annualDto);
+		return ResponseEntity.ok(deleteCount);
+	}
+	
+//	@PostMapping(value="/completeDeleteAnn", produces = "application/json")
+//	public ResponseEntity<Integer> completeDeleteAnnual(@RequestBody int scheduleId, Principal principal)
+//	{	
+//		int deleteCount = annualService.completeDeleteAnnual(annualDto);
+//		return ResponseEntity.ok(deleteCount);
+//	}
 }

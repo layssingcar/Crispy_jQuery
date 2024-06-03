@@ -4,7 +4,7 @@
       const endOpt = $('#end option');
       const radioBtnsByNotiorVac = document.getElementsByName('notice-or-vac');
       const radioBtnsByVacType = document.getElementsByName('var-elem-radio');
-      
+      const currentDate = moment().format('YYYY-MM-DD');
       let selectScheduleId;
     	  
       myModal.on("hidden.bs.modal", function () {
@@ -389,10 +389,30 @@
       
       // 모달 ajax
       function fnDeleteAnnAjax(){
-		
+	    const data = JSON.stringify({
+		        'annId': selectScheduleId,
+		        'annCtNo' : 3,
+		        'modifyDt': currentDate, 
+		        'empNo': 17
+		    });			
+		    $.ajax({
+		        type: 'POST',
+		        url: '/crispy/deleteAnn',
+		        contentType: 'application/json',
+		        dataType: 'json',
+		        data: data
+		    })
+			.done(function(data){
+				alert("연차 삭제 성공");
+				calendar.refetchEvents();
+			})
+			.fail(function(jqXHR){
+				alert("연차 삭제 실패");
+				alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
+			})  	
 	  }
       
-      function fnModifyAnnAjax(endTime, ctNo, currentDate){
+      function fnModifyAnnAjax(endTime, ctNo){
 	    const data = JSON.stringify({
 		        'annId': selectScheduleId,
 		        'annCtNo': ctNo,
@@ -411,16 +431,17 @@
 		        data: data
 		    })
 			.done(function(data){
-				alert("연차 저장 성공");
+				alert("연차 수정 성공");
+				calendar.refetchEvents();
 			})
 			.fail(function(jqXHR){
-				alert("연차 저장 실패");
+				alert("연차 수정 실패");
 				alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
 			})  		
 	  }
       
       
-      function fnAddAnnAjax(idNum, endTime, ctNo, currentDate){
+      function fnAddAnnAjax(idNum, endTime, ctNo){
 	    const data = JSON.stringify({
 		        'annId': idNum,
 		        'annCtNo': ctNo,
@@ -444,6 +465,7 @@
 		    })
 			.done(function(data){
 				alert("연차 저장 성공");
+				calendar.refetchEvents();
 			})
 			.fail(function(jqXHR){
 				alert("연차 저장 실패");
@@ -453,7 +475,6 @@
 
       
       function fnAddScheduleAndAnnual(idNum){
-	  	const currentDate = moment().format('YYYY-MM-DD');
 	  	let selectScheType = $("input:radio[name=notice-or-vac]:checked").val();	// 공지,개인,연차
 	  	let selectVacType = $("input:radio[name=var-elem-radio]:checked").val();	// 연차,반차,반반차,
 	 	
@@ -465,9 +486,9 @@
 			
 		if(selectScheType == 'vac'){
 			if(selectVacType == 'all')
- 				fnAddAnnAjax(idNum,endDt, annCt, currentDate);
+ 				fnAddAnnAjax(idNum,endDt, annCt);
 			else
-				fnAddAnnAjax(idNum,startDt, annCt, currentDate);
+				fnAddAnnAjax(idNum,startDt, annCt);
 		}
 		else if(selectScheType == 'notice' || selectScheType == 'mysche'){
 			schDiv = (selectScheType == 'notice') ? 0 : 1;
@@ -495,6 +516,7 @@
 			    })
 				.done(function(data){
 					alert("일정 저장 성공");
+					calendar.refetchEvents();
 				})
 				.fail(function(jqXHR){
 					alert("일정 저장 실패");
@@ -514,12 +536,40 @@
 	  
 	  // 일정 삭제 관련
 	  function fnDeleteSchedule(){
-		
+  		let selectScheType = $("input:radio[name=notice-or-vac]:checked").val();	// 공지,개인,연차
+//	  	let selectVacType = $("input:radio[name=var-elem-radio]:checked").val();	// 연차,반차,반반차,
+			
+		if(selectScheType == 'vac'){
+			fnDeleteAnnAjax();
+		}
+		else if(selectScheType == 'notice' || selectScheType == 'mysche'){
+		    const data = JSON.stringify({
+			        'scheId': selectScheduleId,
+			        'scheStat': 1,
+			        'modifyDt': currentDate, 
+			        'empNo': 17
+			    });
+			    $.ajax({
+			        type: 'POST',
+			        url: '/crispy/deleteSche',
+			        contentType: 'application/json',
+			        dataType: 'json',
+			        data: data
+			    })
+				.done(function(data){
+					alert("일정 삭제 성공");
+					calendar.refetchEvents();
+				})
+				.fail(function(jqXHR){
+					console.log(data);
+					alert("일정 삭제 실패");
+					alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
+				})     			
+			}				
 	  }
 	  
 	  // 일정 업데이트 관련
 	  function fnUpdateSchedule(){
-		const currentDate = moment().format('YYYY-MM-DD');
 	  	let selectScheType = $("input:radio[name=notice-or-vac]:checked").val();	// 공지,개인,연차
 	  	let selectVacType = $("input:radio[name=var-elem-radio]:checked").val();	// 연차,반차,반반차,
 	 	
@@ -531,9 +581,9 @@
 			
 		if(selectScheType == 'vac'){
 			if(selectVacType == 'all')
- 				fnModifyAnnAjax(endDt, annCt, currentDate);
+ 				fnModifyAnnAjax(endDt, annCt);
 			else
-				fnModifyAnnAjax(startDt, annCt, currentDate);
+				fnModifyAnnAjax(startDt, annCt);
 		}
 		else if(selectScheType == 'notice' || selectScheType == 'mysche'){
 			schDiv = (selectScheType == 'notice') ? 0 : 1;
@@ -556,6 +606,7 @@
 			    })
 				.done(function(data){
 					alert("일정 수정 성공");
+					calendar.refetchEvents();
 				})
 				.fail(function(jqXHR){
 					alert("일정 수정 실패");

@@ -69,7 +69,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		resultMap="ScheduleMap">
 	SELECT * 
 		FROM SCHEDULE_T
-	WHERE SCHE_STAT != 1;
+	WHERE SCHE_STAT != 1
 </select>
 
 <update id="modifySchedule"
@@ -84,8 +84,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE EMP_NO = #{empNo} AND SCHE_ID = #{scheId}
 </update>
 
-<update id="deleteSchedule">
-	UPDATE ANNUAL_T
+<update id="deleteSchedule"
+		parameterType="ScheduleDto">
+	UPDATE SCHEDULE_T
 	SET	SCHE_STAT = #{scheStat},
 		MODIFY_DT = CURRENT_DATE
 	WHERE EMP_NO = #{empNo} AND SCHE_ID = #{scheId}
