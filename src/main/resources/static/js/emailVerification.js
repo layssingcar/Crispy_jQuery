@@ -13,6 +13,9 @@ const emailVerify = {
         document.querySelector('.check-verify-code')?.addEventListener('click', () => {
             _this.checkVerifyCode();
         });
+        document.querySelector(".find-btn").addEventListener("click", () => {
+            _this.submitForm();
+        });
     },
     handleVerificationCode: function (empEmail, action) {
         let apiUrl = "/api/email/verificationCode/verify/v1";
@@ -20,7 +23,7 @@ const emailVerify = {
         console.log(empEmail);
 
         if (action === "verify-user") {
-            apiUrl = "/api/employee//verify/email/v1";
+            apiUrl = "/api/employee/verify/email/v1";
             requestBody = {
                 empEmail: empEmail,
                 empName: document.querySelector(".emp-name").value,
@@ -65,17 +68,22 @@ const emailVerify = {
                 if (data.message === "인증 성공") {
                     stateManager.setIsVerified(true);
                     console.log(data.message);
+                    this.showMessage(data.message, 'success')
                     document.querySelector(".check-verify-code").disabled = true;
                 } else {
-                    alert(data.error);
+                    this.showMessage(data.error, 'error');
                     stateManager.setIsVerified(false);
                     console.log(data.message);
                 }
             })
             .catch(error => {
                 console.error("Error:", error);
-                alert("인증번호 검증에 실패했습니다.");
+                this.showMessage("인증번호 검증에 실패했습니다.", 'error'); // 에러 메시지 표시
             })
+    },
+    submitForm: function () {
+        const form = document.getElementById("findForm");
+        form.submit();
     }
 }
 

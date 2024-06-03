@@ -6,6 +6,7 @@ import com.mcp.crispy.auth.domain.EmployeePrincipal;
 import com.mcp.crispy.auth.domain.LoginRequest;
 import com.mcp.crispy.auth.service.AuthenticationService;
 import com.mcp.crispy.common.config.CrispyUserDetailsService;
+import com.mcp.crispy.common.exception.InvalidLoginRequestException;
 import com.mcp.crispy.common.utils.CookieUtil;
 import com.mcp.crispy.common.utils.JwtUtil;
 import com.mcp.crispy.employee.dto.EmployeeDto;
@@ -39,19 +40,23 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         log.info("로그인 요청 수신: {}", loginRequest.getUsername());
 
-        UserDetails userDetails = authenticationService.login(loginRequest.getUsername(), loginRequest.getPassword());
-        log.info("로그인 성공: {}", userDetails.getUsername());
+        try {
+            UserDetails userDetails = authenticationService.login(loginRequest.getUsername(), loginRequest.getPassword());
+            log.info("로그인 성공: {}", userDetails.getUsername());
 
-        if (userDetails instanceof EmployeePrincipal) {
-            EmployeeDto employee = ((EmployeePrincipal) userDetails).getEmployee();
-            setTokensAndCookies(employee.getAccessToken(), employee.getRefreshToken(), response);
-            return ResponseEntity.ok(employee);
-        } else if(userDetails instanceof AdminPrincipal) {
-            AdminDto admin = ((AdminPrincipal) userDetails).getAdmin();
-            setTokensAndCookies(admin.getAccessToken(), admin.getRefreshToken(), response);
-            return ResponseEntity.ok(admin);
+            if (userDetails instanceof EmployeePrincipal) {
+                EmployeeDto employee = ((EmployeePrincipal) userDetails).getEmployee();
+                setTokensAndCookies(employee.getAccessToken(), employee.getRefreshToken(), response);
+                return ResponseEntity.ok(employee);
+            } else if (userDetails instanceof AdminPrincipal) {
+                AdminDto admin = ((AdminPrincipal) userDetails).getAdmin();
+                setTokensAndCookies(admin.getAccessToken(), admin.getRefreshToken(), response);
+                return ResponseEntity.ok(admin);
+            }
+            return ResponseEntity.status(401).body("로그인 실패");
+        } catch (InvalidLoginRequestException ex) {
+            return ResponseEntity.badRequest().body(ex.getErrors());
         }
-        return ResponseEntity.status(401).body("로그인 실패");
     }
 
     /**

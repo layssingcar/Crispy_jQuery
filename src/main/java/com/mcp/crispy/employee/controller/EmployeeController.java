@@ -4,6 +4,7 @@ import com.mcp.crispy.employee.dto.EmployeeDto;
 import com.mcp.crispy.employee.dto.FindEmployeeDto;
 import com.mcp.crispy.employee.service.EmployeeService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -28,25 +29,29 @@ public class EmployeeController {
 	private final EmployeeService employeeService;
 
 	@GetMapping("/findEmpId")
-	public String findUsername() {
+	public String findUsername(Model model) {
+		model.addAttribute("findEmployeeDto", new FindEmployeeDto());
 		return "employee/find-emp-id";
 	}
 
 	@PostMapping("/findEmpId")
-	public String findUsernamePost(@ModelAttribute FindEmployeeDto findEmployeeDto, BindingResult result,
-								   RedirectAttributes ra) {
+	public String findUsernamePost(@Valid @ModelAttribute("findEmployeeDto") FindEmployeeDto findEmployeeDto, BindingResult result,
+								   Model model, RedirectAttributes ra) {
 		if (result.hasErrors()) {
+			log.info("호출 됨?");
+			model.addAttribute("findEmployeeDto", findEmployeeDto);
 			return "employee/find-emp-id";
 		}
 
 		FindEmployeeDto findEmp = employeeService.getEmpEmail(findEmployeeDto.getEmpEmail(), findEmployeeDto.getEmpName());
 		if (findEmp != null) {
-			ra.addFlashAttribute("findEmpName", findEmp.getEmpId());
+			ra.addFlashAttribute("findEmp", findEmp);
 			log.info("empName: {}", findEmp.getEmpId());
+			log.info("empCreateDt: {}", findEmp.getCreateDtAsLocalDate());
 		} else {
 			ra.addFlashAttribute("error", "해당 이메일로 가입된 아이디가 없습니다.");
 		}
-		return "redirect:/crispy/employee/findEmpIdResult";
+		return "redirect:/crispy/employee/findEmpId/result";
 	}
 
 	@GetMapping("/findEmpId/result")

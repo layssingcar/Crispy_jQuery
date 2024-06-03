@@ -49,15 +49,17 @@ public class SecurityConfig {
 						.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
 				.authorizeHttpRequests(config -> config
 						.requestMatchers("/api/auth/**").permitAll()
+						.requestMatchers("/api/email/**").permitAll()
 						.requestMatchers("/app/**").permitAll()
 						.requestMatchers("/user/**").permitAll()
 						.requestMatchers("/topic/**").permitAll()
+						.requestMatchers("/api/employee/verify/email/v1").permitAll()
 						.requestMatchers("/css/**", "/js/**", "/img/**", "/resources/**",
 								"/profiles/**", "/upload/**", "/franchise/**", "/crispy_img/**").permitAll()  // 인증 없이 접근 가능
 						.requestMatchers("/", "/crispy", "/crispy/", "/CRISPY", "/CRISPY/").permitAll()
 						.requestMatchers("/","/crispy/login", "/crispy/logout", "/crispy/signup",
-								"/crispy/employee/find/username","/crispy/employee/find/username/result",
-								"/crispy/employee/find/password", "/crispy/employee/change/changeEmpPw").permitAll()
+								"/crispy/employee/findEmpId","/crispy/employee/findEmpId/result",
+								"/crispy/employee/findEmpPw", "/crispy/employee/changeEmpPw").permitAll()
 						.anyRequest().authenticated()) // 2024.06.02 JWT 사용으로 인한 인증 요청으로 변경
 				.formLogin(login -> login
 						.loginPage("/crispy/login"))

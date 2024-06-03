@@ -25,7 +25,20 @@ const Auth = {
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
         const rememberMe = document.getElementById('remember-me').checked;
-        console.log("로그인 요청 호출됨");
+
+        this.clearErrorMessages();
+
+        if (!username) {
+            this.displayErrorMessages({username: "아이디를 입력해주세요."});
+            document.getElementById('username').focus();
+            return;
+        }
+        if (!password) {
+            this.displayErrorMessages({password: "비밀번호를 입력해주세요."});
+            document.getElementById('password').focus();
+            return;
+        }
+
         try {
             const response = await fetch('/api/auth/login/v1', {
                 method: 'POST',
@@ -41,9 +54,14 @@ const Auth = {
             });
 
             if (!response.ok) {
-                console.log('응답 상태 코드:', response.status); // 응답 상태 코드 출력
-                const text = await response.text();
-                console.error('로그인 실패 응답:', text);
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.indexOf('application/json') !== -1) {
+                    const errorData = await response.json();
+                    this.displayErrorMessages(errorData);
+                } else {
+                    const text = await response.text();
+
+                }
                 throw new Error('로그인 실패');
             }
 
@@ -60,13 +78,32 @@ const Auth = {
                 // 메인 페이지로 리다이렉트
                 window.location.href = '/crispy/main';
             } else {
-                const text = await response.text();
-                console.error('예상치 못한 응답:', text);
                 throw new Error('Unexpected response format');
             }
         } catch (error) {
             console.error('로그인 실패:', error);
+            alert("로그인 실패")
         }
+    },
+    displayErrorMessages: function(errors) {
+        if (errors.username) {
+            const usernameError = document.getElementById('username-error');
+            usernameError.textContent = errors.username;
+            usernameError.style.display = 'block';
+        }
+        if (errors.password) {
+            const passwordError = document.getElementById('password-error');
+            passwordError.textContent = errors.password;
+            passwordError.style.display = 'block';
+        }
+    },
+
+    clearErrorMessages: function() {
+        const errorMessages = document.querySelectorAll('.error-message');
+        errorMessages.forEach(error => {
+            error.style.display = 'none';
+            error.textContent = '';
+        });
     },
 
     logout: async function() {

@@ -131,6 +131,14 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 requestURI.startsWith("/upload/") ||
                 requestURI.startsWith("/franchise/") ||
                 requestURI.startsWith("/crispy_img/") ||
-                requestURI.equals("/crispy/login");
+                requestURI.equals("/crispy/login") ||
+                requestURI.equals("/crispy/logout") ||
+                requestURI.equals("/crispy/employee/findEmpId") ||
+                requestURI.equals("/crispy/employee/findEmpId/result") ||
+                requestURI.equals("/crispy/employee/findEmpPw") ||
+                requestURI.equals("/crispy/employee/changeEmpPw") ||
+                requestURI.equals("/api/employee/verify/email/v1") ||
+                requestURI.equals("/api/email/verificationCode/v1") ||
+                requestURI.equals("/api/email/verificationCode/verify/v1");
     }
 }

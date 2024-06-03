@@ -45,4 +45,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(Map.of(ex.getField(), ex.getMessage()));
     }
 
+    @ExceptionHandler(InvalidLoginRequestException.class)
+    public ResponseEntity<Map<String, String >> handleInvalidLoginRequestException(InvalidLoginRequestException ex) {
+        return ResponseEntity.badRequest().body(ex.getErrors());
+    }
+
 }
