@@ -59,3 +59,11 @@ button {
 	font-weight: normal;
 	font-style: normal;
 }
+
+
+.error-message {
+	display: none;
+	color: red;
+	font-size: 1.5rem;
+	white-space: pre-wrap; /* 줄바꿈 적용 */
+}

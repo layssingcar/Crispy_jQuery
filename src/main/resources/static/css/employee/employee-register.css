@@ -52,10 +52,3 @@
     padding: 5px 15px;
     border: 0;
 }
-
-.error-message {
-    display: none;
-    color: red;
-    font-size: 1.5rem;
-    white-space: pre-wrap; /* 줄바꿈 적용 */
-}
