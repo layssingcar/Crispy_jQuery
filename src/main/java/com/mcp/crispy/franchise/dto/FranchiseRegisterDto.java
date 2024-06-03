@@ -23,7 +23,7 @@ public class FranchiseRegisterDto {
     private String frnName;
 
     @NotBlank(message = "대표자 이름을 입력하세요.")
-    @Pattern(regexp = "^[가-힣a-zA-Z\\s]+$", message = "대표자 이름에는 숫자를 포함할 수 없습니다.")
+    @Pattern(regexp = "^[가-힣]+$", message = "대표자 이름에는 숫자를 포함할 수 없습니다.")
     private String frnOwner;
 
     @NotBlank(message = "전화번호를 입력하세요.")

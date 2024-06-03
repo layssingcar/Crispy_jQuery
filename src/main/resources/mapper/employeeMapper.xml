@@ -31,35 +31,35 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <!-- 직원 등록 -->
     <insert id="insertEmployee" parameterType="EmployeeRegisterDto">
-        <selectKey keyProperty="empNo" resultType="int" order="BEFORE">
-            SELECT EMPLOYEE_SEQ.NEXTVAL
-            FROM DUAL
-        </selectKey>
-        INSERT INTO EMPLOYEE_T (
-              EMP_NO
-            , EMP_ID
-            , EMP_PW
-            , EMP_NAME
-            , EMP_EMAIL
-            , EMP_PHONE
-            , EMP_PROFILE
-            , EMP_IN_DT
-            , EMP_STAT
-            , FRN_NO
-            , POS_NO
-        ) VALUES (
-              #{empNo}
-            , #{empId}
-            , #{empPw}
-            , #{empName}
-            , #{empEmail}
-            , #{empPhone}
-            , #{empProfile}
-            , #{empInDt, jdbcType=DATE}
-            , #{empStat, typeHandler=com.mcp.crispy.common.typehandler.EmpStatusTypeHandler}
-            , #{frnNo}
-            , #{posNo, typeHandler=com.mcp.crispy.common.typehandler.PositionTypeHandler}
-        )
+            <selectKey keyProperty="empNo" resultType="int" order="BEFORE">
+                SELECT EMPLOYEE_SEQ.NEXTVAL
+                FROM DUAL
+            </selectKey>
+            INSERT INTO EMPLOYEE_T (
+                  EMP_NO
+                , EMP_ID
+                , EMP_PW
+                , EMP_NAME
+                , EMP_EMAIL
+                , EMP_PHONE
+                , EMP_PROFILE
+                , EMP_IN_DT
+                , EMP_STAT
+                , FRN_NO
+                , POS_NO
+            ) VALUES (
+                  #{empNo}
+                , #{empId}
+                , #{empPw}
+                , #{empName}
+                , #{empEmail}
+                , #{empPhone}
+                , #{empProfile}
+                , #{empInDt, jdbcType=DATE}
+                , #{empStat, typeHandler=com.mcp.crispy.common.typehandler.EmpStatusTypeHandler}
+                , #{frnNo}
+                , #{posNo, typeHandler=com.mcp.crispy.common.typehandler.PositionTypeHandler}
+            )
     </insert>
 
     <!-- empId로 유저 정보 찾기 -->
@@ -125,8 +125,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <!-- 이메일로 찾기 -->
     <select id="findByEmpEmail"
             resultType="FindEmployeeDto">
-            SELECT E.EMP_NO, E.EMP_ID, E.EMP_NAME, E.EMP_EMAIL
-            FROM EMPLOYEE_T E
+            SELECT E.EMP_NO, E.EMP_ID, E.EMP_NAME, E.EMP_EMAIL, E.CREATE_DT
+              FROM EMPLOYEE_T E
            WHERE 1 = 1
              AND EMP_EMAIL = #{empEmail}
              AND EMP_NAME = #{empName}
@@ -235,7 +235,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <!-- 이름 수정 -->
     <update id="updateEmpName"
-            parameterType="EmployeeUpdateDto">
+            parameterType="EmployeeNameUpdateDto">
             UPDATE EMPLOYEE_T E
             SET E.EMP_NAME = #{empName},
                 E.MODIFY_DT = CURRENT_DATE,

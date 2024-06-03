@@ -56,7 +56,7 @@
                                                 <input type="text" id="emp-profile-empName" name="empName"
                                                        class="form-control empName" placeholder="성함"
                                                        autocomplete="on" th:value="${employee.empName}" readonly>
-                                                <div class="error-message" id="empName-error"
+                                                <div class="error-message empName-error" id="empName-error"
                                                      style="display: none;"></div>
                                             </div>
                                             <button type="button" class="btn-edit-empName">수정</button>
@@ -69,7 +69,7 @@
                                                 <input type="email" id="emp-profile-empEmail" name="empEmail"
                                                        class="form-control empEmail" placeholder="이메일"
                                                        autocomplete="on" th:value="${employee.empEmail}" readonly>
-                                                <div class="error-message" id="empEmail-error"
+                                                <div class="error-message empEmail-error" id="empEmail-error"
                                                      style="display: none;"></div>
                                             </div>
                                             <button type="button" class="btn-edit-empEmail">수정</button>
@@ -87,7 +87,7 @@
                                                 <div class="error-message empPhone-error" style="display: none;"></div>
                                             </div>
                                             <button type="button" class="btn-edit-empPhone">수정</button>
-                                            <button class="btn-change-empPhone" style="display: none;">변경</button>
+                                            <button type="button" class="btn-change-empPhone" style="display: none;">변경</button>
                                         </div>
                                         <div class="emp-modify-btn">
                                             <div>
@@ -143,6 +143,9 @@
                                                                placeholder="상세주소"
                                                                th:value="${employee.empDetail}">
                                                     </div>
+                                                    <div class="error-message empZip-error" style="display: none;"></div>
+                                                    <div class="error-message empStreet-error" style="display: none;"></div>
+                                                    <div class="error-message empDetail-error" style="display: none;"></div>
                                                 </div>
                                             </div>
                                             <div class="change-address-container">
@@ -201,11 +204,9 @@
             document.querySelectorAll('input[name="empStat"]').forEach(function (radio) {
                 radio.checked = radio.value === employee.empStat
             })
-            console.log(employee.empStat);
             document.getElementById('emp-profile-empEmail').value = employee.empEmail;
             document.getElementById('emp-profile-empPhone').value = employee.empPhone || 'N/A';
             document.querySelector('.zipcode').value = employee.empZip || '';
-            console.log(employee);
             document.querySelector('.street-address').value = employee.empStreet || '';
             document.querySelector('.detail-address').value = employee.empDetail || '';
 

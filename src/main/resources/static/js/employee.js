@@ -1,13 +1,26 @@
-const employee = {  
+const employee = {
     init: function () {
         this.changePassword();
         this.bindEvents();
+        this.setupFormButtons();
         this.setupProfileImageUpload();
+        this.setupValidationListeners();
         document.getElementById("btn-update-profile")?.addEventListener("click", () => {
             this.changeProfileImage();
         })
     },
-    bindEvents: function() {
+
+    setupFormButtons: function () {
+        document.querySelector('.btn-edit-form')?.addEventListener('click', () => {
+            this.toggleEditMode(true);
+        });
+
+        document.querySelector('.btn-save-form')?.addEventListener('click', () => {
+            this.saveForm();
+        });
+    },
+
+    bindEvents: function () {
         const addressButton = document.querySelector('.btn-change-address');
         if (addressButton) {
             addressButton?.addEventListener('click', this.updateAddress.bind(this));
@@ -32,7 +45,7 @@ const employee = {
         this.setupEditableField(".btn-edit-empEmail", ".empEmail", ".btn-change-empEmail");
         this.setupEditableField(".btn-edit-address", ".zipcode, .street-address, .detail-address", ".btn-change-address", true);
     },
-    setupEditableField: function(editButtonId, inputId, changeButtonId, isAddress = false) {
+    setupEditableField: function (editButtonId, inputId, changeButtonId, isAddress = false) {
         const editButton = document.querySelector(editButtonId);
         const inputElements = document.querySelectorAll(inputId);
         const changeButton = document.querySelector(changeButtonId);
@@ -61,7 +74,7 @@ const employee = {
         });
     },
 
-    updateAddress: function() {
+    updateAddress: function () {
         const empNo = document.querySelector(".empNo").value;
         const zipCode = document.querySelector('.zipcode').value;
         const street = document.querySelector('.street-address').value;
@@ -109,6 +122,25 @@ const employee = {
             }
         });
     },
+
+    hideValidationError: function(inputElement) {
+        const fieldName = inputElement.name;
+        const errorContainer = document.querySelector(`.${fieldName}-error`);
+        if (errorContainer) {
+            errorContainer.style.display = 'none';
+            errorContainer.textContent = '';
+        }
+    },
+
+    showValidationError: function(inputElement, message) {
+        const fieldName = inputElement.name;
+        const errorContainer = document.querySelector(`.${fieldName}-error`);
+        if (errorContainer) {
+            errorContainer.style.display = 'block';
+            errorContainer.textContent = message;
+        }
+    },
+
     changePassword: function () {
         const passwordForm = document.getElementById("passwordForm");
         if (passwordForm) {
@@ -177,15 +209,15 @@ const employee = {
             },
             body: JSON.stringify(data)
         }).then(response => {
-                if (!response.ok) {
-                    return response.json().then(err => {
-                        const errorMessages = Object.values(err).join("\n");
-                        throw new Error(errorMessages);
-                    });
-                } else {
-                    return response.json()
-                }
-            }).then(data => {
+            if (!response.ok) {
+                return response.json().then(err => {
+                    const errorMessages = Object.values(err).join("\n");
+                    throw new Error(errorMessages);
+                });
+            } else {
+                return response.json()
+            }
+        }).then(data => {
             alert(data.message);
             location.reload();
         }).catch(error => {
@@ -226,12 +258,12 @@ const employee = {
         const updateText = document.querySelector(".update-img");
         const fileInput = document.querySelector(".file-input");
 
-        profileImage?.addEventListener('click', function() {
+        profileImage?.addEventListener('click', function () {
             fileInput.click();
         });
 
         fileInput?.addEventListener("change", function () {
-            if(this.files && this.files[0]) {
+            if (this.files && this.files[0]) {
                 const reader = new FileReader();
                 reader.onload = (e) =>
                     profileImage.src = e.target.result;
@@ -280,14 +312,20 @@ const employee = {
             body: JSON.stringify(data)
         }).then(response => {
             if (!response.ok) {
-                throw new Error('성함 변경에 실패했습니다.');
+                return response.json().then(err => {
+                    const errorMessages = Object.values(err).join("\n");
+                    throw new Error(errorMessages);
+                });
+            } else {
+                return response.json()
             }
-            return response.json();
         }).then(data => {
             alert(data.message);
-            return location.reload();
+            location.reload();
         }).catch(error => {
-            alert('성함 변경에 실패하였습니다.');
+            const errorElement = document.querySelector(".empName-error");
+            errorElement.style.display = 'block';
+            errorElement.textContent = error.message;
         });
     },
     changePosNo: function () {
@@ -340,94 +378,104 @@ const employee = {
             alert('재직 상태 변경에 실패하였습니다.');
         });
     },
-}
-document.querySelector('.btn-edit-form')?.addEventListener('click', function() {
-    toggleEditMode(true);
-});
 
-document.querySelector('.btn-save-form')?.addEventListener('click', function() {
-    saveForm();
-});
+    toggleEditMode: function (editMode) {
+        const inputs = document.querySelectorAll('.form-control');
+        const editButtons = document.querySelectorAll('.emp-modify-btn button, .btn-edit-address');
+        const changeAddressButton = document.querySelector('.btn-change-address');
+        const searchAddressButton = document.querySelector('.search-address');
+        const btnEditForm = document.querySelector('.btn-edit-form');
+        const btnSaveForm = document.querySelector('.btn-save-form');
 
-function toggleEditMode(editMode) {
-    const inputs = document.querySelectorAll('.form-control');
-    const editButtons = document.querySelectorAll('.emp-modify-btn button, .btn-edit-address');
-    const changeAddressButton = document.querySelector('.btn-change-address');
-    const searchAddressButton = document.querySelector('.search-address');
-    const btnEditForm = document.querySelector('.btn-edit-form');
-    const btnSaveForm = document.querySelector('.btn-save-form');
-
-    inputs.forEach(input => {
-        input.readOnly = !editMode;
-    });
-
-    editButtons.forEach(button => {
-        button.style.display = editMode ? 'none' : 'inline-block';
-    });
-
-    changeAddressButton.style.display = editMode ? 'none' : 'none';
-    searchAddressButton.disabled = !editMode;
-    searchAddressButton.style.display = editMode ? 'inline-block' : 'none';
-
-    btnEditForm.style.display = editMode ? 'none' : 'inline-block';
-    btnSaveForm.style.display = editMode ? 'inline-block' : 'none';
-}
-
-function saveForm() {
-    const empNo = document.querySelector('.empNo').value;
-    const empName = document.querySelector('.empName')?.value;
-    const empEmail = document.querySelector('.empEmail').value;
-    const empPhone = document.querySelector('.empPhone').value;
-    const empZip = document.querySelector('.zipcode').value;
-    const empStreet = document.querySelector('.street-address').value;
-    const empDetail = document.querySelector('.detail-address').value;
-    const posNo = document.querySelector("input[name='position']:checked")?.value;
-    const empStat = document.querySelector("input[name='empStat']:checked")?.value;
-
-    const data = {
-        empNo: empNo,
-        empName: empName,
-        empEmail: empEmail,
-        empPhone: empPhone,
-        empZip: empZip,
-        empStreet: empStreet,
-        empDetail: empDetail,
-        posNo: posNo,
-        empStat: empStat
-    };
-
-    const token = getCookie('accessToken');
-
-    Auth.authenticatedFetch(`/api/employee/form/v1`, {
-        method: "PUT",
-        headers: {
-            "Content-Type" : "application/json",
-            "Authorization": `Bearer ${token}` // ensure the token is included
-        },
-        body: JSON.stringify(data)
-    })
-        .then(response => {
-            if (response.status === 401) {
-                // 401 응답 처리
-                alert('인증되지 않은 사용자입니다. 다시 로그인해 주세요.');
-                window.location.href = '/login'; // 로그인 페이지로 리디렉션
-            } else {
-                return response.json();
-            }
-        })
-        .then(data => {
-            if (data.message) {
-                alert(data.message)
-                toggleEditMode(false);
-                location.reload()
-            } else {
-                alert('저장 중 오류가 발생했습니다.');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('저장 중 오류가 발생했습니다.');
+        inputs.forEach(input => {
+            input.readOnly = !editMode;
         });
+
+        editButtons.forEach(button => {
+            button.style.display = editMode ? 'none' : 'inline-block';
+        });
+
+        changeAddressButton.style.display = editMode ? 'none' : 'none';
+        searchAddressButton.disabled = !editMode;
+        searchAddressButton.style.display = editMode ? 'inline-block' : 'none';
+
+        btnEditForm.style.display = editMode ? 'none' : 'inline-block';
+        btnSaveForm.style.display = editMode ? 'inline-block' : 'none';
+    },
+
+    saveForm: function () {
+        const empNo = document.querySelector('.empNo').value;
+        const empName = document.querySelector('.empName')?.value;
+        const empEmail = document.querySelector('.empEmail').value;
+        const empPhone = document.querySelector('.empPhone').value;
+        const empZip = document.querySelector('.zipcode').value;
+        const empStreet = document.querySelector('.street-address').value;
+        const empDetail = document.querySelector('.detail-address').value;
+        const posNo = document.querySelector("input[name='position']:checked")?.value;
+        const empStat = document.querySelector("input[name='empStat']:checked")?.value;
+
+        const data = {
+            empNo: empNo,
+            empName: empName,
+            empEmail: empEmail,
+            empPhone: empPhone,
+            empZip: empZip,
+            empStreet: empStreet,
+            empDetail: empDetail,
+            posNo: posNo,
+            empStat: empStat,
+        };
+
+        const token = getCookie('accessToken');
+        const validateName = empName ? true : false;
+
+        Auth.authenticatedFetch(`/api/employee/form/v1?validateName=${validateName}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}` // ensure the token is included
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                if (response.status === 401) {
+                    alert('인증되지 않은 사용자입니다. 다시 로그인해 주세요.');
+                    window.location.href = '/login';
+                } else if (response.status === 400) {
+                    return response.json().then(errors => {
+                        this.displayValidationErrors(errors);
+                        throw new Error("Validation errors");
+                    });
+                } else {
+                    return response.json();
+                }
+            })
+            .then(data => {
+                if (data.message) {
+                    alert(data.message);
+                    this.toggleEditMode(false);
+                    location.reload();
+                } else {
+                    alert('저장 중 오류가 발생했습니다.');
+                }
+            })
+            .catch(error => {
+                if (error.message === "Validation errors") {
+                    console.error('Validation errors:', error);
+                } else {
+                    console.error('Error:', error);
+                    alert('저장 중 오류가 발생했습니다.');
+                }
+            });
+    },
+    setupValidationListeners: function() {
+        const inputFields = document.querySelectorAll('.form-control');
+        inputFields.forEach(input => {
+            input.addEventListener('change', (e) => {
+                this.hideValidationError(e.target);
+            });
+        });
+    }
 }
 
 function getCookie(name) {
@@ -435,6 +483,7 @@ function getCookie(name) {
     const parts = value.split(`; ${name}=`);
     if (parts.length === 2) return parts.pop().split(';').shift();
 }
+
 document.addEventListener("DOMContentLoaded", function () {
     employee.init();
 })

@@ -1,11 +1,15 @@
 package com.mcp.crispy.employee.controller;
 
+import com.mcp.crispy.common.group.DefaultGroup;
+import com.mcp.crispy.common.group.NameValidationGroup;
 import com.mcp.crispy.common.utils.CookieUtil;
 import com.mcp.crispy.email.service.EmailVerificationService;
 import com.mcp.crispy.employee.dto.*;
 import com.mcp.crispy.employee.service.EmployeeService;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Valid;
+import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @Slf4j
 @RestController
@@ -29,6 +34,8 @@ public class EmployeeApiController {
 
     private final EmployeeService employeeService;
     private final EmailVerificationService emailVerificationService;
+    private final Validator validator;
+
 
     /**
      * 아이디 찾기, 비밀번호 찾기 이메일 전송
@@ -175,15 +182,15 @@ public class EmployeeApiController {
     /**
      * 이름 변경
      * 배영욱 (24. 06. 02)
-     * @param employeeUpdateDto 직원 정보 업데이트 DTO
+     * @param employeeNameUpdateDto 직원 정보 업데이트 DTO
      * @return ResponseEntity
      */
     @PutMapping("/empName/v1")
-    public ResponseEntity<Map<String, String>> changeEmpName(@RequestBody EmployeeUpdateDto employeeUpdateDto) {
+    public ResponseEntity<Map<String, String>> changeEmpName(@Valid @RequestBody EmployeeNameUpdateDto employeeNameUpdateDto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         EmployeeDto employee = employeeService.getEmployeeName(auth.getName());
-        employeeService.changeEmpName(employeeUpdateDto.getEmpName(), employeeUpdateDto.getEmpNo(), employee.getEmpNo());
-        log.info("employee: {} {}", employeeUpdateDto.getEmpName(), employee.getEmpNo());
+        employeeService.changeEmpName(employeeNameUpdateDto.getEmpName(), employeeNameUpdateDto.getEmpNo(), employee.getEmpNo());
+        log.info("employee: {} {}", employeeNameUpdateDto.getEmpName(), employee.getEmpNo());
         return ResponseEntity.ok(Map.of("message", "이름이 변경되었습니다."));
     }
 
@@ -217,7 +224,24 @@ public class EmployeeApiController {
     }
 
     @PutMapping("/form/v1")
-    public ResponseEntity<Map<String, String>> changeForm(@RequestBody EmployeeUpdateDto employeeUpdateDto) {
+    public ResponseEntity<Map<String, String>> changeForm(@RequestBody EmployeeUpdateDto employeeUpdateDto,
+                                                          @RequestParam boolean validateName) {
+        Set<ConstraintViolation<EmployeeUpdateDto>> violations;
+
+        if (validateName) {
+            violations = validator.validate(employeeUpdateDto, DefaultGroup.class, NameValidationGroup.class);
+        } else {
+            violations = validator.validate(employeeUpdateDto, DefaultGroup.class);
+        }
+
+        if (!violations.isEmpty()) {
+            Map<String, String> errors = new HashMap<>();
+            for (ConstraintViolation<EmployeeUpdateDto> violation : violations) {
+                errors.put(violation.getPropertyPath().toString(), violation.getMessage());
+            }
+            return ResponseEntity.badRequest().body(errors);
+        }
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         EmployeeDto employee = employeeService.getEmployeeName(auth.getName());
         employeeService.updateFormEmployee(employeeUpdateDto, employee.getEmpNo());
