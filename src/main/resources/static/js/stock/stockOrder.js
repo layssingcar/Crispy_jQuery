@@ -1,5 +1,6 @@
+const selectStockList = document.querySelectorAll(".select-stock"); // 발주 재고 항목
+
 // 금액 계산
-const selectStockList = document.querySelectorAll(".select-stock");
 selectStockList.forEach(stock => {
     const stockCount = stock.querySelector(".test-count");  // 수량 입력
 
@@ -19,7 +20,27 @@ selectStockList.forEach(stock => {
 })
 
 // 발주 재고 임시저장
+const checkOrderTempFn = async () => {
+    const response = await fetch ("/crispy/ckeck-order-temp");
+    const result = await response.text();
+
+    if (result > 0)
+        if (!confirm("임시저장된 내용이 이미 존재합니다. 덮어씌울까요?")) return;
+
+    const formData = new FormData(document.querySelector("#form-container"));
+
+    fetch ("/crispy/stock-order-temp", {
+        method: "POST",
+        body: formData
+    })
+        .then(response => response.text())
+        .then(result => {
+            if (result > 0) alert("임시저장이 완료되었습니다.");
+            else alert("임시저장에 실패했습니다.")
+        })
+}
+
+// 임시저장 버튼
 document.querySelector("#temp").addEventListener("click", () => {
-    document.querySelector("#form-container").action = "/crispy/stock-order-temp";
-    document.querySelector("#form-container").submit();
+    checkOrderTempFn();
 })

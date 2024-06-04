@@ -25,6 +25,12 @@ public interface StockMapper {
 
     // 발주 재고 목록 조회
     List<StockDto> getSelectStock(List<Integer> stockNoList);
+
+    // 임시저장 값 존재 여부 확인
+    int checkOrderTemp(int empNo);
+
+    // 이전 임시저장 내용 삭제
+    int deleteOrderTemp(int empNo);
     
     // 발주 재고 임시저장
     int insertOrderTemp(StockOrderDto stockOrderDto);
