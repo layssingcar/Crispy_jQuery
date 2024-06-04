@@ -21,13 +21,13 @@
 					<hr>
 
 					<!-- 발주재고 form -->
-					<form action="" id="form-container">
+					<form method="POST" action="/crispy/order-req" id="form-container">
 						<div class="order-list">
 
 							<!-- 카테고리 -->
 							<div>
 								<div class="m-right" id="stock-ct">카테고리</div>
-								<select class="form-select form-select-lg mb-3" aria-label="Large select example" name="stockCt" id="">
+								<select class="form-select form-select-lg mb-3" aria-label="Large select example" name="stockCt">
 									<option value="">선택</option>
 									<option value="">카테고리 1</option>
 									<option value="">카테고리 2</option>
@@ -40,7 +40,7 @@
 							<!-- 재고명 -->
 							<div>
 								<div class="m-right" id="stock-name">재고명</div>
-								<select class="form-select form-select-lg mb-3" aria-label="Large select example" name="stockName" id="">
+								<select class="form-select form-select-lg mb-3" aria-label="Large select example" name="stockName">
 									<option value="">선택</option>
 									<option value="">재고 1</option>
 									<option value="">재고 2</option>
@@ -64,7 +64,7 @@
 							<!-- 수량 -->
 							<div>
 								<div class="m-right">수량</div>
-								<input type="text" class="form-control" id="">
+								<input type="text" class="form-control">
 								<div>개</div>
 							</div>
 
@@ -75,31 +75,53 @@
 							</div>
 						</div>
 						<hr>
-					</form>
 
-					<!-- 하단 버튼 -->
-					<div class="bottom-btn">
-
-						<!-- 임시저장 -->
-						<div><button class="btn" id="temp">임시저장</button></div>
-
-						<div>
-							<!-- 총 합계금액 -->
-							<div class="order-cost">
-								<span>합계&nbsp;</span>
-								<span class="strong">2,000,000</span>
+						<!-- 테스트용 -->
+						<th:block th:each="stockDto, stat : ${stockDtoList}">
+							<div class="select-stock">
+								<span>카테고리: </span>
+								<span th:text="${stockDto.stockCtName}"></span>
+								<span> | 재고명: </span>
+								<span th:text="${stockDto.stockName}"></span>
+								<span> | 단가: </span>
+								<span th:text="${stockDto.stockPrice}" class="test-price"></span>
+								<span>원 / </span>
+								<span th:text="${stockDto.stockUnit}"></span>
+								<span> | 수량: </span>
+								<input type="text" class="test-count" th:name="|stockOrderList[${stat.index}].stockOrderCount|">
+								<input type="hidden" th:name="|stockOrderList[${stat.index}].stockOrderCost|">
+								<span>개 | 금액: </span>
+								<span class="test-cost">0</span>
 								<span>원</span>
+								<input type="hidden" th:name="|stockOrderList[${stat.index}].stockNo|" th:value="${stockDto.stockNo}">
+								<hr>
 							</div>
+						</th:block>
 
-							<button class="btn" id="order">신청하기</button>
-							<button class="btn" id="cancel">취소</button>
+						<!-- 하단 버튼 -->
+						<div class="bottom-btn">
+
+							<!-- 임시저장 -->
+							<div><button class="btn" id="temp">임시저장</button></div>
+
+							<div>
+								<!-- 총 합계금액 -->
+								<div class="order-cost">
+									<span>합계&nbsp;</span>
+									<span class="strong">0</span>
+									<span>원</span>
+								</div>
+
+								<button class="btn" id="order">신청하기</button>
+								<button class="btn" id="cancel">취소</button>
+							</div>
 						</div>
-					</div>
+					</form>
 				</div>
 			</main>
 			<footer th:replace="~{layout/footer :: footer}"></footer>
 		</div>
 	</div>
-	<script src="/js/stock/stock-order.js"></script>
+	<script src="/js/stock/stockOrder.js"></script>
 </body>
 </html>
