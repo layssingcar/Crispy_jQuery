@@ -3,6 +3,13 @@
 <head>
     <th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
     <link href="/css/employee/employees.css" rel="stylesheet">
+    <style>
+	#btn-delete{
+	  background-color: var(--main-color) !important;
+	  font-size:1.8rem !important;
+	  border-color : var(--main-color) !important;
+	}    
+    </style>
 </head>
 <body>
 
@@ -16,10 +23,13 @@
                 <div>
                     <h1>휴지통</h1>
                 </div>
+                <div>
+                	<button type="button" class="btn btn-primary float-right deleteBtn" id="btn-delete" onclick="fnCompleteDelete();">삭제</button>
+                </div>
                 <table class="table">
                     <thead>
                     <tr>
-                    	<th><input type="checkbox"></th>
+                    	<th><input type="checkbox" class="form-check-input" id="allChecked"  onclick="fnClickCheckAll()"></th>
                         <th scope="col">구분</th>
                         <th scope="col">일정제목</th>
                         <th scope="col">일정내용</th>
@@ -28,8 +38,8 @@
                     </thead>
                     <tbody>
                     <tr th:each="trash : ${trashList}">
-                    	<td ><input type="checkbox"></td>
-                    	<td th:text="${trash.trashType}"></td>
+                    	<td ><input type="checkbox" class="form-check-input" id="singleChecked"  onclick="fnClickCheckSingle()" th:value="${trash.trashType}"></td>
+                    	<td th:text="${#strings.substring(trash.trashType, 0, 2)}"></td>
                     	<td th:text="${trash.trashTitle}"></td>
                     	<td th:text="${trash.trashContent}"></td>
                     	<td th:text="${trash.trashDt}"></td>
@@ -42,6 +52,72 @@
     </div>
     <!-- 특정 JS -->
 <!--     <script src="/js/owner.js"></script> -->
+	<script>
+	      function fnClickCheckAll(){
+	    	  if ($('#allChecked').is(':checked')){
+	      	    $('.form-check-input').prop('checked', true);
+	      	  } else{
+	      	    $('.form-check-input').prop('checked', false);
+	      	  }
+	      }
+	      
+	      function fnClickCheckSingle(){
+	    	  let allChecked = true;
+	    	  if($('#allChecked').is(':checked'))
+	    		  $('#allChecked').prop('checked', false);
+	    	  else if(!$('#allChecked').is(':checked')){
+	    		  $('input[id="singleChecked"]').each(function(){
+	    			  if(!$(this).prop('checked'))
+	    				  allChecked = false;
+	    		  })
+	    		  if(allChecked)
+	    			  $('#allChecked').prop('checked', true);
+	    	  }
+	      }
+	      
+	      function fnCompleteDelete(){
+    		  $('input[id="singleChecked"]').each(function(){
+    			  if($(this).prop('checked')){
+    				  if($(this).val().substring(0, 2) == '일정'){
+  					    const data = JSON.stringify({
+					        'scheId': $(this).val()
+					    });
+    			    	  $.ajax({
+    			    		  type:'DELETE',
+    			    		  url:'/crispy/completeDeleteSche',
+    			    		  dataType:'json',
+    			    		  data: data
+    			    	  })
+    					  .done(function(data){
+    						alert("일정 삭제 성공");
+    					  })
+    					  .fail(function(jqXHR){
+    						alert("일정 삭제 실패");
+    						alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
+    					  })    					  
+    				  }
+    				  else if($(this).val().substring(0, 2) == '연차'){
+    					    const data = JSON.stringify({
+    					        'scheId': $(this).val()
+    					    });
+    			    	  $.ajax({
+    			    		  type:'DELETE',
+    			    		  url:'/crispy/completeDeleteAnn',
+    			    		  dataType:'json',
+    			    		  data: data
+    			    	  })
+    					  .done(function(data){
+    						alert("연차 삭제 성공");
+    					  })
+    					  .fail(function(jqXHR){
+    						alert("연차 삭제 실패");
+    						alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
+    					  })       					  
+    				  }
+    			  }
+    		  })
+	      }
+	</script>
 </div>
 </body>
 </html>
