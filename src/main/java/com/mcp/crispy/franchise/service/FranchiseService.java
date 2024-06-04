@@ -165,4 +165,23 @@ public class FranchiseService {
     public void updateFormFrn(FrnUpdateDto frnUpdateDto, Integer modifier) {
         franchiseMapper.updateFormFranchise(frnUpdateDto, modifier);
     }
+
+    // 가맹점 삭제
+    @Transactional
+    public void removeFranchise(Integer frnNo) {
+        int count = franchiseMapper.countByFrnNo(frnNo);
+        if (count > 0) {
+            log.info("removeFranchise: {}", frnNo);
+            franchiseMapper.deleteFranchise(frnNo);
+        } else {
+            throw new IllegalArgumentException("해당하는 가맹점이 없습니다.");
+        }
+    }
+
+    // 가맹점 선택 삭제
+    @Transactional
+    public void removeFranchises(List<Integer> frnNos) {
+        log.info("선택된 가맹점: {}", frnNos);
+        franchiseMapper.deleteFranchises(frnNos);
+    }
 }

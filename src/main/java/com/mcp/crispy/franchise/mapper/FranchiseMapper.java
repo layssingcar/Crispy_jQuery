@@ -50,4 +50,10 @@ public interface FranchiseMapper {
     // 전체 수정
     void updateFormFranchise(@Param("updateDto") FrnUpdateDto frnUpdateDto, @Param("modifier")Integer modifier);
 
+    // 가맹점 삭제
+    void deleteFranchise(Integer frnNo);
+
+    // 가맹점 선택 삭제
+    void deleteFranchises(List<Integer> frnNos);
+
 }
