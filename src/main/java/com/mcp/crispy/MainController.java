@@ -1,7 +1,5 @@
 package com.mcp.crispy;
 
-import com.mcp.crispy.admin.service.AdminService;
-import com.mcp.crispy.employee.service.EmployeeService;
 import jakarta.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,9 +16,6 @@ import java.security.Principal;
 @RequiredArgsConstructor
 public class MainController {
 
-	private final EmployeeService employeeService;
-	private final AdminService adminService;
-
 	@GetMapping("/main")
 	public String index(Principal principal, Model model) {
 		if (principal != null) {
@@ -29,7 +24,6 @@ public class MainController {
 			return "redirect:/crispy/login";
 		}
 	}
-
 
 	@PermitAll
 	@GetMapping("/signup")

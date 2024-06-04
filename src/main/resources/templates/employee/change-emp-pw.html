@@ -17,6 +17,7 @@
                 <div class="col-12">
                     <label class="col-form-label">현재 비밀번호</label>
                     <input type="password" class="form-control" id="current-pw" placeholder="********">
+                    <div class="error-message" id="currentPassword-error" style="display: none;"></div>
                     <div class="error-message" id="invalidCurrentPassword-error" style="display: none;"></div>
                 </div>
 
@@ -32,6 +33,7 @@
                 <div class="col-12 pw-mg">
                     <label class="col-form-label">신규 비밀번호 확인</label>
                     <input type="password" class="form-control" id="confirm-pw">
+                    <div class="error-message" id="confirmPassword-error" style="display: none;"></div>
                     <div class="error-message" id="NotMatchPassword-error" style="display: none;"></div>
                 </div>
                 <button type="submit" class="w-100 btn btn-primary btn-lg mt-4">비밀번호 변경</button>
@@ -39,6 +41,6 @@
         </div>
     </div>
 </div>
-<script src="/js/employee.js"></script>
+<script src="/js/employee/employee.js"></script>
 </body>
 </html>

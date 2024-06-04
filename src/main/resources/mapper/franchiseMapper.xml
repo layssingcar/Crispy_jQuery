@@ -2,97 +2,102 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.mcp.crispy.franchise.mapper.FranchiseMapper">
-    <insert id="insertFranchise" parameterType="FranchiseDto">
+    <insert id="insertFranchise" parameterType="FranchiseRegisterDto">
         <selectKey keyProperty="frnNo" resultType="int" order="BEFORE">
-            SELECT FRANCHISE_SEQ.NEXTVAL FROM DUAL
+            SELECT FRANCHISE_SEQ.NEXTVAL
+            FROM DUAL
         </selectKey>
-
         INSERT INTO FRANCHISE_T (
-        FRN_NO,
-        FRN_NAME,
-        FRN_OWNER,
-        FRN_TEL,
-        FRN_ZIP,
-        FRN_STREET,
-        FRN_DETAIL,
-        FRN_START_TIME,
-        FRN_END_TIME,
-        FRN_JOIN_DT
-        ) VALUES (
-        #{frnNo},
-        #{frnName},
-        #{frnOwner},
-        #{frnTel},
-        #{frnZip},
-        #{frnStreet},
-        #{frnDetail},
-        #{frnStartTime},
-        #{frnEndTime},
-        #{frnJoinDt}
+              FRN_NO
+            , FRN_NAME
+            , FRN_OWNER
+            , FRN_TEL
+            , FRN_ZIP
+            , FRN_STREET
+            , FRN_DETAIL
+            , FRN_START_TIME
+            , FRN_END_TIME
+            , CREATOR
+            , CREATE_DT
+            , FRN_JOIN_DT
+      ) VALUES (
+            #{frnNo}
+          , #{frnName}
+          , #{frnOwner}
+          , #{frnTel}
+          , #{frnZip}
+          , #{frnStreet}
+          , #{frnDetail}
+          , #{frnStartTime}
+          , #{frnEndTime}
+          , 'admin'
+          , CURRENT_DATE
+          , CURRENT_DATE
         )
     </insert>
 
     <select id="findByEmpId" parameterType="FranchiseDto">
-        SELECT F.FRN_NAME, F.FRN_NO, F.FRN_IMG, F.FRN_OWNER,
-               F.FRN_TEL, F.FRN_ZIP, F.FRN_STREET, F.FRN_DETAIL,
-               F.FRN_JOIN_DT, F.FRN_START_TIME, F.FRN_END_TIME,
-               E.EMP_NO
-          FROM FRANCHISE_T F
-          LEFT JOIN EMPLOYEE_T E ON F.FRN_NO = E.FRN_NO
-         WHERE E.EMP_ID = #{empId}
+            SELECT F.FRN_NAME, F.FRN_NO, F.FRN_IMG, F.FRN_OWNER,
+                   F.FRN_TEL, F.FRN_ZIP, F.FRN_STREET, F.FRN_DETAIL,
+                   F.FRN_JOIN_DT, F.FRN_START_TIME, F.FRN_END_TIME,
+                   E.EMP_NO, E.EMP_ID
+            FROM FRANCHISE_T F
+       LEFT JOIN EMPLOYEE_T E
+              ON F.FRN_NO = E.FRN_NO
+           WHERE 1 = 1
+             AND E.EMP_ID = #{empId}
     </select>
 
-    <update id="insertOrUpdateFrnImg" parameterType="FranchiseImgDto">
-        MERGE INTO FRANCHISE_T USING DUAL ON (FRN_NO = #{frnNo})
-        WHEN MATCHED THEN
-            UPDATE SET
-                       FRN_IMG = #{frnImg},
-                       MODIFY_DT = CURRENT_DATE
-        WHEN NOT MATCHED THEN
-            INSERT (FRN_NO, FRN_IMG, CREATE_DT)
-            VALUES (#{frnNo}, #{frnImg}, CURRENT_DATE)
-    </update>
+    <!-- 번호에 맞는 가맹점 호출 -->
+    <select id="countByFrnNo"
+            parameterType="int" resultType="int">
+        SELECT COUNT(*)
+        FROM FRANCHISE_T F
+        WHERE 1 = 1
+          AND F.FRN_NO = #{frnNo}
+    </select>
 
-    <update id="updateFrnTel" parameterType="FranchiseTelDto">
+    <!-- 가맹점 번호 수정 -->
+    <update id="updateFrnTel" parameterType="FrnTelUpdateDto">
         UPDATE FRANCHISE_T F
         SET F.FRN_TEL = #{frnTel},
             F.MODIFY_DT = CURRENT_DATE,
             F.MODIFIER = #{modifier}
-        WHERE EXISTS (
-            SELECT POS_NO
-            FROM EMPLOYEE_T E
-            WHERE E.FRN_NO = F.FRN_NO
-              AND E.POS_NO = 0
-        )  AND F.FRN_NO = #{frnNo}
+        WHERE 1 = 1
+          AND F.FRN_NO = #{frnNo}
     </update>
 
-    <!-- 기존에 주소가 존재하면 Update, 존재하지 않으면 Insert -->
-    <update id="insertOrUpdateFrnAddress" parameterType="map">
-        MERGE INTO FRANCHISE_T USING DUAL ON (FRN_NO = #{frnAddressDto.frnNo})
-        WHEN MATCHED THEN
-            UPDATE SET
-                       FRN_ZIP = #{frnAddressDto.frnZip},
-                       FRN_STREET = #{frnAddressDto.frnStreet},
-                       FRN_DETAIL = #{frnAddressDto.frnDetail},
-                       MODIFY_DT = CURRENT_DATE,
-                       MODIFIER = #{modifier}
-        WHEN NOT MATCHED THEN
-            INSERT (FRN_NO, FRN_ZIP, FRN_STREET, FRN_DETAIL, CREATE_DT, CREATER)
-            VALUES (#{frnAddressDto.frnNo}, #{frnAddressDto.frnZip}, #{frnAddressDto.frnStreet}, #{frnAddressDto.frnDetail}, CURRENT_DATE, #{modifier})
+    <!-- 가맹점 이미지 수정 -->
+    <update id="updateFrnImg" parameterType="FrnUpdateDto">
+            UPDATE FRANCHISE_T F
+            SET F.FRN_IMG = #{frnImg},
+                F.MODIFIER = #{modifier},
+                F.MODIFY_DT = CURRENT_DATE
+            WHERE F.FRN_NO = #{frnNo}
     </update>
 
-    <update id="updateFrnOwner" parameterType="FrnUpdateDto">
+    <!-- 대표명 수정 -->
+    <update id="updateFrnOwner" parameterType="FrnOwnerUpdateDto">
         UPDATE FRANCHISE_T F
         SET F.FRN_OWNER = #{frnOwner},
             F.MODIFY_DT = CURRENT_DATE,
             F.MODIFIER = ${modifier}
-        WHERE EXISTS (
-            SELECT E.FRN_NO
-            FROM EMPLOYEE_T E
-            WHERE E.FRN_NO = F.FRN_NO
-        )  AND F.FRN_NO = ${frnNo}
+        WHERE 1 = 1
+          AND F.FRN_NO = ${frnNo}
     </update>
 
+    <!-- 가맹점 주소 수정 -->
+    <update id="updateFrnAddress" parameterType="FrnAddressUpdateDto">
+            UPDATE FRANCHISE_T F
+            SET F.FRN_ZIP = #{updateDto.frnZip},
+                F.FRN_STREET = #{updateDto.frnStreet},
+                F.FRN_DETAIL = #{updateDto.frnDetail},
+                F.MODIFIER = #{modifier},
+                F.MODIFY_DT = CURRENT_DATE
+            WHERE F.FRN_NO = #{updateDto.frnNo}
+    </update>
+
+    <!-- 운영시간 수정 -->
     <update id="updateOperatingTime" parameterType="FrnUpdateDto">
         UPDATE FRANCHISE_T F
         <set>
@@ -105,32 +110,86 @@
             F.MODIFY_DT = CURRENT_DATE,
             F.MODIFIER = ${modifier}
         </set>
-        WHERE EXISTS (
-            SELECT E.FRN_NO
-            FROM EMPLOYEE_T E
-            WHERE E.FRN_NO = F.FRN_NO
-        )  AND F.FRN_NO = ${frnNo}
+        WHERE 1 = 1
+          AND F.FRN_NO = ${frnNo}
     </update>
 
     <select id="getFranchiseList" resultType="FranchiseDto">
-        SELECT FRN_NO
-             , FRN_NAME
-             , FRN_OWNER
-             , FRN_TEL
-             , FRN_ZIP
-             , FRN_STREET
-             , FRN_DETAIL
-             , FRN_X
-             , FRN_Y
-             , FRN_START_TIME
-             , FRN_END_TIME
-             , FRN_IMG
-             , FRN_JOIN_DT
-             , CREATE_DT
-             , CREATOR
-             , MODIFY_DT
-             , MODIFIER
-          FROM FRANCHISE_T
+        SELECT F.FRN_NO
+             , F.FRN_NAME
+             , F.FRN_OWNER
+             , F.FRN_TEL
+             , F.FRN_ZIP
+             , F.FRN_STREET
+             , F.FRN_DETAIL
+             , F.FRN_X
+             , F.FRN_Y
+             , F.FRN_START_TIME
+             , F.FRN_END_TIME
+             , F.FRN_IMG
+             , F.FRN_JOIN_DT
+             , F.CREATE_DT
+             , F.CREATOR
+             , F.MODIFY_DT
+             , F.MODIFIER
+          FROM FRANCHISE_T F
+        ORDER BY F.FRN_NO ASC
     </select>
 
+    <!-- 직원번호로 가맹점 정보 가져오기 ( 대표 이름 수정 용 ) -->
+    <select id="getFrnByEmpNo" parameterType="int"
+            resultType="FranchiseDto">
+            SELECT F.FRN_NO, F.FRN_OWNER
+                 , E.EMP_NO
+            FROM FRANCHISE_T F
+            JOIN EMPLOYEE_T E
+              ON F.FRN_NO = E.FRN_NO
+           WHERE 1 = 1
+             AND E.EMP_NO = #{empNo}
+    </select>
+
+    <!-- 가맹점 번호로 정보 가져오기 -->
+    <select id="findFrnDetailsByFrnNo" parameterType="FranchiseDto">
+        SELECT F.FRN_NO, F.FRN_NAME, F.FRN_OWNER, F.FRN_TEL, F.FRN_ZIP
+              , F.FRN_STREET, F.FRN_DETAIL, F.FRN_X, F.FRN_Y
+              , F.FRN_START_TIME, F.FRN_END_TIME, F.FRN_IMG
+              , F.FRN_JOIN_DT, F.CREATE_DT, F.CREATOR, F.MODIFY_DT
+              , F.MODIFIER, E.EMP_NO, E.POS_NO
+        FROM FRANCHISE_T F
+        INNER JOIN EMPLOYEE_T E ON F.FRN_NO = E.FRN_NO
+        WHERE 1 = 1
+          AND F.FRN_NO = #{frnNo} AND E.POS_NO = 0
+    </select>
+
+    <!-- 폼 정보 수정 -->
+    <update id="updateFormFranchise" parameterType="map">
+        UPDATE FRANCHISE_T F
+        <set>
+            <if test="updateDto.frnZip != null">
+                F.FRN_ZIP = #{updateDto.frnZip},
+            </if>
+            <if test="updateDto.frnStreet != null">
+                F.FRN_STREET = #{updateDto.frnStreet},
+            </if>
+            <if test="updateDto.frnDetail != null">
+                F.FRN_DETAIL = #{updateDto.frnDetail},
+            </if>
+            <if test="updateDto.frnName != null">
+                F.FRN_NAME = #{updateDto.frnName},
+            </if>
+            <if test="updateDto.frnTel != null">
+                F.FRN_TEL = #{updateDto.frnTel},
+            </if>
+            <if test="updateDto.frnStartTime != null">
+                F.FRN_START_TIME = #{updateDto.frnStartTime},
+            </if>
+            <if test="updateDto.frnEndTime != null">
+                F.FRN_END_TIME = #{updateDto.frnEndTime},
+            </if>
+            F.MODIFY_DT = CURRENT_DATE,
+            F.MODIFIER = #{modifier}
+        </set>
+        WHERE 1 = 1
+        AND F.FRN_NO = #{updateDto.frnNo}
+    </update>
 </mapper>

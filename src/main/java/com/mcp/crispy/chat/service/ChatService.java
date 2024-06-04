@@ -1,8 +1,8 @@
 package com.mcp.crispy.chat.service;
 
+import com.mcp.crispy.auth.domain.EmployeePrincipal;
 import com.mcp.crispy.chat.dto.*;
 import com.mcp.crispy.chat.mapper.ChatMapper;
-import com.mcp.crispy.common.userdetails.CustomDetails;
 import com.mcp.crispy.employee.dto.EmployeeDto;
 import com.mcp.crispy.employee.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
@@ -105,7 +105,7 @@ public class ChatService {
     public void updateSenderAndReceiverStatus(ChatMessageDto message) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
-            CustomDetails senderDetails = (CustomDetails) auth.getPrincipal();
+            EmployeePrincipal senderDetails = (EmployeePrincipal) auth.getPrincipal();
 
             // 송신자에게 읽지 않은 메시지 개수 업데이트
             int totalUnread = getUnreadCounts(message.getEmpNo());

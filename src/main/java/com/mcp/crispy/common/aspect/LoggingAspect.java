@@ -6,12 +6,12 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Aspect
 @Component
-@Slf4j
 public class LoggingAspect {
 
-    @Around("execution(* com.mcp.crispy..*.*(..))")
+    @Around("execution(* com.mcp.crispy..*.*(..)) && !within(com.mcp.crispy.common.filter.JwtAuthorizationFilter)")
     public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
         String className = joinPoint.getSignature().getDeclaringTypeName();
         String methodName = joinPoint.getSignature().getName();
@@ -19,7 +19,7 @@ public class LoggingAspect {
         String simpleClassName = className.substring(className.lastIndexOf('.') + 1);
 
         log.info("메소드 시작 : {}.{}", simpleClassName, methodName);
-        // 메소드 실행 전 시간 측정 
+        // 메소드 실행 전 시간 측정
         long start = System.currentTimeMillis();
 
         try {
@@ -29,7 +29,7 @@ public class LoggingAspect {
         	log.info("예외 발생 : {}.{} : {}", simpleClassName, methodName, ex.getMessage());
         	throw ex;
         }
-        
+
         finally {
             // 메소드 실행 후 시간 측정 및 실행 시간 계산
             long executionTime = System.currentTimeMillis() - start;

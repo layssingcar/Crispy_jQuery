@@ -13,4 +13,6 @@ public class AdminDto {
     private int adminNo;
     private String adminId;
     private String adminPw;
+    private String accessToken;
+    private String refreshToken;
 }

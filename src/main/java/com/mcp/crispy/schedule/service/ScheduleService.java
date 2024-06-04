@@ -33,4 +33,17 @@ public class ScheduleService {
 	public ScheduleDto getScheById(String id) {
 		return scheduleMapper.getScheById(id);
 	}
+	
+	@Transactional
+	public int modifySchedule(ScheduleDto scheduleDto) {
+		return scheduleMapper.modifySchedule(scheduleDto);
+	}
+	@Transactional
+	public int deleteSchedule(ScheduleDto scheduleDto) {
+		return scheduleMapper.deleteSchedule(scheduleDto);
+	}
+	@Transactional
+	public int completeDeleteSchedule(int scheduleId) {
+		return scheduleMapper.completeDeleteSchedule(scheduleId);
+	}
 }

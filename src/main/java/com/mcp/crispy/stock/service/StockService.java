@@ -3,6 +3,7 @@ package com.mcp.crispy.stock.service;
 import com.mcp.crispy.common.page.PageResponse;
 import com.mcp.crispy.stock.dto.StockDto;
 import com.mcp.crispy.stock.dto.StockOptionDto;
+import com.mcp.crispy.stock.dto.StockOrderDto;
 import com.mcp.crispy.stock.mapper.StockMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.session.RowBounds;
@@ -20,7 +21,7 @@ public class StockService {
     public PageResponse<StockDto> getStockList(StockOptionDto stockOptionDto, int limit) {
 
         // 현재 페이지 번호
-        int page = Math.max(stockOptionDto.getPage(), 1);
+        int page = Math.max(stockOptionDto.getPageNo(), 1);
 
         // 전체 재고 항목 수
         int totalCount = stockMapper.getStockCount(stockOptionDto);
@@ -55,6 +56,16 @@ public class StockService {
     // 재고 상세 조회
     public StockDto getStockDetail(int stockNo) {
         return stockMapper.getStockDetail(stockNo);
+    }
+
+    // 발주 재고 목록 조회
+    public List<StockDto> getStockList(List<Integer> stockNoList) {
+        return stockMapper.getSelectStock(stockNoList);
+    }
+
+    // 발주 재고 임시저장
+    public int insertOrderTemp(StockOrderDto stockOrderDto) {
+        return stockMapper.insertOrderTemp(stockOrderDto);
     }
 
 }

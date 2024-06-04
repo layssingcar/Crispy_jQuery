@@ -1,9 +1,7 @@
 package com.mcp.crispy.common.config;
 
-import com.mcp.crispy.common.interceptor.PrincipalInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -11,8 +9,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
-
-    private final PrincipalInterceptor principalInterceptor;
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
@@ -34,13 +30,5 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/crispy_img/**")
                 .addResourceLocations("file:///C:/GDJ77/mcp/crispy_img/")
                 .addResourceLocations("file:///Users/baeyeong-ug/Desktop/image/");
-    }
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(principalInterceptor)
-                .addPathPatterns("/crispy/**")
-                .excludePathPatterns("/crispy/login", "/crispy/employee/findEmpId", "/crispy/employee/findEmpPw",
-                                     "/crispy/employee/find/username", "/crispy/employee/find/username/result", "/crispy/employee/change/password"); // 로그인 페이지와 같은 예외 URL을 지정합니다.
     }
 }

@@ -20,11 +20,17 @@ const owner = {
 
     resetPassword: function() {
         const email = document.getElementById("emp-profile-empEmail").value;
-        fetch("/api/employee/password/reset/v1", {
+        const empName = document.querySelector(".empName").value;
+        Auth.authenticatedFetch("/api/employee/password/reset/v1", {
             method: 'POST',
             headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({empEmail: email})
-        }).then(response => response.ok)
+            body: JSON.stringify({
+                empName: empName,
+                empEmail: email})
+        }).then(response => response.json())
+            .then(data => {
+                alert(data.message)
+            })
             .catch(error => console.error("Error:", error));
     },
 

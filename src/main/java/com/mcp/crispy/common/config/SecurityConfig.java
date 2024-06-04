@@ -1,5 +1,7 @@
 package com.mcp.crispy.common.config;
 
+import com.mcp.crispy.common.CustomAuthenticationEntryPoint;
+import com.mcp.crispy.common.filter.JwtAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,12 +12,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.RememberMeServices;
-import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
@@ -25,6 +26,9 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfig {
 
 	private final AuthenticationConfiguration authenticationConfiguration;
+	private final JwtAuthorizationFilter jwtAuthorizationFilter;
+	private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+
 
 	@Bean
 	public AuthenticationManager authenticationManager() throws Exception {
@@ -37,44 +41,37 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	RememberMeServices rememberMeServices(UserDetailsService userDetailsService) {
-		TokenBasedRememberMeServices.RememberMeTokenAlgorithm encodingAlgorithm = TokenBasedRememberMeServices.RememberMeTokenAlgorithm.SHA256;
-		TokenBasedRememberMeServices rememberMe = new TokenBasedRememberMeServices("remember-me", userDetailsService, encodingAlgorithm);
-		rememberMe.setTokenValiditySeconds(604800);
-		rememberMe.setMatchingAlgorithm(TokenBasedRememberMeServices.RememberMeTokenAlgorithm.MD5);
-		return rememberMe;
-	}
-
-	@Bean
-	SecurityFilterChain filterChain(HttpSecurity http, RememberMeServices rememberMeServices) throws Exception {
+	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http
-			.cors(AbstractHttpConfigurer::disable)
-			.csrf(AbstractHttpConfigurer::disable) // _csrf
-			.headers(headersConfigurer -> headersConfigurer
-							.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
-			.authorizeHttpRequests(config -> config
-					.requestMatchers("/resources/**","/css/**", "/js/**", "/img/**").permitAll()
-					.requestMatchers("/api/v1/email/**").permitAll()
-					.requestMatchers("/api/v1/employee/**").permitAll()
-					.requestMatchers("/app/**").permitAll()
-					.requestMatchers("/user/**").permitAll()
-					.requestMatchers("/topic/**").permitAll()
-					.requestMatchers("/crispy/login", "/crispy/logout", "/crispy/signup",
-									 "/crispy/employee/find/username","/crispy/employee/find/username/result",
-									 "/crispy/employee/find/password", "/crispy/employee/change/password").permitAll()
-					.anyRequest().permitAll()) // 2024.05.20 편의성을 위해 모든 접근 허용
-//			.exceptionHandling(exception -> exception
-//						.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/crispy/login")))
-			.formLogin(login -> login
-					.loginPage("/crispy/login")
-					.defaultSuccessUrl("/", true))
-			.logout(logout -> logout
-					.logoutRequestMatcher(new AntPathRequestMatcher("/crispy/logout"))
-					.logoutSuccessUrl("/crispy/login")
-					.invalidateHttpSession(true))
-			.rememberMe(rememberMe -> rememberMe.rememberMeParameter("remember-me")
-					.rememberMeServices(rememberMeServices)
-					.useSecureCookie(false));
+				.cors(AbstractHttpConfigurer::disable)
+				.csrf(AbstractHttpConfigurer::disable) // _csrf
+				.headers(headersConfigurer -> headersConfigurer
+						.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+				.authorizeHttpRequests(config -> config
+						.requestMatchers("/api/auth/**").permitAll()
+						.requestMatchers("/api/email/**").permitAll()
+						.requestMatchers("/app/**").permitAll()
+						.requestMatchers("/user/**").permitAll()
+						.requestMatchers("/topic/**").permitAll()
+						.requestMatchers("/api/employee/verify/email/v1").permitAll()
+						.requestMatchers("/css/**", "/js/**", "/img/**", "/resources/**",
+								"/profiles/**", "/upload/**", "/franchise/**", "/crispy_img/**").permitAll()  // 인증 없이 접근 가능
+						.requestMatchers("/", "/crispy", "/crispy/", "/CRISPY", "/CRISPY/").permitAll()
+						.requestMatchers("/","/crispy/login", "/crispy/logout", "/crispy/signup",
+								"/crispy/employee/findEmpId","/crispy/employee/findEmpId/result",
+								"/crispy/employee/findEmpPw", "/crispy/employee/changeEmpPw").permitAll()
+						.anyRequest().authenticated()) // 2024.06.02 JWT 사용으로 인한 인증 요청으로 변경
+				.formLogin(login -> login
+						.loginPage("/crispy/login"))
+				.logout(logout -> logout
+						.logoutRequestMatcher(new AntPathRequestMatcher("/api/auth/logout"))
+						.logoutSuccessUrl("/crispy/login")
+						.invalidateHttpSession(true)
+						.deleteCookies("accessToken", "refreshToken"))
+				.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.exceptionHandling(exceptionHandling -> exceptionHandling
+						.authenticationEntryPoint(customAuthenticationEntryPoint));
+		http.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
 		return http.build();
 	}
 }

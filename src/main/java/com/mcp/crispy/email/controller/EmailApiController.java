@@ -2,7 +2,7 @@ package com.mcp.crispy.email.controller;
 
 import com.mcp.crispy.email.dto.EmailSendDto;
 import com.mcp.crispy.email.dto.EmailVerificationDto;
-import com.mcp.crispy.email.service.AuthenticationService;
+import com.mcp.crispy.email.service.EmailVerificationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,14 +21,14 @@ import java.util.Map;
 @RequestMapping("/api/email")
 public class EmailApiController {
 
-    private final AuthenticationService authenticationService;
+    private final EmailVerificationService emailVerificationService;
 
     @PostMapping("/verificationCode/v1")
     // 인증 코드 전송
     public ResponseEntity<?> sendVerificationCode(@Valid @RequestBody EmailSendDto emailSendDto) {
         String verifyEmail = emailSendDto.getVerifyEmail();
         try {
-            authenticationService.sendAndSaveVerificationCode(verifyEmail);
+            emailVerificationService.sendAndSaveVerificationCode(verifyEmail);
             return ResponseEntity.ok().body(Map.of("message", "인증번호가 전송되었습니다."));
         } catch (Exception ex) {
             log.error("인증번호 전송 중 오류 발생: {}", ex.getMessage());
@@ -45,7 +45,7 @@ public class EmailApiController {
         log.info("인증 코드 검증 요청: verifyEmail = {}, verifyCode = {}", verifyEmail, verifyCode);
 
         try {
-            boolean isCodeValid = authenticationService.verifyCode(verifyEmail, verifyCode);
+            boolean isCodeValid = emailVerificationService.verifyCode(verifyEmail, verifyCode);
             if (isCodeValid) {
                 log.info("인증 성공: verifyEmail={}", verifyEmail);
                 return ResponseEntity.ok().body(Map.of("message", "인증 성공"));

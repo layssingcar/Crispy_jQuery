@@ -208,8 +208,9 @@
 .frn-info-form .update-img {
     display: none;
     position: absolute;
-    top: 23%;
+    top: 26%;
     color: #fff;
+    font-size: 1.5rem;
 }
 
 .franchise .address-container {

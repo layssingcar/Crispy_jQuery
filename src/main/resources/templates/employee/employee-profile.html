@@ -38,10 +38,10 @@
                                     <div class="sign-img-container">
                                         <img th:if="${employee.empSign != null}" th:src="${employee.empSign}" class="sign-img">
                                     </div>
-                                <button id="add-approval">결재 서명 추가</button>
-                                <a href="/crispy/employee/changeEmpPw" role="button" class="change-password">
-                                    비밀번호 변경
-                                </a>
+                                    <button id="add-approval">결재 서명 추가</button>
+                                    <a href="/crispy/employee/changeEmpPw" role="button" class="change-password">
+                                        비밀번호 변경
+                                    </a>
                                 </div>
                             </div>
                             <div>
@@ -49,60 +49,60 @@
                                     직원정보
                                     <hr>
                                 </div>
-                                <div class="info-wrap">
-<!--                                    <div class="d-flex flex-column">-->
-<!--                                        <label class="form-label">비밀번호 변경</label>-->
-<!--                                        -->
-<!--                                    </div>-->
-                                    <div class="emp-modify-btn">
-                                        <div>
-                                            <label for="emp-profile-empEmail" class="form-label">이메일</label>
-                                            <input type="email" id="emp-profile-empEmail" name="empEmail" class="form-control empEmail" placeholder="이메일"
-                                                   autocomplete="on" th:value="${employee.empEmail}">
-                                            <div class="error-message empEmail-error" style="display: none;"></div>
-                                        </div>
-                                        <button type="button" class="btn-edit-empEmail">수정</button>
-                                        <button type="button" class="btn-change-empEmail" style="display: none;">변경</button>
-                                    </div>
-                                    <div class="emp-modify-btn">
-                                        <div>
-                                            <label for="emp-profile-empPhone" class="form-label">전화번호</label>
-                                            <input type="text" class="form-control empPhone" id="emp-profile-empPhone"
-                                                   name="empPhone" placeholder="- 제외하고 입력해주세요." th:value="${employee.empPhone}">
-                                            <div class="error-message empPhone-error" style="display: none;"></div>
-                                        </div>
-                                        <button type="button" class="btn-edit-empPhone">수정</button>
-                                        <button class="btn-change-empPhone" style="display: none;">변경</button>
-                                    </div>
-                                    <div class="address-container">
-                                        <div class="address-wrap">
-                                            <label class="form-label">주소</label>
+                                <form class="employeeProfileForm" method="post" autocomplete="off">
+                                    <div class="info-wrap">
+                                        <div class="emp-modify-btn">
                                             <div>
+                                                <label for="emp-profile-empEmail" class="form-label">이메일</label>
+                                                <input type="email" id="emp-profile-empEmail" name="empEmail" class="form-control empEmail" placeholder="이메일"
+                                                       autocomplete="on" th:value="${employee.empEmail}" readonly>
+                                                <div class="error-message empEmail-error" style="display: none;"></div>
+                                            </div>
+                                            <button type="button" class="btn-edit-empEmail">수정</button>
+                                            <button type="button" class="btn-change-empEmail" style="display: none;">변경</button>
+                                        </div>
+                                        <div class="emp-modify-btn">
+                                            <div>
+                                                <label for="emp-profile-empPhone" class="form-label">전화번호</label>
+                                                <input type="text" class="form-control empPhone" id="emp-profile-empPhone"
+                                                       name="empPhone" placeholder="- 제외하고 입력해주세요." th:value="${employee.empPhone}" readonly>
+                                                <div class="error-message empPhone-error" style="display: none;"></div>
+                                            </div>
+                                            <button type="button" class="btn-edit-empPhone">수정</button>
+                                            <button type="button" class="btn-change-empPhone" style="display: none;">변경</button>
+                                        </div>
+                                        <div class="address-container">
+                                            <div class="address-wrap">
+                                                <label class="form-label">주소</label>
                                                 <div>
-                                                    <input type="text" id="emp-profile-empZip" name="empZip"
-                                                           class="form-control zipcode mb-2" placeholder="우편번호"
-                                                           th:value="${employee.empZip}">
-                                                    <div class="ms-0">
-                                                        <button type="button" class="mt-0 ms-3 search-address"
-                                                                onclick="execPostCode(false)">
-                                                            주소 찾기
-                                                        </button>
+                                                    <div>
+                                                        <input type="text" id="emp-profile-empZip" name="empZip"
+                                                               class="form-control zipcode mb-2" placeholder="우편번호"
+                                                               th:value="${employee.empZip}" readonly>
+                                                        <div class="ms-0">
+                                                            <button type="button" class="mt-0 ms-3 search-address" onclick="execPostCode(false)" disabled>
+                                                                주소 찾기
+                                                            </button>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <input type="text" id="emp-profile-empStreet" name="empStreet"
-                                                       class="form-control street-address mb-2" placeholder="도로명주소"
-                                                       th:value="${employee.empStreet}">
-                                                <div class="detail-wrap">
-                                                    <input type="text" id="emp-profile-empDetail" name="empDetail"
-                                                           class="form-control detail-address mb-2" placeholder="상세주소"
-                                                           th:value="${employee.empDetail}">
+                                                    <input type="text" id="emp-profile-empStreet" name="empStreet"
+                                                           class="form-control street-address mb-2" placeholder="도로명주소"
+                                                           th:value="${employee.empStreet}" readonly>
+                                                    <div class="detail-wrap">
+                                                        <input type="text" id="emp-profile-empDetail" name="empDetail"
+                                                               class="form-control detail-address mb-2" placeholder="상세주소"
+                                                               th:value="${employee.empDetail}" readonly>
+                                                    </div>
+                                                    <div class="error-message empZip-error" style="display: none;"></div>
+                                                    <div class="error-message empStreet-error" style="display: none;"></div>
+                                                    <div class="error-message empDetail-error" style="display: none;"></div>
                                                 </div>
                                             </div>
+                                            <div class="change-address-container">
+                                                <button type="button" class="btn-edit-address">수정</button>
+                                                <button type="button" class="btn-change-address" style="display: none;">주소 변경</button>
+                                            </div>
                                         </div>
-                                        <div class="change-address-container">
-                                            <button type="button" class="btn-change-address">주소 변경</button>
-                                        </div>
-                                    </div>
                                         <div id="signature-modal" style="display:none;">
                                             <div class="modal-content">
                                                 <span class="close">❌</span>
@@ -112,7 +112,12 @@
                                                 <button id="clear-signature">지우기</button>
                                             </div>
                                         </div>
-                                </div>
+                                    </div>
+                                    <div class="form-buttons">
+                                        <button type="button" class="btn-edit-form">정보 수정</button>
+                                        <button type="button" class="btn-save-form" style="display: none;">수정 완료</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -123,9 +128,9 @@
     </div>
     <!-- 특정 JS -->
     <script src="/js/address.js"></script>
-    <script src="/js/employee.js"></script>
+    <script src="/js/employee/signaturePad.js"></script>
+    <script src="/js/employee/employee.js"></script>
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-
 </div>
 </body>
 </html>
