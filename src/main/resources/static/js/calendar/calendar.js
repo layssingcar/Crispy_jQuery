@@ -9,6 +9,7 @@
     	  
       myModal.on("hidden.bs.modal", function () {
         $("#form-modal")[0].reset();
+        calendar.refetchEvents();
         fnSetModalDetailToggle(0);
 	 	startOpt.eq(0).prop('selected', true);	// 시작시간 초기화
 	 	endOpt.eq(0).prop('selected', true);		// 종료시간 초기화
@@ -404,6 +405,7 @@
 		    })
 			.done(function(data){
 				alert("연차 삭제 성공");
+				myModal.modal('hide');
 				calendar.refetchEvents();
 			})
 			.fail(function(jqXHR){
@@ -432,6 +434,7 @@
 		    })
 			.done(function(data){
 				alert("연차 수정 성공");
+				myModal.modal('hide');
 				calendar.refetchEvents();
 			})
 			.fail(function(jqXHR){
@@ -465,6 +468,7 @@
 		    })
 			.done(function(data){
 				alert("연차 저장 성공");
+				myModal.modal('hide');
 				calendar.refetchEvents();
 			})
 			.fail(function(jqXHR){
@@ -516,6 +520,7 @@
 			    })
 				.done(function(data){
 					alert("일정 저장 성공");
+					myModal.modal('hide');
 					calendar.refetchEvents();
 				})
 				.fail(function(jqXHR){
@@ -558,10 +563,10 @@
 			    })
 				.done(function(data){
 					alert("일정 삭제 성공");
+					myModal.modal('hide');
 					calendar.refetchEvents();
 				})
 				.fail(function(jqXHR){
-					console.log(data);
 					alert("일정 삭제 실패");
 					alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
 				})     			
@@ -606,6 +611,7 @@
 			    })
 				.done(function(data){
 					alert("일정 수정 성공");
+					myModal.modal('hide');
 					calendar.refetchEvents();
 				})
 				.fail(function(jqXHR){
