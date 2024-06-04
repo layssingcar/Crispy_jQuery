@@ -20,19 +20,19 @@
                     <thead>
                     <tr>
                     	<th><input type="checkbox"></th>
-                        <th scope="col">작성자</th>
+                        <th scope="col">구분</th>
                         <th scope="col">일정제목</th>
                         <th scope="col">일정내용</th>
                         <th scope="col">일정삭제시간</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
+                    <tr th:each="trash : ${trashList}">
                     	<td ><input type="checkbox"></td>
-                    	<td >최동환</td>
-                    	<td>보내줘</td>
-                    	<td >나를 집으로</td>
-                    	<td>2024-05-28</td>
+                    	<td th:text="${trash.trashType}"></td>
+                    	<td th:text="${trash.trashTitle}"></td>
+                    	<td th:text="${trash.trashContent}"></td>
+                    	<td th:text="${trash.trashDt}"></td>
                     </tr>
                     </tbody>
                 </table>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mcp.crispy.calendar.mapper.CalendarMapper">
+
+	<resultMap type="CalendarDto" id="TrashMap">
+		<result property="trashType" column="ID"/>
+		<result property="trashTitle" column="TITLE"/>
+		<result property="trashContent" column="CONTENT"/>
+		<result property="trashDt" column="MODIFY_DT"/>
+	</resultMap>
+
+
+<select id="getTrashList"
+		resultMap="TrashMap">
+        SELECT SUBSTR(SCHE_ID, 0, 2) AS ID, SCHE_TITLE AS TITLE, SCHE_CONTENT AS CONTENT, MODIFY_DT
+        FROM SCHEDULE_T
+        WHERE SCHE_STAT = 1
+        UNION
+        SELECT SUBSTR(ANN_ID, 0, 2) AS ID, ANN_TITLE AS TITLE, ANN_CONTENT AS CONTENT, MODIFY_DT
+        FROM ANNUAL_T
+        WHERE ANN_CT_NO = 3
+        ORDER BY MODIFY_DT DESC
+</select>
+
+
+</mapper>
