@@ -1,6 +1,6 @@
 package com.mcp.crispy.stock.controller;
 
-import com.mcp.crispy.common.userdetails.CustomDetails;
+import com.mcp.crispy.auth.domain.EmployeePrincipal;
 import com.mcp.crispy.common.page.PageResponse;
 import com.mcp.crispy.stock.dto.StockDto;
 import com.mcp.crispy.stock.dto.StockOptionDto;
@@ -38,7 +38,7 @@ public class StockController {
 							StockOptionDto stockOptionDto,
 							Model model) {
 
-		CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
+		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
 		stockOptionDto.setFrnNo(userDetails.getFrnNo());
 
 		PageResponse<StockDto> stockDtoList = stockService.getStockList(stockOptionDto, 10);
@@ -63,7 +63,7 @@ public class StockController {
 							 StockOptionDto stockOptionDto,
 							 Model model) {
 
-		CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
+		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
 		stockOptionDto.setFrnNo(userDetails.getFrnNo());
 
 		PageResponse<StockDto> stockDtoList = stockService.getStockList(stockOptionDto, 10);
@@ -127,8 +127,10 @@ public class StockController {
 	public String stockOrderTemp(Authentication authentication,
 								 @ModelAttribute StockOrderDto stockOrderDto) {
 
-		CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
+		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
 		stockOrderDto.setEmpNo(userDetails.getEmpNo());
+		log.info("stockOrderDto: {}", stockOrderDto.toString());
+		log.info("empNo: {}", userDetails.getEmpNo());
 
 		int result = stockService.insertOrderTemp(stockOrderDto);
 
