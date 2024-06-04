@@ -10,7 +10,7 @@
 <div class="find-container">
     <div>
         <img src="/img/crispy2.png">
-        <form class="find-form" th:action="@{/crispy/employee/find-emp-pw}" method="post" autocomplete="off">
+        <form class="find-form" th:action="@{/crispy/employee/findEmpPw}" method="post" autocomplete="off">
             <h1 class="find-header">비밀번호 찾기</h1>
             <div th:if="${param.error}">
                 <div class="alert alert-danger">
@@ -58,6 +58,6 @@
         </form>
     </div>
 </div>
-<script type="module" src="/js/emailVerification.js"></script>
+<script type="module" src="/js/employee/emailVerification.js"></script>
 </body>
 </html>

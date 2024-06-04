@@ -1,8 +1,8 @@
 package com.mcp.crispy.employee.service;
 
+import com.mcp.crispy.auth.domain.EmployeePrincipal;
 import com.mcp.crispy.common.ImageService;
 import com.mcp.crispy.common.exception.EmployeeNotFoundException;
-import com.mcp.crispy.common.userdetails.CustomDetails;
 import com.mcp.crispy.email.service.EmailService;
 import com.mcp.crispy.employee.dto.*;
 import com.mcp.crispy.employee.mapper.EmployeeMapper;
@@ -31,19 +31,14 @@ public class OwnerService {
     private final EmployeeMapper employeeMapper;
 
 
-    /**
-     * 2024.05.16
-     * 직원 등록
-     * @param employeeRegisterDto
-     * @param authentication
-     */
+    // 직원 등록
     @Transactional
     public void registerEmployee(EmployeeRegisterDto employeeRegisterDto, Authentication authentication) {
-        String tempPassword = generateTempPassword();
-        String encodedPassword = passwordEncoder.encode(tempPassword);
+        String tempPassword = generateTempPassword(); // 임시 비밀번호 생성
+        String encodedPassword = passwordEncoder.encode(tempPassword); // 임시 비밀번호 암호화
 
-        CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
-        int frnNo = userDetails.getFrnNo();
+        EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
+        int frnNo = userDetails.getFrnNo(); // 프랜차이즈 번호 가져오기
 
         String storedUrl;
         try {
@@ -68,23 +63,16 @@ public class OwnerService {
                 .build();
         log.info("이미지: {}", employeeRegisterDto.getEmpProfile());
         log.info("EmployeeRegisterDto: {}", employee); // DTO 객체 로깅
-        employeeMapper.insertEmployee(employee);
+        employeeMapper.insertEmployee(employee); // 직원 정보 삽입
 
         emailService.sendTempPasswordEmail(employee.getEmpEmail(), tempPassword);
     }
 
-    /**
-     * 2024.05.16
-     * 점주 등록
-     * @param ownerRegisterDto
-     * @param frnNo
-     * @param frnOwner
-     * @return registerDto.getEmpNo
-     */
+    // 점주 등록
     @Transactional
     public int registerOwner(OwnerRegisterDto ownerRegisterDto, int frnNo, String frnOwner) {
-        String tempPassword = generateTempPassword();
-        String encodedPassword = passwordEncoder.encode(tempPassword);
+        String tempPassword = generateTempPassword(); // 임시 비밀번호 생성
+        String encodedPassword = passwordEncoder.encode(tempPassword); // 임시 비밀번호 암호화
         ownerRegisterDto.setEmpPw(encodedPassword);
         ownerRegisterDto.setFrnNo(frnNo);
         ownerRegisterDto.setEmpName(frnOwner);
@@ -109,11 +97,12 @@ public class OwnerService {
                 .build();
         log.info("registerDto, frn: {}", frnNo);
         log.info("registerDto, posNo: {}", registerDto.getPosNo());
-        ownerMapper.insertOwner(ownerRegisterDto);
+        ownerMapper.insertOwner(ownerRegisterDto); // 점주 정보 삽입
         emailService.sendTempPasswordEmail(ownerRegisterDto.getEmpEmail(), tempPassword);
         return registerDto.getEmpNo();
     }
 
+    // 특정 가맹점에 속하는 직원 목록 조회
     public List<EmployeeDto> getEmployeesByFrnNo(int frnNo) {
         List<EmployeeDto> employeeByFranchise = employeeMapper.findEmployeeByFranchise(frnNo);
         if(employeeByFranchise.isEmpty()) {

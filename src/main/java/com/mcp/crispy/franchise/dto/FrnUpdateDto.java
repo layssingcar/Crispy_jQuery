@@ -13,11 +13,18 @@ import java.util.Date;
 @Builder
 public class FrnUpdateDto {
     private Integer frnNo;
-    private Integer posNo; // modifier
+    private Integer posNo;
     private Integer empNo;
+    private String frnName;
     private String empName;
     private String frnOwner;
+    private String frnImg;
+    private String frnTel;
+    private String frnZip;
+    private String frnStreet;
+    private String frnDetail;
     private String frnStartTime;
     private String frnEndTime;
     private Date modifyDt;
+    private Integer modifier;
 }

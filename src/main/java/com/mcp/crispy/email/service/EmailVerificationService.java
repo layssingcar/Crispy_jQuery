@@ -4,6 +4,7 @@ import com.mcp.crispy.email.dto.EmailVerificationDto;
 import com.mcp.crispy.email.mapper.EmailVerificationMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,11 +17,13 @@ import static com.mcp.crispy.common.utils.RandomCodeUtils.generateVerificationCo
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AuthenticationService {
+public class EmailVerificationService {
 
     private final EmailVerificationMapper emailVerificationMapper;
     private final EmailService emailService;
+
     //인증번호 전송 및 인증테이블에 저장
+    @Async
     @Transactional
     public void sendAndSaveVerificationCode(String verifyEmail) {
 

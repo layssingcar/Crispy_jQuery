@@ -4,8 +4,11 @@ import com.mcp.crispy.employee.dto.EmployeeDto;
 import com.mcp.crispy.employee.dto.FindEmployeeDto;
 import com.mcp.crispy.employee.service.EmployeeService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,25 +29,29 @@ public class EmployeeController {
 	private final EmployeeService employeeService;
 
 	@GetMapping("/findEmpId")
-	public String findUsername() {
+	public String findUsername(Model model) {
+		model.addAttribute("findEmployeeDto", new FindEmployeeDto());
 		return "employee/find-emp-id";
 	}
 
 	@PostMapping("/findEmpId")
-	public String findUsernamePost(@ModelAttribute FindEmployeeDto findEmployeeDto, BindingResult result,
-								   RedirectAttributes ra) {
+	public String findUsernamePost(@Valid @ModelAttribute("findEmployeeDto") FindEmployeeDto findEmployeeDto, BindingResult result,
+								   Model model, RedirectAttributes ra) {
 		if (result.hasErrors()) {
+			log.info("호출 됨?");
+			model.addAttribute("findEmployeeDto", findEmployeeDto);
 			return "employee/find-emp-id";
 		}
 
 		FindEmployeeDto findEmp = employeeService.getEmpEmail(findEmployeeDto.getEmpEmail(), findEmployeeDto.getEmpName());
 		if (findEmp != null) {
-			ra.addFlashAttribute("findEmpName", findEmp.getEmpId());
+			ra.addFlashAttribute("findEmp", findEmp);
 			log.info("empName: {}", findEmp.getEmpId());
+			log.info("empCreateDt: {}", findEmp.getCreateDtAsLocalDate());
 		} else {
 			ra.addFlashAttribute("error", "해당 이메일로 가입된 아이디가 없습니다.");
 		}
-		return "redirect:/crispy/employee/findEmpIdResult";
+		return "redirect:/crispy/employee/findEmpId/result";
 	}
 
 	@GetMapping("/findEmpId/result")
@@ -72,11 +79,19 @@ public class EmployeeController {
 	// 직원 혹은 관리자 개인이 들어가는 마이 페이지
 	@GetMapping("/profile")
 	public String getEmployee(Principal principal, Model model) {
-			EmployeeDto employee = employeeService.getEmployeeName(principal.getName());
-			log.info("address : {} {} {}", employee.getEmpZip(), employee.getEmpStreet(), employee.getEmpDetail());
-			log.info("empSign : {}", employee.getEmpSign());
-			model.addAttribute("employee", employee);
-			return "employee/employee-profile";
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		boolean isAdmin = authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+		if (isAdmin) {
+			return "redirect:/error/403";
+		}
+
+
+		EmployeeDto employee = employeeService.getEmployeeName(principal.getName());
+		log.info("address : {} {} {}", employee.getEmpZip(), employee.getEmpStreet(), employee.getEmpDetail());
+		log.info("empSign : {}", employee.getEmpSign());
+		model.addAttribute("employee", employee);
+		return "employee/employee-profile";
 	}
 
 }

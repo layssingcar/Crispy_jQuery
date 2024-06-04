@@ -1,15 +1,17 @@
 package com.mcp.crispy.franchise.controller;
 
+import com.mcp.crispy.common.annotation.IsAdmin;
 import com.mcp.crispy.franchise.dto.FranchiseDto;
 import com.mcp.crispy.franchise.service.FranchiseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.security.Principal;
 import java.util.List;
 
 @Slf4j
@@ -20,31 +22,55 @@ public class FranchiseController {
 
     private final FranchiseService franchiseService;
 
-//    @IsAdmin
+    /**
+     * 가맹점 등록 페이지
+     * 관리자만 접근 가능
+     * 배영욱 (24. 05. 15)
+     * @return forward (franchise-register.html)
+     */
+    @IsAdmin
     @GetMapping("/franchise/register")
     public String registerFranchise() {
         return "franchise/franchise-register";
     }
 
-//    @IsAdmin
+    /**
+     * 점주 등록 페이지
+     * 관리자만 접근 가능
+     * 배영욱 (24. 05. 15)
+     * @return forward (franchise-owner-register.html)
+     */
+    @IsAdmin
     @GetMapping("/franchise/owner/register")
     public String ownerRegisterFranchise() {
         return "franchise/franchise-owner-register";
     }
 
-//    @IsOwner
+
+    /**
+     * 가맹점 정보 조회
+     * 관리자 또는 점주만 접근 가능
+     * 배영욱 (24. 05. 23)
+     * @param model 모델 객체
+     * @return forward (franchise.html)
+     */
     @GetMapping("/franchise")
-    public String getFranchise(Principal principal, Model model) {
-        if(principal != null) {
-            FranchiseDto owner = franchiseService.getFranchise(principal.getName());
-            log.info("Franchise owner : {}", owner.getFrnJoinDt());
-            model.addAttribute("owner", owner);
-            return "franchise/franchise";
-        } else {
-            return "redirect:/crispy/login";
-        }
+    public String getFranchise(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        FranchiseDto owner = franchiseService.getFranchise(auth.getName());
+        log.info("Franchise owner : {}", owner.toString());
+        log.info("auth.getName {}", auth.getName());
+        log.info("owner.getEmpId {}", owner.getEmpId());
+        boolean isOwner = auth.getName().equals(owner.getEmpId());
+
+        model.addAttribute("owner", owner);
+        model.addAttribute("isOwner", isOwner);
+        log.info("isOwner: {}", isOwner);
+        return "franchise/franchise";
     }
-    
+
+
+    @IsAdmin
     @GetMapping("/franchise-list")
     public String listFranchise(Model model, FranchiseDto franchiseDto) {
         List<FranchiseDto> franchiseList = franchiseService.getFranchiseList();

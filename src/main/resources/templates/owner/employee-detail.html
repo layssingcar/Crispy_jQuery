@@ -20,12 +20,16 @@
                                 <form class="employee-profile-form" id="profileImageForm" method="post"
                                       enctype="multipart/form-data" autocomplete="off">
                                     <div class="img-wrap emp-profile">
-                                        <img th:src="${employee.empProfile != null ? employee.empProfile : '/img/anonymous.png'}" class="profile-img">
-                                        <span class="update-img" th:text="${employee.empProfile != null ? '사진 변경' : '사진 등록'}"></span>
+                                        <img th:src="${employee.empProfile != null ? employee.empProfile : '/img/anonymous.png'}"
+                                             class="profile-img">
+                                        <span class="update-img"
+                                              th:text="${employee.empProfile != null ? '사진 변경' : '사진 등록'}"></span>
                                         <input type="file" id="profile-file-input" name="empProfile"
-                                               class="form-control file-input" accept="image/png, image/jpeg, image/webp">
+                                               class="form-control file-input"
+                                               accept="image/png, image/jpeg, image/webp">
                                     </div>
-                                    <button type="button" id="btn-update-profile" class="btn-save-profile">사진 저장</button>
+                                    <button type="button" id="btn-update-profile" class="btn-save-profile">사진 저장
+                                    </button>
                                 </form>
                                 <div class="d-flex flex-column justify-content-center ms-4 mb-5">
                                     <input type="hidden" th:value="${employee.empId}" class="empId">
@@ -35,7 +39,8 @@
                                     <span>이름: <span th:text="${employee.empName}" class="empName-span"></span></span>
                                 </div>
                                 <div class="pw-change-btn">
-                                    <button type="button" id="btn-reset-password" class="reset-password">비밀번호 변경</button>
+                                    <button type="button" id="btn-reset-password" class="reset-password">비밀번호 변경
+                                    </button>
                                 </div>
                             </div>
                             <div>
@@ -43,94 +48,116 @@
                                     직원정보
                                     <hr>
                                 </div>
-                                <div class="info-wrap">
-                                    <div class="emp-modify-btn">
-                                        <div>
-                                            <label for="emp-profile-empName" class="form-label">성함</label>
-                                            <input type="text" id="emp-profile-empName" name="empName" class="form-control empName" placeholder="성함"
-                                                   autocomplete="on" th:value="${employee.empName}" readonly>
-                                            <div class="error-message" id="empName-error" style="display: none;"></div>
-                                        </div>
-                                        <button type="button" class="btn-edit-empName">수정</button>
-                                        <button type="button" class="btn-change-empName" style="display: none;">변경</button>
-                                    </div>
-                                    <div class="emp-modify-btn">
-                                        <div>
-                                            <label for="emp-profile-empEmail" class="form-label">이메일</label>
-                                            <input type="email" id="emp-profile-empEmail" name="empEmail" class="form-control empEmail" placeholder="이메일"
-                                                   autocomplete="on" th:value="${employee.empEmail}" readonly>
-                                            <div class="error-message" id="empEmail-error" style="display: none;"></div>
-                                        </div>
-                                        <button type="button" class="btn-edit-empEmail">수정</button>
-                                        <button type="button" class="btn-change-empEmail" style="display: none;">변경</button>
-                                    </div>
-                                    <div class="emp-modify-btn">
-                                        <div>
-                                            <label for="emp-profile-empPhone" class="form-label">전화번호</label>
-                                            <input type="text" class="form-control empPhone" id="emp-profile-empPhone"
-                                                   name="empPhone" placeholder="- 제외하고 입력해주세요." th:value="${employee.empPhone}" readonly>
-                                            <div class="error-message empPhone-error" style="display: none;"></div>
-                                        </div>
-                                        <button type="button" class="btn-edit-empPhone">수정</button>
-                                        <button class="btn-change-empPhone" style="display: none;">변경</button>
-                                    </div>
-                                    <div class="emp-modify-btn">
-                                        <div>
-                                        <label class="form-label">직책</label>
-                                        <div class="position-radio">
-                                            <div th:each="position : ${T(com.mcp.crispy.employee.dto.Position).values()}">
-                                                <input type="radio" th:id="${'position-' + position}" name="position" class="position" th:value="${position}"
-                                                       th:checked="${position.description == employee.posName}" />
-                                                <label th:for="${'position-' + position}" th:text="${position.description}"></label>
-                                            </div>
-                                        </div>
-                                        </div>
-                                        <button type="button" id="btn-change-posNo">변경</button>
-                                    </div>
-                                    <div class="emp-modify-btn">
-                                        <div>
-                                        <label class="form-label">상태</label>
-                                        <div class="position-radio">
-                                            <div th:each="empStat : ${T(com.mcp.crispy.employee.dto.EmpStatus).values()}">
-                                                <input type="radio" th:id="${'position-' + empStat}" name="empStat" class="empStat" th:value="${empStat}"
-                                                       th:checked="${empStat.value == employee.empStat}" />
-                                                <label th:for="${'position-' + empStat}" th:text="${empStat.description}"></label>
-                                            </div>
-                                        </div>
-                                        </div>
-                                        <button type="button" id="btn-change-empStat">변경</button>
-                                    </div>
-                                    <div class="address-container">
-                                        <div class="address-wrap">
-                                            <label class="form-label">주소</label>
+                                <form class="employeeProfileForm" method="post" autocomplete="off">
+                                    <div class="info-wrap">
+                                        <div class="emp-modify-btn">
                                             <div>
-                                                <div>
-                                                    <input type="text" id="emp-profile-empZip" name="empZip"
-                                                           class="form-control zipcode mb-2" placeholder="우편번호"
-                                                           th:value="${employee.empZip}">
-                                                    <div class="ms-0">
-                                                        <button type="button" class="mt-0 ms-3 search-address"
-                                                                onclick="execPostCode(false)">
-                                                            주소 찾기
-                                                        </button>
+                                                <label for="emp-profile-empName" class="form-label">성함</label>
+                                                <input type="text" id="emp-profile-empName" name="empName"
+                                                       class="form-control empName" placeholder="성함"
+                                                       autocomplete="on" th:value="${employee.empName}" readonly>
+                                                <div class="error-message empName-error" id="empName-error"
+                                                     style="display: none;"></div>
+                                            </div>
+                                            <button type="button" class="btn-edit-empName">수정</button>
+                                            <button type="button" class="btn-change-empName" style="display: none;">변경
+                                            </button>
+                                        </div>
+                                        <div class="emp-modify-btn">
+                                            <div>
+                                                <label for="emp-profile-empEmail" class="form-label">이메일</label>
+                                                <input type="email" id="emp-profile-empEmail" name="empEmail"
+                                                       class="form-control empEmail" placeholder="이메일"
+                                                       autocomplete="on" th:value="${employee.empEmail}" readonly>
+                                                <div class="error-message empEmail-error" id="empEmail-error"
+                                                     style="display: none;"></div>
+                                            </div>
+                                            <button type="button" class="btn-edit-empEmail">수정</button>
+                                            <button type="button" class="btn-change-empEmail" style="display: none;">
+                                                변경
+                                            </button>
+                                        </div>
+                                        <div class="emp-modify-btn">
+                                            <div>
+                                                <label for="emp-profile-empPhone" class="form-label">전화번호</label>
+                                                <input type="text" class="form-control empPhone"
+                                                       id="emp-profile-empPhone"
+                                                       name="empPhone" placeholder="- 제외하고 입력해주세요."
+                                                       th:value="${employee.empPhone}" readonly>
+                                                <div class="error-message empPhone-error" style="display: none;"></div>
+                                            </div>
+                                            <button type="button" class="btn-edit-empPhone">수정</button>
+                                            <button type="button" class="btn-change-empPhone" style="display: none;">변경</button>
+                                        </div>
+                                        <div class="emp-modify-btn">
+                                            <div>
+                                                <label class="form-label">직책</label>
+                                                <div class="position-radio">
+                                                    <div th:each="position : ${T(com.mcp.crispy.employee.dto.Position).values()}">
+                                                        <input type="radio" th:id="${'position-' + position}"
+                                                               name="position" class="position" th:value="${position}"
+                                                               th:checked="${position.description == employee.posName}"/>
+                                                        <label th:for="${'position-' + position}"
+                                                               th:text="${position.description}"></label>
                                                     </div>
                                                 </div>
-                                                <input type="text" id="emp-profile-empStreet" name="empStreet"
-                                                       class="form-control street-address mb-2" placeholder="도로명주소"
-                                                       th:value="${employee.empStreet}">
-                                                <div class="detail-wrap">
-                                                    <input type="text" id="emp-profile-empDetail" name="empDetail"
-                                                           class="form-control detail-address mb-2" placeholder="상세주소"
-                                                           th:value="${employee.empDetail}">
+                                            </div>
+                                            <button type="button" id="btn-change-posNo">변경</button>
+                                        </div>
+                                        <div class="emp-modify-btn">
+                                            <div>
+                                                <label class="form-label">상태</label>
+                                                <div class="position-radio">
+                                                    <div th:each="empStat : ${T(com.mcp.crispy.employee.dto.EmpStatus).values()}">
+                                                        <input type="radio" th:id="${'position-' + empStat}"
+                                                               name="empStat" class="empStat" th:value="${empStat}"
+                                                               th:checked="${empStat.value == employee.empStat}"/>
+                                                        <label th:for="${'position-' + empStat}"
+                                                               th:text="${empStat.description}"></label>
+                                                    </div>
                                                 </div>
                                             </div>
+                                            <button type="button" id="btn-change-empStat">변경</button>
                                         </div>
-                                        <div class="change-address-container">
-                                            <button type="button" class="btn-change-address">주소 변경</button>
+                                        <div class="address-container">
+                                            <div class="address-wrap">
+                                                <label class="form-label">주소</label>
+                                                <div>
+                                                    <div>
+                                                        <input type="text" id="emp-profile-empZip" name="empZip"
+                                                               class="form-control zipcode mb-2" placeholder="우편번호"
+                                                               th:value="${employee.empZip}">
+                                                        <div class="ms-0">
+                                                            <button type="button" class="mt-0 ms-3 search-address"
+                                                                    onclick="execPostCode(false)">
+                                                                주소 찾기
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <input type="text" id="emp-profile-empStreet" name="empStreet"
+                                                           class="form-control street-address mb-2" placeholder="도로명주소"
+                                                           th:value="${employee.empStreet}">
+                                                    <div class="detail-wrap">
+                                                        <input type="text" id="emp-profile-empDetail" name="empDetail"
+                                                               class="form-control detail-address mb-2"
+                                                               placeholder="상세주소"
+                                                               th:value="${employee.empDetail}">
+                                                    </div>
+                                                    <div class="error-message empZip-error" style="display: none;"></div>
+                                                    <div class="error-message empStreet-error" style="display: none;"></div>
+                                                    <div class="error-message empDetail-error" style="display: none;"></div>
+                                                </div>
+                                            </div>
+                                            <div class="change-address-container">
+                                                <button type="button" class="btn-change-address">주소 변경</button>
+                                            </div>
                                         </div>
                                     </div>
-<!--                                    <button id="sign-approval">가입 승인</button>-->
-                                </div>
+                                    <div class="form-buttons">
+                                        <button type="button" class="btn-edit-form">정보 수정</button>
+                                        <button type="button" class="btn-save-form" style="display: none;">수정 완료</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -140,57 +167,9 @@
         <footer th:replace="~{layout/footer :: footer}"></footer>
     </div>
     <!-- 특정 JS -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const empNo = sessionStorage.getItem('selectedEmpNo');
-            if (empNo) {
-                // 세션에 저장된 empNo가 있다면, 해당 직원 정보를 비동기적으로 불러와서 업데이트
-                fetch(`/api/employee/${empNo}/v1`)
-                    .then(response => response.json())
-                    .then(data => {
-                        // 받은 데이터로 페이지 업데이트
-                        updateEmployeeProfile(data);
-                        document.getElementById('employee-profile').style.display = 'block';
-                    })
-                    .catch(error => console.error('Error loading employee profile:', error));
-            } else {
-                // 세션 스토리지에 empNo가 없다면 기본적으로 타임리프로 렌더링된 데이터를 그대로 사용
-                document.getElementById('employee-profile').style.display = 'block';
-            }
-        });
-
-        function updateEmployeeProfile(employee) {
-            if (employee.empProfile) {
-                document.querySelector(".profile-img").src = employee.empProfile;
-            } else {
-                document.querySelector(".profile-img").src = "/img/anonymous.png";
-            }
-            document.querySelector(".empId").value = employee.empId;
-            document.querySelector('.empNo').value = employee.empNo;
-            document.querySelector('.frnName').textContent = employee.frnName;
-            document.querySelector('.empName-span').textContent = employee.empName;
-            document.querySelector('.empName').value = employee.empName;
-            document.querySelector('.posName').textContent = employee.posName;
-            document.querySelectorAll('input[name="position"]').forEach(function (radio) {
-                radio.checked = radio.value === employee.posNo;
-            });
-            document.querySelectorAll('input[name="empStat"]').forEach(function (radio) {
-                radio.checked = radio.value === employee.empStat
-            })
-            console.log(employee.empStat);
-            document.getElementById('emp-profile-empEmail').value = employee.empEmail;
-            document.getElementById('emp-profile-empPhone').value = employee.empPhone || 'N/A';
-            document.querySelector('.zipcode').value = employee.empZip || '';
-            console.log(employee);
-            document.querySelector('.street-address').value = employee.empStreet || '';
-            document.querySelector('.detail-address').value = employee.empDetail || '';
-
-            document.getElementById('employee-profile').style.display = 'block';
-        }
-    </script>
     <script src="/js/owner.js"></script>
     <script src="/js/address.js"></script>
-    <script src="/js/employee.js"></script>
+    <script src="/js/employee/employee.js"></script>
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 </div>
 </body>

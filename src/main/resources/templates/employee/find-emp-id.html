@@ -10,7 +10,8 @@
     <div class="find-container">
         <div>
             <img src="/img/crispy2.png">
-            <form class="find-form" th:action="@{/crispy/employee/find/username}" method="post" autocomplete="off">
+            <form class="find-form" th:action="@{/crispy/employee/findEmpId}"
+                  th:object="${findEmployeeDto}" method="post" autocomplete="off">
                 <h1 class="find-header">아이디 찾기</h1>
                 <div th:if="${param.error}">
                     <div class="alert alert-danger">
@@ -20,16 +21,16 @@
                 <div class="find-emp-id">
                     <div class="mb-3">
                         <label class="form-label">성함</label>
-                        <input type="text" class="form-control emp-name" id="find-username-emp-name" name="empName"
+                        <input type="text" class="form-control emp-name" id="find-username-emp-name" th:field="*{empName}"
                                placeholder="성함을 입력하세요" autocomplete="on">
-                        <div class="error-message empName-error" style="display: none;"></div>
+                        <div class="error-message" th:if="${#fields.hasErrors('empName')}" th:errors="*{empName}"></div>
                     </div>
                     <div class="email-wrap mb-3">
                         <div>
                             <label for="find-username-email" class="form-label">이메일</label>
-                            <input type="email" id="find-username-email" name="empEmail" class="form-control emp-email" placeholder="이메일"
+                            <input type="email" id="find-username-email" th:field="*{empEmail}" class="form-control emp-email" placeholder="이메일"
                                    autocomplete="on">
-                            <div class="error-message empEmail-error" style="display: none;"></div>
+                            <div class="error-message" th:if="${#fields.hasErrors('empEmail')}" th:errors="*{empEmail}"></div>
                         </div>
                         <div class="col-4 d-flex align-items-end ms-2">
                             <button class="btn email-validate-btn" th:data-action="verify-user" type="button">인증 요청</button>
@@ -39,7 +40,7 @@
                         <div class="verify-email">
                             <div class="mt-2">
                                 <input type="text" class="form-control verify-code"
-                                        id="find-username-verify-code" name="verifyCode" placeholder="인증번호">
+                                       id="find-username-verify-code" name="verifyCode" placeholder="인증번호">
                                 <div class="error-message verifyCode-error" style="display: none"></div>
                             </div>
                             <div class="col-4 d-flex align-items-end ms-2">
@@ -52,6 +53,6 @@
             </form>
         </div>
     </div>
-<script type="module" src="/js/emailVerification.js"></script>
+<script type="module" src="/js/employee/emailVerification.js"></script>
 </body>
 </html>

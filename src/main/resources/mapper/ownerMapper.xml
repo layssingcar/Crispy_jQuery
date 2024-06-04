@@ -2,35 +2,33 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.mcp.crispy.employee.mapper.OwnerMapper">
+
+    <!-- 점주 등록 -->
     <insert id="insertOwner" parameterType="OwnerRegisterDto">
         <selectKey keyProperty="empNo" resultType="int" order="BEFORE">
-            SELECT EMPLOYEE_SEQ.NEXTVAL FROM DUAL
+            SELECT EMPLOYEE_SEQ.NEXTVAL
+            FROM DUAL
         </selectKey>
         INSERT INTO EMPLOYEE_T (
-        EMP_NO,
-        EMP_ID,
-        EMP_PW,
-        EMP_NAME,
-        EMP_EMAIL,
-        EMP_PHONE,
-        EMP_PROFILE,
-        POS_NO,
-        FRN_NO
-        )
-        VALUES (
-        #{empNo},
-        #{empId},
-        #{empPw},
-        #{empName},
-        #{empEmail},
-        #{empPhone},
-        #{empProfile},
-        #{posNo},
-        #{frnNo}
+              EMP_NO
+            , EMP_ID
+            , EMP_PW
+            , EMP_NAME
+            , EMP_EMAIL
+            , EMP_PHONE
+            , EMP_PROFILE
+            , POS_NO
+            , FRN_NO
+        ) VALUES (
+              #{empNo}
+            , #{empId}
+            , #{empPw}
+            , #{empName}
+            , #{empEmail}
+            , #{empPhone}
+            , #{empProfile}
+            , #{posNo}
+            , #{frnNo}
         )
     </insert>
-
-    <select id="">
-
-    </select>
 </mapper>

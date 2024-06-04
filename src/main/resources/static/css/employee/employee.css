@@ -55,7 +55,7 @@
 .employee-profile-form .update-img {
     display: none;
     position: absolute;
-    top: 27%;
+    top: 26%;
     color: #fff;
 }
 
@@ -248,6 +248,12 @@
     padding: 5px 10px;
     border: 0;
 }
+.address-container .change-address-container .btn-edit-address {
+    width: 70px;
+    border-radius: 7px;
+    padding: 5px 15px;
+    border: 0;
+}
 
 .address-wrap button{
     border-radius: 7px;
@@ -317,4 +323,24 @@
 .employee-profile .emp-info hr {
     width: 83%;
     margin-left: 10px;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.form-buttons button {
+    width: 200px;
+    border-radius: 7px;
+    padding: 5px 10px;
+    border: 0;
+}
+
+.error-message {
+    display: none;
+    color: red;
+    font-size: 1.5rem;
+    margin-top: 0 !important;
 }
