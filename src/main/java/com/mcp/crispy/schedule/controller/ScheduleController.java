@@ -44,4 +44,21 @@ public class ScheduleController {
 		return scheduleService.getScheById(scheId);
 	}
 	
+	@PostMapping(value="/modifySche", produces = "application/json")
+	public ResponseEntity<Integer> modifySchedule(@RequestBody ScheduleDto scheduleDto, Principal principal){
+		int modifyCount = scheduleService.modifySchedule(scheduleDto);
+		return ResponseEntity.ok(modifyCount);
+	}
+	
+	@PostMapping(value="/deleteSche", produces = "application/json")
+	public ResponseEntity<Integer> deleteSchedule(@RequestBody ScheduleDto scheduleDto, Principal principal){
+		int deleteCount = scheduleService.deleteSchedule(scheduleDto);
+		return ResponseEntity.ok(deleteCount);
+	}
+//	@PostMapping(value="/completeDeleteSche", produces = "application/json")
+//	public ResponseEntity<Integer> completeDeleteSchedule(@RequestBody int scheduleId, Principal principal){
+//		int deleteCount = scheduleService.completeDeleteSchedule(scheduleId);
+//		return ResponseEntity.ok(deleteCount);
+//	}
+	
 }
