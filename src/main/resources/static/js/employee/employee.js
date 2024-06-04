@@ -405,7 +405,7 @@ const employee = {
 
     saveForm: function () {
         const empNo = document.querySelector('.empNo').value;
-        const empName = document.querySelector('.empName')?.value;
+        const empName = document.getElementById('emp-profile-empName')?.value;
         const empEmail = document.querySelector('.empEmail').value;
         const empPhone = document.querySelector('.empPhone').value;
         const empZip = document.querySelector('.zipcode').value;
@@ -426,9 +426,9 @@ const employee = {
             empStat: empStat,
         };
 
-        const token = getCookie('accessToken');
+        const token = Auth.getCookie('accessToken');
         const validateName = empName ? true : false;
-
+        console.log(validateName);
         Auth.authenticatedFetch(`/api/employee/form/v1?validateName=${validateName}`, {
             method: "PUT",
             headers: {
@@ -475,15 +475,52 @@ const employee = {
                 this.hideValidationError(e.target);
             });
         });
+    },
+    updateEmployeeProfile: function(employee) {
+        if (employee.empProfile) {
+            document.querySelector(".profile-img").src = employee.empProfile;
+        } else {
+            document.querySelector(".profile-img").src = "/img/anonymous.png";
+        }
+        document.querySelector(".empId").value = employee.empId;
+        document.querySelector('.empNo').value = employee.empNo;
+        document.querySelector('.frnName').textContent = employee.frnName;
+        document.querySelector('.empName-span').textContent = employee.empName;
+        document.querySelector('.empName').value = employee.empName;
+        document.querySelector('.posName').textContent = employee.posName;
+        document.querySelectorAll('input[name="position"]').forEach(function (radio) {
+            radio.checked = radio.value === employee.posNo;
+        });
+        document.querySelectorAll('input[name="empStat"]').forEach(function (radio) {
+            radio.checked = radio.value === employee.empStat
+        })
+        document.getElementById('emp-profile-empEmail').value = employee.empEmail;
+        document.getElementById('emp-profile-empPhone').value = employee.empPhone || 'N/A';
+        document.querySelector('.zipcode').value = employee.empZip || '';
+        document.querySelector('.street-address').value = employee.empStreet || '';
+        document.querySelector('.detail-address').value = employee.empDetail || '';
+
+        document.getElementById('employee-profile').style.display = 'block';
     }
+
 }
 
-function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-}
 
 document.addEventListener("DOMContentLoaded", function () {
+    const empNo = sessionStorage.getItem('selectedEmpNo');
+    if (empNo) {
+        // 세션에 저장된 empNo가 있다면, 해당 직원 정보를 비동기적으로 불러와서 업데이트
+        fetch(`/api/employee/${empNo}/v1`)
+            .then(response => response.json())
+            .then(data => {
+                // 받은 데이터로 페이지 업데이트
+                employee.updateEmployeeProfile(data);
+                document.getElementById('employee-profile').style.display = 'block';
+            })
+            .catch(error => console.error('Error loading employee profile:', error));
+    } else {
+        // 세션 스토리지에 empNo가 없다면 기본적으로 타임리프로 렌더링된 데이터를 그대로 사용
+        document.getElementById('employee-profile').style.display = 'block';
+    }
     employee.init();
 })

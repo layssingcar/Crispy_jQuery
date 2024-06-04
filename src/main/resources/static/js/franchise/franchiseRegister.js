@@ -187,20 +187,12 @@ const franchiseRegister = {
             document.getElementById("frnOwner-error").style.display = "none";
         }
 
-        if (frnTel && !/^\d{2,3}-\d{3,4}-\d{4}$/.test(frnTel)) {
+        if (frnTel && !/^010\d{4}\d{4}$/.test(frnTel)) {
             document.getElementById("frnTel-error").textContent = "올바른 전화번호 형식을 입력해주세요.";
             document.getElementById("frnTel-error").style.display = "block";
             isValid = false;
         } else {
             document.getElementById("frnTel-error").style.display = "none";
-        }
-
-        if (!frnDetail) {
-            document.getElementById("frnDetail-error").textContent = "상세 주소를 입력해주세요.";
-            document.getElementById("frnDetail-error").style.display = "block";
-            isValid = false;
-        } else {
-            document.getElementById("frnDetail-error").style.display = "none";
         }
 
         return isValid;
