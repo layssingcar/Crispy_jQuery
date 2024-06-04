@@ -4,20 +4,40 @@
 <mapper namespace="com.mcp.crispy.map.mapper.MapMapper">
     <!-- 가맹점 목록 및 정보조회 -->
     <select id="getMapList">
-            SELECT F.FRN_NAME, F.FRN_X, F.FRN_Y, F.FRN_START_TIME, F.FRN_END_TIME, F.FRN_TEL, F.FRN_NO, F.FRN_STREET, F.FRN_DETAIL
-                 , S.SAL_PRICE
-                 , S2.STOCK_CT_NAME
-                 , S1.STOCK_NO, S1.STOCK_NAME
-                 , I.IS_COUNT
-              FROM FRANCHISE_T F
-   LEFT OUTER JOIN SALES_T S
-                ON F.FRN_NO = S.FRN_NO
-   LEFT OUTER JOIN INVENTORY_STAT_T I
-                ON S.FRN_NO = I.FRN_NO
-   LEFT OUTER JOIN STOCK_T S1
-                ON I.STOCK_NO = S1.STOCK_NO
-   LEFT OUTER JOIN STOCK_CATEGORY_T S2
-                ON S2.STOCK_CT_NO = S1.STOCK_CT_NO
-             WHERE 1=1
+        SELECT
+            F.FRN_NAME,
+            F.FRN_X,
+            F.FRN_Y,
+            F.FRN_START_TIME,
+            F.FRN_END_TIME,
+            F.FRN_TEL,
+            F.FRN_NO,
+            F.FRN_STREET,
+            F.FRN_DETAIL,
+            MAX(S.SAL_PRICE) AS SAL_PRICE,
+            MAX(S2.STOCK_CT_NAME) AS STOCK_CT_NAME,
+            MAX(S1.STOCK_NO) AS STOCK_NO,
+            MAX(S1.STOCK_NAME) AS STOCK_NAME,
+            MAX(I.IS_COUNT) AS IS_COUNT
+        FROM
+            FRANCHISE_T F
+                LEFT OUTER JOIN
+            SALES_T S ON F.FRN_NO = S.FRN_NO
+                LEFT OUTER JOIN
+            INVENTORY_STAT_T I ON F.FRN_NO = I.FRN_NO
+                LEFT OUTER JOIN
+            STOCK_T S1 ON I.STOCK_NO = S1.STOCK_NO
+                LEFT OUTER JOIN
+            STOCK_CATEGORY_T S2 ON S1.STOCK_CT_NO = S2.STOCK_CT_NO
+        GROUP BY
+            F.FRN_NAME,
+            F.FRN_X,
+            F.FRN_Y,
+            F.FRN_START_TIME,
+            F.FRN_END_TIME,
+            F.FRN_TEL,
+            F.FRN_NO,
+            F.FRN_STREET,
+            F.FRN_DETAIL
     </select>
 </mapper>

@@ -306,6 +306,7 @@
 				dataType: "json",
 				success: function(response) {
 					var frnList = response.mapList;
+					console.log("309:")
 					console.log(frnList);
 
 					// 검색 목록과 마커를 표출합니다
@@ -345,8 +346,10 @@
 		placesSearchCB();
 
 		for (var i = 0; i < frnList.length; i++) {
+			if(frnList[i].frnY == null) continue;
 			// 마커를 생성하고 지도에 표시합니다
-			var placePosition = new kakao.maps.LatLng(places[i].y, places[i].x),
+			console.log(places)
+			var placePosition = new kakao.maps.LatLng(frnList[i].frnY, frnList[i].frnX),
 					marker = addMarker(placePosition, i),
 					itemEl = getListItem(i, places[i], frnList[i]); // 검색 결과 항목 Element를 생성합니다
 
@@ -466,8 +469,11 @@
 	// 검색결과 목록 또는 마커를 클릭했을 때 호출되는 함수입니다
 	// 인포윈도우에 장소명을 표시합니다
 	function displayInfowindow(marker, frn) {
-		var content = '<div style="padding:5px;z-index:1;">' + frn.frnName + '</div>'
-					+ '<div style="padding:5px;z-index:1;">' + frn + '</div>';
+		var content = '<div style="padding:5px;z-index:1;">' + (frn ? frn.frnName : '정보 없음') + '</div>'
+				+ '<div style="padding:5px;z-index:1;">매출액: ' + (frn && frn.salPrice !== undefined ? frn.salPrice : '정보 없음') + '</div>'
+				+ '<div style="padding:5px;z-index:1;">재고명: ' + (frn && frn.stockName ? frn.stockName : '정보 없음') + '</div>'
+				+ '<div style="padding:5px;z-index:1;">재고수량: ' + (frn && frn.isCount != 0 ? frn.isCount : '수량 없음') + '</div>'
+				+ '<div style="padding:5px;z-index:1;">운영시간: ' + frn.frnStartTime + '~' + frn.frnEndTime +'</div>';
 
 		infowindow.setContent(content);
 		infowindow.open(map, marker);
