@@ -184,6 +184,17 @@ public class EmployeeService {
 
     }
 
+    // 이메일 변경
+    @Transactional
+    public void changeEmail(String email, Integer empNo, Integer modifier) {
+        int count = employeeMapper.countByEmpNo(empNo);
+        if (count > 0) {
+            employeeMapper.updateEmpEmail(email, empNo, modifier);
+        } else {
+            throw new IllegalArgumentException("해당하는 직원이 존재하지 않습니다.");
+        }
+    }
+
     // 재직 상태 변경
     @Transactional
     public void changeEmpStat(Integer empStat, Integer empNo, Integer modifier) {
