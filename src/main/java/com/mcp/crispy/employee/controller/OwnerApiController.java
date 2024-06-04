@@ -63,4 +63,19 @@ public class OwnerApiController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
+
+    // 직원 삭제
+    @DeleteMapping("/employee/{empNo}/v1")
+    public ResponseEntity<?> removeEmployee(@PathVariable int empNo) {
+        ownerService.removeEmployeeById(empNo);
+        return ResponseEntity.ok().build();
+    }
+
+    // 선택한 직원 삭제
+    @DeleteMapping("/employees/v1")
+    public ResponseEntity<?> removeEmployees(@RequestBody List<Integer> empNos) {
+        ownerService.removeEmployees(empNos);
+        return ResponseEntity.ok().build();
+    }
+
 }
