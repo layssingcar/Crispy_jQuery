@@ -81,4 +81,24 @@
                </foreach>
           ORDER BY S.STOCK_NAME ASC
     </select>
+
+    <!-- 발주 재고 임시저장 (서브쿼리를 이용한 다중행 INSERT)-->
+    <insert id="insertOrderTemp" parameterType="com.mcp.crispy.stock.dto.StockOrderDto">
+        INSERT INTO STOCK_ORDER_TEMP_T
+            (ORDER_TEMP_NO, STOCK_NO, STOCK_ORDER_COUNT, STOCK_ORDER_COST ,EMP_NO)
+
+        SELECT STOCK_ORDER_TEMP_SEQ.NEXTVAL AS ORDER_TEMP_NO, TEMP_T.*
+          FROM (
+            <foreach collection="stockOrderList"
+                           item="stockDto"
+                      separator="UNION ALL">
+
+                SELECT #{stockDto.stockNo} AS STOCK_NO,
+                       #{stockDto.stockOrderCount} AS STOCK_ORDER_COUNT,
+                       #{stockDto.stockOrderCost} AS STOCK_ORDER_COST,
+                       #{empNo} AS EMP_NO
+                FROM DUAL
+            </foreach>
+          ) TEMP_T
+    </insert>
 </mapper>

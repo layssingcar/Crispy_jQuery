@@ -3,6 +3,7 @@ package com.mcp.crispy.stock.service;
 import com.mcp.crispy.common.page.PageResponse;
 import com.mcp.crispy.stock.dto.StockDto;
 import com.mcp.crispy.stock.dto.StockOptionDto;
+import com.mcp.crispy.stock.dto.StockOrderDto;
 import com.mcp.crispy.stock.mapper.StockMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.session.RowBounds;
@@ -60,6 +61,11 @@ public class StockService {
     // 발주 재고 목록 조회
     public List<StockDto> getStockList(List<Integer> stockNoList) {
         return stockMapper.getSelectStock(stockNoList);
+    }
+
+    // 발주 재고 임시저장
+    public int insertOrderTemp(StockOrderDto stockOrderDto) {
+        return stockMapper.insertOrderTemp(stockOrderDto);
     }
 
 }

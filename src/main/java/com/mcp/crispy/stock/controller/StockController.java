@@ -115,4 +115,25 @@ public class StockController {
 
 	}
 
+	/**
+	 * 발주 재고 임시저장
+	 * 우혜진 (24. 06. 03.)
+	 *
+	 * @param authentication
+	 * @param stockOrderDto
+	 * @return redirect (stockOrder())
+	 */
+	@PostMapping("stock-order-temp")
+	public String stockOrderTemp(Authentication authentication,
+								 @ModelAttribute StockOrderDto stockOrderDto) {
+
+		CustomDetails userDetails = (CustomDetails) authentication.getPrincipal();
+		stockOrderDto.setEmpNo(userDetails.getEmpNo());
+
+		int result = stockService.insertOrderTemp(stockOrderDto);
+
+		return "redirect:stock-order";
+
+	}
+
 }
