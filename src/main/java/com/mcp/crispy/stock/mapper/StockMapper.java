@@ -35,4 +35,7 @@ public interface StockMapper {
     // 발주 재고 임시저장
     int insertOrderTemp(StockOrderDto stockOrderDto);
 
+    // 임시저장 내용 불러오기
+    List<StockDto> getOrderTemp(int empNo);
+
 }

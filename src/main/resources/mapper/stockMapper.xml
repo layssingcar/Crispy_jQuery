@@ -116,4 +116,18 @@
             </foreach>
           ) TEMP_T
     </insert>
+
+    <!-- 임시저장 내용 불러오기 -->
+    <select id="getOrderTemp">
+            SELECT T.ORDER_TEMP_NO, T.STOCK_NO, T.STOCK_ORDER_COUNT, T.STOCK_ORDER_COST
+                 , S.STOCK_NAME, S.STOCK_PRICE, S.STOCK_UNIT
+                 , C.STOCK_CT_NAME
+              FROM STOCK_ORDER_TEMP_T T
+        INNER JOIN STOCK_T S
+                ON T.STOCK_NO = S.STOCK_NO
+        INNER JOIN STOCK_CATEGORY_T C
+                ON S.STOCK_CT_NO = C.STOCK_CT_NO
+             WHERE 1=1
+               AND T.EMP_NO = #{empNo}
+    </select>
 </mapper>

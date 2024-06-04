@@ -75,5 +75,10 @@ public class StockService {
         stockMapper.deleteOrderTemp(stockOrderDto.getEmpNo()); // 이전 임시저장 내용 삭제
         return stockMapper.insertOrderTemp(stockOrderDto);
     }
+    
+    // 임시저장 내용 불러오기
+    public List<StockDto> getOrderTemp(int empNo) {
+        return stockMapper.getOrderTemp(empNo);
+    }
 
 }

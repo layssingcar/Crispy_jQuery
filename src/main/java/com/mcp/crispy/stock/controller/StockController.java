@@ -148,6 +148,25 @@ public class StockController {
 
 	}
 
+	/**
+	 * 임시저장 내용 불러오기
+	 * 우혜진 (24. 06. 04.)
+	 *
+	 * @param authentication
+	 * @param model
+	 * @return result
+	 */
+	@GetMapping("get-order-temp")
+	public String getOrderTemp(Authentication authentication,
+							   Model model) {
+
+		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
+
+		List<StockDto> stockDtoList = stockService.getOrderTemp(userDetails.getEmpNo());
+		model.addAttribute("stockDtoList", stockDtoList);
+
+		return "stock/stock-order :: stock-temp-container";
+
 
 	}
 
