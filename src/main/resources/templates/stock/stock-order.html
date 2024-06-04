@@ -84,7 +84,8 @@
 								<span> | 재고명: </span>
 								<span th:text="${stockDto.stockName}"></span>
 								<span> | 단가: </span>
-								<span th:text="${stockDto.stockPrice}" class="test-price"></span>
+								<span th:with="formattedPrice=${#numbers.formatDecimal(stockDto.stockPrice, 0, 'COMMA', 0, 'COMMA')}"
+									  th:text="${formattedPrice}" class="test-price"></span>
 								<span>원 / </span>
 								<span th:text="${stockDto.stockUnit}"></span>
 								<span> | 수량: </span>

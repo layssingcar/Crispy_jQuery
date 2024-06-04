@@ -1,13 +1,20 @@
 // 금액 계산
 const selectStockList = document.querySelectorAll(".select-stock");
 selectStockList.forEach(stock => {
-    stock.querySelector(".test-count").addEventListener("keyup", e => {
-        const price = stock.querySelector(".test-price").innerText;
-        const count = e.target.value;
+    const stockCount = stock.querySelector(".test-count");  // 수량 입력
+
+    stockCount.addEventListener("input", e => {
+        // 숫자만 입력 가능
+        const inpValue = stockCount.value;
+        const regExp = /^[0-9]+$/;
+        if (!regExp.test(inpValue)) stockCount.value = inpValue.slice(0, -1);
+
+        const price = stock.querySelector(".test-price").innerText.replace(/,/g, '');
+        const count = stockCount.value;
         const cost = price * count;
 
         stock.querySelector(".test-cost").innerText = cost.toLocaleString();
-        e.target.nextElementSibling.value = cost;
+        stockCount.nextElementSibling.value = cost;
     })
 })
 
