@@ -53,6 +53,7 @@ public class SecurityConfig {
 						.requestMatchers("/app/**").permitAll()
 						.requestMatchers("/user/**").permitAll()
 						.requestMatchers("/topic/**").permitAll()
+						.requestMatchers("/error/**").permitAll()
 						.requestMatchers("/api/employee/verify/email/v1").permitAll()
 						.requestMatchers("/css/**", "/js/**", "/img/**", "/resources/**",
 								"/profiles/**", "/upload/**", "/franchise/**", "/crispy_img/**").permitAll()  // 인증 없이 접근 가능

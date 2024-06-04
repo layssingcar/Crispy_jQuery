@@ -78,7 +78,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private String resolveToken(HttpServletRequest request) {
         String header = request.getHeader(JwtUtil.HEADER);
-        if (header == null) {
+        if (header == null || !header.startsWith(JwtUtil.TOKEN_PREFIX)) {
             Cookie[] cookies = request.getCookies();
             if (cookies != null) {
                 for (Cookie cookie : cookies) {
@@ -87,7 +87,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     }
                 }
             }
-        } else if (header.startsWith(JwtUtil.TOKEN_PREFIX)) {
+        } else {
             return header.replace(JwtUtil.TOKEN_PREFIX, "");
         }
         return null;
