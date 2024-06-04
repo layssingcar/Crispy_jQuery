@@ -6,6 +6,7 @@ import com.mcp.crispy.employee.service.EmployeeService;
 import com.mcp.crispy.employee.service.OwnerService;
 import com.mcp.crispy.franchise.dto.FranchiseDto;
 import com.mcp.crispy.franchise.dto.FranchiseRegisterDto;
+import com.mcp.crispy.franchise.dto.FrnAddressUpdateDto;
 import com.mcp.crispy.franchise.dto.FrnUpdateDto;
 import com.mcp.crispy.franchise.mapper.FranchiseMapper;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalTime;
 import java.util.List;
 
 @Slf4j
@@ -57,7 +59,14 @@ public class FranchiseService {
     }
 
     public FranchiseDto getFranchise(String empId) {
+        if(empId.equals("admin")) {
+            return handleAdminAccess();
+        }
          return franchiseMapper.findByEmpId(empId);
+    }
+
+    private FranchiseDto handleAdminAccess() {
+        return new FranchiseDto();
     }
 
     // 가맹점 번호 수정
@@ -91,12 +100,12 @@ public class FranchiseService {
 
     // 주소 변경
     @Transactional
-    public void updateFrnAddress(FrnUpdateDto frnUpdateDto, Integer modifier) {
-        int frnNo = frnUpdateDto.getFrnNo();
+    public void updateFrnAddress(FrnAddressUpdateDto frnAddressUpdateDto, Integer modifier) {
+        int frnNo = frnAddressUpdateDto.getFrnNo();
         int count = franchiseMapper.countByFrnNo(frnNo);
 
         if (count > 0) {
-            franchiseMapper.updateFrnAddress(frnUpdateDto, modifier);
+            franchiseMapper.updateFrnAddress(frnAddressUpdateDto, modifier);
         } else {
             throw new IllegalArgumentException("가맹점이 존재하지 않습니다.");
         }
@@ -121,13 +130,39 @@ public class FranchiseService {
         int count = franchiseMapper.countByFrnNo(frnNo);
 
         if (count > 0) {
+            String frnStartTime = frnUpdateDto.getFrnStartTime();
+            String frnEndTime = frnUpdateDto.getFrnEndTime();
+
+            if (isValidTimeRange(frnStartTime, frnEndTime)) {
+                throw new IllegalArgumentException("종료 시간이 시작 시간보다 빠르거나 같을 수 없습니다.");
+            }
+
             franchiseMapper.updateOperatingTime(frnUpdateDto.getFrnStartTime(), frnUpdateDto.getFrnEndTime(), modifier, frnUpdateDto.getFrnNo());
         } else {
             throw new IllegalArgumentException("가맹점이 존재하지 않습니다.");
         }
     }
 
+    private boolean isValidTimeRange(String frnStartTime, String frnEndTime) {
+        LocalTime start = LocalTime.parse(frnStartTime);
+        LocalTime end = LocalTime.parse(frnEndTime);
+
+        // 종료 시간이 시작 시간보다 빠르거나 같은지 여부를 반환
+        return !end.isAfter(start);
+    }
+
     public List<FranchiseDto> getFranchiseList() {
         return franchiseMapper.getFranchiseList();
+    }
+
+    public FranchiseDto getFrnDetailsByFrnNo(Integer frnNo) {
+        return franchiseMapper.findFrnDetailsByFrnNo(frnNo)
+                .orElseThrow(() -> new IllegalArgumentException("해당 가맹점이 존재하지 않습니다."));
+    }
+
+    // 폼 수정 메소드
+    @Transactional
+    public void updateFormFrn(FrnUpdateDto frnUpdateDto, Integer modifier) {
+        franchiseMapper.updateFormFranchise(frnUpdateDto, modifier);
     }
 }

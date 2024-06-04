@@ -40,7 +40,7 @@
             SELECT F.FRN_NAME, F.FRN_NO, F.FRN_IMG, F.FRN_OWNER,
                    F.FRN_TEL, F.FRN_ZIP, F.FRN_STREET, F.FRN_DETAIL,
                    F.FRN_JOIN_DT, F.FRN_START_TIME, F.FRN_END_TIME,
-                   E.EMP_NO
+                   E.EMP_NO, E.EMP_ID
             FROM FRANCHISE_T F
        LEFT JOIN EMPLOYEE_T E
               ON F.FRN_NO = E.FRN_NO
@@ -58,7 +58,7 @@
     </select>
 
     <!-- 가맹점 번호 수정 -->
-    <update id="updateFrnTel" parameterType="FrnUpdateDto">
+    <update id="updateFrnTel" parameterType="FrnTelUpdateDto">
         UPDATE FRANCHISE_T F
         SET F.FRN_TEL = #{frnTel},
             F.MODIFY_DT = CURRENT_DATE,
@@ -77,7 +77,7 @@
     </update>
 
     <!-- 대표명 수정 -->
-    <update id="updateFrnOwner" parameterType="FrnUpdateDto">
+    <update id="updateFrnOwner" parameterType="FrnOwnerUpdateDto">
         UPDATE FRANCHISE_T F
         SET F.FRN_OWNER = #{frnOwner},
             F.MODIFY_DT = CURRENT_DATE,
@@ -87,7 +87,7 @@
     </update>
 
     <!-- 가맹점 주소 수정 -->
-    <update id="updateFrnAddress" parameterType="FrnUpdateDto">
+    <update id="updateFrnAddress" parameterType="FrnAddressUpdateDto">
             UPDATE FRANCHISE_T F
             SET F.FRN_ZIP = #{updateDto.frnZip},
                 F.FRN_STREET = #{updateDto.frnStreet},
@@ -115,24 +115,25 @@
     </update>
 
     <select id="getFranchiseList" resultType="FranchiseDto">
-        SELECT FRN_NO
-             , FRN_NAME
-             , FRN_OWNER
-             , FRN_TEL
-             , FRN_ZIP
-             , FRN_STREET
-             , FRN_DETAIL
-             , FRN_X
-             , FRN_Y
-             , FRN_START_TIME
-             , FRN_END_TIME
-             , FRN_IMG
-             , FRN_JOIN_DT
-             , CREATE_DT
-             , CREATOR
-             , MODIFY_DT
-             , MODIFIER
-          FROM FRANCHISE_T
+        SELECT F.FRN_NO
+             , F.FRN_NAME
+             , F.FRN_OWNER
+             , F.FRN_TEL
+             , F.FRN_ZIP
+             , F.FRN_STREET
+             , F.FRN_DETAIL
+             , F.FRN_X
+             , F.FRN_Y
+             , F.FRN_START_TIME
+             , F.FRN_END_TIME
+             , F.FRN_IMG
+             , F.FRN_JOIN_DT
+             , F.CREATE_DT
+             , F.CREATOR
+             , F.MODIFY_DT
+             , F.MODIFIER
+          FROM FRANCHISE_T F
+        ORDER BY F.FRN_NO ASC
     </select>
 
     <!-- 직원번호로 가맹점 정보 가져오기 ( 대표 이름 수정 용 ) -->
@@ -147,4 +148,48 @@
              AND E.EMP_NO = #{empNo}
     </select>
 
+    <!-- 가맹점 번호로 정보 가져오기 -->
+    <select id="findFrnDetailsByFrnNo" parameterType="FranchiseDto">
+        SELECT F.FRN_NO, F.FRN_NAME, F.FRN_OWNER, F.FRN_TEL, F.FRN_ZIP
+              , F.FRN_STREET, F.FRN_DETAIL, F.FRN_X, F.FRN_Y
+              , F.FRN_START_TIME, F.FRN_END_TIME, F.FRN_IMG
+              , F.FRN_JOIN_DT, F.CREATE_DT, F.CREATOR, F.MODIFY_DT
+              , F.MODIFIER, E.EMP_NO, E.POS_NO
+        FROM FRANCHISE_T F
+        INNER JOIN EMPLOYEE_T E ON F.FRN_NO = E.FRN_NO
+        WHERE 1 = 1
+          AND F.FRN_NO = #{frnNo} AND E.POS_NO = 0
+    </select>
+
+    <!-- 폼 정보 수정 -->
+    <update id="updateFormFranchise" parameterType="map">
+        UPDATE FRANCHISE_T F
+        <set>
+            <if test="updateDto.frnZip != null">
+                F.FRN_ZIP = #{updateDto.frnZip},
+            </if>
+            <if test="updateDto.frnStreet != null">
+                F.FRN_STREET = #{updateDto.frnStreet},
+            </if>
+            <if test="updateDto.frnDetail != null">
+                F.FRN_DETAIL = #{updateDto.frnDetail},
+            </if>
+            <if test="updateDto.frnName != null">
+                F.FRN_NAME = #{updateDto.frnName},
+            </if>
+            <if test="updateDto.frnTel != null">
+                F.FRN_TEL = #{updateDto.frnTel},
+            </if>
+            <if test="updateDto.frnStartTime != null">
+                F.FRN_START_TIME = #{updateDto.frnStartTime},
+            </if>
+            <if test="updateDto.frnEndTime != null">
+                F.FRN_END_TIME = #{updateDto.frnEndTime},
+            </if>
+            F.MODIFY_DT = CURRENT_DATE,
+            F.MODIFIER = #{modifier}
+        </set>
+        WHERE 1 = 1
+        AND F.FRN_NO = #{updateDto.frnNo}
+    </update>
 </mapper>

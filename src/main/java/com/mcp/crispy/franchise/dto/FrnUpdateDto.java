@@ -15,6 +15,7 @@ public class FrnUpdateDto {
     private Integer frnNo;
     private Integer posNo;
     private Integer empNo;
+    private String frnName;
     private String empName;
     private String frnOwner;
     private String frnImg;

@@ -2,11 +2,13 @@ package com.mcp.crispy.franchise.mapper;
 
 import com.mcp.crispy.franchise.dto.FranchiseDto;
 import com.mcp.crispy.franchise.dto.FranchiseRegisterDto;
+import com.mcp.crispy.franchise.dto.FrnAddressUpdateDto;
 import com.mcp.crispy.franchise.dto.FrnUpdateDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 @Mapper
 public interface FranchiseMapper {
@@ -28,7 +30,7 @@ public interface FranchiseMapper {
                       @Param("modifier") Integer modifier);
 
     // 주소 수정
-    void updateFrnAddress(@Param("updateDto") FrnUpdateDto frnUpdateDto, @Param("modifier") Integer modifier);
+    void updateFrnAddress(@Param("updateDto") FrnAddressUpdateDto frnAddressUpdateDto, @Param("modifier") Integer modifier);
 
     // 대표자 이름 수정
     void updateFrnOwner(@Param("frnOwner") String empName, @Param("frnNo") Integer frnNo, @Param("modifier") Integer modifier);
@@ -41,4 +43,11 @@ public interface FranchiseMapper {
 
     // 직원번호로 가맹점 정보 가져오기 ( 대표 이름 수정 용 )
     FranchiseDto getFrnByEmpNo(Integer empNo);
+
+    // 가맹점 번호로 가맹점 상세 정보 가져오기
+    Optional<FranchiseDto> findFrnDetailsByFrnNo(Integer frnNo);
+
+    // 전체 수정
+    void updateFormFranchise(@Param("updateDto") FrnUpdateDto frnUpdateDto, @Param("modifier")Integer modifier);
+
 }
