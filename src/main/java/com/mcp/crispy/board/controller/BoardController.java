@@ -77,7 +77,7 @@ public class BoardController {
 		int boardId = boardService.registerBoard(request);
 		if(boardId> 0){
 			redirectAttributes.addFlashAttribute("insertResult","등록되었습니다.");
-		return "redirect:/crispy/detail?boardNo=" +boardId;
+			return "redirect:/crispy/detail?boardNo=" +boardId;
 		} else{
 			redirectAttributes.addFlashAttribute("insertResult","등록되지 않았습니다.");
 			return "redirect:/crispy/add";

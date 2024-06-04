@@ -22,7 +22,7 @@ import java.util.Map;
 //@RequiredArgsConstructor
 public class BoardService {
 
-	@Autowired
+    @Autowired
     private BoardMapper boardMapper;
     @Autowired
     private MyFileUtils myFileUtils;
