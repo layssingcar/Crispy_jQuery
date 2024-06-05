@@ -2,9 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 <th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
-<link rel="stylesheet" href="/css/summernote/summernote-lite.css"> <!-- summernote -->
-<link rel="stylesheet" href="/css/approval/time-off-approval.css" type="text/css"> <!-- 휴가/휴직 신청 -->
-<link rel="stylesheet" href="/css/document/time-off-req.css" type="text/css"> <!-- 휴가/휴직 신청서 -->
+<link rel="stylesheet" href="/css/approval/time-off-approval.css" type="text/css"> <!-- 휴가/휴직 신청 페이지 -->
+<link rel="stylesheet" href="/css/document/time-off-req.css" type="text/css"> <!-- 휴가/휴직 신청 양식 -->
 </head>
 <body>
 	<div class="crispy-container">
@@ -31,16 +30,7 @@
 
                     <!-- 문서 작성 form -->
                     <form method="post">
-                        <textarea id="summernote" name="editordata">
-                            <div th:replace="~{document/leave-of-absence-request :: leave-of-absence-request}"></div>
-                        </textarea>
-                        
-                        <!-- 파일 선택 -->
-                        <div class="file-attach">
-                            <div class="mb-3">
-                                <input class="form-control" type="file" id="formFileMultiple" multiple>
-                            </div>
-                        </div>
+                        <div th:replace="~{document/leave-of-absence-req :: leave-of-absence-req}"></div>
 
                         <!-- 하단 버튼 -->
                         <div class="bottom-btn">
@@ -59,13 +49,6 @@
 			<footer th:replace="~{layout/footer :: footer}"></footer>
 		</div>
 	</div>
-
-    <script src="/js/summernote/summernote-lite.js"></script>
-    <script src="/js/summernote/lang/summernote-ko-KR.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#summernote').summernote();
-        });
-    </script>
+    <script src="/js/approval/timeOffAppr.js"></script>
 </body>
 </html>

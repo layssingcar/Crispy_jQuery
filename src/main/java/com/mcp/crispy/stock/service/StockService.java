@@ -8,6 +8,7 @@ import com.mcp.crispy.stock.mapper.StockMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -63,9 +64,21 @@ public class StockService {
         return stockMapper.getSelectStock(stockNoList);
     }
 
+    // 임시저장 값 존재 여부 확인
+    public int checkOrderTemp(int empNo) {
+        return stockMapper.checkOrderTemp(empNo);
+    }
+
     // 발주 재고 임시저장
+    @Transactional
     public int insertOrderTemp(StockOrderDto stockOrderDto) {
+        stockMapper.deleteOrderTemp(stockOrderDto.getEmpNo()); // 이전 임시저장 내용 삭제
         return stockMapper.insertOrderTemp(stockOrderDto);
+    }
+    
+    // 임시저장 내용 불러오기
+    public List<StockDto> getOrderTemp(int empNo) {
+        return stockMapper.getOrderTemp(empNo);
     }
 
 }
