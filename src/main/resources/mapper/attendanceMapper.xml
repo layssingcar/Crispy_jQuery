@@ -49,15 +49,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 <select id="getAttList"
 		resultMap="AttendanceMap">
-SELECT * FROM
-	(SELECT ROW_NUMBER() OVER(ORDER BY A.ATT_IN_TIME ASC) AS RN 
-		 , A.ATT_NO
-		 , A.ATT_IN_TIME
-		 , A.ATT_OUT_TIME
-		 , A.ATT_WORK_TIME
-		 , A.CREATE_DT
-		 , A.EMP_NO
-	  FROM ATTENDANCE_T A )
+    SELECT ATT_NO, ATT_IN_TIME, ATT_OUT_TIME, ATT_WORK_TIME, CREATE_DT, EMP_NO 
+        FROM ATTENDANCE_T
+	ORDER BY CREATE_DT ASC, ATT_IN_TIME ASC
 </select>
 
 
