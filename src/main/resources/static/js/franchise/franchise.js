@@ -192,7 +192,7 @@ const franchise = {
 
         let originalValue = inputElement?.value;
 
-        editButton.addEventListener("click", () => {
+        editButton?.addEventListener("click", () => {
             inputElement.readOnly = false;
             inputElement.focus();
             changeButton.style.display = 'inline';

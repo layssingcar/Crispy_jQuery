@@ -9,13 +9,31 @@ const owner = {
 
     bindEvents: function() {
         const myProfileElement = document.getElementById('my-profile');
-        const resetPasswordButton = document.getElementById('btn-reset-password');
+        const resetPasswordButton = document.querySelector('.btn-reset-password');
+        const selectAllCheckbox = document.querySelector('th input[type=checkbox]');
+        const deleteSelectedButton = document.getElementById('btn-delete-selected');
+
         if (myProfileElement) {
             myProfileElement.addEventListener('click', this.clearSelectedEmpNo.bind(this));
         }
         if (resetPasswordButton) {
             resetPasswordButton.addEventListener('click', () => this.resetPassword());
         }
+        if (selectAllCheckbox) {
+            selectAllCheckbox.addEventListener("change", this.toggleSelectAll.bind(this));
+        }
+        if (deleteSelectedButton) {
+            deleteSelectedButton.addEventListener("click", this.confirmDeleteSelectedEmployees.bind(this))
+        }
+    },
+
+    toggleSelectAll: function(event) {
+        const isChecked = event.target.checked;
+        const checkboxes = document.querySelectorAll('input[name=employeeCheckbox]');
+        checkboxes.forEach((checkbox) => {
+            checkbox.checked = isChecked;
+            console.log(checkbox.value);
+        })
     },
 
     resetPassword: function() {
@@ -73,6 +91,7 @@ const owner = {
             checkbox.type = 'checkbox';
             checkbox.name = 'employeeCheckbox';
             checkbox.id = value;
+            console.log(checkbox);
             checkbox.addEventListener('change', function() {
                 console.log(this.checked ? 'Checked' : 'Unchecked', 'Checkbox ID:', this.id);
             });
@@ -90,7 +109,10 @@ const owner = {
         const editLink = document.createElement('a');
         editLink.href = '#';
         editLink.role = 'button';
-        editLink.onclick = () => this.editEmployee(empNo);
+        editLink.onclick = (event) => {
+            event.stopPropagation();
+            this.editEmployee(empNo);
+        };
         editLink.appendChild(editIcon);
         cell.appendChild(editLink);
 
@@ -99,7 +121,10 @@ const owner = {
         const deleteButton = document.createElement('a');
         deleteButton.href = '#';
         deleteButton.role = 'button';
-        deleteButton.onclick = () => this.deleteEmployee(empNo);
+        deleteButton.onclick = (event) => {
+            event.stopPropagation();
+            this.confirmDeleteEmployee(empNo);
+        }
         deleteButton.appendChild(removeIcon);
         cell.appendChild(deleteButton);
 
@@ -124,7 +149,65 @@ const owner = {
 
     deleteEmployee: function(empNo) {
         console.log('Delete Employee:', empNo);
-        // Implement deletion logic here
+        fetch(`/api/owner/employee/${empNo}/v1`, {
+            method: 'DELETE',
+        }).then(response => {
+            if (response.ok) {
+                alert('삭제되었습니다.')
+                this.loadEmployeeData();
+            } else {
+                return response.json().then(data => {
+                    throw new Error(data.message);
+                })
+            }
+        }).catch(error => {
+            console.log(error);
+            alert("삭제 중 오류가 발생했습니다.")
+        });
+    },
+
+    deleteSelectedEmployees: function () {
+      const checkboxes = document.querySelectorAll('input[name="employeeCheckbox"]:checked');
+      console.log(checkboxes.length);
+      const empNos = Array.from(checkboxes)
+                                .map(checkbox => checkbox.id)
+                                .filter(empNo => empNo.trim() !== "");
+
+      if(empNos.length === 0) {
+          alert("삭제할 직원을 선택해주세요.");
+          return;
+      }
+
+      fetch(`/api/owner/employees/v1`, {
+          method: 'DELETE',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(empNos)
+      }).then(response => {
+          if (response.ok) {
+              alert("삭제되었습니다.");
+              this.loadEmployeeData();
+          } else {
+              return response.json().then(data => {
+                  throw new Error(data.message);
+              });
+          }
+      }).catch(error => {
+          console.log(error);
+          alert("삭제 중 오류가 발생했습니다.");
+      })
+    },
+
+    confirmDeleteEmployee: function(empNo) {
+        const confirmed = confirm('정말로 삭제하시겠습니까?');
+        if (confirmed) {
+            this.deleteEmployee(empNo);
+        }
+    },
+    confirmDeleteSelectedEmployees: function() {
+        const confirmed = confirm('선택한 직원들을 정말로 삭제하시겠습니까?');
+        if (confirmed) {
+            this.deleteSelectedEmployees();
+        }
     },
 
     clearSelectedEmpNo: function() {

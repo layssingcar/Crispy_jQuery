@@ -1,13 +1,10 @@
 package com.mcp.crispy.employee.controller;
 
-import com.mcp.crispy.common.group.DefaultGroup;
-import com.mcp.crispy.common.group.NameValidationGroup;
 import com.mcp.crispy.common.utils.CookieUtil;
 import com.mcp.crispy.email.service.EmailVerificationService;
 import com.mcp.crispy.employee.dto.*;
 import com.mcp.crispy.employee.service.EmployeeService;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Valid;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 @Slf4j
 @RestController
@@ -210,6 +206,20 @@ public class EmployeeApiController {
     }
 
     /**
+     * 이메일 변경
+     * 배영욱 (24. 06. 04)
+     * @param updateDto 직원 정보 업데이트 DTO
+     * @return ResponseEntity
+     */
+    @PutMapping("/empEmail/v1")
+    public ResponseEntity<Map<String, String>> changeEmail(@Valid @RequestBody EmployeeEmailUpdateDto updateDto) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        EmployeeDto employee = employeeService.getEmployeeName(auth.getName());
+        employeeService.changeEmail(updateDto.getEmpEmail(), updateDto.getEmpNo(), employee.getEmpNo());
+        return ResponseEntity.ok(Map.of("message", "이메일이 변경되었습니다."));
+    }
+
+    /**
      * 재직 상태 변경
      * 배영욱 (24. 06. 02)
      * @param employeeUpdateDto 직원 정보 업데이트 DTO
@@ -224,24 +234,7 @@ public class EmployeeApiController {
     }
 
     @PutMapping("/form/v1")
-    public ResponseEntity<Map<String, String>> changeForm(@RequestBody EmployeeUpdateDto employeeUpdateDto,
-                                                          @RequestParam boolean validateName) {
-        Set<ConstraintViolation<EmployeeUpdateDto>> violations;
-
-        if (validateName) {
-            violations = validator.validate(employeeUpdateDto, DefaultGroup.class, NameValidationGroup.class);
-        } else {
-            violations = validator.validate(employeeUpdateDto, DefaultGroup.class);
-        }
-
-        if (!violations.isEmpty()) {
-            Map<String, String> errors = new HashMap<>();
-            for (ConstraintViolation<EmployeeUpdateDto> violation : violations) {
-                errors.put(violation.getPropertyPath().toString(), violation.getMessage());
-            }
-            return ResponseEntity.badRequest().body(errors);
-        }
-
+    public ResponseEntity<Map<String, String>> changeForm(@Valid @RequestBody EmployeeUpdateDto employeeUpdateDto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         EmployeeDto employee = employeeService.getEmployeeName(auth.getName());
         employeeService.updateFormEmployee(employeeUpdateDto, employee.getEmpNo());

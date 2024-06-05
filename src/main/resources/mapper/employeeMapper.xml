@@ -178,15 +178,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              AND E.EMP_NO = #{empNo}
     </select>
 
-    <!-- 번호에 맞는 직원 호출 -->
-    <select id="countByEmpNo"
-            parameterType="int" resultType="int">
-            SELECT COUNT(*)
-            FROM EMPLOYEE_T E
-           WHERE 1 = 1
-             AND E.EMP_NO = #{empNo}
-    </select>
-
     <!-- 주소 수정 -->
     <update id="updateAddress"
             parameterType="EmpAddressUpdateDto">
@@ -204,66 +195,77 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <update id="updateEmpSign"
             parameterType="EmployeeUpdateDto">
             UPDATE EMPLOYEE_T E
-            SET E.EMP_SIGN = #{empSign},
+               SET E.EMP_SIGN = #{empSign},
                 E.MODIFY_DT = CURRENT_DATE,
                 E.MODIFIER = #{empNo}
             WHERE 1 = 1
               AND E.EMP_NO = #{empNo}
     </update>
 
+    <!-- 이메일 수정 -->
+    <update id="updateEmpEmail"
+            parameterType="EmployeeEmailUpdateDto">
+            UPDATE EMPLOYEE_T E
+               SET E.EMP_EMAIL = #{empEmail},
+                   E.MODIFY_DT = CURRENT_DATE,
+                   E.MODIFIER = #{empNo}
+             WHERE 1 = 1
+               AND E.EMP_NO = #{empNo}
+    </update>
+
     <!-- 프로필 수정 -->
     <update id="updateEmpProfile"
             parameterType="EmployeeUpdateDto">
             UPDATE EMPLOYEE_T E
-            SET E.EMP_PROFILE = #{empProfile},
+               SET E.EMP_PROFILE = #{empProfile},
                 E.MODIFY_DT = CURRENT_DATE,
                 E.MODIFIER = #{modifier}
-            WHERE 1 = 1
-              AND E.EMP_NO = #{empNo}
+             WHERE 1 = 1
+               AND E.EMP_NO = #{empNo}
     </update>
 
     <!-- 전화번호 수정 -->
     <update id="updateEmpPhone"
             parameterType="EmpPhoneUpdateDto">
             UPDATE EMPLOYEE_T E
-            SET E.EMP_PHONE = #{empPhone},
+               SET E.EMP_PHONE = #{empPhone},
                 E.MODIFY_DT = CURRENT_DATE,
                 E.MODIFIER = #{modifier}
-            WHERE 1 = 1
-              AND EMP_NO = #{empNo}
+             WHERE 1 = 1
+               AND EMP_NO = #{empNo}
     </update>
 
     <!-- 이름 수정 -->
     <update id="updateEmpName"
             parameterType="EmployeeNameUpdateDto">
             UPDATE EMPLOYEE_T E
-            SET E.EMP_NAME = #{empName},
+               SET E.EMP_NAME = #{empName},
                 E.MODIFY_DT = CURRENT_DATE,
                 E.MODIFIER = #{modifier}
-            WHERE 1 = 1
-              AND EMP_NO = #{empNo}
+             WHERE 1 = 1
+               AND EMP_NO = #{empNo}
     </update>
 
     <!-- 직책 수정 -->
     <update id="updatePosNo"
             parameterType="EmployeeUpdateDto">
             UPDATE EMPLOYEE_T
-              SET POS_NO = #{posNo},
+                SET POS_NO = #{posNo},
                   MODIFY_DT = CURRENT_DATE,
                   MODIFIER = #{modifier}
-             WHERE 1 = 1
-               AND EMP_NO = #{empNo}
+              WHERE 1 = 1
+                AND EMP_NO = #{empNo}
     </update>
 
     <!-- 재직 상태 수정  -->
     <update id="updateEmpStat"
             parameterType="EmployeeUpdateDto">
             UPDATE EMPLOYEE_T
-            SET EMP_STAT = #{empStat},
+               SET EMP_STAT = #{empStat},
                 MODIFY_DT = CURRENT_DATE,
                 MODIFIER = #{modifier}
-            WHERE 1 = 1
-              AND EMP_NO = #{empNo}
+             WHERE 1 = 1
+               AND EMP_NO = #{empNo}
     </update>
 
     <!-- 직원 검색 -->
