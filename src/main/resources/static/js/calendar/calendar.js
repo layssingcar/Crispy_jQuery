@@ -208,8 +208,7 @@
         initialView: 'dayGridMonth',
         selectable:true,    // 달력 날짜 드래그
         locale:'kr',      // 달력 언어 설정
-        editable:true,
-        dayMaxEventRows:true
+        dayMaxEventRows:true,
       }
 
       const calendar = new FullCalendar.Calendar(calendarEl, calendarOpt);
