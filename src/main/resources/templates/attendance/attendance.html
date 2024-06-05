@@ -2,7 +2,51 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
-    <link href="/css/employee/employees.css" rel="stylesheet">
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <style>
+		.attendance {
+		    width: -webkit-fill-available;
+		    font-size: 2rem;
+		}    
+		.attendance button th, td,
+		.attendance input{
+		    font-size: 1.5rem;
+		}
+    	.table{
+	      	border-collapse: collapse;
+	      	table-layout: fixed; /* 각 열의 너비를 고정 */
+    	}
+    	.table th, td{
+		  padding: 10px;
+		  text-align: left;
+		  width: 260px;
+		  text-align: center;
+    	}
+    	.table thead{
+    	    display:block;
+    	}
+    	.table tbody{
+    	    display:block;
+		   	overflow:auto;
+		   	height:190px;
+    	}
+    	.table tbody::-webkit-scrollbar{
+    		display:none;
+    	}
+    	
+    	.attendance table {
+    		text-align: center;
+		}			
+		.attendance .table>:not(caption)>*>* {
+		    background-color: unset;
+		}
+		
+		.attendance .table tbody tr:hover {
+		    background-color: rgba(200, 200, 200, 0.2) !important;
+		    cursor: pointer;
+		}    	
+    </style>
 </head>
 <body>
 
@@ -11,37 +55,101 @@
     <div>
         <header th:replace="~{layout/navbar :: navbar}"></header>
         <main>
-            <div class="employees">
+			<div id='calendar'></div>
+            <div class="attendance">
                 <input type="hidden" id="employees-frnNo" th:value="${frnNo}">
                 <div>
                     <h1>개인 근태 관리</h1>
                 </div>
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th scope="col">날짜</th>
-                        <th scope="col">근무상태</th>
-                        <th scope="col">출근시간</th>
-                        <th scope="col">퇴근시간</th>
-                        <th scope="col">근무시간</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="attendance : ${attenList}">
-                    	<td th:text="${attendance.createDt}"></td>
-                    	<td></td>
-                    	<td th:text="${attendance.attInTime}"></td>
-                    	<td th:text="${attendance.attOutTime}"></td>
-                    	<td th:text="${attendance.attWorkTime}"></td>
-                    </tr>
-                    </tbody>
-                </table>
+                <div>
+	                <table class="table">
+	                    <thead>
+	                    <tr>
+	                        <th scope="col">날짜</th>
+	                        <th scope="col">근무상태</th>
+	                        <th scope="col">출근시간</th>
+	                        <th scope="col">퇴근시간</th>
+	                        <th scope="col">근무시간</th>
+	                    </tr>
+	                    </thead>
+	                    <tbody>
+	                    <tr th:each="attendance : ${attenList}">
+	                    	<td th:text="${attendance.createDt}"></td>
+	                    	<td>아</td>
+	                    	<td th:text="${attendance.attInTime}"></td>
+	                    	<td th:text="${attendance.attOutTime}"></td>
+	                    	<td th:text="${attendance.attWorkTime}"></td>
+	                    </tr>
+	                    </tbody>
+	                </table>
+                </div>
             </div>
         </main>
         <footer th:replace="~{layout/footer :: footer}"></footer>
     </div>
     <!-- 특정 JS -->
 <!--     <script src="/js/owner.js"></script> -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      headerToolbar: {
+        left: 'prev,next'
+      },
+      showNonCurrentDates:false,
+      datesSet: function(info) {
+        var start = info.start;
+        var end = info.end;
+        var currentDay = start.toString().substring(0,3);
+        updateTable(start, end, currentDay);
+      }
+    });
+    calendar.render();
+    $('#calendar').hide();
+    
+    function updateTable(start, end, currentDay) {
+      //$('.table tbody').empty();
+      // 6월의 날짜만 테이블에 추가
+      const datetmp = {
+          'Sat' : 0,
+          'Sun' : 1,
+          'Mon' : 2,
+          'Tue' : 3,
+          'Wed' : 4,
+          'Thu' : 5,
+          'Fri' : 6,
+      }
+      const datetmp2 = {
+          0 : '토',
+          1 : '일',
+          2 : '월',
+          3 : '화',
+          4 : '수',
+          5 : '목',
+          6 : '금',
+      }
+      let count = datetmp[currentDay];
+      for (var date = moment(start); date.isBefore(end); date.add(1, 'days')) {
+          switch (count) {
+              case 0:
+              $('.table tbody').append('<tr><td style="color: blue;">' + date.format('YYYY-MM-DD') + ' (' + datetmp2[count] + ')' + '</td></tr>');
+              break;
+              case 1:
+              $('.table tbody').append('<tr><td style="color: red;">' + date.format('YYYY-MM-DD') + ' (' + datetmp2[count] + ')' + '</td></tr>');
+              break;
+              default:
+              $('.table tbody').append('<tr><td>' + date.format('YYYY-MM-DD') + ' (' + datetmp2[count] + ')' + '</td></tr>');
+              break;
+          }
+          count++;
+          if(count > 6){
+              count = 0;
+          }
+      }
+    }
+  });
+</script>
 </div>
 </body>
 </html>

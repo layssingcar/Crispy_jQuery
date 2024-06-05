@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.security.Principal;
-
 @Slf4j
 @Controller
 @RequestMapping("/crispy/employee")
@@ -65,9 +63,11 @@ public class EmployeeController {
 	}
 
 	@GetMapping("/changeEmpPw")
-	public String changePassword(HttpSession session, Principal principal, Model model) {
-		if(principal != null) {
-			EmployeeDto employee = employeeService.getEmployeeName(principal.getName());
+	public String changePassword(HttpSession session, Model model) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		log.info("auth: {}", auth);
+		if (auth != null && auth.isAuthenticated()) {
+			EmployeeDto employee = employeeService.getEmployeeName(auth.getName());
 			model.addAttribute("empId", employee.getEmpId());
 		} else if (session.getAttribute("empId") != null) {
 			String findEmpId = (String) session.getAttribute("empId");
@@ -78,7 +78,7 @@ public class EmployeeController {
 
 	// 직원 혹은 관리자 개인이 들어가는 마이 페이지
 	@GetMapping("/profile")
-	public String getEmployee(Principal principal, Model model) {
+	public String getEmployee(Model model) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		boolean isAdmin = authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 
@@ -86,8 +86,7 @@ public class EmployeeController {
 			return "redirect:/error/403";
 		}
 
-
-		EmployeeDto employee = employeeService.getEmployeeName(principal.getName());
+		EmployeeDto employee = employeeService.getEmployeeName(authentication.getName());
 		log.info("address : {} {} {}", employee.getEmpZip(), employee.getEmpStreet(), employee.getEmpDetail());
 		log.info("empSign : {}", employee.getEmpSign());
 		model.addAttribute("employee", employee);

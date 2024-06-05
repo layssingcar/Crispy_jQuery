@@ -41,8 +41,10 @@
                                             <input type="text" id="frn-frnName" name="frnName" class="form-control frnName" placeholder="가맹점 이름" autocomplete="on" th:value="${owner.frnName != null ? owner.frnName : ''}">
                                             <div class="error-message" id="frnName-error" style="display: none;"></div>
                                         </div>
+                                        <div sec:authorize="hasRole('ROLE_ADMIN')">
                                         <button type="button" id="btn-edit-frnName">수정</button>
                                         <button type="button" id="btn-change-frnName" style="display: none;">변경</button>
+                                        </div>
                                     </div>
                                     <div class="frn-modify-btn">
                                         <div>
@@ -59,8 +61,10 @@
                                             <input type="text" class="form-control frnTel" id="frn-frnTel" name="frnTel" placeholder="- 제외하고 입력해주세요." th:value="${owner.frnTel != null ? owner.frnTel : ''}">
                                             <div class="error-message frnTel-error" id="frnTel-error" style="display: none;"></div>
                                         </div>
-                                        <button type="button" id="btn-edit-frnTel">수정</button>
-                                        <button type="button" id="btn-change-frnTel" style="display: none;">변경</button>
+                                        <div sec:authorize="hasRole('ROLE_ADMIN')">
+                                            <button type="button" id="btn-edit-frnTel">수정</button>
+                                            <button type="button" id="btn-change-frnTel" style="display: none;">변경</button>
+                                        </div>
                                     </div>
                                     <div class="address-container">
                                         <div class="address-wrap">
@@ -68,7 +72,7 @@
                                             <div>
                                                 <div class="d-flex">
                                                     <input type="text" id="frn-frnZip" name="frnZip" class="form-control zipcode mb-2" placeholder="우편번호" th:value="${owner.frnZip != null ? owner.frnZip : ''}">
-                                                    <div>
+                                                    <div sec:authorize="hasRole('ROLE_ADMIN')">
                                                         <button type="button" class="mt-0 search-address" onclick="execPostCode(false)">주소 찾기</button>
                                                     </div>
                                                 </div>
@@ -81,7 +85,7 @@
                                                 <div class="error-message frnDetail-error" style="display: none;"></div>
                                             </div>
                                         </div>
-                                        <div class="change-address-container">
+                                        <div class="change-address-container" sec:authorize="hasRole('ROLE_ADMIN')">
                                             <button type="button" class="btn-change-address">주소 변경</button>
                                         </div>
                                     </div>

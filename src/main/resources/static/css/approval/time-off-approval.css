@@ -59,17 +59,6 @@
     padding: 50px !important;
 }
 
-/* 파일 선택 */
-.time-off-appr .file-attach {
-    display: flex;
-    width: 1000px;
-    margin-top: 20px;
-}
-
-.time-off-appr form .mb-3 {width: 450px;}
-
-.time-off-appr form .mb-3 input {font-size: 1.5rem;}
-
 /* 하단 버튼 */
 .time-off-appr .bottom-btn {
     display: flex;

@@ -43,7 +43,7 @@ public class ScheduleService {
 		return scheduleMapper.deleteSchedule(scheduleDto);
 	}
 	@Transactional
-	public int completeDeleteSchedule(int scheduleId) {
-		return scheduleMapper.completeDeleteSchedule(scheduleId);
+	public int completeDeleteSchedule(ScheduleDto scheduleDto) {
+		return scheduleMapper.completeDeleteSchedule(scheduleDto);
 	}
 }

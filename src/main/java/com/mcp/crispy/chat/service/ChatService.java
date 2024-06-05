@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,9 +38,11 @@ public class ChatService {
                     .filter(p -> !p.getEmpNo().equals(empNo))
                     .collect(Collectors.toList());
             room.setParticipants(participants);
+            room.setMsgContent(room.getMsgContent());
+            log.info("roomMsgContent: {}", room.getMsgContent());
             log.info("participants: {}", participants);
         }
-        log.info(chatRooms.toString());
+        log.info("chatRooms: {}", chatRooms.toString());
         return chatRooms;
     }
 
@@ -63,6 +66,18 @@ public class ChatService {
         return chatMapper.getMessages(chatRoomNo, empNo);
     }
 
+    // 스크롤이 상단에 닿을 때 이전 메시지 50개 가져오는 메소드
+    @Transactional
+    public List<ChatMessageDto> getMessages(Integer chatRoomNo, Timestamp beforeTimestamp,
+                                            int offset, Integer empNo) {
+        return chatMapper.getMessages(chatRoomNo, beforeTimestamp, offset, empNo);
+    }
+
+    // 제일 최신 메시지 내용
+    public ChatMessageDto getRegentMsg(Integer chatRoomNo, Integer empNo) {
+        return chatMapper.getRegentMsg(chatRoomNo, empNo);
+    }
+
     // 메시지를 저장하고 관련된 모든 참가자의 상태를 업데이트
     @Transactional
     public ChatMessageDto sendMessageAndUpdate(ChatMessageDto message) {
@@ -70,6 +85,7 @@ public class ChatService {
         // 채팅방의 모든 참가자 조회
         List<CrEmpDto> participants = chatMapper.getParticipantsByRoom(message.getChatRoomNo());
 
+        log.info("participants.size: {}", participants.size());
         // 1:1 채팅방 확인 및 상태 업데이트
         if (participants.size() == 2) {
             ChatMessageDto finalMessage = message;
@@ -80,6 +96,7 @@ public class ChatService {
                             participant.setEntryStat(EntryStat.of(EntryStat.ACTIVE.getStatus())); // 상태를 '활성화'로 변경
                             participant.setAlarmStat(AlarmStat.of(AlarmStat.ACTIVE.getStatus())); // 상태를 '활성화'로 변경
                             chatMapper.updateParticipantEntryStat(participant); // DB 업데이트
+                            log.info("participant: {}", participant.toString());
                             chatMapper.updateEntryRecord(finalMessage.getChatRoomNo(), participant.getEmpNo());
                             log.info("finalMessage: {}", participant.getEmpNo());
                         }

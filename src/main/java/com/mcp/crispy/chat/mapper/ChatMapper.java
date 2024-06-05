@@ -7,6 +7,7 @@ import com.mcp.crispy.chat.dto.UnreadMessageCountDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -20,6 +21,11 @@ public interface ChatMapper {
 
     // 채팅방 내에 메시지 목록
     List<ChatMessageDto> getMessages(@Param("chatRoomNo") Integer chatRoomNo, @Param("empNo") Integer empNo);
+
+    List<ChatMessageDto> getMessages(@Param("chatRoomNo") Integer chatRoomNo, @Param("beforeTimeStamp") Timestamp beforeTimeStamp,
+                                     @Param("offset") int offset, @Param("empNo") Integer empNo);
+    // 최신 메시지 내용
+    ChatMessageDto getRegentMsg(@Param("chatRoomNo") Integer chatRoomNo, @Param("empNo") Integer empNo);
 
     // 메시지 저장
     void saveMessage(ChatMessageDto chatMessageDto);
@@ -61,6 +67,8 @@ public interface ChatMapper {
     // 마지막 접속시간
     Date getLastAccessTime(@Param("chatRoomNo") Integer chatRoomNo, @Param("empNo") Integer empNo);
 
-    //
+    // 안 읽은 메시지 가져오기
     List<ChatMessageDto> getUnreadMessages(@Param("chatRoomNo") Integer chatRoomNo, @Param("empNo") Integer empNo);
+
+    //
 }

@@ -2,11 +2,14 @@ package com.mcp.crispy.annual.controller;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,10 +59,11 @@ public class AnnualController {
 		return ResponseEntity.ok(deleteCount);
 	}
 	
-//	@PostMapping(value="/completeDeleteAnn", produces = "application/json")
-//	public ResponseEntity<Integer> completeDeleteAnnual(@RequestBody int scheduleId, Principal principal)
-//	{	
-//		int deleteCount = annualService.completeDeleteAnnual(annualDto);
-//		return ResponseEntity.ok(deleteCount);
-//	}
+	
+	@ResponseBody
+	@DeleteMapping(value="/completeDeleteAnn/{annId}", produces = "application/json")
+	public ResponseEntity<Integer> completeDeleteAnnual(@PathVariable(value="annId") Optional<String> opt){
+		int deleteCount = annualService.completeDeleteAnnual(Integer.parseInt(opt.orElse("0")));
+		return ResponseEntity.ok(deleteCount);
+	}
 }

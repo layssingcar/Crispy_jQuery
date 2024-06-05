@@ -59,6 +59,10 @@ public interface EmployeeMapper {
 	void updatePosNo(@Param("posNo") Position posNo, @Param("empNo") Integer empNo,
 					 @Param("modifier") Integer modifier);
 
+	// 이메일 수정
+	void updateEmpEmail(@Param("empEmail") String empPhone, @Param("empNo") Integer empNo,
+						@Param("modifier") Integer modifier);
+
 	// 상태 수정
 	void updateEmpStat(@Param("empStat") EmpStatus empStat, @Param("empNo") Integer empNo,
 					   @Param("modifier") Integer modifier);

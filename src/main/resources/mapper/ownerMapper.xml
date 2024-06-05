@@ -31,4 +31,31 @@
             , #{frnNo}
         )
     </insert>
+
+    <!-- 번호에 맞는 직원 호출 -->
+    <select id="countByEmpNo"
+            parameterType="int" resultType="int">
+        SELECT COUNT(*)
+        FROM EMPLOYEE_T E
+        WHERE 1 = 1
+          AND E.EMP_NO = #{empNo}
+    </select>
+
+    <!-- 직원 삭제 -->
+    <delete id="deleteEmployee">
+        DELETE
+          FROM EMPLOYEE_T E
+         WHERE EMP_NO = #{empNo}
+    </delete>
+
+    <!-- 직원 선택 삭제 -->
+    <delete id="deleteEmployees">
+        DELETE
+          FROM EMPLOYEE_T E
+         WHERE E.EMP_NO
+            IN
+        <foreach collection="list" item="empNo" open="(" separator="," close=")">
+            #{empNo}
+        </foreach>
+    </delete>
 </mapper>
