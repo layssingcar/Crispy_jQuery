@@ -14,16 +14,16 @@
             <tr>
                 <th class="col inp-col">성명</th>
                 <!-- 기안자 출력 -->
-                <td colspan="3"></td>
+                <td colspan="3" class="emp-name"></td>
 
                 <th class="col inp-col">직책</th>
                 <!-- 직책 출력 -->
-                <td colspan="3" class="row"></td>
+                <td colspan="3" class="row" id="pos-name"></td>
             </tr>
             <tr>
                 <th class="col inp-col">주소</th>
                 <!-- 주소 출력 (도로명주소 + 상세주소) -->
-                <td colspan="7"></td>
+                <td colspan="7" id="emp-address"></td>
             </tr>
             <tr>
                 <th class="col inp-col">휴직 기간</th>
@@ -53,14 +53,14 @@
                     <div id="doc-cont">
                         <div>위 본인은 상기의 사유로 휴직을 신청합니다.</div>
 
-                        <!-- 기안일 출력 (2024년 05월 22일 수요일) -->
-                        <div></div>
+                        <!-- 기안일 출력 -->
+                        <div id="appr-dt"></div>
 
                         <div class="appr-emp">
                             <div>신청인:&nbsp;</div>
 
                             <!-- 기안자 출력 -->
-                            <div id="emp-name"></div>
+                            <div class="emp-name" id="emp-name"></div>
                             
                             <div id="emp-sign">
                                 <span>(인)</span>
