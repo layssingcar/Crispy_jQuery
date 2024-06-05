@@ -20,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +72,31 @@ public class ChatApiController {
     public List<ChatMessageDto> getMessages(@PathVariable Integer chatRoomNo, Authentication authentication) {
         EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
         return chatService.getMessages(chatRoomNo, userDetails.getEmpNo());
+    }
+
+    /**
+     * 메시지 가져오기
+     * 배영욱 (24. 06. 05)
+     * @param chatRoomNo
+     * @param authentication
+     * @return
+     */
+    @GetMapping("/rooms/{chatRoomNo}/messages/v2")
+    public List<ChatMessageDto> getMessages(@PathVariable Integer chatRoomNo,
+                                            @RequestParam("beforeTimestamp") Timestamp beforeTimestamp,
+                                            @RequestParam("offset") int offset,
+                                            Authentication authentication) {
+        EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
+        log.info("beforeTimestamp: {}", beforeTimestamp);
+        log.info("offset: {}", offset);
+        return chatService.getMessages(chatRoomNo, beforeTimestamp, offset ,userDetails.getEmpNo());
+    }
+
+
+    @GetMapping("/rooms/{chatRoomNo}/regentMessage/v1")
+    public ChatMessageDto getRentMsg(@PathVariable Integer chatRoomNo, Authentication authentication) {
+        EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
+        return chatService.getRegentMsg(chatRoomNo, userDetails.getEmpNo());
     }
 
     /**

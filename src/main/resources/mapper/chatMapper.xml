@@ -13,6 +13,7 @@
         <result property="creator" column="CREATOR"/>
         <result property="modifyDt" column="MODIFY_DT"/>
         <result property="modifier" column="MODIFIER"/>
+        <result property="msgContent" column="MSG_CONTENT"/>
         <collection property="participants" ofType="CrEmpDto">
             <id property="empNo" column="EMP_NO"/>
             <result property="entryStat" column="ENTRY_STAT" typeHandler="com.mcp.crispy.common.typehandler.EntryStatTypeHandler"/>
@@ -25,18 +26,41 @@
 
     <!-- 사용자가 속한 채팅방 목록 조회 -->
     <select id="getChatRooms" resultMap="ChatRoomMap">
-        SELECT DISTINCT
-            C.CHAT_ROOM_NO, C.CHAT_ROOM_TITLE, C.CHAT_ROOM_STAT, C.CREATE_DT,
-            C.CREATOR, C.MODIFY_DT, C.MODIFIER, CM.MSG_DT
-        FROM CHAT_ROOM_T C
-                 LEFT JOIN CR_EMP_T P ON C.CHAT_ROOM_NO = P.CHAT_ROOM_NO
-                 LEFT JOIN EMPLOYEE_T E ON P.EMP_NO = E.EMP_NO
-                 LEFT JOIN CHAT_MESSAGE_T CM ON C.CHAT_ROOM_NO = CM.CHAT_ROOM_NO
-        WHERE P.EMP_NO = #{empNo} AND P.ENTRY_STAT = 0
-        GROUP BY
-            C.CHAT_ROOM_NO, C.CHAT_ROOM_TITLE, C.CHAT_ROOM_STAT, C.CREATE_DT,
-            C.CREATOR, C.MODIFY_DT, C.MODIFIER, CM.MSG_DT
-        ORDER BY CM.MSG_DT DESC
+        SELECT
+            C.CHAT_ROOM_NO,
+            C.CHAT_ROOM_TITLE,
+            C.CHAT_ROOM_STAT,
+            C.CREATE_DT,
+            C.CREATOR,
+            C.MODIFY_DT,
+            C.MODIFIER,
+            LATEST_MSG.MSG_DT,
+            LATEST_MSG.MSG_CONTENT
+        FROM
+            CHAT_ROOM_T C
+                LEFT JOIN
+            CR_EMP_T P ON C.CHAT_ROOM_NO = P.CHAT_ROOM_NO
+                LEFT JOIN (
+                SELECT
+                    CM1.CHAT_ROOM_NO,
+                    CM1.MSG_DT,
+                    CM1.MSG_CONTENT
+                FROM
+                    CHAT_MESSAGE_T CM1
+                        INNER JOIN (
+                        SELECT
+                            CHAT_ROOM_NO,
+                            MAX(MSG_DT) AS LATEST_MSG_DT
+                        FROM
+                            CHAT_MESSAGE_T
+                        GROUP BY
+                            CHAT_ROOM_NO
+                    ) CM2 ON CM1.CHAT_ROOM_NO = CM2.CHAT_ROOM_NO AND CM1.MSG_DT = CM2.LATEST_MSG_DT
+            ) LATEST_MSG ON C.CHAT_ROOM_NO = LATEST_MSG.CHAT_ROOM_NO
+        WHERE
+            P.EMP_NO = 2 AND P.ENTRY_STAT = 0
+        ORDER BY
+            LATEST_MSG.MSG_DT DESC
     </select>
 
     <!-- 특정 채팅방의 정보 조회 -->
@@ -55,14 +79,54 @@
 
     <!-- 특정 채팅방의 메시지 목록 조회 -->
     <select id="getMessages" resultType="ChatMessageDto">
+        WITH Last50Messages AS (
+            SELECT CM.CHAT_ROOM_NO, CM.EMP_NO, CM.MSG_CONTENT, CM.MSG_DT,
+                   CM.CREATOR, CM.CREATE_DT, CM.MODIFIER, CM.MODIFY_DT,
+                   E.EMP_PROFILE, E.EMP_NAME
+              FROM CHAT_MESSAGE_T CM
+                     LEFT JOIN EMPLOYEE_T E ON CM.EMP_NO = E.EMP_NO
+             WHERE CM.CHAT_ROOM_NO = #{chatRoomNo}
+               AND CM.MSG_DT > (SELECT MAX(ENTRY_DT) FROM ENTRY_EXIT_T WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo})
+          ORDER BY CM.MSG_DT DESC
+          FETCH FIRST 50 ROWS ONLY
+        )
+          SELECT LM.CHAT_ROOM_NO, LM.EMP_NO, LM.MSG_CONTENT, LM.MSG_DT,
+                 LM.EMP_PROFILE, LM.EMP_NAME
+            FROM Last50Messages LM
+        ORDER BY MSG_DT ASC
+    </select>
+
+    <!-- 특정 채팅방의 메시지 목록 조회 -->
+<!--    <select id="getMessages" resultType="ChatMessageDto">-->
+<!--        WITH MessagesBefore AS (-->
+<!--        SELECT CM.CHAT_ROOM_NO, CM.EMP_NO, CM.MSG_CONTENT, CM.MSG_DT,-->
+<!--        CM.CREATOR, CM.CREATE_DT, CM.MODIFIER, CM.MODIFY_DT,-->
+<!--        E.EMP_PROFILE, E.EMP_NAME-->
+<!--        FROM CHAT_MESSAGE_T CM-->
+<!--        LEFT JOIN EMPLOYEE_T E ON CM.EMP_NO = E.EMP_NO-->
+<!--        WHERE CM.CHAT_ROOM_NO = #{chatRoomNo}-->
+<!--        AND CM.MSG_DT &lt; #{beforeTimestamp}-->
+<!--        AND CM.MSG_DT > (SELECT MAX(ENTRY_DT) FROM ENTRY_EXIT_T WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo})-->
+<!--        ORDER BY CM.MSG_DT DESC-->
+<!--        )-->
+<!--        SELECT M.CHAT_ROOM_NO, M.EMP_NO, M.MSG_CONTENT, M.MSG_DT,-->
+<!--        M.EMP_PROFILE, M.EMP_NAME-->
+<!--        FROM MessagesBefore M-->
+<!--        OFFSET #{offset} ROWS FETCH NEXT 50 ROWS ONLY-->
+<!--    </select>-->
+
+
+    <!-- 최신 메시지 내용 -->
+    <select id="getRegentMsg" resultType="ChatMessageDto">
         SELECT CM.CHAT_ROOM_NO, CM.EMP_NO, CM.MSG_CONTENT, CM.MSG_DT,
                CM.CREATOR, CM.CREATE_DT, CM.MODIFIER, CM.MODIFY_DT,
                E.EMP_PROFILE, E.EMP_NAME
         FROM CHAT_MESSAGE_T CM
-        LEFT JOIN EMPLOYEE_T E ON CM.EMP_NO = E.EMP_NO
+                 JOIN EMPLOYEE_T E ON CM.EMP_NO = E.EMP_NO
         WHERE CM.CHAT_ROOM_NO = #{chatRoomNo}
           AND CM.MSG_DT > (SELECT MAX(ENTRY_DT) FROM ENTRY_EXIT_T WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo})
-        ORDER BY CM.MSG_DT
+        ORDER BY CM.MSG_DT desc
+            fetch first 1 rows only
     </select>
 
     <!-- 메시지 저장 -->
@@ -121,7 +185,6 @@
         FROM CR_EMP_T P
      LEFT JOIN EMPLOYEE_T E ON P.EMP_NO = E.EMP_NO
         WHERE P.CHAT_ROOM_NO = #{chatRoomNo}
-          AND P.ENTRY_STAT = 0
     </select>
 
     <!-- 새로운 접속 기록을 추가 -->
