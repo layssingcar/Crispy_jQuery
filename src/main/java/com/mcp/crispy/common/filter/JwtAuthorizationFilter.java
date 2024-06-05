@@ -136,7 +136,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 requestURI.equals("/crispy/employee/findEmpId") ||
                 requestURI.equals("/crispy/employee/findEmpId/result") ||
                 requestURI.equals("/crispy/employee/findEmpPw") ||
-                requestURI.equals("/crispy/employee/changeEmpPw") ||
                 requestURI.equals("/api/employee/verify/email/v1") ||
                 requestURI.equals("/api/email/verificationCode/v1") ||
                 requestURI.equals("/api/email/verificationCode/verify/v1");
