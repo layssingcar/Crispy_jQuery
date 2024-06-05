@@ -62,15 +62,16 @@ public class ChatService {
 
     // 채팅방 번호와 사용자 번호를 기반으로 메시지 목록을 조회
     @Transactional
-    public List<ChatMessageDto> getMessages(Integer chatRoomNo, Integer empNo) {
-        return chatMapper.getMessages(chatRoomNo, empNo);
+    public List<ChatMessageDto> getLoadMessages(Integer chatRoomNo, Integer empNo) {
+        return chatMapper.getLoadMessages(chatRoomNo, empNo);
     }
 
     // 스크롤이 상단에 닿을 때 이전 메시지 50개 가져오는 메소드
     @Transactional
-    public List<ChatMessageDto> getMessages(Integer chatRoomNo, Timestamp beforeTimestamp,
-                                            int offset, Integer empNo) {
-        return chatMapper.getMessages(chatRoomNo, beforeTimestamp, offset, empNo);
+    public List<ChatMessageDto> getMoreMessages(Integer chatRoomNo, Timestamp beforeTimestamp,
+                                            Integer empNo) {
+        log.info("beforeTimestamp: {}", beforeTimestamp);
+        return chatMapper.getMoreMessages(chatRoomNo, beforeTimestamp, empNo);
     }
 
     // 제일 최신 메시지 내용

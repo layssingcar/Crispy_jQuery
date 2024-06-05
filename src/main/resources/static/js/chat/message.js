@@ -1,7 +1,9 @@
 const message = {
     stompClient: null,
     currentChatRoomNo: null,
-    isSubscribed: false, // 중복 구독 방지 플래그
+    isSubscribed: false,
+    lastTimestamp: null,
+    isLoading: false,
 
     init: function () {
         this.connect(() => {
@@ -15,13 +17,13 @@ const message = {
         const chatInput = document.getElementById("chatInput");
 
         if (sendButton) {
-            sendButton.removeEventListener("click", this.sendMessageHandler); // 기존 이벤트 핸들러 제거
-            this.sendMessageHandler = this.sendMessage.bind(this); // 핸들러 바인딩
-            sendButton.addEventListener("click", this.sendMessageHandler); // 클릭 이벤트로 수정
+            sendButton.removeEventListener("click", this.sendMessageHandler);
+            this.sendMessageHandler = this.sendMessage.bind(this);
+            sendButton.addEventListener("click", this.sendMessageHandler);
         }
 
         if (chatInput) {
-            chatInput.removeEventListener("keydown", this.sendMessageEnterHandler); // 기존 이벤트 핸들러 제거
+            chatInput.removeEventListener("keydown", this.sendMessageEnterHandler);
             this.sendMessageEnterHandler = (event) => {
                 if (event.key === "Enter" && !event.shiftKey) {
                     event.preventDefault();
@@ -29,6 +31,11 @@ const message = {
                 }
             };
             chatInput.addEventListener("keydown", this.sendMessageEnterHandler);
+        }
+
+        const chatWindow = document.getElementById("chatMessages");
+        if (chatWindow) {
+            chatWindow.addEventListener("scroll", this.handleScroll.bind(this));
         }
 
         const leaveRoomButton = document.getElementById("leave-room");
@@ -76,19 +83,50 @@ const message = {
         }
     },
 
-    toggleAlarmStatus: function (chatRoomNo) {
-        fetch(`/api/chat/rooms/${chatRoomNo}/toggleAlarm/v1`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to toggle alarm status');
+    handleScroll: function () {
+        const chatWindow = document.getElementById("chatMessages");
+        if (chatWindow.scrollTop === 0 && !this.isLoading) {
+            this.loadMoreMessages();
+        }
+    },
+
+    loadMoreMessages: function () {
+        if (!this.currentChatRoomNo || this.isLoading) return;
+
+        const beforeTimestamp = this.lastTimestamp
+            ? this.getFormattedTimestamp(this.lastTimestamp)
+            : this.getFormattedCurrentTimestamp();
+
+        this.isLoading = true;
+        fetch(`/api/chat/rooms/${this.currentChatRoomNo}/messages/v2?beforeTimestamp=${encodeURIComponent(beforeTimestamp)}`)
+            .then(response => response.json())
+            .then(messages => {
+                if (messages.length > 0) {
+                    console.log(messages)
+                    this.lastTimestamp = messages[0].msgDt;
+                    console.log("현재 라스트 시간은? :", this.lastTimestamp);
+                    console.log(messages[0].msgDt);
+                    this.prependMessages(messages);
                 }
+                this.isLoading = false;
             })
-            .catch(error => console.error('Error toggling alarm status:', error));
+            .catch(error => {
+                console.error('Error loading more messages:', error);
+                this.isLoading = false;
+            });
+    },
+
+    prependMessages: function (messages) {
+        const chatWindow = document.getElementById("chatMessages");
+        const initialScrollHeight = chatWindow.scrollHeight;
+
+        messages.reverse().forEach(msg => {
+            const messageElement = this.createMessageElement(msg);
+            chatWindow.prepend(messageElement);
+        });
+
+        const newScrollHeight = chatWindow.scrollHeight;
+        chatWindow.scrollTop = newScrollHeight - initialScrollHeight;
     },
 
     connect: function (callback) {
@@ -97,7 +135,7 @@ const message = {
         this.stompClient.connect({}, (frame) => {
             const username = frame.headers['user-name'];
 
-            if (!this.isSubscribed) { // 중복 구독 방지
+            if (!this.isSubscribed) {
                 this.stompClient.subscribe('/topic/messages', (messageOutput) => {
                     const message = JSON.parse(messageOutput.body);
                     if (message.chatRoomNo === this.currentChatRoomNo) {
@@ -128,7 +166,7 @@ const message = {
                     this.updateChatRooms(JSON.parse(roomUpdateOutput.body));
                 });
 
-                this.isSubscribed = true; // 구독 완료
+                this.isSubscribed = true;
             }
             if (callback) callback();
         });
@@ -179,7 +217,6 @@ const message = {
     },
 
     updateChatRooms: function (chatRooms) {
-        // chatRooms가 배열이 아닌 경우 빈 배열로 초기화
         if (!Array.isArray(chatRooms)) {
             console.log(chatRooms);
             chatRooms = [];
@@ -187,15 +224,14 @@ const message = {
 
         const chatRoomList = document.getElementById('chatRoomList');
         if (chatRoomList) {
-            chatRoomList.innerHTML = '';  // 기존 목록을 비우고
+            chatRoomList.innerHTML = '';
             chatRooms.forEach(chatRoom => {
                 console.log("이건 뭐임?", chatRoom);
                 const chatRoomElement = this.createChatRoomElement(chatRoom);
                 chatRoomList.appendChild(chatRoomElement);
-                this.loadLatestMessage(chatRoom.chatRoomNo, chatRoomElement);  // 마지막 메시지 로드 로직 추가
+                this.loadLatestMessage(chatRoom.chatRoomNo, chatRoomElement);
             });
 
-            // 현재 선택된 채팅방의 메시지를 로드
             if (this.currentChatRoomNo) {
                 this.loadMessages(this.currentChatRoomNo);
             }
@@ -236,16 +272,15 @@ const message = {
             <div class="temp">
                 <div>${chatRoom.chatRoomTitle}</div>
                 <div class="latest-message">${chatRoom.msgContent}</div>
-               
             </div>
             <div class="unread-count-badge"></div>
         `;
 
         chatRoomElement.addEventListener('click', () => {
-            this.currentChatRoomNo = chatRoom.chatRoomNo; // 현재 채팅방 번호를 업데이트
+            this.currentChatRoomNo = chatRoom.chatRoomNo;
             this.loadMessages(chatRoom.chatRoomNo);
             this.subscribeToParticipants(chatRoom.chatRoomNo);
-            this.updateUnreadMessageCounts(); // 채팅방 클릭 시 즉시 갱신
+            this.updateUnreadMessageCounts();
         });
         return chatRoomElement;
     },
@@ -262,8 +297,8 @@ const message = {
     loadLatestMessage: function (chatRoomNo, chatRoomElement) {
         fetch(`/api/chat/rooms/${chatRoomNo}/regentMessage/v1`)
             .then(response => response.json())
-            .then(message => {  // Changed from 'messages' to 'message'
-                if (message) {  // Check if message exists before accessing properties
+            .then(message => {
+                if (message) {
                     const latestMessageDiv = chatRoomElement.querySelector('.latest-message');
                     latestMessageDiv.textContent = message.msgContent;
                 }
@@ -316,7 +351,38 @@ const message = {
             .catch(error => console.error('Error loading chat details:', error));
     },
 
+    getFormattedTimestamp: function (dataString) {
+        const now = new Date(dataString);
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        const milliseconds = String(now.getMilliseconds()).padStart(3, '0');
+
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}`;
+    },
+
+
+    getFormattedCurrentTimestamp: function () {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        const milliseconds = String(now.getMilliseconds()).padStart(3, '0');
+
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}`;
+    },
+
     loadMessages: function (chatRoomNo) {
+        const beforeTimestamp = this.lastTimestamp
+            ? this.getFormattedTimestamp(this.lastTimestamp)
+            : this.getFormattedCurrentTimestamp();
+
         fetch(`/api/chat/rooms/${chatRoomNo}/access/v1`, {
             method: "POST"
         })
@@ -333,9 +399,8 @@ const message = {
                 if (!response.ok) {
                     return response.text();
                 } else {
-                    return response.json()
+                    return response.json();
                 }
-
             })
             .then(messages => {
                 document.querySelector(".mid-intro").style.display = "none";
@@ -348,7 +413,15 @@ const message = {
                     const messageElement = this.createMessageElement(msg);
                     chatWindow.appendChild(messageElement);
                 });
+
                 chatWindow.scrollTop = chatWindow.scrollHeight;
+
+                if (messages.length > 0) {
+                    // 배열의 마지막 요소에서 타임스탬프를 저장
+                    this.lastTimestamp = messages[0].msgDt;
+                } else {
+                    this.lastTimestamp = null; // 메시지가 없을 경우
+                }
 
                 const chatRoomElement = document.querySelector(`.msg-room[data-chat-id="${chatRoomNo}"]`);
                 if (chatRoomElement) {
@@ -448,7 +521,6 @@ const message = {
             this.stompClient.send("/app/chat", {}, JSON.stringify(chatMessage));
             chatInput.value = '';
 
-            // 최신 메시지 업데이트
             const chatRoomElement = document.querySelector(`.msg-room[data-chat-id="${this.currentChatRoomNo}"]`);
             if (chatRoomElement) {
                 this.updateChatRoomLatestMessage(this.currentChatRoomNo, messageContent);
@@ -462,7 +534,6 @@ const message = {
         const chatWindow = document.getElementById("chatMessages");
         const messageElement = this.createMessageElement(message);
         chatWindow.appendChild(messageElement);
-        console.log()
         chatWindow.scrollTop = chatWindow.scrollHeight;
     },
 
@@ -476,5 +547,5 @@ const message = {
 
 document.addEventListener("DOMContentLoaded", () => {
     message.init();
-    this.sendRoomUpdate();
+    message.sendRoomUpdate();
 });

@@ -21,6 +21,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -62,7 +63,7 @@ public class ChatApiController {
     }
 
     /**
-     * 메시지 가져오기
+     * 최신 메시지 50개 가져오기
      * 배영욱 (24. 05. 26)
      * @param chatRoomNo
      * @param authentication
@@ -71,28 +72,38 @@ public class ChatApiController {
     @GetMapping("/rooms/{chatRoomNo}/messages/v1")
     public List<ChatMessageDto> getMessages(@PathVariable Integer chatRoomNo, Authentication authentication) {
         EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
-        return chatService.getMessages(chatRoomNo, userDetails.getEmpNo());
+        return chatService.getLoadMessages(chatRoomNo, userDetails.getEmpNo());
     }
 
     /**
-     * 메시지 가져오기
+     * 스크롤이 상단에 닿았을 시 이전 메시지 50개 가져오기
      * 배영욱 (24. 06. 05)
      * @param chatRoomNo
+     * @param beforeTimestamp
      * @param authentication
      * @return
      */
     @GetMapping("/rooms/{chatRoomNo}/messages/v2")
     public List<ChatMessageDto> getMessages(@PathVariable Integer chatRoomNo,
-                                            @RequestParam("beforeTimestamp") Timestamp beforeTimestamp,
-                                            @RequestParam("offset") int offset,
+                                            @RequestParam(value = "beforeTimestamp", required = false) String beforeTimestamp,
                                             Authentication authentication) {
         EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
-        log.info("beforeTimestamp: {}", beforeTimestamp);
-        log.info("offset: {}", offset);
-        return chatService.getMessages(chatRoomNo, beforeTimestamp, offset ,userDetails.getEmpNo());
+
+        if (beforeTimestamp == null) {
+            beforeTimestamp = String.valueOf(new Timestamp(Instant.now().toEpochMilli()));
+        }
+
+        return chatService.getMoreMessages(chatRoomNo, Timestamp.valueOf(beforeTimestamp), userDetails.getEmpNo());
     }
 
 
+    /**
+     * 최신 메시지 1개 가져오기
+     * 배영욱 (24. 06. 05)
+     * @param chatRoomNo
+     * @param authentication
+     * @return
+     */
     @GetMapping("/rooms/{chatRoomNo}/regentMessage/v1")
     public ChatMessageDto getRentMsg(@PathVariable Integer chatRoomNo, Authentication authentication) {
         EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
@@ -334,6 +345,13 @@ public class ChatApiController {
         return ResponseEntity.ok(lastAccessTime);
     }
 
+    /**
+     * 안 읽은 메시지 개수 계산하여 반환
+     * 배영욱 (24. 05. 30)
+     * @param chatRoomNo
+     * @param authentication
+     * @return
+     */
     @GetMapping("/rooms/{chatRoomNo}/unreadMessages/v1")
     public ResponseEntity<List<ChatMessageDto>> getUnreadMessages(@PathVariable Integer chatRoomNo, Authentication authentication) {
         EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();

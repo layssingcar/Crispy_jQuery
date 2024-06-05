@@ -20,10 +20,10 @@ public interface ChatMapper {
     ChatRoomDto getChatRoom(@Param("chatRoomNo") Integer chatRoomNo);
 
     // 채팅방 내에 메시지 목록
-    List<ChatMessageDto> getMessages(@Param("chatRoomNo") Integer chatRoomNo, @Param("empNo") Integer empNo);
+    List<ChatMessageDto> getLoadMessages(@Param("chatRoomNo") Integer chatRoomNo, @Param("empNo") Integer empNo);
 
-    List<ChatMessageDto> getMessages(@Param("chatRoomNo") Integer chatRoomNo, @Param("beforeTimeStamp") Timestamp beforeTimeStamp,
-                                     @Param("offset") int offset, @Param("empNo") Integer empNo);
+    List<ChatMessageDto> getMoreMessages(@Param("chatRoomNo") Integer chatRoomNo, @Param("beforeTimeStamp") Timestamp beforeTimeStamp,
+                                     @Param("empNo") Integer empNo);
     // 최신 메시지 내용
     ChatMessageDto getRegentMsg(@Param("chatRoomNo") Integer chatRoomNo, @Param("empNo") Integer empNo);
 
