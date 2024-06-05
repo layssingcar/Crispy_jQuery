@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class CalendarDto {
-	private int commentNo;
-	private String commentContent;
-	private Timestamp cmtCreateDt;
-	private Timestamp cmtModifyDt;
+	private String trashType;
+	private String trashTitle;
+	private String trashContent;
+	private String trashDt;
 }
