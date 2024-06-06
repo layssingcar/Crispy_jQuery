@@ -79,8 +79,8 @@ document.addEventListener("DOMContentLoaded", function () {
     // 기안일 출력
     const today = new Date();
     const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const date = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const date = String(today.getDate()).padStart(2, "0");
     const formattedDate = `${year}년 ${month}월 ${date}일`;
     document.querySelector("#appr-dt").innerHTML = formattedDate;
 

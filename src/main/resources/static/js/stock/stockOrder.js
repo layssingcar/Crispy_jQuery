@@ -11,7 +11,7 @@ const sumCostFn = () => {
             const regExp = /^[0-9]+$/;
             if (!regExp.test(inpValue)) stockCount.value = inpValue.slice(0, -1);
 
-            const price = stock.querySelector(".test-price").innerText.replace(/,/g, '');
+            const price = stock.querySelector(".test-price").innerText.replace(/,/g, "");
             const count = stockCount.value;
             const cost = price * count;
 
@@ -28,18 +28,18 @@ const sumOrderCostFn = () => {
     let orderCost = 0;  // 합계금액
 
     stockOrderCost.forEach(cost => {
-        orderCost += parseInt(cost.value === '' ? 0 : parseInt(cost.value));
+        orderCost += parseInt(cost.value === "" ? 0 : parseInt(cost.value));
         document.querySelector("#order-cost").innerText = orderCost.toLocaleString();
     })
 }
 
 // 발주 재고 임시저장
-const checkOrderTempFn = async () => {
-    const response = await fetch ("/crispy/ckeck-order-temp");
+const stockOrderTempFn = async () => {
+    const response = await fetch ("/crispy/check-order-temp");
     const result = await response.text();
 
     if (result > 0)
-        if (!confirm("임시저장된 내용이 이미 존재합니다. 덮어씌울까요?")) return;
+        if (!confirm("임시저장된 내용이 이미 존재합니다. 기존의 내용을 지우고 새로 저장하시겠습니까?")) return;
 
     const formData = new FormData(document.querySelector("#form-container"));
 
@@ -55,9 +55,7 @@ const checkOrderTempFn = async () => {
 }
 
 // 임시저장 버튼
-document.querySelector("#temp").addEventListener("click", () => {
-    checkOrderTempFn();
-})
+document.querySelector("#temp").addEventListener("click", stockOrderTempFn)
 
 // 임시저장 내용 불러오기
 const getOrderTempFn = async () => {
