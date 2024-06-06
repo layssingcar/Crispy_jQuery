@@ -50,12 +50,19 @@
 /* 프로필 이미지 hover */
 .employee-profile-form .profile-img:hover {filter: brightness(50%);}
 .employee-profile-form .profile-img:hover + .update-img {display: block;}
-
+.employee-profile-form .profile-img:hover + .update-img-detail {display: block;}
 /* 프로필 이미지 변경 텍스트 */
 .employee-profile-form .update-img {
     display: none;
     position: absolute;
-    top: 26%;
+    top: 22%;
+    color: #fff;
+}
+
+.employee-profile-form .update-img-detail {
+    display: none;
+    position: absolute;
+    top: 17%;
     color: #fff;
 }
 

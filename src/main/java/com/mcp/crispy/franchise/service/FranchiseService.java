@@ -1,6 +1,7 @@
 package com.mcp.crispy.franchise.service;
 
 import com.mcp.crispy.common.ImageService;
+import com.mcp.crispy.common.page.PageResponse;
 import com.mcp.crispy.employee.dto.OwnerRegisterDto;
 import com.mcp.crispy.employee.service.EmployeeService;
 import com.mcp.crispy.employee.service.OwnerService;
@@ -11,6 +12,7 @@ import com.mcp.crispy.franchise.dto.FrnUpdateDto;
 import com.mcp.crispy.franchise.mapper.FranchiseMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -151,10 +153,6 @@ public class FranchiseService {
         return !end.isAfter(start);
     }
 
-    public List<FranchiseDto> getFranchiseList() {
-        return franchiseMapper.getFranchiseList();
-    }
-
     public FranchiseDto getFrnDetailsByFrnNo(Integer frnNo) {
         return franchiseMapper.findFrnDetailsByFrnNo(frnNo)
                 .orElseThrow(() -> new IllegalArgumentException("해당 가맹점이 존재하지 않습니다."));
@@ -183,5 +181,32 @@ public class FranchiseService {
     public void removeFranchises(List<Integer> frnNos) {
         log.info("선택된 가맹점: {}", frnNos);
         franchiseMapper.deleteFranchises(frnNos);
+    }
+
+    // 가맹점 페이징
+    public PageResponse<FranchiseDto> getFranchiseList(int page, int limit) {
+
+        int totalCount = franchiseMapper.getFrnCount();
+        log.info("totalCount: {}", totalCount);
+        // 전체 페이지 수
+        int totalPage = totalCount / limit + ((totalCount % limit > 0) ? 1 : 0);
+        // 현재 페이지 번호
+        int startPage = ((page - 1) / limit) * limit + 1;
+        int endPage = Math.min(startPage + limit - 1, totalPage);
+
+        /*
+         * 조회 범위
+         *  - offset: 조회를 시작할 행의 인덱스
+         *  - limit: 조회할 행의 개수
+         */
+        RowBounds rowBounds = new RowBounds(limit * (page - 1), limit);
+
+        // 재고 항목 리스트
+        List<FranchiseDto> items = franchiseMapper.getFranchiseList(rowBounds);
+        log.info("items: {}", items.size());
+
+        // PageResponse 객체
+        return new PageResponse<>(items, totalPage, startPage, endPage, page, page - 1, page + 1);
+
     }
 }

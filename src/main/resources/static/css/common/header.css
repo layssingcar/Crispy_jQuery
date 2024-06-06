@@ -20,6 +20,7 @@ header {
 
 .nav-profile-ui {
 	display: flex;
+	position: relative;
 }
 
 .nav-welcome {
@@ -93,7 +94,7 @@ header {
 	display: none; /* 초기에 드롭다운 숨김 */
 	position: absolute; /* 절대 위치 지정 */
 	top: 100%;
-	right: 0; /* 오른쪽 정렬 */
+	left: 0;
 	z-index: 1000; /* 다른 요소 위에 오도록 z-index 설정 */
 	background-color: #fff; /* 배경색 설정 */
 	border-radius: 5px; /* 테두리 둥글게 설정 */
@@ -105,7 +106,7 @@ header {
 	display: none; /* 초기에 드롭다운 숨김 */
 	position: absolute; /* 절대 위치 지정 */
 	top: 100%;
-	right: 70px; /* 오른쪽 정렬 */
+	left: 0;
 	z-index: 1000; /* 다른 요소 위에 오도록 z-index 설정 */
 	background-color: #fff; /* 배경색 설정 */
 	border-radius: 5px; /* 테두리 둥글게 설정 */
@@ -130,9 +131,9 @@ header {
 }
 
 .notification-badge {
-	position: absolute;
-	top: 4px;
-	right: 50px;
+	position: relative;
+	top: -7px;
+	right: 20px;
 	padding: 2px 6px;
 	border-radius: 50%;
 	background-color: red;

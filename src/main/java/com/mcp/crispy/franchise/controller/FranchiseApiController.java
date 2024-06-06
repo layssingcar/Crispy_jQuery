@@ -1,5 +1,6 @@
 package com.mcp.crispy.franchise.controller;
 
+import com.mcp.crispy.common.page.PageResponse;
 import com.mcp.crispy.common.utils.FranchiseUtil;
 import com.mcp.crispy.franchise.dto.*;
 import com.mcp.crispy.franchise.service.FranchiseService;
@@ -117,8 +118,8 @@ public class FranchiseApiController {
     }
 
     @GetMapping("/franchises/v1")
-    public ResponseEntity<?> getFranchises() {
-        List<FranchiseDto> franchiseList = franchiseService.getFranchiseList();
+    public ResponseEntity<PageResponse<FranchiseDto>> getFranchises(@RequestParam(value ="page", defaultValue = "1")int page) {
+        PageResponse<FranchiseDto> franchiseList = franchiseService.getFranchiseList(page, 10);
         return ResponseEntity.ok(franchiseList);
     }
 

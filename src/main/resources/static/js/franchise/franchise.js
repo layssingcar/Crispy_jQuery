@@ -8,7 +8,6 @@ const franchise = {
         this.bindEvents();
         const frnNo = sessionStorage.getItem("selectedFrnNo")
         if (frnNo) {
-            console.log("Fetching franchise data for frnNo:", frnNo);
             fetch(`/api/franchise/${frnNo}/v1`)
                 .then(response => response.json())
                 .then(data => {
@@ -81,7 +80,6 @@ const franchise = {
         buttons.forEach(pair => {
             const editButton = document.querySelector(pair.edit);
             const changeButton = document.querySelector(pair.change);
-            console.log(editButton, changeButton); // 확인용 로그
             if (editButton) editButton.style.display = editMode ? 'none' : 'inline-block';
             if (changeButton) changeButton.style.display = editMode ? 'none' : 'none';
         });
@@ -246,13 +244,9 @@ const franchise = {
 
     displayValidationErrors: function (errors) {
         Object.keys(errors).forEach(field => {
-            console.log(errors[field])
-            console.log(`.${field}-error`)
-            console.log(`.${field}`)
             const errorContainer = document.querySelector(`.${field}-error`);
             const inputElement = document.querySelector(`.${field}`);
             if (errorContainer) {
-                console.log(errorContainer);
                 errorContainer.textContent = errors[field];
                 errorContainer.style.display = 'block';
                 inputElement.focus();
@@ -400,10 +394,7 @@ const franchise = {
 
     updateFranchiseProfile: function(frn) {
     const frnJoinDt = this.formatDate(frn.frnJoinDt);
-    console.log(frnJoinDt)
-    console.log("Updating profile with data:", frn);
     document.querySelector('.frn-img').src = frn.frnImg || '';
-    console.log(document.querySelector('.frn-img').value)
     document.querySelector('.frnNo').value = frn.frnNo || '';
     document.querySelector(".empNo").value = frn.empNo || '';
     document.querySelector('.frnName').value = frn.frnName || '';
@@ -431,7 +422,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const isOwner = document.getElementById("isOwner").value;
 
     if(frnNo && isOwner === 'true') {
-        console.log("스토리지 호출 되는지?");
         sessionStorage.removeItem('selectedFrnNo');
     }
     franchise.init();

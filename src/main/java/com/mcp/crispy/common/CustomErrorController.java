@@ -24,6 +24,8 @@ public class CustomErrorController implements ErrorController {
             } else if (statusCode == 401) {
                 response.sendRedirect("/crispy/login");
                 return null;
+            } else if (statusCode == 500) {
+                return "error/500";
             }
         }
         return "error/error";

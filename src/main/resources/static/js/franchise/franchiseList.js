@@ -1,9 +1,25 @@
 const franchiseList = {
+    currentPage: 1,
+    pageSize: 10,
+
     init: function() {
+        this.loadCurrentPage()
         this.bindEvents();
-        this.loadFrnData();
+        this.loadFrnData(this.currentPage, this.pageSize);
+        this.clearCurrentPage();
         this.clearSelectedEmpNo();
         this.searchAction();
+    },
+
+    loadCurrentPage: function () {
+        const savedPage = sessionStorage.getItem("currentPage");
+        if (savedPage) {
+            this.currentPage = savedPage;
+        }
+    },
+
+    saveCurrentPage: function () {
+        sessionStorage.setItem("currentPage", this.currentPage);
     },
 
     bindEvents: function() {
@@ -11,27 +27,49 @@ const franchiseList = {
         const deleteSelectedButton = document.querySelector('.btn-delete-selected');
 
         if (selectAllCheckbox) {
-            selectAllCheckbox.addEventListener("change", this.toggleSelectAll.bind(franchiseList));
+            selectAllCheckbox.addEventListener("change", franchiseList.toggleSelectAll.bind(this));
         }
         if (deleteSelectedButton) {
             deleteSelectedButton.addEventListener("click", this.confirmDeleteSelectedFrns.bind(this))
         }
-    },
 
+        // 페이지네이션 이벤트 바인딩
+        const paginationLinks = document.querySelectorAll('.pagination .page-link');
+        paginationLinks.forEach(link => {
+            link.addEventListener('click', this.handlePageChange.bind(this));
+        });
+    },
     toggleSelectAll: function(event) {
         const isChecked = event.target.checked;
-        console.log(isChecked);
         const checkboxes = document.querySelectorAll('input[name=frnCheckbox]');
         checkboxes.forEach((checkbox) => {
             checkbox.checked = isChecked;
-            console.log(checkbox.value);
         })
     },
 
-    loadFrnData: function() {
-        fetch(`/api/franchise/franchises/v1`)
+    handlePageChange: function(event) {
+        event.preventDefault();
+        const page = event.target.dataset.page;
+
+        if (page === "prev") {
+            this.currentPage = Math.max(0, this.currentPage - 1);
+        } else if (page === "next") {
+            this.currentPage += 1;
+        } else {
+            this.currentPage = parseInt(page);
+        }
+
+        this.saveCurrentPage();
+        this.loadFrnData(this.currentPage, this.pageSize);
+    },
+
+    loadFrnData: function(page, size) {
+        fetch(`/api/franchise/franchises/v1?page=${page}&size=${size}`)
             .then(response => response.json())
-            .then(data => this.renderFrnTable(data))
+            .then(data => {
+                this.renderFrnTable(data.items);
+                this.updatePagination(data);
+            })
             .catch(error => console.error('Error loading franchise data:', error));
     },
 
@@ -48,7 +86,7 @@ const franchiseList = {
     },
 
     appendFranchiseRow: function(tr, franchise) {
-        const frnJoinDt = formatDate(franchise.frnJoinDt)
+        const frnJoinDt = formatDate(franchise.frnJoinDt);
         tr.appendChild(this.createCell('checkbox', franchise.frnNo));
         tr.appendChild(this.createCell('text', franchise.frnName));
         tr.appendChild(this.createCell('text', franchise.frnOwner));
@@ -65,10 +103,6 @@ const franchiseList = {
             checkbox.type = 'checkbox';
             checkbox.name = 'frnCheckbox';
             checkbox.id = value;
-            console.log(checkbox)
-            checkbox.addEventListener('change', function() {
-                console.log(this.checked ? 'Checked' : 'Unchecked', 'Checkbox ID:', this.id);
-            });
             td.appendChild(checkbox);
         } else {
             td.textContent = value;
@@ -131,7 +165,6 @@ const franchiseList = {
 
     editFranchise: function(frnNo) {
         if (frnNo) {
-            console.log('Edit Franchise:', frnNo);
             sessionStorage.setItem('selectedFrnNo', frnNo);
             window.location.href = '/crispy/franchise';
         } else {
@@ -140,32 +173,29 @@ const franchiseList = {
     },
 
     deleteFranchise: function(frnNo) {
-        console.log('Delete Franchise:', frnNo);
         fetch(`/api/franchise/${frnNo}/v1`, {
             method: 'DELETE',
             headers: {'Content-Type': 'application/json'},
         }).then(response => {
             if (response.ok) {
-                alert("삭제되었습니다.")
-                this.loadFrnData();
+                alert("삭제되었습니다.");
+                this.loadFrnData(this.currentPage, this.pageSize);
             } else {
                 return response.json().then(data => {
                     throw new Error(data.message);
-                })
+                });
             }
         }).catch(error => {
-            console.log(error);
             alert("삭제 중 오류가 발생했습니다.");
-        })
+        });
     },
+
     deleteSelectedFrns: function () {
         const checkboxes = document.querySelectorAll('input[name="frnCheckbox"]:checked');
-        console.log(checkboxes.length)
         const frnNos = Array.from(checkboxes)
             .map(checkbox => checkbox.id)
             .filter(frnNo => frnNo.trim() !== "");
-        console.log(frnNos);
-        if(frnNos.length === 0) {
+        if (frnNos.length === 0) {
             alert("삭제할 가맹점을 선택해주세요.");
             return;
         }
@@ -177,16 +207,19 @@ const franchiseList = {
         }).then(response => {
             if (response.ok) {
                 alert("삭제되었습니다.");
-                this.loadFrnData();
+                this.loadFrnData(this.currentPage, this.pageSize);
             } else {
                 return response.json().then(data => {
                     throw new Error(data.message);
                 });
             }
         }).catch(error => {
-            console.log(error);
             alert("삭제 중 오류가 발생했습니다.");
-        })
+        });
+    },
+
+    clearCurrentPage: function () {
+        sessionStorage.removeItem('currentPage');
     },
 
     clearSelectedEmpNo: function() {
@@ -199,6 +232,68 @@ const franchiseList = {
         searchInput?.addEventListener('input', function() {
             searchIcon.style.display = searchInput.value.trim() !== '' ? 'none' : 'inline';
         });
+    },
+
+    updatePagination: function(data) {
+        const paginationContainer = document.querySelector('.pagination');
+        paginationContainer.innerHTML = ''; // Clear existing pagination
+
+        // 이전 페이지
+        const prevPageItem = document.createElement('li');
+        prevPageItem.classList.add('page-item');
+        if (data.prevPage > 0) {
+            const prevPageLink = document.createElement('a');
+            prevPageLink.classList.add('page-link');
+            prevPageLink.href = '#';
+            prevPageLink.dataset.page = 'prev';
+            prevPageLink.textContent = '<<';
+            prevPageLink.addEventListener('click', this.handlePageChange.bind(this));
+            prevPageItem.appendChild(prevPageLink);
+        } else {
+            prevPageItem.classList.add('disabled');
+            const prevPageSpan = document.createElement('span');
+            prevPageSpan.classList.add('page-link');
+            prevPageSpan.textContent = '<<';
+            prevPageItem.appendChild(prevPageSpan);
+        }
+        paginationContainer.appendChild(prevPageItem);
+
+        for (let i = data.startPage; i <= data.endPage; i++) {
+
+            const pageItem = document.createElement('li');
+            pageItem.classList.add('page-item');
+            if (i === data.currentPage) {
+                pageItem.classList.add('active');
+            }
+            const pageLink = document.createElement('a');
+            pageLink.classList.add('page-link');
+            pageLink.href = '#';
+            pageLink.dataset.page = i;
+            pageLink.textContent = i;
+            pageLink.addEventListener('click', this.handlePageChange.bind(this));
+            pageItem.appendChild(pageLink);
+            paginationContainer.appendChild(pageItem);
+        }
+
+        // 다음 페이지
+        const nextPageItem = document.createElement('li');
+        nextPageItem.classList.add('page-item');
+        if (data.currentPage < data.endPage) {
+            const nextPageLink = document.createElement('a');
+            nextPageLink.classList.add('page-link');
+            nextPageLink.href = '#';
+            nextPageLink.dataset.page = 'next';
+            nextPageLink.textContent = '>>';
+            nextPageLink.addEventListener('click', this.handlePageChange.bind(this));
+            nextPageItem.appendChild(nextPageLink);
+        } else {
+            nextPageItem.classList.add('disabled');
+            const nextPageSpan = document.createElement('span');
+            nextPageSpan.classList.add('page-link');
+            nextPageSpan.textContent = '>>';
+            nextPageItem.appendChild(nextPageSpan);
+        }
+        paginationContainer.appendChild(nextPageItem);
     }
 };
 

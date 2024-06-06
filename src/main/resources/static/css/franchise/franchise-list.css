@@ -133,5 +133,24 @@
     font-size: 15px;
 }
 
+.franchise-list .top-area div:nth-child(1) {
+    display: flex;
+    width: 100%;
+}
 
+.franchise-list .frnBtn {
+    width: 100px;
+    font-size: 1.5rem;
+    line-height: 35px;
+    border-radius: 15px;
+    background-color: var(--main-color);
+    color: #fff;
+}
 
+.franchise-list .top-area button {
+    width: 100px;
+    margin-left: 15px;
+    border-radius: 15px;
+    border: 0;
+    background-color: var(--sub-color) !important;
+}

@@ -103,8 +103,13 @@ public class OwnerService {
     }
 
     // 특정 가맹점에 속하는 직원 목록 조회
-    public List<EmployeeDto> getEmployeesByFrnNo(int frnNo) {
-        List<EmployeeDto> employeeByFranchise = employeeMapper.findEmployeeByFranchise(frnNo);
+    public List<EmployeeDto> getEmployeesByFrnNo(int frnNo, Integer empStat, Integer position) {
+
+        EmpStatus status = empStat != null ? EmpStatus.of(empStat) : null;
+        Position pos = position != null ? Position.of(position) : null;
+
+        List<EmployeeDto> employeeByFranchise = ownerMapper.findEmployeeByFranchise(frnNo, status, pos);
+        log.info("employeeByFranchise: {}", employeeByFranchise);
         if(employeeByFranchise.isEmpty()) {
             throw new EmployeeNotFoundException("error", "아직 등록된 사원이 없습니다.");
         }

@@ -33,12 +33,13 @@
                             </div>
                             <form class="frn-profile-form" method="post" autocomplete="off">
                                 <div class="info-wrap">
-                                    <input type="hidden" th:value="${owner.frnNo != null ? owner.frnNo : ''}" class="frnNo">
-                                    <input type="hidden" th:value="${owner.empNo != null ? owner.empNo: ''}" class="empNo">
+                                    <input type="hidden" th:value="${owner.frnNo}" class="frnNo">
+                                    <input type="hidden" th:value="${owner.empNo}" class="empNo">
                                     <div class="frn-modify-btn">
                                         <div>
                                             <label for="frn-frnName" class="form-label">가맹점 이름</label>
-                                            <input type="text" id="frn-frnName" name="frnName" class="form-control frnName" placeholder="가맹점 이름" autocomplete="on" th:value="${owner.frnName != null ? owner.frnName : ''}">
+                                            <input type="text" id="frn-frnName" name="frnName" class="form-control frnName"
+                                                   placeholder="가맹점 이름" autocomplete="on" th:value="${owner.frnName}">
                                             <div class="error-message" id="frnName-error" style="display: none;"></div>
                                         </div>
                                         <div sec:authorize="hasRole('ROLE_ADMIN')">
@@ -49,7 +50,8 @@
                                     <div class="frn-modify-btn">
                                         <div>
                                             <label for="frn-frnOwner" class="form-label">대표자</label>
-                                            <input type="text" id="frn-frnOwner" name="frnOwner" class="form-control frnOwner" placeholder="성함을 입력하세요." autocomplete="on" th:value="${owner.frnOwner != null ? owner.frnOwner : ''}">
+                                            <input type="text" id="frn-frnOwner" name="frnOwner" class="form-control frnOwner"
+                                                   placeholder="성함을 입력하세요." autocomplete="on" th:value="${owner.frnOwner}">
                                             <div class="error-message frnOwner-error" id="frnOwner-error" style="display: none;"></div>
                                         </div>
                                         <button type="button" id="btn-edit-frnOwner">수정</button>
@@ -58,7 +60,8 @@
                                     <div class="frn-modify-btn">
                                         <div>
                                             <label for="frn-frnTel" class="form-label">전화번호</label>
-                                            <input type="text" class="form-control frnTel" id="frn-frnTel" name="frnTel" placeholder="- 제외하고 입력해주세요." th:value="${owner.frnTel != null ? owner.frnTel : ''}">
+                                            <input type="text" class="form-control frnTel" id="frn-frnTel" name="frnTel"
+                                                   placeholder="- 제외하고 입력해주세요." th:value="${owner.frnTel}">
                                             <div class="error-message frnTel-error" id="frnTel-error" style="display: none;"></div>
                                         </div>
                                         <div sec:authorize="hasRole('ROLE_ADMIN')">
@@ -71,14 +74,17 @@
                                             <label class="form-label">주소</label>
                                             <div>
                                                 <div class="d-flex">
-                                                    <input type="text" id="frn-frnZip" name="frnZip" class="form-control zipcode mb-2" placeholder="우편번호" th:value="${owner.frnZip != null ? owner.frnZip : ''}">
+                                                    <input type="text" id="frn-frnZip" name="frnZip" class="form-control zipcode mb-2"
+                                                           placeholder="우편번호" th:value="${owner.frnZip}">
                                                     <div sec:authorize="hasRole('ROLE_ADMIN')">
                                                         <button type="button" class="mt-0 search-address" onclick="execPostCode(false)">주소 찾기</button>
                                                     </div>
                                                 </div>
-                                                <input type="text" id="frn-frnStreet" name="frnStreet" class="form-control frnStreet street-address mb-2" placeholder="도로명주소" th:value="${owner.frnStreet != null ? owner.frnStreet : ''}">
+                                                <input type="text" id="frn-frnStreet" name="frnStreet" class="form-control frnStreet street-address mb-2"
+                                                       placeholder="도로명주소" th:value="${owner.frnStreet}">
                                                 <div class="detail-wrap">
-                                                    <input type="text" id="frn-frnDetail" name="frnDetail" class="form-control detail-address mb-2" placeholder="상세주소" th:value="${owner.frnDetail != null ? owner.frnDetail : ''}">
+                                                    <input type="text" id="frn-frnDetail" name="frnDetail" class="form-control detail-address mb-2"
+                                                           placeholder="상세주소" th:value="${owner.frnDetail}">
                                                 </div>
                                                 <div class="error-message frnZip-error" style="display: none;"></div>
                                                 <div class="error-message frnStreet-error" style="display: none;"></div>
@@ -92,15 +98,18 @@
                                     <div class="frn-modify-btn mt-0">
                                         <div>
                                             <label for="signup-empInDt" class="form-label">가맹일</label>
-                                            <input type="date" class="form-control empInDt" id="signup-empInDt" placeholder="연도. 월. 일." th:value="${owner.frnJoinDt != null ? #temporals.format(owner.frnJoinDt.toLocalDate(), 'yyyy. MM. dd') : ''}" disabled>
+                                            <input type="date" class="form-control empInDt" id="signup-empInDt" placeholder="연도. 월. 일."
+                                                   th:value="${#temporals.format(owner.frnJoinDt, 'yyyy-MM-dd')}" disabled>
                                         </div>
                                     </div>
                                     <div class="frn-modify-btn mt-0">
                                         <div>
                                             <label class="form-label mt-3">운영시간</label>
                                             <div class="operating-time">
-                                                <input type="text" class="form-control frnStartTime me-3" name="frnStartTime" placeholder="시작 시간" th:value="${owner.frnStartTime != null ? owner.frnStartTime : ''}"> ~
-                                                <input type="text" class="form-control frnEndTime ms-3" name="frnEndTime" placeholder="종료 시간" th:value="${owner.frnEndTime != null ? owner.frnEndTime : ''}">
+                                                <input type="text" class="form-control frnStartTime me-3" name="frnStartTime"
+                                                       placeholder="시작 시간" th:value="${owner.frnStartTime}"> ~
+                                                <input type="text" class="form-control frnEndTime ms-3" name="frnEndTime"
+                                                       placeholder="종료 시간" th:value="${owner.frnEndTime}">
                                             </div>
                                         </div>
                                         <button type="button" id="btn-edit-operating-time">수정</button>

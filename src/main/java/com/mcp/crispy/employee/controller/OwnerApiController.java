@@ -54,12 +54,15 @@ public class OwnerApiController {
     }
 
     @GetMapping("/employees/{frnNo}/v1")
-    public ResponseEntity<?> getAllEmployees(@PathVariable int frnNo) {
+    public ResponseEntity<?> getAllEmployees(@PathVariable int frnNo,
+                                             @RequestParam(required = false) Integer empStat,
+                                             @RequestParam(required = false) Integer position) {
         try {
-            List<EmployeeDto> employees = ownerService.getEmployeesByFrnNo(frnNo);
+            log.info("getAllEmployees: {} {} {}", frnNo, position, empStat);
+            List<EmployeeDto> employees = ownerService.getEmployeesByFrnNo(frnNo, empStat, position);
             return ResponseEntity.ok(employees);
         } catch (EmployeeNotFoundException e) {
-            // 여기서 클라이언트에 적절한 에러 메시지와 함께 응답을 반환합니다.
+            // 여기서 클라이언트에 적절한 에러 메시지와 함께 응2답을 반환합니다.
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
