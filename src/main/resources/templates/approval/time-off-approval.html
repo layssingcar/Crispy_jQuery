@@ -18,10 +18,10 @@
 					<div class="top-area">
 
                         <!-- 문서 선택 -->
-                        <select class="form-select form-select-lg mb-3 m-left" aria-label="Large select example" name="stockCt" id="">
+                        <select class="form-select form-select-lg mb-3 m-left" aria-label="Large select example" name="timeOffCt" id="time-off-ct">
                             <option value="">문서 선택</option>
-                            <option value="">휴가신청서</option>
-                            <option value="">휴직신청서</option>
+                            <option value="0">휴가신청서</option>
+                            <option value="1">휴직신청서</option>
                         </select>
 
                         <!-- 임시저장 내용 불러오기 -->
@@ -30,7 +30,7 @@
 
                     <!-- 문서 작성 form -->
                     <form method="post">
-                        <div th:replace="~{document/leave-of-absence-req :: leave-of-absence-req}"></div>
+                        <div id="time-off-doc" th:replace="~{document/vacation-req :: vacation-req}"></div>
 
                         <!-- 하단 버튼 -->
                         <div class="bottom-btn">

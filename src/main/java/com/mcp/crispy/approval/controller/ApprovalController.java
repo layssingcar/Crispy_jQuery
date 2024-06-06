@@ -29,6 +29,27 @@ public class ApprovalController {
 	}
 
 	/**
+	 * 문서 양식 변경
+	 * 우혜진 (24. 06. 06.)
+	 *
+	 * @param timeOffCtNo
+	 * @return
+	 */
+	@GetMapping("change-time-off-ct")
+	public String changeTimeOffCt(@RequestParam("timeOffCtNo") int timeOffCtNo) {
+
+		String path = null;
+
+		switch (timeOffCtNo) {
+			case 0: path = "document/vacation-req :: vacation-req"; break;
+			case 1: path = "document/leave-of-absence-req :: leave-of-absence-req"; break;
+		}
+
+		return path;
+
+	}
+
+	/**
 	 * 직원 정보 조회
 	 * 우혜진 (24. 06. 05.)
 	 *

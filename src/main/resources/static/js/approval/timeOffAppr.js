@@ -1,3 +1,15 @@
+// 문서 양식 변경
+document.querySelector("#time-off-ct").addEventListener("change", e => {
+    if (e.target.value === "") return;
+
+    fetch (`/crispy/change-time-off-ct?timeOffCtNo=${e.target.value}`)
+        .then(response => response.text())
+        .then(html => {
+            document.querySelector("#time-off-doc").outerHTML = html;
+            getEmpInfoFn();
+        })
+})
+
 // 직원 정보 조회
 const getEmpInfoFn = async () => {
     const response = await fetch("/crispy/get-emp-info");
