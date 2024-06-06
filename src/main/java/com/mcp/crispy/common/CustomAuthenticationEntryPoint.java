@@ -21,7 +21,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
         Cookie[] cookies = request.getCookies();
         if (cookies != null && Arrays.stream(cookies).anyMatch(cookie -> "accessToken".equals(cookie.getName()))) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "메롱");
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
         } else {
             response.sendRedirect("/crispy/login"); // 로그인 페이지로 리다이렉트
         }
