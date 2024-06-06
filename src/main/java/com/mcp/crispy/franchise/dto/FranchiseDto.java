@@ -32,6 +32,6 @@ public class FranchiseDto {
     private int modifier;
     private String empId;
     private int empNo;
-
+    private int pageNo;             // 페이지번호
 
 }
