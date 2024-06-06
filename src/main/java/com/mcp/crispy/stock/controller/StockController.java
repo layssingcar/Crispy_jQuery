@@ -123,7 +123,7 @@ public class StockController {
 	 * @param authentication
 	 * @return result
 	 */
-	@GetMapping("ckeck-order-temp")
+	@GetMapping("check-order-temp")
 	public ResponseEntity<?> ckeckOrderTemp(Authentication authentication) {
 		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
 		return ResponseEntity.ok(stockService.checkOrderTemp(userDetails.getEmpNo()));

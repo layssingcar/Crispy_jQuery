@@ -61,7 +61,7 @@ btnClose.addEventListener("click", () =>
 const addPageLinkEventFn = pageNo => {
     const pageLinks = document.querySelectorAll(".page-link"); // 페이지 버튼
 
-    pageLinks.forEach((pageLink) => {
+    pageLinks.forEach(pageLink => {
         pageLink.addEventListener("click", e => {
             e.preventDefault(); // a 태그 기본 동작 방지
 
@@ -165,7 +165,7 @@ document.querySelector("#order").addEventListener("click", () => {
         input.name = "stockNo";
         input.value = stockNo;
         form.append(input);
-    });
+    })
 
     document.querySelector("body").append(form);
     form.submit();

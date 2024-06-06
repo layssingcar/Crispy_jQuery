@@ -60,10 +60,18 @@ button {
 	font-style: normal;
 }
 
-
 .error-message {
 	display: none;
 	color: red;
 	font-size: 1.5rem;
 	white-space: pre-wrap; /* 줄바꿈 적용 */
+}
+
+/* sweetAlert 팝업 */
+.swal2-popup {font-size: 1.5rem;}
+
+/* cancel 버튼 */
+.swal2-cancel {
+	background-color: var(--sub-color) !important;
+	border-color: var(--sub-color) !important;
 }
