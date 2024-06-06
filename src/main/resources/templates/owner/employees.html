@@ -21,10 +21,27 @@
                         <a role="button" href="/crispy/owner/employee/register" class="btn-employee-register">직원 등록</a>
                         <button id="btn-delete-selected">선택 삭제</button>
                     </div>
+                    <div>
+                        <label for="searchRole">직책:</label>
+                        <select id="searchRole">
+                            <option value="">전체</option>
+                            <option value="1">매니저</option>
+                            <option value="2">직원</option>
+                        </select>
+
+                        <label for="searchStatus">상태:</label>
+                        <select id="searchStatus">
+                            <option value="">전체</option>
+                            <option value="0">재직</option>
+                            <option value="1">휴직</option>
+                            <option value="2">퇴직</option>
+                        </select>
+                    </div>
                     <div class="employee-search">
                         <span class="icon"><i class="fa fa-search"></i></span>
                         <input type="search" class="form-control" id="search" placeholder="검색" />
                     </div>
+
                 </div>
                 <table class="table">
                     <thead>
@@ -34,9 +51,15 @@
                         <th scope="col">이름</th>
                         <th scope="col" class="id-column">아이디</th>
                         <th scope="col">지점명</th>
-                        <th scope="col">직책</th>
+                        <th scope="col">
+                            <span>직책</span>
+                            <i class="fa-solid fa-sort" id="stock-name-sort"></i>
+                        </th>
                         <th scope="col">핸드폰번호</th>
-                        <th scope="col">상태</th>
+                        <th scope="col">
+                            <span>상태</span>
+                            <i class="fa-solid fa-sort" id="is-count-sort"></i>
+                        </th>
                         <th scope="col">수정 / 삭제</th>
                     </tr>
                     </thead>

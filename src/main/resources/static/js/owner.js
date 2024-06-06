@@ -12,6 +12,8 @@ const owner = {
         const resetPasswordButton = document.querySelector('.btn-reset-password');
         const selectAllCheckbox = document.querySelector('th input[type=checkbox]');
         const deleteSelectedButton = document.getElementById('btn-delete-selected');
+        const searchRole = document.getElementById('searchRole');
+        const searchStatus = document.getElementById('searchStatus');
 
         if (myProfileElement) {
             myProfileElement.addEventListener('click', this.clearSelectedEmpNo.bind(this));
@@ -25,7 +27,31 @@ const owner = {
         if (deleteSelectedButton) {
             deleteSelectedButton.addEventListener("click", this.confirmDeleteSelectedEmployees.bind(this))
         }
+        if (searchRole) {
+            searchRole.addEventListener("change", this.searchEmployees.bind(this));
+        }
+        if (searchStatus) {
+            searchStatus.addEventListener("change", this.searchEmployees.bind(this));
+        }
     },
+
+    resetSelectConditions: function() {
+        document.getElementById("searchRole").value = "";
+        document.getElementById("searchStatus").value = "";
+    },
+
+    searchEmployees: function () {
+        const position = document.getElementById("searchRole").value;
+        const empStat = document.getElementById("searchStatus").value;
+        const frnNo = document.getElementById("employees-frnNo").value;
+        console.log(frnNo);
+
+        fetch(`/api/owner/employees/${frnNo}/v1?position=${position}&empStat=${empStat}`)
+            .then(response => response.json())
+            .then(data => this.renderEmployeeTable(data))
+            .catch(error => console.error('Error loading employee data:', error));
+    },
+
 
     toggleSelectAll: function(event) {
         const isChecked = event.target.checked;
@@ -79,7 +105,7 @@ const owner = {
         tr.appendChild(this.createCell('text', employee.empId));
         tr.appendChild(this.createCell('text', employee.frnName));
         tr.appendChild(this.createCell('text', employee.posName));
-        tr.appendChild(this.createCell('text', employee.empPhone || 'N/A'));
+        tr.appendChild(this.createCell('text', employee.empPhone));
         tr.appendChild(this.createCell('text', employee.empStat));
         tr.appendChild(this.createActionsCell(employee.empNo));
     },
@@ -225,4 +251,7 @@ const owner = {
 
 document.addEventListener("DOMContentLoaded", function() {
     owner.init();
+});
+window.addEventListener('pageshow', function() {
+    owner.resetSelectConditions();
 });
