@@ -15,6 +15,7 @@ public class ChatMessageDto {
     private Integer msgNo;
     private String msgContent;
     private Date msgDt;
+    private MsgStat msgStat;
     private Date createDt;
     private Integer creator;
     private Date modifyDt;

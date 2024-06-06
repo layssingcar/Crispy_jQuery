@@ -1,9 +1,6 @@
 package com.mcp.crispy.chat.mapper;
 
-import com.mcp.crispy.chat.dto.ChatMessageDto;
-import com.mcp.crispy.chat.dto.ChatRoomDto;
-import com.mcp.crispy.chat.dto.CrEmpDto;
-import com.mcp.crispy.chat.dto.UnreadMessageCountDto;
+import com.mcp.crispy.chat.dto.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -70,5 +67,7 @@ public interface ChatMapper {
     // 안 읽은 메시지 가져오기
     List<ChatMessageDto> getUnreadMessages(@Param("chatRoomNo") Integer chatRoomNo, @Param("empNo") Integer empNo);
 
-    //
+    // 채팅 삭제 ( 비활성화 )
+    void removeMsgStat(@Param("msgStat") MsgStat msgStat, @Param("modifier") Integer modifier,
+                       @Param("msgNo") Integer msgNo);
 }

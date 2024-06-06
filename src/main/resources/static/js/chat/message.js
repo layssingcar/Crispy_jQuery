@@ -9,6 +9,7 @@ const message = {
         this.connect(() => {
             this.setupEventListeners();
             message.fetchChatRooms();
+            this.fetchUnreadCount();
         });
     },
 
@@ -102,10 +103,7 @@ const message = {
             .then(response => response.json())
             .then(messages => {
                 if (messages.length > 0) {
-                    console.log(messages)
                     this.lastTimestamp = messages[0].msgDt;
-                    console.log("현재 라스트 시간은? :", this.lastTimestamp);
-                    console.log(messages[0].msgDt);
                     this.prependMessages(messages);
                 }
                 this.isLoading = false;
@@ -132,6 +130,7 @@ const message = {
     connect: function (callback) {
         const socket = new SockJS('/chat');
         this.stompClient = Stomp.over(socket);
+        this.stompClient.debug = null;
         this.stompClient.connect({}, (frame) => {
             const username = frame.headers['user-name'];
 
@@ -174,10 +173,7 @@ const message = {
 
     fetchChatRooms: function () {
         if (this.stompClient && this.stompClient.connected) {
-            console.log("Sending /app/fetchChatRooms message");
             this.stompClient.send("/app/fetchChatRooms", {}, JSON.stringify({}));
-        } else {
-            console.error("WebSocket is not connected.");
         }
     },
 
@@ -210,15 +206,11 @@ const message = {
     sendRoomUpdate: function () {
         if (message.stompClient && message.stompClient.connected) {
             message.stompClient.send("/app/roomUpdate", {}, JSON.stringify({}));
-            console.log("Sent roomUpdate message");
-        } else {
-            console.error("WebSocket is not connected.");
         }
     },
 
     updateChatRooms: function (chatRooms) {
         if (!Array.isArray(chatRooms)) {
-            console.log(chatRooms);
             chatRooms = [];
         }
 
@@ -226,7 +218,6 @@ const message = {
         if (chatRoomList) {
             chatRoomList.innerHTML = '';
             chatRooms.forEach(chatRoom => {
-                console.log("이건 뭐임?", chatRoom);
                 const chatRoomElement = this.createChatRoomElement(chatRoom);
                 chatRoomList.appendChild(chatRoomElement);
                 this.loadLatestMessage(chatRoom.chatRoomNo, chatRoomElement);
@@ -265,18 +256,37 @@ const message = {
         const chatRoomElement = document.createElement('div');
         chatRoomElement.className = 'msg-room';
         chatRoomElement.dataset.chatId = chatRoom.chatRoomNo;
-        chatRoomElement.innerHTML = `
-            <div class="profile-image">
-                <div><img src="/img/anonymous.png"></div>
-            </div>
-            <div class="temp">
-                <div>${chatRoom.chatRoomTitle}</div>
-                <div class="latest-message">${chatRoom.msgContent}</div>
-            </div>
-            <div class="unread-count-badge"></div>
-        `;
+
+        const profileImgContainer = document.createElement('div');
+        profileImgContainer.className = "profile-image";
+        const profileImg = document.createElement("div");
+        const profileImgTag = document.createElement("img");
+        profileImgTag.src = "/img/anonymous.png";
+        profileImg.appendChild(profileImgTag)
+        profileImgContainer.appendChild(profileImg);
+
+        const sideChatRoom =  document.createElement("div");
+        sideChatRoom.className = "side-chat-room";
+        const titleDiv =document.createElement("div");
+        titleDiv.textContent = chatRoom.chatRoomTitle;
+        const latestMessageDiv = document.createElement("div");
+        latestMessageDiv.className = "latest-message";
+        latestMessageDiv.innerHTML = chatRoom.msgContent ? chatRoom.msgContent.replace(/\n/g, "<br>") : '첫 메시지를 보내보세요!';
+        sideChatRoom.appendChild(titleDiv);
+        sideChatRoom.appendChild(latestMessageDiv);
+
+        const unreadCountBadge = document.createElement('div');
+        unreadCountBadge.className = 'unread-count-badge';
+
+        chatRoomElement.appendChild(profileImgContainer)
+        chatRoomElement.appendChild(sideChatRoom)
+        chatRoomElement.appendChild(unreadCountBadge)
 
         chatRoomElement.addEventListener('click', () => {
+            const chatRooms = document.querySelectorAll('.msg-room');
+            chatRooms.forEach(room => room.classList.remove('active'));
+
+            chatRoomElement.classList.add('active');
             this.currentChatRoomNo = chatRoom.chatRoomNo;
             this.loadMessages(chatRoom.chatRoomNo);
             this.subscribeToParticipants(chatRoom.chatRoomNo);
@@ -300,11 +310,11 @@ const message = {
             .then(message => {
                 if (message) {
                     const latestMessageDiv = chatRoomElement.querySelector('.latest-message');
-                    latestMessageDiv.textContent = message.msgContent;
+                    latestMessageDiv.innerHTML = message.msgContent.replace(/\n/g, "<br>");
                 }
                 this.updateUnreadMessageCounts();
             })
-            .catch(error => console.error('Error loading latest message:', error));
+            .catch(error => {});
     },
 
     loadChatDetails: function (chatRoomNo) {
@@ -337,12 +347,18 @@ const message = {
                 data.participants.forEach(participant => {
                     const participantElement = document.createElement('div');
                     participantElement.className = 'chat-user-list';
-                    participantElement.innerHTML = `
-                        <div class="profile-image">
-                            <div><img src="${participant.empProfile}" alt="${participant.empName}'s profile"></div>
-                        </div>
-                        <span>${participant.empName}</span>
-                    `;
+                    const profileImgContainer = document.createElement('div');
+                    profileImgContainer.className = 'profile-img';
+                    const profileImg = document.createElement("div");
+                    const profileImgTag = document.createElement("img");
+                    profileImgTag.src = participant.empProfile;
+                    profileImgTag.alt = participant.empName
+                    profileImg.appendChild(profileImgTag)
+                    profileImgContainer.appendChild(profileImg)
+                    const empNameSpan = document.createElement("span");
+                    empNameSpan.textContent = participant.empName;
+                    participantElement.appendChild(profileImgContainer)
+                    participantElement.appendChild(empNameSpan)
                     if (sideBarImgWrap) {
                         sideBarImgWrap.appendChild(participantElement);
                     }
@@ -483,35 +499,135 @@ const message = {
     createMessageElement: function (msg) {
         const messageElement = document.createElement('div');
         messageElement.className = `output ${msg.empNo === currentEmpNo ? 'sent' : 'receive'}`;
-        messageElement.innerHTML = `
-            ${msg.empNo === currentEmpNo ? `
-                <div class="chat-datetime">
-                    ${new Date(msg.msgDt).toLocaleTimeString('ko-KR', { hour: 'numeric', minute: 'numeric', hour12: true })}
-                </div>
-                <div class="chat">
-                    ${msg.msgContent}
-                </div>
-            ` : `
-                <div class="profile-image">
-                    <img src="${msg.empProfile}" alt="Profile Image">
-                </div>
-                <div>
-                ${msg.empName}
-                    <div class="chat">
-                        ${msg.msgContent}
-                    </div>
-                </div>
-                <div class="chat-datetime">
-                    ${new Date(msg.msgDt).toLocaleTimeString('ko-KR', { hour: 'numeric', minute: 'numeric', hour12: true })}
-                </div>
-            `}
-        `;
+        messageElement.dataset.msgNo = msg.msgNo; // 메시지 번호를 데이터 속성에 저장
+
+        const profileImageContainer = document.createElement('div');
+        profileImageContainer.className = 'profile-image';
+        const profileImgTag = document.createElement('img');
+        profileImgTag.src = msg.empProfile || '/img/anonymous.png';
+        profileImgTag.alt = 'Profile Image';
+        profileImageContainer.appendChild(profileImgTag);
+
+        const empNameContainer = document.createElement('div');
+        empNameContainer.textContent = msg.empName;
+
+        const chatDatetime = document.createElement('div');
+        chatDatetime.className = 'chat-datetime';
+        chatDatetime.textContent = new Date(msg.msgDt).toLocaleTimeString('ko-KR', {
+            hour: 'numeric',
+            minute: 'numeric',
+            hour12: true
+        });
+
+        const chat = document.createElement('div');
+        chat.className = 'chat';
+
+        if (msg.msgStat === 1 || msg.msgStat === 'DELETED') {
+            // 메시지가 삭제된 상태라면 "삭제된 메시지입니다" 표시
+            chat.className = 'deleted-chat';
+            chat.textContent = '삭제된 메시지입니다';
+        } else {
+            chat.innerHTML = msg.msgContent.replace(/\n/g, "<br>");
+
+            if (msg.empNo === currentEmpNo) {
+                const ellipsisIcon = document.createElement('i');
+                const profileMenu = document.createElement("div");
+                profileMenu.className = "chat-dropdown";
+                profileMenu.id = "chat-dropdown"
+                profileMenu.innerHTML = `
+                <li class="my-menu-item">
+                    <a class="chat-delete" id="chat-delete" data-msg-no="${msg.msgNo}">
+                        <i class="fa-solid fa-trash-can" style="color: var(--main-color)"></i>
+                        <span style="color: var(--main-color)">삭제</span>
+                    </a>
+                </li>
+            `;
+
+                ellipsisIcon.className = 'fa-solid fa-ellipsis-vertical me-3';
+                ellipsisIcon.addEventListener('mouseover', () => {
+                    ellipsisIcon.style.display = 'block';
+                });
+
+                ellipsisIcon.addEventListener('mouseout', () => {
+                    ellipsisIcon.style.display = 'none';
+                });
+                ellipsisIcon.addEventListener("click", e => {
+                    // 모든 chat-dropdown 요소를 선택하고 숨김
+                    document.querySelectorAll('.chat-dropdown').forEach(menu => {
+                        if (menu !== profileMenu) {
+                            menu.style.display = 'none';
+                        }
+                    });
+                    // 현재 클릭된 요소만 보이도록 설정
+                    profileMenu.style.display = profileMenu.style.display === 'block' ? 'none' : 'block';
+                    e.stopPropagation();
+                });
+
+                profileMenu.querySelector('.chat-delete').addEventListener('click', () => {
+                    const confirmed = confirm("정말 삭제 하시겠습니까?");
+                    if(confirmed) {
+                        this.deleteMessage(msg.msgNo);
+                    }
+                });
+
+                messageElement.appendChild(profileMenu);
+                messageElement.appendChild(ellipsisIcon);
+
+                messageElement.addEventListener('mouseover', () => {
+                    ellipsisIcon.style.display = 'block';
+                });
+
+                messageElement.addEventListener('mouseout', () => {
+                    ellipsisIcon.style.display = 'none';
+                });
+            }
+        }
+
+        if (msg.empNo === currentEmpNo) {
+            messageElement.appendChild(chatDatetime);
+            messageElement.appendChild(chat);
+        } else {
+            messageElement.appendChild(profileImageContainer);
+            empNameContainer.appendChild(chat);
+            messageElement.appendChild(empNameContainer);
+            messageElement.appendChild(chatDatetime);
+        }
+
         return messageElement;
+    },
+    deleteMessage: function (msgNo) {
+        const msgStat = 1;
+        const data = {
+            msgStat: 1,
+        }
+
+        fetch('/api/chat/v1', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({msgNo: msgNo, msgStat: msgStat})
+        })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                const messageElement = document.querySelector(`.output[data-msg-no="${msgNo}"] .chat`);
+                const chatDropdown = document.querySelector(`.output[data-msg-no="${msgNo}"] .chat-dropdown`);
+                if (messageElement) {
+                    messageElement.classList.remove('chat');
+                    messageElement.classList.add('deleted-chat')
+                    messageElement.textContent = '삭제된 메시지입니다';
+                }
+                chatDropdown.style.display = 'none';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
     },
 
     sendMessage: function () {
         const chatInput = document.getElementById("chatInput");
-        const messageContent = chatInput.value.trim();
+        const messageContent = chatInput.value;
         if (messageContent && this.currentChatRoomNo) {
             const chatMessage = {
                 msgContent: messageContent,
@@ -540,7 +656,7 @@ const message = {
     updateChatRoomLatestMessage: function (chatRoomNo, latestMessageContent) {
         const chatRoomElement = document.querySelector(`.msg-room[data-chat-id="${chatRoomNo}"] .latest-message`);
         if (chatRoomElement) {
-            chatRoomElement.textContent = latestMessageContent;
+            chatRoomElement.innerHTML = latestMessageContent.replace(/\n/g, "<br>");
         }
     }
 };

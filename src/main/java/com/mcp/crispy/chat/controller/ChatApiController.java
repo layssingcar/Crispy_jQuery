@@ -18,6 +18,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
@@ -357,6 +358,21 @@ public class ChatApiController {
         EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
         List<ChatMessageDto> unreadMessages = chatService.getUnreadMessages(chatRoomNo, userDetails.getEmpNo());
         return ResponseEntity.ok(unreadMessages);
+    }
+
+    /**
+     * 채팅 삭제 ( 상태 비활성화 )
+     * 배영욱 (24. 06. 06)
+     * @param chatMessageDto
+     * @return
+     */
+    @PutMapping("/v1")
+    public ResponseEntity<?> removeMessage(@RequestBody ChatMessageDto chatMessageDto) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        EmployeeDto employee = employeeService.getEmployeeName(auth.getName());
+        log.info("chatMessageDto: {}", chatMessageDto);
+        chatService.removeMsgStat(chatMessageDto.getMsgStat(), chatMessageDto.getMsgNo(), employee.getEmpNo());
+        return ResponseEntity.ok().body(Map.of("message", "메시지가 삭제되었습니다."));
     }
 
 }

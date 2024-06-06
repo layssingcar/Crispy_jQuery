@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -158,10 +157,8 @@ public class ChatService {
     public ChatMessageDto saveMessage(ChatMessageDto message) {
         chatMapper.saveMessage(message);
         EmployeeDto employee = employeeService.getEmployeeDetailsByEmpNo(message.getEmpNo());
-        message.setMsgDt(Date.from(Instant.now()));
         message.setEmpName(employee.getEmpName());
         message.setEmpProfile(employee.getEmpProfile());
-        log.info("msgDt: {}", String.valueOf(message.getMsgDt()));
         return message;
     }
 
@@ -290,5 +287,10 @@ public class ChatService {
 
     public List<ChatMessageDto> getUnreadMessages(Integer chatRoomNo, Integer empNo) {
         return chatMapper.getUnreadMessages(chatRoomNo, empNo);
+    }
+
+    // 채팅 삭제
+    public void removeMsgStat(MsgStat msgStat, Integer msgNo, Integer modifier) {
+        chatMapper.removeMsgStat(msgStat, modifier, msgNo);
     }
 }

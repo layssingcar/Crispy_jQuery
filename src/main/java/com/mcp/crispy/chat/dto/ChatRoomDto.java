@@ -25,4 +25,5 @@ public class ChatRoomDto {
     private String empName;
     private Integer empNo;
     private String msgContent;
+    private Date msgDt;
 }
