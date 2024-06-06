@@ -7,6 +7,7 @@ const empRegister = {
     },
 
     registerEmployee: function () {
+        this.clearValidationErrors();
 
         const employeeData = {
             empId: document.querySelector(".empId").value,
@@ -51,6 +52,13 @@ const empRegister = {
                 errorContainer.style.display = 'block';
             }
         });
+    },
+    clearValidationErrors: function () {
+        const errorContainers = document.querySelectorAll('.error-message');
+        errorContainers.forEach(errorContainer => {
+            errorContainer.style.display = 'none';
+            errorContainer.textContent = '';
+        })
     },
 }
 
