@@ -11,11 +11,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -96,6 +98,12 @@ public class JwtUtil {
         Claims claims = verify(token);
 
         return claims.getSubject();
+    }
+
+    public UserDetails getUserDetailsFromToken(String token) {
+        Claims claims = verify(token);
+        String username = claims.getSubject();
+        return new User(username, "", List.of());
     }
 
     public boolean validateToken(String authToken) {
