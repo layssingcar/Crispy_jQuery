@@ -1,14 +1,14 @@
 package com.mcp.crispy.approval.controller;
 
 import com.mcp.crispy.approval.dto.ApplicantDto;
+import com.mcp.crispy.approval.dto.ApprovalDto;
 import com.mcp.crispy.approval.service.ApprovalService;
 import com.mcp.crispy.auth.domain.EmployeePrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("crispy")
@@ -62,6 +62,39 @@ public class ApprovalController {
 		return ResponseEntity.ok(approvalService.getEmpInfo(userDetails.getEmpNo()));
 	}
 
+	/**
+	 * 임시저장 값 존재 여부 확인
+	 * 우혜진 (24. 06. 05.)
+	 *
+	 * @param authentication
+	 * @return result
+	 */
+	@GetMapping("check-time-off-temp")
+	public ResponseEntity<?> ckeckTimeOffTemp(Authentication authentication,
+											  @RequestParam("timeOffCtNo") int timeOffCtNo) {
+		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
+		return ResponseEntity.ok(approvalService.checkTimeOffTemp(userDetails.getEmpNo(), timeOffCtNo));
+	}
+
+	/**
+	 * 휴가, 휴직 임시저장
+	 * 우혜진 (24. 06. 06.)
+	 *
+	 * @param authentication
+	 * @param approvalDto
+	 * @return
+	 */
+	@PostMapping("time-off-temp")
+	public ResponseEntity<?> timeOffTemp(Authentication authentication,
+										 @RequestBody @ModelAttribute ApprovalDto approvalDto) {
+
+		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
+		approvalDto.setEmpNo(userDetails.getEmpNo());
+
+		return ResponseEntity.ok(approvalService.insertTimeOffTemp(approvalDto));
+
+	}
+
 	/** 휴가 및 휴직 신청 목록 조회
 	 * 
 	 * @return forward (approval-list.html)
@@ -85,5 +118,5 @@ public class ApprovalController {
 	public String timeOffAppr2() {
 		return "approval/time-off-approval-2";
 	}
-	
+
 }
