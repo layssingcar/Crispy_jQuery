@@ -25,20 +25,46 @@ const timeOffTempFn = async () => {
     const response = await fetch(`/crispy/check-time-off-temp?timeOffCtNo=${timeOffCtNo}`);
     const result = await response.text();
 
-    if (result > 0)
-        if (!confirm("임시저장된 내용이 이미 존재합니다. 기존의 내용을 지우고 새로 저장하시겠습니까?")) return;
-
-    const formData = new FormData(document.querySelector("#form-container"));
-
-    fetch ("/crispy/time-off-temp", {
-        method: "POST",
-        body: formData
-    })
-        .then(response => response.text())
-        .then(result => {
-            if (result > 0) alert("임시저장이 완료되었습니다.");
-            else alert("임시저장에 실패했습니다.")
+    if (result > 0) {
+        Swal.fire({
+            icon: "warning",
+            title: "임시저장된 내용이 이미 존재합니다.",
+            text: "기존의 내용을 지우고 새로 저장할까요?",
+            showCancelButton: true,
+            confirmButtonText: "네, 다시 저장할게요.",
+            cancelButtonText: "아니요, 취소할게요.",
+            width: "525px",
         })
+            .then ((result) => {
+                if (result.isConfirmed) {
+                    const formData = new FormData(document.querySelector("#form-container"));
+
+                    fetch ("/crispy/time-off-temp", {
+                        method: "POST",
+                        body: formData
+                    })
+                        .then(response => response.text())
+                        .then(result => {
+                            if (result > 0) {
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "임시저장이 완료되었습니다.",
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+
+                            } else {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "임시저장에 실패했습니다.",
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+                            }
+                        })
+                }
+            })
+    }
 }
 
 // 임시저장 버튼
