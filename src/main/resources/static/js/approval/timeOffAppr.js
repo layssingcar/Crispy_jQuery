@@ -70,6 +70,35 @@ const timeOffTempFn = async () => {
 // 임시저장 버튼
 document.querySelector("#temp").addEventListener("click", timeOffTempFn)
 
+// 임시저장 내용 불러오기
+document.querySelector("#temp-content").addEventListener("click", async () => {
+    Swal.fire({
+        title: "문서를 선택해 주세요.",
+        input: "select",
+        inputOptions: {
+            0: "휴가신청서",
+            1: "휴직신청서"
+        },
+        inputPlaceholder: "문서 선택",
+        showCancelButton: true,
+        confirmButtonText: "선택 완료",
+        cancelButtonText: "취소",
+        width: "450px",
+        inputValidator: (value) => {
+            fetch (`/crispy/get-time-off-temp?timeOffCtNo=${value}`)
+                .then(response => response.text())
+                .then(html => {
+                    document.querySelector("#time-off-doc").outerHTML = html;
+                    document.querySelector("#time-off-ct-no").value = value;
+
+                    // 이벤트 재추가
+                    getEmpInfoFn();
+                    changeDateFn();
+                })
+        }
+    })
+})
+
 // 문서 양식 변경
 document.querySelector("#time-off-ct").addEventListener("change", e => {
     if (e.target.value === "") return;

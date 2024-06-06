@@ -29,16 +29,19 @@
                 <th class="col inp-col">휴가 기간</th>
                 <td colspan="7">
                     <!-- 휴가 시작일 입력 -->
-                    <input type="date" name="timeOffStartDt" id="start-dt">
+                    <input type="date" name="timeOffStartDt" id="start-dt"
+                           th:value="${approvalDto?.timeOffStartDt}">
                     <span>~</span>
 
                     <!--휴가 종료일 입력 -->
-                    <input type="date" name="timeOffEndDt" id="end-dt">
+                    <input type="date" name="timeOffEndDt" id="end-dt"
+                           th:value="${approvalDto?.timeOffEndDt}">
                     <span>(</span>
 
                     <!-- 휴가 기간 출력 -->
-                    <span id="time-off-period">00</span>
-                    <input type="hidden" name="timeOffPeriod">
+                    <span id="time-off-period" th:text="${approvalDto?.timeOffPeriod}">00</span>
+                    <input type="hidden" name="timeOffPeriod"
+                           th:value="${approvalDto?.timeOffPeriod}">
                     <span>일간 )</span>
                 </td>
             </tr>
@@ -46,7 +49,8 @@
                 <th class="col inp-col">휴가 사유</th>
                 <td colspan="7">
                     <!-- 휴가 사유 입력 -->
-                    <input type="text" name="timeOffContent" id="vct-cont" placeholder="휴가 사유를 입력하세요.">
+                    <input type="text" name="timeOffContent" id="vct-cont" placeholder="휴가 사유를 입력하세요."
+                           th:value="${approvalDto?.timeOffContent}">
                 </td>
             </tr>
             <tr>

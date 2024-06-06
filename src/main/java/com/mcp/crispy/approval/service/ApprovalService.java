@@ -30,4 +30,9 @@ public class ApprovalService {
         return approvalMapper.insertTimeOffTemp(approvalDto);
     }
 
+    // 임시저장 내용 불러오기
+    public ApprovalDto getTimeOffTemp(int empNo, int timeOffCtNo) {
+        return approvalMapper.getTimeOffTemp(empNo, timeOffCtNo);
+    }
+
 }

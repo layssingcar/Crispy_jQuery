@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -33,7 +34,7 @@ public class ApprovalController {
 	 * 우혜진 (24. 06. 06.)
 	 *
 	 * @param timeOffCtNo
-	 * @return
+	 * @return result
 	 */
 	@GetMapping("change-time-off-ct")
 	public String changeTimeOffCt(@RequestParam("timeOffCtNo") int timeOffCtNo) {
@@ -82,7 +83,7 @@ public class ApprovalController {
 	 *
 	 * @param authentication
 	 * @param approvalDto
-	 * @return
+	 * @return result
 	 */
 	@PostMapping("time-off-temp")
 	public ResponseEntity<?> timeOffTemp(Authentication authentication,
@@ -92,6 +93,36 @@ public class ApprovalController {
 		approvalDto.setEmpNo(userDetails.getEmpNo());
 
 		return ResponseEntity.ok(approvalService.insertTimeOffTemp(approvalDto));
+
+	}
+
+	/**
+	 * 임시저장 내용 불러오기
+	 * 우혜진 (24. 06. 07)
+	 *
+	 * @param authentication
+	 * @param timeOffCtNo
+	 * @param model
+	 * @return result
+	 */
+	@GetMapping("get-time-off-temp")
+	public String getTimeOffTemp(Authentication authentication,
+								 @RequestParam("timeOffCtNo") int timeOffCtNo,
+								 Model model) {
+
+		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
+
+		ApprovalDto approvalDto = approvalService.getTimeOffTemp(userDetails.getEmpNo(), timeOffCtNo);
+		model.addAttribute("approvalDto", approvalDto);
+
+		String path = null;
+
+		switch (timeOffCtNo) {
+			case 0: path = "document/vacation-req :: vacation-req"; break;
+			case 1: path = "document/leave-of-absence-req :: leave-of-absence-req"; break;
+		}
+
+		return path;
 
 	}
 

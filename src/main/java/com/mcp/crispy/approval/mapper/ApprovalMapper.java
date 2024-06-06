@@ -19,5 +19,8 @@ public interface ApprovalMapper {
 
     // 발주 재고 임시저장
     int insertTimeOffTemp(ApprovalDto approvalDto);
+    
+    // 임시저장 내용 불러오기
+    ApprovalDto getTimeOffTemp(@Param("empNo") int empNo, @Param("timeOffCtNo") int timeOffCtNo);
 
 }

@@ -52,4 +52,18 @@
                       , #{empNo})
     </insert>
 
+    <!-- 임시저장 내용 불러오기 -->
+    <select id="getTimeOffTemp">
+            SELECT TIME_OFF_TEMP_NO
+                 , TIME_OFF_CT_NO
+                 , TO_CHAR(TIME_OFF_START_DT, 'YYYY-MM-DD') TIME_OFF_START_DT
+                 , TO_CHAR(TIME_OFF_END_DT, 'YYYY-MM-DD') TIME_OFF_END_DT
+                 , TIME_OFF_PERIOD
+                 , TIME_OFF_CONTENT
+              FROM TIME_OFF_TEMP_T
+             WHERE 1=1
+               AND EMP_NO = #{empNo}
+               AND TIME_OFF_CT_NO = #{timeOffCtNo}
+    </select>
+
 </mapper>
