@@ -3,6 +3,7 @@ package com.mcp.crispy.board.controller;
 import java.util.List;
 import java.util.Map;
 
+import com.mcp.crispy.auth.domain.EmployeePrincipal;
 import com.mcp.crispy.board.dto.BoardDto;
 import com.mcp.crispy.board.dto.BoardFileDto;
 import com.mcp.crispy.board.service.BoardService;
@@ -11,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,7 +54,9 @@ public class BoardController {
 
 
 	@GetMapping("/board-add")
-	public String boardAdd(Model model, HttpSession session){
+	public String boardAdd(Model model, HttpSession session, Authentication authentication){
+		// authentication에 가맹점 번호, 직원 번호, 아이디, 비밀번호, 권한 들어가있음
+//		EmployeePrincipal principal = (EmployeePrincipal) authentication.getPrincipal();
 
 		String empNo = (String) session.getAttribute("empNo");
 		if (empNo == null) {
