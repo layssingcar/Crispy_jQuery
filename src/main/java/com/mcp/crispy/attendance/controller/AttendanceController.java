@@ -29,9 +29,9 @@ public class AttendanceController {
 		return ResponseEntity.ok(insertCount);
 	}
 	
-	@GetMapping("/attend")
+	@GetMapping(value="/attend", produces="application/json")
 	public String getAttList(Model model) {
-		model.addAttribute("attenList", attendanceService.getAttList());
+		model.addAttribute("attenList", attendanceService.getAttList(6));
 		return "attendance/attendance";
 	}
 	

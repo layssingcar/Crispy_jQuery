@@ -122,7 +122,6 @@
 				dataType:'json'
 			})
 			.done(function(scheList){
-				console.log(scheList);
 				$(scheList).each(function(){
 					if(this.scheDiv == 0){
 						loadEventList.push({
@@ -541,7 +540,6 @@
 	  // 일정 삭제 관련
 	  function fnDeleteSchedule(){
   		let selectScheType = $("input:radio[name=notice-or-vac]:checked").val();	// 공지,개인,연차
-//	  	let selectVacType = $("input:radio[name=var-elem-radio]:checked").val();	// 연차,반차,반반차,
 			
 		if(selectScheType == 'vac'){
 			fnDeleteAnnAjax();
