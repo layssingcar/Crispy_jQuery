@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
@@ -38,9 +39,13 @@ public class MapController {
      */
     @ResponseBody
     @GetMapping(value = "/frnMapApi", produces = "application/json")
-    public Map<String, Object> franchiseMap(Model model) {
-        List<MapDto> mapList = mapService.getMapList();
+    public Map<String, Object> franchiseMap(Model model, @RequestParam(value = "search", required = false) String search) {
+
+        /* 가맹점 리스트 */
+        List<MapDto> mapList = mapService.getMapList(search);
         model.addAttribute("mapList", mapList);
+
         return Map.of("mapList", mapList);
     }
+
 }

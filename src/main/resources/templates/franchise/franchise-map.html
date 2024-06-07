@@ -193,7 +193,7 @@
 	/* Search icon */
 	.container-1 .icon {
 		position: absolute;
-		right: 31.5rem;
+		right: 33rem;
 		top: 50%;
 		transform: translateY(-50%);
 		color: var(--main-color);
@@ -241,10 +241,9 @@
 				<div id="map" style="width: 100%; height: 131%; position: relative; overflow: hidden; margin-left: 35rem; margin-top: -5.5rem;"></div>
 				<div id="menu_wrap" class="bg_white" style="width: 37rem; height: 78.6rem; margin-top: -5.5rem; margin-right: -50rem">
 					<div class="option">
-						<form onsubmit="searchPlaces(); return false;" class="container-1">
-							<span class="icon"><i class="fa fa-search" style="margin-right: 15px;"></i></span>
-							<input type="text" value="치킨" id="keyword" size="13" placeholder="가맹점을 입력해주세요.">
-							<!--<button type="submit" id="scrach">검색하기</button>-->
+						<form class="container-1" onsubmit="searchFranchise(); return false;">
+							<span class="icon"><i class="fa fa-search"></i></span>
+							<input type="text" id="keyword" size="13" placeholder="가맹점을 입력해주세요.">
 						</form>
 					</div>
 					<hr>
@@ -264,8 +263,8 @@
 
 	var mapContainer = document.getElementById('map'), // 지도를 표시할 div
 			mapOption = {
-				center: new kakao.maps.LatLng(37.566826, 126.9786567), // 지도의 중심좌표
-				level: 3 // 지도의 확대 레벨
+				center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
+				level: 5 // 지도의 확대 레벨
 			};
 
 	// 지도를 생성합니다
@@ -284,57 +283,44 @@
 
 	// 키워드 검색을 요청하는 함수입니다
 	function searchPlaces() {
-		var keyword = document.getElementById('keyword').value;
 
-		if (!keyword.replace(/^\s+|\s+$/g, '')) {
-			alert('키워드를 입력해주세요!');
-			return false;
-		}
+		var keyword = document.getElementById('keyword').value;
 
 		// 장소검색 객체를 통해 키워드로 장소검색을 요청합니다
 		ps.keywordSearch(keyword, placesSearchCB);
 	}
 
-	// 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
-	function placesSearchCB(data, status, pagination) {
-		if (status === kakao.maps.services.Status.OK) {
-			/* 가맹점 정보 API 호출 */
-			$.ajax({
-				type: "GET",
-				url: "/crispy/frnMapApi",
-				contentType: "application/json",
-				dataType: "json",
-				success: function(response) {
-					var frnList = response.mapList;
-					console.log(frnList);
-
-					// 검색 목록과 마커를 표출합니다
-					displayPlaces(data, frnList);
-
-					// 페이지 번호를 표출합니다
-					displayPagination(pagination);
-				},
-				error: function(XMLHttpRequest, errorThrown, textStatus) {
-					alert("실패!");
-					console.log("XMLHttpRequest" + XMLHttpRequest + errorThrown + textStatus);
-				}
-			});
-		} else if (status === kakao.maps.services.Status.ZERO_RESULT) {
-			alert('검색 결과가 존재하지 않습니다.');
-			return;
-		} else if (status === kakao.maps.services.Status.ERROR) {
-			alert('검색 결과 중 오류가 발생했습니다.');
-			return;
-		}
+	function searchFranchise() {
+		var keyword = document.getElementById("keyword").value;
+		$.ajax({
+			type: "GET",
+			url: "/crispy/frnMapApi",
+			contentType: "application/json",
+			data: { search: keyword },
+			dataType: "json",
+			success: function(response) {
+				// 검색 결과를 표시하는 함수 호출
+				displayPlaces(response.mapList);
+			},
+			error: function(XMLHttpRequest, textStatus, errorThrown) {
+				alert("검색에 실패하였습니다.");
+				console.log("XMLHttpRequest: " + XMLHttpRequest + " textStatus: " + textStatus + " errorThrown: " + errorThrown);
+			}
+		});
 	}
 
-	// 검색 결과 목록과 마커를 표출하는 함수입니다
-	function displayPlaces(places, frnList) {
+	// 검색결과를 표시하는 함수
+	function displayPlaces(frnList) {
 		var listEl = document.getElementById('placesList'),
-				menuEl = document.getElementById('menu_wrap'),
-				fragment = document.createDocumentFragment(),
-				bounds = new kakao.maps.LatLngBounds(),
-				listStr = '';
+				     bounds = new kakao.maps.LatLngBounds();
+
+		var keyword = document.getElementById('keyword').value;
+
+		// 검색된 가맹점이 없을 때 예외 처리
+		if (frnList.length === 0) {
+			alert("해당 가맹점은 등록되지 않았습니다. 다시 입력해주세요.");
+			return;
+		}
 
 		// 검색 결과 목록에 추가된 항목들을 제거합니다
 		removeAllChildNods(listEl);
@@ -342,13 +328,11 @@
 		// 지도에 표시되고 있는 마커를 제거합니다
 		removeMarker();
 
-		placesSearchCB();
-
 		for (var i = 0; i < frnList.length; i++) {
 			// 마커를 생성하고 지도에 표시합니다
-			var placePosition = new kakao.maps.LatLng(places[i].y, places[i].x),
+			var placePosition = new kakao.maps.LatLng(frnList[i].frnY, frnList[i].frnX),
 					marker = addMarker(placePosition, i),
-					itemEl = getListItem(i, places[i], frnList[i]); // 검색 결과 항목 Element를 생성합니다
+					itemEl = getListItem(i, null, frnList[i]); // 검색 결과 항목 Element를 생성합니다
 
 			// 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
 			// LatLngBounds 객체에 좌표를 추가합니다
@@ -375,15 +359,20 @@
 				};
 			})(marker, frnList[i]);
 
-			fragment.appendChild(itemEl);
+			listEl.appendChild(itemEl);
 		}
-
-		// 검색결과 항목들을 검색결과 목록 Element에 추가합니다
-		listEl.appendChild(fragment);
-		menuEl.scrollTop = 0;
 
 		// 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
 		map.setBounds(bounds);
+	}
+
+	// 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
+	function placesSearchCB(data, status, pagination) {
+		// 검색 목록과 마커를 표출합니다
+		displayPlaces(data, frnList);
+
+		// 페이지 번호를 표출합니다
+		displayPagination(pagination);
 	}
 
 	function getListItem(index, places, frn) {
@@ -395,13 +384,11 @@
 						+ '   <h5>' + (frn ? frn.frnDetail : '정보 없음') + '</h5>'
 						+ '   <h5>' + (frn ? frn.frnTel : '정보 없음') + '</h5>';
 
-
 		el.innerHTML = itemStr;
 		el.className = 'item';
 
 		return el;
 	}
-
 
 	// 마커를 생성하고 지도 위에 마커를 표시하는 함수입니다
 	function addMarker(position, idx, title) {
@@ -466,8 +453,11 @@
 	// 검색결과 목록 또는 마커를 클릭했을 때 호출되는 함수입니다
 	// 인포윈도우에 장소명을 표시합니다
 	function displayInfowindow(marker, frn) {
-		var content = '<div style="padding:5px;z-index:1;">' + frn.frnName + '</div>'
-					+ '<div style="padding:5px;z-index:1;">' + frn + '</div>';
+		var content = '<div style="padding:5px;z-index:1;">' + (frn ? frn.frnName : '정보 없음') + '</div>'
+				+ '<div style="padding:5px;z-index:1;">매출액: ' + (frn && frn.salPrice !== undefined ? frn.salPrice + '만원' : '정보 없음') + '</div>'
+				+ '<div style="padding:5px;z-index:1;">재고명: ' + (frn && frn.stockName ? frn.stockName : '정보 없음') + '</div>'
+				+ '<div style="padding:5px;z-index:1;">재고수량: ' + (frn && frn.isCount != 0 ? frn.isCount +'개': '수량 없음') + '</div>'
+				+ '<div style="padding:5px;z-index:1;">운영시간: ' + frn.frnStartTime + '~' + frn.frnEndTime +'</div>';
 
 		infowindow.setContent(content);
 		infowindow.open(map, marker);

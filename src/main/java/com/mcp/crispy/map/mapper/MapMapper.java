@@ -9,6 +9,6 @@ import java.util.List;
 public interface MapMapper {
 
     // 가맹점 목록 및 정보조회
-    List<MapDto> getMapList();
+    List<MapDto> getMapList(String search);
 
 }
