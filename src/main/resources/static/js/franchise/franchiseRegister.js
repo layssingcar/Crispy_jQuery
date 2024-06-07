@@ -130,7 +130,6 @@ const franchiseRegister = {
             body: JSON.stringify(requestData)
         }).then(response => response.json())
             .then(data => {
-                console.log(data);
                 if (data.success) {
                     alert('가맹점 및 점주 등록이 완료되었습니다.');
                     // window.location.href = '/successPage'; // 성공 페이지로 이동
@@ -150,8 +149,6 @@ const franchiseRegister = {
         });
 
         Object.keys(errorResponse).forEach(field => {
-            console.log(field);
-            console.log( errorResponse[field])
             const errorContainer = document.getElementById(`${field}-error`);
             if (errorContainer) {
                 errorContainer.textContent = errorResponse[field];
@@ -188,6 +185,7 @@ const franchiseRegister = {
         }
 
         if (frnTel && !/^010\d{4}\d{4}$/.test(frnTel)) {
+            console.log(frnTel.value)
             document.getElementById("frnTel-error").textContent = "올바른 전화번호 형식을 입력해주세요.";
             document.getElementById("frnTel-error").style.display = "block";
             isValid = false;

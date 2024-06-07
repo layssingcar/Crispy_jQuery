@@ -12,7 +12,9 @@
     <div>
         <header th:replace="~{layout/navbar :: navbar}"></header>
         <main>
+            <!-- 점주 등록 -->
             <div class="franchise">
+                <!-- 단계 나타내는 인디케이터 점주 등록시 2번 -->
                 <div class="container">
                     <section class="step-indicator">
                         <div class="step step1 active">
@@ -29,20 +31,24 @@
                 <div class="container frn-container">
                     <div class="frn-wrap">
                         <div>
+                            <!-- 점주 등록 폼 -->
                             <form class="frn-register-form" id="owner-register" method="post" autocomplete="off">
                                 <div>
                                     <div class="info-wrap">
+                                        <!-- 점주 아이디 -->
                                         <div>
                                             <label for="owner-empId" class="form-label">아이디</label>
                                             <input type="text" id="owner-empId" name="empId" class="form-control empId"
                                                    placeholder="아이디를 입력해주세요." autocomplete="on">
                                             <div id="owner.empId-error" class="error-message" style="display: none;"></div>
                                         </div>
+                                        <!-- 휴대폰 번호 -->
                                         <div>
                                             <label for="owner-empPhone" class="form-label">휴대폰번호</label>
                                             <input type="text" class="form-control" id="owner-empPhone" name="empPhone" placeholder="- 제외하고 입력해주세요.">
                                             <div id="owner.empPhone-error" class="error-message" style="display: none;"></div>
                                         </div>
+                                        <!-- 이메일 -->
                                         <div class="mt-0">
                                             <div>
                                                 <label for="owner-empEmail" class="form-label">이메일</label>

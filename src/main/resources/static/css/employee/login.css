@@ -1,3 +1,4 @@
+/* 페이지 틀 */
 .login-container {
     display: flex;
     flex-direction: column;
@@ -11,17 +12,19 @@
     padding-bottom: 80px;
 }
 
-.my-3 {
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-}
-
+/* 로고 이미지 */
 .login-container img {
     width: 200px;
     height: 100px;
     margin-bottom: 20px;
 }
 
+.my-3 {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+/* 로그인 폼 */
 .login-form {
     display: flex;
     flex-direction: column;
@@ -30,39 +33,40 @@
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
+/* 공통 */
 .login-form button,
 .login-form input {
     height: 30px;
     border-radius: 3px;
-    font-size: 1.4rem;
+    font-size: 1.5rem;
 }
 
+/* 로그인 버튼 */
 .login-form button{
     border: 0;
     border-radius: 5px;
-    color: #fff;
 }
 
+/* div 영역 */
 .login-input {
     display: flex;
     flex-direction: column;
 }
 
+/* 자동 로그인 */
 .form-check {
     display: flex;
     align-items: center;
     padding: 0;
 }
 
-.form-check input {
-    margin-right: 10px;
-}
-
+/* 찾기 영역 */
 .find-wrap {
     display: flex;
     justify-content: space-between;
 }
 
+/* 찾기 영역 list*/
 .find-wrap li {
     position: relative;
     display: inline-block;
@@ -72,8 +76,4 @@
 
 .find-text {
     color: var(--main-color); /* 링크 색상 변경 */
-}
-
-.alert {
-    margin-bottom: 20px; /* 에러 메시지 간격 추가 */
 }

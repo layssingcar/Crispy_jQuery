@@ -16,57 +16,69 @@
                 <div class="container my-3 emp-register-container">
                     <div class="emp-info">
                         <div>
+                            <!-- 직원 등록 폼 -->
                             <form class="emp-reg-form" id="emp-register" method="post" autocomplete="off">
                                 <div>
                                     <div class="info-wrap">
+                                        <!-- 직원 아이디 -->
                                         <div>
                                             <label for="emp-register-empId" class="form-label">직원 아이디</label>
-                                            <input type="text" id="emp-register-empId" name="empId" class="form-control empId" placeholder="아이디">
+                                            <input type="text" id="emp-register-empId" name="empId"
+                                                   class="form-control empId" placeholder="아이디">
                                             <div class="error-message empId-error" style="display: none;"></div>
                                         </div>
+                                        <!-- 직원 이름 -->
                                         <div>
                                             <label for="emp-register-empName" class="form-label">성함</label>
                                             <input type="text" id="emp-register-empName" name="empName"
                                                    class="form-control empName" placeholder="성함을 입력하세요.">
                                             <div class="error-message empName-error" style="display: none;"></div>
                                         </div>
+                                        <!-- 휴대폰 번호 -->
                                         <div>
-                                            <label for="emp-register-empPhone" class="form-label">휴대전화</label>
+                                            <label for="emp-register-empPhone" class="form-label">휴대폰번호</label>
                                             <input type="text" class="form-control empPhone"
                                                    id="emp-register-empPhone" placeholder="- 제외하고 입력해주세요.">
                                             <div class="error-message empPhone-error" style="display: none;"></div>
                                         </div>
+                                        <!-- 입사일 -->
                                         <div>
                                             <label for="emp-register-empInDt" class="form-label">입사일</label>
                                             <input type="date" class="form-control empInDt" name="empInDt"
                                                    id="emp-register-empInDt" placeholder="연도. 월. 일.">
                                             <div class="error-message empInDt-error" style="display: none;"></div>
                                         </div>
+                                        <!-- 이메일 -->
                                         <div class="mt-0">
                                             <div>
                                                 <label for="emp-register-empEmail" class="form-label">이메일</label>
-                                                <input type="email" id="emp-register-empEmail" name="empEmail" class="form-control empEmail"
+                                                <input type="email" id="emp-register-empEmail" name="empEmail"
+                                                       class="form-control empEmail"
                                                        placeholder="이메일" autocomplete="on">
-                                                <div class="error-message empEmail-error" id="empEmail-error" style="display: none;"></div>
+                                                <div class="error-message empEmail-error" id="empEmail-error"
+                                                     style="display: none;"></div>
                                             </div>
                                         </div>
                                     </div>
+                                    <!-- 직원 직책 -->
                                     <div class="employee-position">
                                         <div class="employee-role">
                                             <label>직책</label>
                                             <div class="d-flex">
                                                 <div class="d-flex mt-0">
-                                                    <input type="radio" id="emp-register-manager" class="manager" name="posNo" value="1">
+                                                    <input type="radio" id="emp-register-manager" class="manager"
+                                                           name="posNo" value="1">
                                                     <label for="emp-register-manager">매니저</label>
                                                 </div>
+                                                <!-- default value -->
                                                 <div class="d-flex mt-0 ms-3">
-                                                    <input type="radio" id="emp-register-employee" class="employee" name="posNo" value="2" checked>
+                                                    <input type="radio" id="emp-register-employee" class="employee"
+                                                           name="posNo" value="2" checked>
                                                     <label for="emp-register-employee">직원</label>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-
                                     <button type="button" class="mt-4 mb-3" id="btn-emp-register">직원등록</button>
                                 </div>
                             </form>
