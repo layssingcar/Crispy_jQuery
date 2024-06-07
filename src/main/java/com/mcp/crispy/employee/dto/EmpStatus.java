@@ -13,7 +13,7 @@ public enum EmpStatus {
     private final int value;
     private final String description;
 
-    public static EmpStatus fromValue(Integer value) {
+    public static EmpStatus of(Integer value) {
         if (value == null) {
             return EmpStatus.EMPLOYED;
         }

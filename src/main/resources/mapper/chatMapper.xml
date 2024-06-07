@@ -58,7 +58,7 @@
                     ) CM2 ON CM1.CHAT_ROOM_NO = CM2.CHAT_ROOM_NO AND CM1.MSG_DT = CM2.LATEST_MSG_DT
             ) LATEST_MSG ON C.CHAT_ROOM_NO = LATEST_MSG.CHAT_ROOM_NO
         WHERE
-            P.EMP_NO = 2 AND P.ENTRY_STAT = 0
+            P.EMP_NO = #{empNo} AND P.ENTRY_STAT = 0
         ORDER BY
             LATEST_MSG.MSG_DT DESC
     </select>
@@ -77,11 +77,11 @@
             )
     </select>
 
-    <!-- 특정 채팅방의 메시지 목록 조회 -->
-    <select id="getMessages" resultType="ChatMessageDto">
+    <!-- 특정 채팅방의 메시지 목록 최신 메시지 50개 조회 -->
+    <select id="getLoadMessages" resultType="ChatMessageDto">
         WITH Last50Messages AS (
-            SELECT CM.CHAT_ROOM_NO, CM.EMP_NO, CM.MSG_CONTENT, CM.MSG_DT,
-                   CM.CREATOR, CM.CREATE_DT, CM.MODIFIER, CM.MODIFY_DT,
+            SELECT CM.MSG_NO, CM.CHAT_ROOM_NO, CM.EMP_NO, CM.MSG_CONTENT, CM.MSG_DT,
+                   CM.CREATOR, CM.CREATE_DT, CM.MODIFIER, CM.MODIFY_DT, CM.MSG_STAT,
                    E.EMP_PROFILE, E.EMP_NAME
               FROM CHAT_MESSAGE_T CM
                      LEFT JOIN EMPLOYEE_T E ON CM.EMP_NO = E.EMP_NO
@@ -91,29 +91,30 @@
           FETCH FIRST 50 ROWS ONLY
         )
           SELECT LM.CHAT_ROOM_NO, LM.EMP_NO, LM.MSG_CONTENT, LM.MSG_DT,
-                 LM.EMP_PROFILE, LM.EMP_NAME
+                 LM.EMP_PROFILE, LM.EMP_NAME, LM.MSG_NO, LM.MSG_STAT
             FROM Last50Messages LM
         ORDER BY MSG_DT ASC
     </select>
 
-    <!-- 특정 채팅방의 메시지 목록 조회 -->
-<!--    <select id="getMessages" resultType="ChatMessageDto">-->
-<!--        WITH MessagesBefore AS (-->
-<!--        SELECT CM.CHAT_ROOM_NO, CM.EMP_NO, CM.MSG_CONTENT, CM.MSG_DT,-->
-<!--        CM.CREATOR, CM.CREATE_DT, CM.MODIFIER, CM.MODIFY_DT,-->
-<!--        E.EMP_PROFILE, E.EMP_NAME-->
-<!--        FROM CHAT_MESSAGE_T CM-->
-<!--        LEFT JOIN EMPLOYEE_T E ON CM.EMP_NO = E.EMP_NO-->
-<!--        WHERE CM.CHAT_ROOM_NO = #{chatRoomNo}-->
-<!--        AND CM.MSG_DT &lt; #{beforeTimestamp}-->
-<!--        AND CM.MSG_DT > (SELECT MAX(ENTRY_DT) FROM ENTRY_EXIT_T WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo})-->
-<!--        ORDER BY CM.MSG_DT DESC-->
-<!--        )-->
-<!--        SELECT M.CHAT_ROOM_NO, M.EMP_NO, M.MSG_CONTENT, M.MSG_DT,-->
-<!--        M.EMP_PROFILE, M.EMP_NAME-->
-<!--        FROM MessagesBefore M-->
-<!--        OFFSET #{offset} ROWS FETCH NEXT 50 ROWS ONLY-->
-<!--    </select>-->
+     <!-- 특정 채팅방의 스크롤이 상단에 닿았을 시 이전 메시지 50개 호출 -->
+    <select id="getMoreMessages" resultType="ChatMessageDto">
+        WITH MessagesBefore AS (
+        SELECT CM.MSG_NO, CM.CHAT_ROOM_NO, CM.EMP_NO, CM.MSG_CONTENT, CM.MSG_DT,
+               CM.CREATOR, CM.CREATE_DT, CM.MODIFIER, CM.MODIFY_DT, CM.MSG_STAT,
+               E.EMP_PROFILE, E.EMP_NAME
+        FROM CHAT_MESSAGE_T CM
+        LEFT JOIN EMPLOYEE_T E ON CM.EMP_NO = E.EMP_NO
+        WHERE CM.CHAT_ROOM_NO = #{chatRoomNo}
+        AND CM.MSG_DT &lt;= #{beforeTimeStamp}
+        AND CM.MSG_DT > (SELECT MAX(ENTRY_DT) FROM ENTRY_EXIT_T WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo})
+        ORDER BY CM.MSG_DT DESC
+        OFFSET 0 ROWS FETCH NEXT 50 ROWS ONLY
+        )
+        SELECT M.MSG_NO, M.CHAT_ROOM_NO, M.EMP_NO, M.MSG_CONTENT,
+               M.MSG_DT, M.EMP_PROFILE, M.EMP_NAME, M.MSG_STAT
+        FROM MessagesBefore M
+        ORDER BY M.MSG_DT
+    </select>
 
 
     <!-- 최신 메시지 내용 -->
@@ -134,8 +135,8 @@
         <selectKey keyProperty="msgNo" resultType="int" order="BEFORE">
             SELECT CHAT_MESSAGE_SEQ.NEXTVAL FROM DUAL
         </selectKey>
-        INSERT INTO CHAT_MESSAGE_T (MSG_NO, MSG_CONTENT, CHAT_ROOM_NO, EMP_NO, MSG_DT, CREATE_DT)
-        VALUES (#{msgNo}, #{msgContent}, #{chatRoomNo}, #{empNo}, CURRENT_TIMESTAMP ,CURRENT_TIMESTAMP)
+        INSERT INTO CHAT_MESSAGE_T (MSG_NO, MSG_CONTENT, CHAT_ROOM_NO, EMP_NO, MSG_DT, CREATOR, CREATE_DT)
+        VALUES (#{msgNo}, #{msgContent}, #{chatRoomNo}, #{empNo}, CURRENT_TIMESTAMP, #{empNo} ,CURRENT_TIMESTAMP)
     </insert>
 
     <!-- 채팅방 생성 -->
@@ -279,4 +280,14 @@
             )
          ORDER BY CM.MSG_DT
     </select>
+
+    <!-- 채팅 삭제 ( 비활성화 ) -->
+    <update id="removeMsgStat">
+        UPDATE CHAT_MESSAGE_T CM
+           SET CM.MSG_STAT = #{msgStat},
+               CM.MODIFIER = #{modifier},
+               CM.MODIFY_DT = CURRENT_TIMESTAMP
+         WHERE MSG_NO = #{msgNo}
+           AND CM.EMP_NO = #{modifier}
+    </update>
 </mapper>

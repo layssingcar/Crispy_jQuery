@@ -13,9 +13,6 @@ const emailVerify = {
         document.querySelector('.check-verify-code')?.addEventListener('click', () => {
             _this.checkVerifyCode();
         });
-        document.querySelector(".find-btn").addEventListener("click", () => {
-            _this.submitForm();
-        });
     },
     handleVerificationCode: function (empEmail, action) {
         let apiUrl = "/api/email/verificationCode/verify/v1";
@@ -81,10 +78,6 @@ const emailVerify = {
                 this.showMessage("인증번호 검증에 실패했습니다.", 'error'); // 에러 메시지 표시
             })
     },
-    submitForm: function () {
-        const form = document.getElementById("findForm");
-        form.submit();
-    }
 }
 
 document.addEventListener("DOMContentLoaded", function () {

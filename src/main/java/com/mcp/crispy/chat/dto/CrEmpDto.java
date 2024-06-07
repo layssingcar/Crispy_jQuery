@@ -17,4 +17,5 @@ public class CrEmpDto { //채팅방 참가자 DTO
     private String empProfile;
     private EntryStat entryStat;
     private AlarmStat alarmStat;
+    private Integer creator;
 }

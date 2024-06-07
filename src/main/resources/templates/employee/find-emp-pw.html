@@ -9,38 +9,42 @@
 <body>
 <div class="find-container">
     <div>
-        <img src="/img/crispy2.png">
-        <form class="find-form" th:action="@{/crispy/employee/findEmpPw}" method="post" autocomplete="off">
+        <a href="/crispy/login"><img src="/img/crispy2.png"></a>
+        <form class="find-form" th:action="@{/crispy/employee/findEmpPw}"
+              th:object="${findEmployeeDto}" method="post" autocomplete="off">
             <h1 class="find-header">비밀번호 찾기</h1>
-            <div th:if="${param.error}">
-                <div class="alert alert-danger">
-                    사용자 ID 또는 비밀번호를 확인해주세요.
-                </div>
-            </div>
+            <!-- 비밀번호 찾기 -->
             <div class="find-emp-id">
+                <!-- 직원 이름 -->
                 <div class="mb-3">
                     <label class="form-label">성함</label>
-                    <input type="text" class="form-control emp-name" id="find-username-emp-name" name="empName"
+                    <input type="text" class="form-control emp-name" id="find-username-emp-name" name="empName" th:field="*{empName}"
                            placeholder="성함을 입력하세요" autocomplete="on">
-                    <div class="error-message empName-error" style="display: none;"></div>
+                    <div class="error-message empName-error" th:if="${#fields.hasErrors('empName')}" th:errors="*{empName}" style="display: block"></div>
                 </div>
+
+                <!-- 아이디 -->
                 <div class="mb-3">
                     <label class="form-label">아이디</label>
-                    <input type="text" class="form-control emp-id" name="empId"
+                    <input type="text" class="form-control emp-id" name="empId" th:field="*{empId}"
                            placeholder="아이디를 입력하세요">
-                    <div class="error-message empId-error" style="display: none;"></div>
+                    <div class="error-message empId-error" th:if="${#fields.hasErrors('empId')}" th:errors="*{empId}" style="display: block"></div>
                 </div>
+
+                <!-- 이메일 -->
                 <div class="email-wrap mb-3">
                     <div>
                         <label for="find-username-email" class="form-label">이메일</label>
-                        <input type="email" id="find-username-email" name="empEmail"
+                        <input type="email" id="find-username-email" name="empEmail" th:field="*{empEmail}"
                                class="form-control emp-email" placeholder="이메일을 입력하세요" autocomplete="on">
-                        <div class="error-message empEmail-error" style="display: none;"></div>
+                        <div class="error-message empEmail-error" th:if="${#fields.hasErrors('empEmail')}" th:errors="*{empEmail}" style="display: block"></div>
                     </div>
                     <div class="col-4 d-flex align-items-end ms-2">
                         <button class="btn email-validate-btn" th:data-action="verify-user" type="button">인증 요청</button>
                     </div>
                 </div>
+
+                <!-- 인증 코드 확인 필드 -->
                 <div class="mb-3" id="verify-code-div" style="display: none">
                     <div class="verify-email mb-4">
                         <div class="mt-2">

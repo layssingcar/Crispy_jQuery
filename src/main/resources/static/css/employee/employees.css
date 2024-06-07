@@ -1,8 +1,10 @@
+/* 직원 관리 목록 페이지 */
 .employees {
     width: -webkit-fill-available;
     font-size: 2rem;
 }
 
+/* 폰트 설정 */
 .employees a,
 .employees i,
 .employees button th, td,
@@ -11,6 +13,7 @@
     font-size: 1.5rem;
 }
 
+/* 직원 등록 버튼 스타일 */
 .employees .btn-employee-register {
     padding: 5px 25px 5px 25px;
     border-radius: 30px;
@@ -19,28 +22,29 @@
     color: #fff;
 }
 
+/* 상단 박스 스타일 */
 .employees .employee-register {
     display: flex;
     align-items: center;
 }
 
+/* 상단 영역 */
 .employees .employees-wrap {
     display: flex;
     justify-content: space-between;
 }
 
+/* 검색 영역 */
 .employees .employee-search {
-    text-align: left; /* 전체 컨테이너를 왼쪽으로 정렬 */
-    margin: 20px; /* 여백을 추가하여 디자인을 조정 */
-}
-
-.employees .employee-search {
+    text-align: left;
+    margin: 20px;
     display: flex;
     align-items: center;
     width: 300px;
     position: relative;
 }
 
+/* 검색 영역 input */
 .employees .employee-search input#search {
     width: 100%;
     height: 50px;
@@ -48,28 +52,33 @@
     padding-left: 45px;
 }
 
+/* 검색 영억 icon */
 .employees .employee-search .icon {
     position: absolute;
     left: 15px;
     top: 50%;
     transform: translateY(-50%);
-    color: #0C359E;
+    color: var(--main-color);
 }
 
+/* 테이블 스타일 */
 .employees table {
     text-align: center;
 }
 
+/* 테이블 셀 스타일 초기화 */
 .employees .table>:not(caption)>*>* {
     background-color: unset;
 }
 
+/* 테이블 데이터 셀 스타일 */
 .employees table td {
     position: relative;
     padding: 10px !important;
     width: 120px;
 }
 
+/* 테이블 호버 */
 .employees .table tbody tr:hover {
     background-color: rgba(200, 200, 200, 0.2) !important;
     cursor: pointer;

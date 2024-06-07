@@ -9,6 +9,7 @@ const notification = {
     connect: function () {
         const socket = new SockJS('/chat');
         this.stompClient = Stomp.over(socket);
+        this.stompClient.debug = null;
         this.stompClient.connect({}, (frame) => {
             const username = frame.headers['user-name'];
             this.stompClient.subscribe('/user/' + username + '/queue/unreadCount', (unreadCount) => {

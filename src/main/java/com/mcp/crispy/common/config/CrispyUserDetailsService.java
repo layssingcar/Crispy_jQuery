@@ -5,12 +5,14 @@ import com.mcp.crispy.admin.mapper.AdminMapper;
 import com.mcp.crispy.auth.domain.AdminPrincipal;
 import com.mcp.crispy.auth.domain.EmployeePrincipal;
 import com.mcp.crispy.employee.dto.EmployeeDto;
+import com.mcp.crispy.employee.dto.FindEmployeeDto;
 import com.mcp.crispy.employee.dto.Position;
 import com.mcp.crispy.employee.mapper.EmployeeMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -65,6 +67,10 @@ public class CrispyUserDetailsService implements UserDetailsService {
             }
             return new EmployeePrincipal(employee, authorities);
         }
+    }
+
+    public UserDetails converToUserDetails(FindEmployeeDto findEmployeeDto) {
+        return new User(findEmployeeDto.getEmpId(), "", List.of());
     }
 
 }

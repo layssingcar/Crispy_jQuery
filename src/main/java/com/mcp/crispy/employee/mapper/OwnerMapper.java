@@ -1,7 +1,11 @@
 package com.mcp.crispy.employee.mapper;
 
+import com.mcp.crispy.employee.dto.EmpStatus;
+import com.mcp.crispy.employee.dto.EmployeeDto;
 import com.mcp.crispy.employee.dto.OwnerRegisterDto;
+import com.mcp.crispy.employee.dto.Position;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -19,4 +23,7 @@ public interface OwnerMapper {
 
     // 번호에 맞는 직원 호출
     int countByEmpNo(Integer empNo);
+
+    List<EmployeeDto> findEmployeeByFranchise(@Param("frnNo") int frnNo, @Param("empStat") EmpStatus empStatus,
+                                              @Param("posNo") Position position);
 }

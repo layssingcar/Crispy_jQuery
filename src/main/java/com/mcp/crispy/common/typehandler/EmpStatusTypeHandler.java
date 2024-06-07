@@ -24,18 +24,18 @@ public class EmpStatusTypeHandler extends BaseTypeHandler<EmpStatus> {
     @Override
     public EmpStatus getNullableResult(ResultSet rs, String columnName) throws SQLException {
         int code = rs.getInt(columnName);
-        return rs.wasNull() ? null : EmpStatus.fromValue(code);
+        return rs.wasNull() ? null : EmpStatus.of(code);
     }
 
     @Override
     public EmpStatus getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
         int code = rs.getInt(columnIndex);
-        return rs.wasNull() ? null : EmpStatus.fromValue(code);
+        return rs.wasNull() ? null : EmpStatus.of(code);
     }
 
     @Override
     public EmpStatus getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
         int code = cs.getInt(columnIndex);
-        return cs.wasNull() ? null : EmpStatus.fromValue(code);
+        return cs.wasNull() ? null : EmpStatus.of(code);
     }
 }

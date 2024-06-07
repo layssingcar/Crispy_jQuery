@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -62,15 +61,16 @@ public class ChatService {
 
     // 채팅방 번호와 사용자 번호를 기반으로 메시지 목록을 조회
     @Transactional
-    public List<ChatMessageDto> getMessages(Integer chatRoomNo, Integer empNo) {
-        return chatMapper.getMessages(chatRoomNo, empNo);
+    public List<ChatMessageDto> getLoadMessages(Integer chatRoomNo, Integer empNo) {
+        return chatMapper.getLoadMessages(chatRoomNo, empNo);
     }
 
     // 스크롤이 상단에 닿을 때 이전 메시지 50개 가져오는 메소드
     @Transactional
-    public List<ChatMessageDto> getMessages(Integer chatRoomNo, Timestamp beforeTimestamp,
-                                            int offset, Integer empNo) {
-        return chatMapper.getMessages(chatRoomNo, beforeTimestamp, offset, empNo);
+    public List<ChatMessageDto> getMoreMessages(Integer chatRoomNo, Timestamp beforeTimestamp,
+                                            Integer empNo) {
+        log.info("beforeTimestamp: {}", beforeTimestamp);
+        return chatMapper.getMoreMessages(chatRoomNo, beforeTimestamp, empNo);
     }
 
     // 제일 최신 메시지 내용
@@ -157,10 +157,8 @@ public class ChatService {
     public ChatMessageDto saveMessage(ChatMessageDto message) {
         chatMapper.saveMessage(message);
         EmployeeDto employee = employeeService.getEmployeeDetailsByEmpNo(message.getEmpNo());
-        message.setMsgDt(Date.from(Instant.now()));
         message.setEmpName(employee.getEmpName());
         message.setEmpProfile(employee.getEmpProfile());
-        log.info("msgDt: {}", String.valueOf(message.getMsgDt()));
         return message;
     }
 
@@ -289,5 +287,10 @@ public class ChatService {
 
     public List<ChatMessageDto> getUnreadMessages(Integer chatRoomNo, Integer empNo) {
         return chatMapper.getUnreadMessages(chatRoomNo, empNo);
+    }
+
+    // 채팅 삭제
+    public void removeMsgStat(MsgStat msgStat, Integer msgNo, Integer modifier) {
+        chatMapper.removeMsgStat(msgStat, modifier, msgNo);
     }
 }

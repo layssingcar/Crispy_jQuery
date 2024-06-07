@@ -68,10 +68,12 @@
     }
 }
 
+/* 폰트 크기 설정 */
 .franchise input, button, label {
     font-size: 1.5rem;
 }
 
+/* input 크기 */
 .franchise input {
     width: 250px;
 }
@@ -80,6 +82,17 @@
     font-size: 1.5rem !important;
 }
 
+/* 페이지 설정 */
+.franchise .frn-container {
+    width: 100%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 20px 20px 20px;
+}
+
+/* 가맹점 등록, 점주 등록 */
 .franchise .frn-wrap {
     width: 400px;
     display: flex;
@@ -92,6 +105,7 @@
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
+/* 가맹점 상세보기 */
 .franchise .frn-detail-wrap .frn-info-wrap {
     width: 550px;
     display: flex;
@@ -104,15 +118,7 @@
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
-.franchise .frn-container {
-    width: 100%;
-    margin: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 30px 20px 20px 20px;
-}
-
+/* 가맹점 상세 본문 */
 .franchise .frn-detail-wrap .info-wrap {
     width: 500px;
     display: flex;
@@ -208,7 +214,7 @@
 .frn-info-form .update-img {
     display: none;
     position: absolute;
-    top: 26%;
+    top: 19%;
     color: #fff;
     font-size: 1.5rem;
 }

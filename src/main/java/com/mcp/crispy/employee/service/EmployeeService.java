@@ -188,6 +188,7 @@ public class EmployeeService {
     @Transactional
     public void changeEmail(String email, Integer empNo, Integer modifier) {
         int count = employeeMapper.countByEmpNo(empNo);
+        log.info("changeEmail: {}", count);
         if (count > 0) {
             employeeMapper.updateEmpEmail(email, empNo, modifier);
         } else {
@@ -200,7 +201,7 @@ public class EmployeeService {
     public void changeEmpStat(Integer empStat, Integer empNo, Integer modifier) {
         int count = employeeMapper.countByEmpNo(empNo);
         if (count > 0) {
-            employeeMapper.updateEmpStat(EmpStatus.fromValue(empStat), empNo, modifier);
+            employeeMapper.updateEmpStat(EmpStatus.of(empStat), empNo, modifier);
         } else {
             throw new IllegalArgumentException("해당하는 직원이 존재하지 않습니다.");
         }

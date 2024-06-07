@@ -6,6 +6,7 @@ import com.mcp.crispy.franchise.dto.FrnAddressUpdateDto;
 import com.mcp.crispy.franchise.dto.FrnUpdateDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.session.RowBounds;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,10 +40,13 @@ public interface FranchiseMapper {
     void updateOperatingTime(@Param("frnStartTime") String frnStartTime, @Param("frnEndTime") String frnEndTime,
                              @Param("modifier") Integer modifier, @Param("frnNo") Integer frnNo);
 
-    List<FranchiseDto> getFranchiseList();
+    List<FranchiseDto> getFranchiseList(RowBounds rowBounds);
 
     // 직원번호로 가맹점 정보 가져오기 ( 대표 이름 수정 용 )
     FranchiseDto getFrnByEmpNo(Integer empNo);
+
+    // 가맹점 수 호출
+    int getFrnCount();
 
     // 가맹점 번호로 가맹점 상세 정보 가져오기
     Optional<FranchiseDto> findFrnDetailsByFrnNo(Integer frnNo);

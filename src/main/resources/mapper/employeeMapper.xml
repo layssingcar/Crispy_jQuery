@@ -107,21 +107,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              AND E.EMP_NO = #{empNo}
     </select>
 
-    <!-- 가맹점 번호로 가맹점에 속해있는 직원 정보 가져오기 -->
-    <select id="findEmployeeByFranchise" parameterType="int" resultType="EmployeeRequestDto">
-            SELECT E.EMP_NO, E.EMP_ID, E.EMP_NAME, E.EMP_PHONE
-                 , E.EMP_STAT, F.FRN_NAME, P.POS_NAME
-            FROM EMPLOYEE_T E
-       LEFT JOIN FRANCHISE_T F
-              ON E.FRN_NO = F.FRN_NO
-      INNER JOIN POSITION_T P
-              ON E.POS_NO = P.POS_NO
-           WHERE 1 = 1
-             AND E.FRN_NO = #{frnNo}
-             AND E.POS_NO != 0
-        ORDER BY E.EMP_NO
-    </select>
-
     <!-- 이메일로 찾기 -->
     <select id="findByEmpEmail"
             resultType="FindEmployeeDto">
@@ -364,5 +349,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         FROM EMPLOYEE_T E
         WHERE 1 = 1
           AND E.EMP_EMAIL = #{empEmail}
+    </select>
+
+    <!-- 번호에 맞는 직원 호출 -->
+    <select id="countByEmpNo"
+            parameterType="int" resultType="int">
+        SELECT COUNT(*)
+        FROM EMPLOYEE_T E
+        WHERE 1 = 1
+          AND E.EMP_NO = #{empNo}
     </select>
 </mapper>

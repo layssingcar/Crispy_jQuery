@@ -14,4 +14,56 @@
                AND EMP_NO = #{empNo}
     </select>
 
+    <!-- 임시저장 값 존재 여부 확인 -->
+    <select id="checkTimeOffTemp">
+            SELECT COUNT(*)
+              FROM TIME_OFF_TEMP_T
+             WHERE 1=1
+               AND EMP_NO = #{empNo}
+               AND TIME_OFF_CT_NO = #{timeOffCtNo}
+    </select>
+
+    <!-- 이전 임시저장 내용 삭제 -->
+    <delete id="deleteTimeOffTemp">
+            DELETE
+              FROM TIME_OFF_TEMP_T
+             WHERE 1=1
+               AND EMP_NO = #{empNo}
+               AND TIME_OFF_CT_NO = #{timeOffCtNo}
+    </delete>
+
+    <!-- 휴가/휴직 신청서 임시저장 -->
+    <insert id="insertTimeOffTemp">
+            INSERT INTO TIME_OFF_TEMP_T (
+                        TIME_OFF_TEMP_NO
+                      , TIME_OFF_CT_NO
+                      , TIME_OFF_START_DT
+                      , TIME_OFF_END_DT
+                      , TIME_OFF_PERIOD
+                      , TIME_OFF_CONTENT
+                      , EMP_NO
+               ) VALUES (
+                        TIME_OFF_TEMP_SEQ.NEXTVAL
+                      , #{timeOffCtNo}
+                      , #{timeOffStartDt}
+                      , #{timeOffEndDt}
+                      , #{timeOffPeriod}
+                      , #{timeOffContent}
+                      , #{empNo})
+    </insert>
+
+    <!-- 임시저장 내용 불러오기 -->
+    <select id="getTimeOffTemp">
+            SELECT TIME_OFF_TEMP_NO
+                 , TIME_OFF_CT_NO
+                 , TO_CHAR(TIME_OFF_START_DT, 'YYYY-MM-DD') TIME_OFF_START_DT
+                 , TO_CHAR(TIME_OFF_END_DT, 'YYYY-MM-DD') TIME_OFF_END_DT
+                 , TIME_OFF_PERIOD
+                 , TIME_OFF_CONTENT
+              FROM TIME_OFF_TEMP_T
+             WHERE 1=1
+               AND EMP_NO = #{empNo}
+               AND TIME_OFF_CT_NO = #{timeOffCtNo}
+    </select>
+
 </mapper>
