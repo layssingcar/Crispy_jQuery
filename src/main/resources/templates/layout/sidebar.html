@@ -1,71 +1,96 @@
 <aside th:fragment="sidebar" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
     <div class="sidebar">
+
         <!-- 헤더: 로고 이미지 -->
         <div class="side-header">
             <a href="/"><img src="/img/crispy2.png" alt="크리스피 로고"></a>
         </div>
+
         <!-- 섹션: 메뉴 리스트 -->
-        <div class="container-fluid">
-            <ul class="navbar-nav ms-auto flex-row">
-                <li class="nav-item">
-                    <div class="nav-profile-ui chat-menu">
-                        <a href="/crispy/chat">
-                            <i class="fa-regular fa-comments me-5"></i>
-                            <span id="unreadMessageCountBadge" class="badge">0</span>
-                        </a>
-                    </div>
-                </li>
-                <li class="nav-item">
+        <div>
+            <!-- 섹션 상단: 프로필 -->
+            <ul class="list-unstyled ps-0">
+                <li class="mb-1">
                     <div class="nav-profile-ui">
-                        <i class="fa-solid fa-bell me-3 notification"></i>
-                        <span class="notification-badge">1</span>
-                        <div class="notification-menu-content">
-                            <ul class="my-menu-list">
-                                <li class="my-menu-item">
-                                    <span>결재가 승인되었습니다.</span>
-                                </li>
-                                <li class="my-menu-item">
-                                    <span>발주 결재가 반려되었습니다.</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </li>
-                <li class="nav-item">
-                    <div class="nav-profile-ui">
-                        <img th:src="${isAdmin ? '/img/anonymous.png' : (loggedEmp != null ? loggedEmp.empProfile : '/img/anonymous.png')}" id="nav-profile-img" class="nav-img">
+
+                        <!-- 프로필 이미지 -->
+                        <img th:src="${isAdmin ? '/img/anonymous.png' : (loggedEmp != null ? loggedEmp.empProfile : '/img/anonymous.png')}"
+                             id="nav-profile-img" class="nav-img">
+
+                        <!-- 직원명 -->
                         <div class="nav-welcome">
                             <span th:text="${isAdmin ? '관리자' : (loggedEmp != null ? loggedEmp.empName : '')}"></span>
+                            <span>님 환영합니다!</span>
                         </div>
-                        <div class="profile-menu-content">
+
+                        <!-- 프로필 드롭다운 -->
+                        <div class="menu-content profile-mc">
                             <ul class="my-menu-list">
                                 <li class="my-menu-item" id="my-profile" sec:authorize="!hasRole('ROLE_ADMIN')">
-                                    <div class="my-menu-info" >
+                                    <div class="my-menu-info">
                                         <a href="/crispy/employee/profile">내 프로필</a>
                                     </div>
                                 </li>
                                 <hr>
                                 <li class="my-menu-item">
                                     <a class="my-menu-logout" id="logout-button">
-                                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                                        <!--<i class="fa-solid fa-arrow-right-from-bracket"></i>-->
                                         <span>로그아웃</span>
                                     </a>
                                 </li>
                             </ul>
                         </div>
                     </div>
-                </li>
-            </ul>
-        </div>
-        <div>
-            <ul class="list-unstyled ps-0">
 
-                <li class="mb-1">
-                    <div class="menu" data-bs-toggle="collapse" data-bs-target="#menu-1-collapse" sec:authorize="!hasRole('ROLE_ADMIN')">
-                        <a href="/crispy/employee/profile"><span>마이페이지</span></a>
+                    <!-- 알림, 채팅 -->
+                    <div class="noti-chat">
+
+                        <!--알림-->
+                        <div class="nav-item">
+                            <div class="nav-profile-ui">
+                                <!-- 알림 아이콘 -->
+                                <i class="fa-solid fa-bell me-3 notification"></i>
+
+                                <!-- 알림 개수 -->
+                                <span class="notification-badge">1</span>
+
+                                <!-- 알림 드롭다운 -->
+                                <div class="menu-content notification-mc">
+                                    <ul class="my-menu-list">
+                                        <li class="my-menu-item">
+                                            <span>결재가 승인되었습니다.</span>
+                                        </li>
+                                        <li class="my-menu-item">
+                                            <span>발주 결재가 반려되었습니다.</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--채팅-->
+                        <div class="nav-item">
+                            <div class="nav-profile-ui chat-menu">
+                                <a href="/crispy/chat">
+                                    <i class="fa-regular fa-comments me-5"></i>
+                                    <span id="unreadMessageCountBadge" class="badge">0</span>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </li>
 
+                <!-- 메뉴 구분 선 -->
+                <li class="border-top my-3"></li>
+
+                <!-- 마이 페이지 -->
+                <li class="mb-1">
+                    <div class="menu" data-bs-toggle="collapse" data-bs-target="#menu-1-collapse" sec:authorize="!hasRole('ROLE_ADMIN')">
+                        <a href="/crispy/employee/profile"><span>마이 페이지</span></a>
+                    </div>
+                </li>
+
+                <!-- 일정 (캘린더) -->
                 <li class="mb-1">
                     <div class="menu" data-bs-toggle="collapse" data-bs-target="#menu-2-collapse">
                         <a href="/crispy/calendar">
@@ -74,18 +99,20 @@
                     </div>
                 </li>
 
+                <!-- 근태 관리 -->
                 <li class="mb-1">
                     <div class="menu" data-bs-toggle="collapse" data-bs-target="#menu-3-collapse">
                         <a href="/crispy/attend">
-                            <span>근태관리</span>
+                            <span>근태 관리</span>
                         </a>
                     </div>
                 </li>
 
+                <!-- 휴가 관리 -->
                 <li class="mb-1">
                     <div class="menu" data-bs-toggle="collapse" data-bs-target="#menu-4-collapse">
                         <a href="#">
-                            <span>휴가관리</span>
+                            <span>휴가 관리</span>
                             <i class="fa-solid fa-chevron-down"></i>
                         </a>
                     </div>
@@ -97,6 +124,7 @@
                     </div>
                 </li>
 
+                <!-- 게시판 (공지사항, 자유게시판) -->
                 <li class="mb-1">
                     <div class="menu" data-bs-toggle="collapse" data-bs-target="#menu-5-collapse">
                         <a href="#">
@@ -112,12 +140,14 @@
                     </div>
                 </li>
 
+                <!-- 관리자, 가맹점주 메뉴 구분 선 -->
                 <li class="border-top my-3"></li>
 
+                <!-- 직원 관리 -->
                 <li class="mb-1">
                     <div class="menu" data-bs-toggle="collapse" data-bs-target="#menu-9-collapse" sec:authorize="hasRole('ROLE_OWNER')">
                         <a href="#">
-                            <span>직원관리</span>
+                            <span>직원 관리</span>
                             <i class="fa-solid fa-chevron-down"></i>
                         </a>
                     </div>
@@ -129,6 +159,7 @@
                     </div>
                 </li>
 
+                <!-- 재고 관리 -->
                 <li class="mb-1">
                     <div class="menu" data-bs-toggle="collapse" data-bs-target="#menu-10-collapse">
                         <a href="#">
@@ -144,10 +175,11 @@
                     </div>
                 </li>
 
+                <!-- 가맹점 관리 -->
                 <li class="mb-1">
                     <div class="menu" data-bs-toggle="collapse" data-bs-target="#menu-11-collapse" sec:authorize="hasRole('ROLE_ADMIN')">
                         <a href="#">
-                            <span>가맹점관리</span>
+                            <span>가맹점 관리</span>
                             <i class="fa-solid fa-chevron-down"></i>
                         </a>
                     </div>
@@ -158,16 +190,6 @@
                         </ul>
                     </div>
                 </li>
-
-<!--                <li class="mb-1">-->
-<!--                    <div class="chat-menu" data-bs-toggle="collapse" data-bs-target="#menu-10-collapse">-->
-<!--                        <a href="/crispy/chat">-->
-<!--                            <span>채팅</span>-->
-<!--                            <span id="unreadMessageCountBadge" class="badge">0</span>-->
-<!--                        </a>-->
-<!--                    </div>-->
-<!--                </li>-->
-
             </ul>
         </div>
     </div>

@@ -11,11 +11,139 @@
     justify-content: center;
     align-items: center;
     height: 120px;
-    margin-bottom: 30px;
 }
 
 /* 로고 이미지 */
 .sidebar .side-header img {width: 200px;}
+
+/* 섹션 상단: 프로필 */
+.sidebar .list-unstyle {
+    display: flex;
+    flex-direction: column;
+}
+
+/*  */
+.sidebar .nav-profile-ui {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+/* 프로필 이미지 */
+.sidebar .nav-img {
+    width: 200px;
+    height: 200px;
+    border: 1px solid #e6e7eb;
+    border-radius: 100%;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+/* 직원명 */
+.sidebar .nav-welcome {margin-top: 15px;}
+
+/* 드롭다운 */
+.sidebar .menu-content {
+    /*display: none;*/
+    position: absolute;
+    z-index: 1000;
+    border-radius: 5px;
+    box-shadow: 0 5px 9px rgba(0, 0, 0, 0.15);
+    background-color: #fff;
+}
+
+/* 프로필 드롭다운 */
+.sidebar .profile-mc {
+    top: 50px;
+    right: -145px;
+}
+
+.sidebar .profile-mc ul {
+    width: 130px;
+    text-align: center;
+}
+
+/* 드롭다운 리스트 */
+.sidebar .my-menu-list {padding: 0;}
+
+/* 드롭다운 리스트 아이템 */
+.sidebar .my-menu-item {
+    padding: 1rem;
+    font-size: 1.5rem;
+}
+
+/* 드롭다운 리스트 아이템 hover */
+.sidebar .my-menu-item:hover {
+    background-color: rgba(230, 231, 235, 0.5);
+    cursor: pointer;
+}
+
+/* 내 프로필 */
+.sidebar .my-menu-info a {color: var(--main-color);}
+
+/* 프로필 드롭다운 구분 선 */
+.sidebar .my-menu-list hr {
+    margin: 0 !important;
+    color: #bfb7b7;
+}
+
+/* 알림, 채팅 */
+.sidebar .noti-chat {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.sidebar .noti-chat > div {width: 100px;}
+
+/* 알림, 채팅 아이콘 */
+.sidebar .nav-profile-ui i {
+    margin: 0 !important;
+    font-size: 2.7rem;
+}
+
+.sidebar .nav-profile-ui i:hover {cursor: pointer;}
+
+/* 알림, 채팅 개수 */
+.sidebar .notification-badge {
+    position: absolute;
+    top: -10px;
+    right: 20px;
+    width: 20px;
+    height: 20px;
+    padding: 4px 8px;
+    border-radius: 50%;
+    background-color: var(--main-color);
+    color: white;
+    font-size: 1rem;
+}
+
+/* 알림 드롭다운 */
+.sidebar .notification-mc {
+    top: 40px;
+    left: -10px;
+}
+
+.sidebar .notification-mc ul {width: 225px;}
+
+/* 채팅 개수 */
+.sidebar .chat-menu > a {position: relative;}
+
+.sidebar .badge {
+    display: inline-block; /* 읽지 않은 메시지가 있을 때 표시 */
+    position: absolute;
+    top: -1px;
+    left: 25px;
+    width: 20px;
+    height: 20px;
+    padding: 6px 8px;
+    border-radius: 50%;
+    background-color: var(--main-color);
+    color: white;
+    font-size: 1rem;
+    transform: translate(50%, -50%);
+}
 
 /* 메뉴 리스트 아이템 */
 .sidebar .mb-1 {margin: 15px 20px;}
@@ -28,6 +156,9 @@
     align-items: center;
 }
 
+/* 구분 선 */
+.sidebar .my-3 {margin: 30px 20px !important;}
+
 /* 소메뉴 열림, 닫힘 아이콘 */
 .sidebar .menu i {
     margin-bottom: 5px;
@@ -39,6 +170,3 @@
     padding: 10px;
     font-size: 1.5rem;
 }
-
-/* 구분 선 */
-.sidebar .my-3 {margin: 30px 20px !important;}
