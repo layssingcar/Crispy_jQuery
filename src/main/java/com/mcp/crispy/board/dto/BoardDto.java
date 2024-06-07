@@ -1,5 +1,6 @@
 package com.mcp.crispy.board.dto;
 
+import com.mcp.crispy.employee.dto.EmployeeDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,4 +23,8 @@ public class BoardDto {
     private Date modifyDt;
     private int modifier;
     private int empNo;
+    private EmployeeDto employee;
+
+    /* 파일 이름*/
+    private String boardOrigin;
 }
