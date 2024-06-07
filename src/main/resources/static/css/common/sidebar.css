@@ -45,7 +45,7 @@
 
 /* 드롭다운 */
 .sidebar .menu-content {
-    /*display: none;*/
+    display: none;
     position: absolute;
     z-index: 1000;
     border-radius: 5px;
