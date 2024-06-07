@@ -45,13 +45,14 @@ const employee = {
         this.setupEditableField(".btn-edit-empName", ".empName", ".btn-change-empName");
         this.setupEditableField(".btn-edit-empPhone", ".empPhone", ".btn-change-empPhone");
         this.setupEditableField(".btn-edit-empEmail", ".empEmail", ".btn-change-empEmail");
-        this.setupEditableField(".btn-edit-address", ".zipcode, .street-address, .detail-address", ".btn-change-address", true);
+        this.setupEditableField(".btn-edit-address", ".detail-address", ".btn-change-address", true);
     },
     setupEditableField: function (editButtonId, inputId, changeButtonId, isAddress = false) {
         const editButton = document.querySelector(editButtonId);
         const inputElements = document.querySelectorAll(inputId);
         const changeButton = document.querySelector(changeButtonId);
         const searchAddressButton = document.querySelector('.search-address');
+
 
         editButton?.addEventListener("click", () => {
             inputElements.forEach(inputElement => {
@@ -207,7 +208,7 @@ const employee = {
     },
     changeProfileImage: function () {
         const empNo = document.querySelector(".empNo").value;
-        const profileForm = document.getElementById("profileImageForm")
+        const profileForm = document.getElementById("profile-image-form")
 
         const formData = new FormData(profileForm);
         formData.append('empNo', empNo);
@@ -345,7 +346,11 @@ const employee = {
         const btnSaveForm = document.querySelector('.btn-save-form');
 
         inputs.forEach(input => {
-            input.readOnly = !editMode;
+            if (input.classList.contains('street-address') || input.classList.contains('zipcode')) {
+                input.readOnly = true;
+            } else {
+                input.readOnly = !editMode;
+            }
         });
 
         editButtons.forEach(button => {
@@ -451,7 +456,7 @@ const employee = {
             radio.checked = radio.value === employee.empStat
         })
         document.getElementById('emp-profile-empEmail').value = employee.empEmail;
-        document.getElementById('emp-profile-empPhone').value = employee.empPhone || 'N/A';
+        document.getElementById('emp-profile-empPhone').value = employee.empPhone;
         document.querySelector('.zipcode').value = employee.empZip || '';
         document.querySelector('.street-address').value = employee.empStreet || '';
         document.querySelector('.detail-address').value = employee.empDetail || '';

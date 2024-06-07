@@ -17,9 +17,10 @@
                     <div class="emp-wrap">
                         <div>
                             <div class="employee-info-header">
-                                <form class="employee-profile-form" id="profileImageForm" method="post"
+                                <!-- 프로필 이미지 저장 폼 -->
+                                <form class="employee-profile-form" id="profile-image-form" method="post"
                                       enctype="multipart/form-data" autocomplete="off">
-                                    <div class="img-wrap emp-profile">
+                                    <div class="emp-profile">
                                         <img th:src="${employee.empProfile != null ? employee.empProfile : '/img/anonymous.png'}" class="profile-img">
                                         <span class="update-img" th:text="${employee.empProfile != null ? '사진 변경' : '사진 등록'}"></span>
                                         <input type="file" id="profile-file-input" name="empProfile"
@@ -27,6 +28,7 @@
                                     </div>
                                     <button type="button" id="btn-update-profile" class="btn-save-profile">사진 저장</button>
                                 </form>
+                                <!-- 프로필 상단 정보  -->
                                 <div class="d-flex flex-column justify-content-center ms-4 mb-5">
                                     <input type="hidden" th:value="${employee.empId}" class="empId">
                                     <input type="hidden" th:value="${employee.empNo}" class="empNo">
@@ -36,9 +38,11 @@
                                     <span>이름: <span th:text="${employee.empName}" class="empName"></span></span>
                                 </div>
                                 <div class="pw-change-btn">
+                                    <!-- 결재 서명 -->
                                     <div class="sign-img-container">
                                         <img th:if="${employee.empSign != null}" th:src="${employee.empSign}" class="sign-img">
                                     </div>
+                                    <!-- 비밀번호 변경-->
                                     <button id="add-approval">결재 서명 추가</button>
                                     <a href="/crispy/employee/changeEmpPw" role="button" class="change-password">
                                         비밀번호 변경
@@ -46,12 +50,15 @@
                                 </div>
                             </div>
                             <div>
+                                <!-- 구분선 -->
                                 <div class="emp-info">
                                     직원정보
                                     <hr>
                                 </div>
-                                <form class="employeeProfileForm" method="post" autocomplete="off">
+                                <!-- 프로필 본문 -->
+                                <form class="employee-profile-form" method="post" autocomplete="off">
                                     <div class="info-wrap">
+                                        <!-- 이메일 -->
                                         <div class="emp-modify-btn">
                                             <div>
                                                 <label for="emp-profile-empEmail" class="form-label">이메일</label>
@@ -62,6 +69,7 @@
                                             <button type="button" class="btn-edit-empEmail">수정</button>
                                             <button type="button" class="btn-change-empEmail" style="display: none;">변경</button>
                                         </div>
+                                        <!-- 전화번호 -->
                                         <div class="emp-modify-btn">
                                             <div>
                                                 <label for="emp-profile-empPhone" class="form-label">전화번호</label>
@@ -72,6 +80,7 @@
                                             <button type="button" class="btn-edit-empPhone">수정</button>
                                             <button type="button" class="btn-change-empPhone" style="display: none;">변경</button>
                                         </div>
+                                        <!-- 주소 -->
                                         <div class="address-container">
                                             <div class="address-wrap">
                                                 <label class="form-label">주소</label>
@@ -104,6 +113,7 @@
                                                 <button type="button" class="btn-change-address" style="display: none;">주소 변경</button>
                                             </div>
                                         </div>
+                                        <!-- 결재 서명 모달 -->
                                         <div id="signature-modal" style="display:none;">
                                             <div class="modal-content">
                                                 <span class="close">❌</span>
@@ -114,6 +124,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <!-- 프로필 본문 수정 버튼 -->
                                     <div class="form-buttons">
                                         <button type="button" class="btn-edit-form">정보 수정</button>
                                         <button type="button" class="btn-save-form" style="display: none;">수정 완료</button>

@@ -5,14 +5,14 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum AlarmStat {
-    ACTIVE(0), //입장 활성화 상태
-    INACTIVE(1); //입장 비활성화 상태
+public enum MsgStat {
+    ACTIVE(0), // 메시지 활성화 상태
+    DELETED(1); // 메시지 비활성화 상태
 
     private final int status;
 
-    public static AlarmStat of(int status) {
-        for (AlarmStat stat : AlarmStat.values()) {
+    public static MsgStat of(int status) {
+        for (MsgStat stat : MsgStat.values()) {
             if (stat.status == status) {
                 return stat;
             }

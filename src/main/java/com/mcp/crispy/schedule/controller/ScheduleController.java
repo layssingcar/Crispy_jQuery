@@ -1,25 +1,15 @@
 package com.mcp.crispy.schedule.controller;
 
-import java.security.Principal;
-import java.util.List;
-import java.util.Optional;
-
+import com.mcp.crispy.schedule.dto.ScheduleDto;
+import com.mcp.crispy.schedule.service.ScheduleService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-import com.mcp.crispy.schedule.dto.ScheduleDto;
-import com.mcp.crispy.schedule.service.ScheduleService;
-
-import lombok.RequiredArgsConstructor;
+import java.security.Principal;
+import java.util.List;
 
 
 @Controller
@@ -61,7 +51,7 @@ public class ScheduleController {
 	}
 	
 	@DeleteMapping(value="/completeDeleteSche", produces = "application/json")
-	public ResponseEntity<Integer> completeDeleteSchedule(@RequestBody ScheduleDto scheduleDto, Principal principal){
+	public ResponseEntity<Integer> completeDeleteSchedule(@RequestBody ScheduleDto scheduleDto){
 		int deleteCount = scheduleService.completeDeleteSchedule(scheduleDto);
 		return ResponseEntity.ok(deleteCount);
 	}

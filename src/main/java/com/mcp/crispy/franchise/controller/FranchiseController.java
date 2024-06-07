@@ -13,8 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.List;
-
 @Slf4j
 @Controller
 @RequestMapping("/crispy")
@@ -62,7 +60,7 @@ public class FranchiseController {
         FranchiseDto owner = franchiseService.getFranchise(auth.getName());
         log.info("Franchise owner : {}", owner.toString());
         log.info("auth.getName {}", auth.getName());
-        log.info("owner.getEmpId {}", owner.getEmpId());
+        log.info("owner.getFrnJoinDt {}", owner.getFrnJoinDt());
         boolean isOwner = auth.getName().equals(owner.getEmpId());
 
         model.addAttribute("owner", owner);
@@ -73,10 +71,8 @@ public class FranchiseController {
 
 
     @IsAdmin
-    @GetMapping("/franchise-list")
-    public String listFranchise(Model model, FranchiseDto franchiseDto) {
-        List<FranchiseDto> franchiseList = franchiseService.getFranchiseList();
-        model.addAttribute("franchiseList", franchiseList);
+    @GetMapping("/franchiseList")
+    public String listFranchise() {
     	return "franchise/franchise-list";
     }
 }

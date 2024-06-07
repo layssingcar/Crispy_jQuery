@@ -1,6 +1,7 @@
 package com.mcp.crispy.employee.dto;
 
 import com.mcp.crispy.common.annotation.NotBlankAndPattern;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -46,6 +47,7 @@ public class EmployeeRegisterDto {
     private String empProfile;
     private EmpStatus empStat;
 
+    @NotNull(message = "입사일을 선택해주세요.")
     private Date empInDt;
     private Position posNo;
     private int frnNo;

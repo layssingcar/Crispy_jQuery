@@ -1,21 +1,23 @@
 package com.mcp.crispy.employee.controller;
 
+import com.mcp.crispy.common.config.CrispyUserDetailsService;
+import com.mcp.crispy.common.utils.JwtUtil;
 import com.mcp.crispy.employee.dto.EmployeeDto;
 import com.mcp.crispy.employee.dto.FindEmployeeDto;
 import com.mcp.crispy.employee.service.EmployeeService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Slf4j
@@ -25,18 +27,21 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class EmployeeController {
 
 	private final EmployeeService employeeService;
+	private final CrispyUserDetailsService crispyUserDetailsService;
+	private final JwtUtil jwtUtil;
 
 	@GetMapping("/findEmpId")
 	public String findUsername(Model model) {
 		model.addAttribute("findEmployeeDto", new FindEmployeeDto());
+		log.info("findEmployeeDto: {}", new FindEmployeeDto());
 		return "employee/find-emp-id";
 	}
 
 	@PostMapping("/findEmpId")
-	public String findUsernamePost(@Valid @ModelAttribute("findEmployeeDto") FindEmployeeDto findEmployeeDto, BindingResult result,
+	public String findUsernamePost(@Valid @ModelAttribute FindEmployeeDto findEmployeeDto, BindingResult result,
 								   Model model, RedirectAttributes ra) {
 		if (result.hasErrors()) {
-			log.info("호출 됨?");
+			log.info("Validation errors: {}", result.getAllErrors());
 			model.addAttribute("findEmployeeDto", findEmployeeDto);
 			return "employee/find-emp-id";
 		}
@@ -58,22 +63,52 @@ public class EmployeeController {
 	}
 
 	@GetMapping("/findEmpPw")
-	public String findPassword() {
+	public String findPassword(Model model) {
+		model.addAttribute("findEmployeeDto", new FindEmployeeDto());
 		return "employee/find-emp-pw";
 	}
 
-	@GetMapping("/changeEmpPw")
-	public String changePassword(HttpSession session, Model model) {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		log.info("auth: {}", auth);
-		if (auth != null && auth.isAuthenticated()) {
-			EmployeeDto employee = employeeService.getEmployeeName(auth.getName());
-			model.addAttribute("empId", employee.getEmpId());
-		} else if (session.getAttribute("empId") != null) {
-			String findEmpId = (String) session.getAttribute("empId");
-			model.addAttribute("empId", findEmpId);
+	@PostMapping("/findEmpPw")
+	public String findPasswordPost(@Valid @ModelAttribute FindEmployeeDto findEmployeeDto, BindingResult result,
+								   RedirectAttributes ra, HttpServletResponse response, Model model) {
+
+		if (result.hasErrors()) {
+			model.addAttribute("findEmployeeDto", findEmployeeDto);
+			return "employee/find-emp-pw";
 		}
-		return "employee/change-emp-pw";
+
+		FindEmployeeDto findEmp = employeeService.getEmpEmail(findEmployeeDto.getEmpEmail(), findEmployeeDto.getEmpName());
+		if (findEmp != null) {
+			// 사용자 인증
+			UserDetails userDetails = crispyUserDetailsService.converToUserDetails(findEmp);
+			String token = jwtUtil.createAccessToken(userDetails);
+
+			Cookie cookie = new Cookie("accessToken", token);
+			cookie.setHttpOnly(true);
+			cookie.setPath("/"); // 모든 경로에서 접근 가능
+			response.addCookie(cookie);
+
+			return "redirect:/crispy/employee/changeEmpPw";
+		} else {
+			ra.addFlashAttribute("error", "일치하는 회원 정보가 없습니다.");
+			return "redirect:/crispy/employee/findEmpPw";
+		}
+	}
+
+	@GetMapping("/changeEmpPw")
+	public String changePassword(@CookieValue(value = "accessToken", required = false) String token, HttpSession session, Model model) {
+		log.info("changePassword method called");
+		log.info("JWT Token: {}", token);
+
+		if (token != null && jwtUtil.validateToken(token)) {
+			UserDetails userDetails = jwtUtil.getUserDetailsFromToken(token);
+			log.info("changePassword userDetails: {}", userDetails);
+			session.setAttribute("empId", userDetails.getUsername());
+			model.addAttribute("empId", userDetails.getUsername());
+			return "employee/change-emp-pw";
+		} else {
+			return "redirect:/crispy/employee/findEmpPw?error=invalid_token";
+		}
 	}
 
 	// 직원 혹은 관리자 개인이 들어가는 마이 페이지

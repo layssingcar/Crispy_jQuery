@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
     const navImg = document.querySelector(".nav-img");
     const navNotify = document.querySelector(".notification");
-    const notificationMenu = document.querySelector(".notification-menu-content");
-    const profileMenu = document.querySelector(".profile-menu-content");
+    const notificationMenu = document.querySelector(".notification-mc");
+    const profileMenu = document.querySelector(".menu-content");
 
     navNotify.addEventListener("click", (e) => {
         notificationMenu.style.display = notificationMenu.style.display === 'block' ? 'none' : "block";

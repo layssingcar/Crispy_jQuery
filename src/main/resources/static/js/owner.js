@@ -12,6 +12,8 @@ const owner = {
         const resetPasswordButton = document.querySelector('.btn-reset-password');
         const selectAllCheckbox = document.querySelector('th input[type=checkbox]');
         const deleteSelectedButton = document.getElementById('btn-delete-selected');
+        const searchRole = document.getElementById('search-role');
+        const searchStatus = document.getElementById('search-status');
 
         if (myProfileElement) {
             myProfileElement.addEventListener('click', this.clearSelectedEmpNo.bind(this));
@@ -25,14 +27,37 @@ const owner = {
         if (deleteSelectedButton) {
             deleteSelectedButton.addEventListener("click", this.confirmDeleteSelectedEmployees.bind(this))
         }
+        if (searchRole) {
+            searchRole.addEventListener("change", this.searchEmployees.bind(this));
+        }
+        if (searchStatus) {
+            searchStatus.addEventListener("change", this.searchEmployees.bind(this));
+        }
     },
+
+    resetSelectConditions: function() {
+        document.getElementById("search-role").value = "";
+        document.getElementById("search-status").value = "";
+    },
+
+    searchEmployees: function () {
+        const position = document.getElementById("search-role").value;
+        const empStat = document.getElementById("search-status").value;
+        const frnNo = document.getElementById("employees-frnNo").value;
+        console.log(frnNo);
+
+        fetch(`/api/owner/employees/${frnNo}/v1?position=${position}&empStat=${empStat}`)
+            .then(response => response.json())
+            .then(data => this.renderEmployeeTable(data))
+            .catch(error => {});
+    },
+
 
     toggleSelectAll: function(event) {
         const isChecked = event.target.checked;
-        const checkboxes = document.querySelectorAll('input[name=employeeCheckbox]');
+        const checkboxes = document.querySelectorAll('input[name=employee-checkbox]');
         checkboxes.forEach((checkbox) => {
             checkbox.checked = isChecked;
-            console.log(checkbox.value);
         })
     },
 
@@ -79,7 +104,7 @@ const owner = {
         tr.appendChild(this.createCell('text', employee.empId));
         tr.appendChild(this.createCell('text', employee.frnName));
         tr.appendChild(this.createCell('text', employee.posName));
-        tr.appendChild(this.createCell('text', employee.empPhone || 'N/A'));
+        tr.appendChild(this.createCell('text', employee.empPhone));
         tr.appendChild(this.createCell('text', employee.empStat));
         tr.appendChild(this.createActionsCell(employee.empNo));
     },
@@ -89,7 +114,7 @@ const owner = {
         if (type === 'checkbox') {
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
-            checkbox.name = 'employeeCheckbox';
+            checkbox.name = 'employee-checkbox';
             checkbox.id = value;
             console.log(checkbox);
             checkbox.addEventListener('change', function() {
@@ -167,7 +192,7 @@ const owner = {
     },
 
     deleteSelectedEmployees: function () {
-      const checkboxes = document.querySelectorAll('input[name="employeeCheckbox"]:checked');
+      const checkboxes = document.querySelectorAll('input[name="employee-checkbox"]:checked');
       console.log(checkboxes.length);
       const empNos = Array.from(checkboxes)
                                 .map(checkbox => checkbox.id)
@@ -225,4 +250,7 @@ const owner = {
 
 document.addEventListener("DOMContentLoaded", function() {
     owner.init();
+});
+window.addEventListener('pageshow', function() {
+    owner.resetSelectConditions();
 });
