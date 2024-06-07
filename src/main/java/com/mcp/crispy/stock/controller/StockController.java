@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -116,25 +117,56 @@ public class StockController {
 	}
 
 	/**
+	 * 임시저장 값 존재 여부 확인
+	 * 우혜진 (24. 06. 04.)
+	 *
+	 * @param authentication
+	 * @return result
+	 */
+	@GetMapping("ckeck-order-temp")
+	public ResponseEntity<?> ckeckOrderTemp(Authentication authentication) {
+		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
+		return ResponseEntity.ok(stockService.checkOrderTemp(userDetails.getEmpNo()));
+	}
+
+	/**
 	 * 발주 재고 임시저장
 	 * 우혜진 (24. 06. 03.)
 	 *
 	 * @param authentication
 	 * @param stockOrderDto
-	 * @return redirect (stockOrder())
+	 * @return result
 	 */
 	@PostMapping("stock-order-temp")
-	public String stockOrderTemp(Authentication authentication,
-								 @ModelAttribute StockOrderDto stockOrderDto) {
+	public ResponseEntity<?> stockOrderTemp(Authentication authentication,
+								 			@RequestBody @ModelAttribute StockOrderDto stockOrderDto) {
 
 		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
 		stockOrderDto.setEmpNo(userDetails.getEmpNo());
-		log.info("stockOrderDto: {}", stockOrderDto.toString());
-		log.info("empNo: {}", userDetails.getEmpNo());
 
-		int result = stockService.insertOrderTemp(stockOrderDto);
+		return ResponseEntity.ok(stockService.insertOrderTemp(stockOrderDto));
 
-		return "redirect:stock-order";
+	}
+
+	/**
+	 * 임시저장 내용 불러오기
+	 * 우혜진 (24. 06. 04.)
+	 *
+	 * @param authentication
+	 * @param model
+	 * @return result
+	 */
+	@GetMapping("get-order-temp")
+	public String getOrderTemp(Authentication authentication,
+							   Model model) {
+
+		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
+
+		List<StockDto> stockDtoList = stockService.getOrderTemp(userDetails.getEmpNo());
+		model.addAttribute("stockDtoList", stockDtoList);
+
+		return "stock/stock-order :: stock-temp-container";
+
 
 	}
 

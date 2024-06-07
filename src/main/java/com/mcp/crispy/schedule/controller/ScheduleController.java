@@ -2,11 +2,14 @@ package com.mcp.crispy.schedule.controller;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,13 +55,15 @@ public class ScheduleController {
 	
 	@PostMapping(value="/deleteSche", produces = "application/json")
 	public ResponseEntity<Integer> deleteSchedule(@RequestBody ScheduleDto scheduleDto, Principal principal){
+
 		int deleteCount = scheduleService.deleteSchedule(scheduleDto);
 		return ResponseEntity.ok(deleteCount);
 	}
-//	@PostMapping(value="/completeDeleteSche", produces = "application/json")
-//	public ResponseEntity<Integer> completeDeleteSchedule(@RequestBody int scheduleId, Principal principal){
-//		int deleteCount = scheduleService.completeDeleteSchedule(scheduleId);
-//		return ResponseEntity.ok(deleteCount);
-//	}
+	
+	@DeleteMapping(value="/completeDeleteSche", produces = "application/json")
+	public ResponseEntity<Integer> completeDeleteSchedule(@RequestBody ScheduleDto scheduleDto, Principal principal){
+		int deleteCount = scheduleService.completeDeleteSchedule(scheduleDto);
+		return ResponseEntity.ok(deleteCount);
+	}
 	
 }

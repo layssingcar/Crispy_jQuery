@@ -1,6 +1,5 @@
 const employee = {
     init: function () {
-        this.changePassword();
         this.bindEvents();
         this.setupFormButtons();
         this.setupProfileImageUpload();
@@ -27,6 +26,9 @@ const employee = {
         }
         const empSignButton = document.getElementById("save-signature");
         empSignButton?.addEventListener("click", this.updateEmpSign);
+
+        const empEmailButton = document.querySelector(".btn-change-empEmail");
+        empEmailButton?.addEventListener("click", this.changeEmpEmail)
 
         const empNameButton = document.querySelector(".btn-change-empName");
         empNameButton?.addEventListener("click", this.changeEmpName);
@@ -58,19 +60,10 @@ const employee = {
             });
             changeButton.style.display = 'inline';
             editButton.style.display = 'none';
-            changeButton.disabled = true;
 
             if (isAddress) {
                 searchAddressButton.disabled = false;
             }
-        });
-
-        inputElements.forEach(inputElement => {
-            inputElement.addEventListener("input", () => {
-                const originalValues = Array.from(inputElements).map(input => input.defaultValue.trim());
-                const currentValues = Array.from(inputElements).map(input => input.value.trim());
-                changeButton.disabled = JSON.stringify(originalValues) === JSON.stringify(currentValues);
-            });
         });
     },
 
@@ -140,62 +133,6 @@ const employee = {
             errorContainer.textContent = message;
         }
     },
-
-    changePassword: function () {
-        const passwordForm = document.getElementById("passwordForm");
-        if (passwordForm) {
-            passwordForm.addEventListener("submit", function (e) {
-                e.preventDefault();
-
-                const data = {
-                    empId: document.querySelector(".empId").value,
-                    currentPassword: document.getElementById("current-pw").value,
-                    newPassword: document.getElementById("new-pw").value,
-                    confirmPassword: document.getElementById("confirm-pw").value
-                };
-
-                // 서버로 데이터 전송
-                fetch("/api/employee/empPw/v1", {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            return response.json().then(data => Promise.reject(data));
-                        }
-
-                        // 모든 에러 필드를 숨김
-                        const errorFields = document.querySelectorAll('.error-message');
-                        errorFields.forEach(errorField => {
-                            errorField.style.display = 'none';
-                            errorField.textContent = '';
-                        });
-
-                        alert("비밀번호가 성공적으로 변경되었습니다.");
-                        location.href = "/crispy/login";
-                    })
-                    .catch(error => {
-                        // 검증 실패 시 에러 메시지 표시
-                        const errorFields = document.querySelectorAll('.error-message');
-                        errorFields.forEach(errorField => {
-                            errorField.style.display = 'none';
-                            errorField.textContent = '';
-                        });
-
-                        Object.entries(error).forEach(([key, value]) => {
-                            const errorContainer = document.getElementById(`${key}-error`);
-                            if (errorContainer) {
-                                errorContainer.textContent = value;
-                                errorContainer.style.display = "block";
-                            }
-                        });
-                    });
-            });
-        }
-    },
     changeEmpPhone: function () {
         const empPhone = document.querySelector(".empPhone").value;
         const data = {
@@ -211,8 +148,7 @@ const employee = {
         }).then(response => {
             if (!response.ok) {
                 return response.json().then(err => {
-                    const errorMessages = Object.values(err).join("\n");
-                    throw new Error(errorMessages);
+                    employee.displayValidationErrors(err);
                 });
             } else {
                 return response.json()
@@ -221,9 +157,7 @@ const employee = {
             alert(data.message);
             location.reload();
         }).catch(error => {
-            const errorElement = document.querySelector(".empPhone-error");
-            errorElement.style.display = 'block';
-            errorElement.textContent = error.message;
+            console.error('Error:', error);
         });
     },
     updateEmpSign: function () {
@@ -313,8 +247,7 @@ const employee = {
         }).then(response => {
             if (!response.ok) {
                 return response.json().then(err => {
-                    const errorMessages = Object.values(err).join("\n");
-                    throw new Error(errorMessages);
+                    employee.displayValidationErrors(err);
                 });
             } else {
                 return response.json()
@@ -323,9 +256,33 @@ const employee = {
             alert(data.message);
             location.reload();
         }).catch(error => {
-            const errorElement = document.querySelector(".empName-error");
-            errorElement.style.display = 'block';
-            errorElement.textContent = error.message;
+            console.error('Error:', error);
+        });
+    },
+    changeEmpEmail: function () {
+        const data = {
+            empNo: parseInt(document.querySelector(".empNo").value),
+            empEmail: document.querySelector(".empEmail").value,
+        }
+        Auth.authenticatedFetch("/api/employee/empEmail/v1", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data)
+        }).then(response => {
+            if (!response.ok) {
+                return response.json().then(err => {
+                    employee.displayValidationErrors(err);
+                });
+            } else {
+                return response.json()
+            }
+        }).then(data => {
+            alert(data.message);
+            location.reload();
+        }).catch(error => {
+            console.error('Error:', error);
         });
     },
     changePosNo: function () {
@@ -405,7 +362,7 @@ const employee = {
 
     saveForm: function () {
         const empNo = document.querySelector('.empNo').value;
-        const empName = document.getElementById('emp-profile-empName')?.value;
+        const empName = document.querySelector('.empName').value;
         const empEmail = document.querySelector('.empEmail').value;
         const empPhone = document.querySelector('.empPhone').value;
         const empZip = document.querySelector('.zipcode').value;
@@ -427,9 +384,8 @@ const employee = {
         };
 
         const token = Auth.getCookie('accessToken');
-        const validateName = empName ? true : false;
-        console.log(validateName);
-        Auth.authenticatedFetch(`/api/employee/form/v1?validateName=${validateName}`, {
+        console.log(empName);
+        Auth.authenticatedFetch(`/api/employee/form/v1`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -501,8 +457,7 @@ const employee = {
         document.querySelector('.detail-address').value = employee.empDetail || '';
 
         document.getElementById('employee-profile').style.display = 'block';
-    }
-
+    },
 }
 
 

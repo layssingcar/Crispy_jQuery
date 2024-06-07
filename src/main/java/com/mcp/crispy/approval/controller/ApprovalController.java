@@ -1,13 +1,46 @@
 package com.mcp.crispy.approval.controller;
 
+import com.mcp.crispy.approval.dto.ApplicantDto;
+import com.mcp.crispy.approval.service.ApprovalService;
+import com.mcp.crispy.auth.domain.EmployeePrincipal;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("crispy")
+@RequiredArgsConstructor
 public class ApprovalController {
-	
+
+	private final ApprovalService approvalService;
+
+	/**
+	 * 휴가, 휴직 신청 페이지
+	 * 우혜진 (24. 05. 20.)
+	 *
+	 * @return forward (time-off-approval.html)
+	 */
+	@GetMapping("time-off-approval")
+	public String timeOffAppr() {
+		return "approval/time-off-approval";
+	}
+
+	/**
+	 * 직원 정보 조회
+	 * 우혜진 (24. 06. 05.)
+	 *
+	 * @param authentication
+	 * @return result
+	 */
+	@GetMapping("get-emp-info")
+	public ResponseEntity<ApplicantDto> getEmpInfo(Authentication authentication) {
+		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
+		return ResponseEntity.ok(approvalService.getEmpInfo(userDetails.getEmpNo()));
+	}
+
 	/** 휴가 및 휴직 신청 목록 조회
 	 * 
 	 * @return forward (approval-list.html)
@@ -24,15 +57,6 @@ public class ApprovalController {
 	@GetMapping("approval-detail")
 	public String apprDetail() {
 		return "approval/approval-detail";
-	}
-	
-	/** 휴가, 휴직 신청
-	 * 
-	 * @return forward (time-off-approval.html)
-	 */
-	@GetMapping("time-off-approval")
-	public String timeOffAppr() {
-		return "approval/time-off-approval";
 	}
 	
 	// 결재선 선택 (임시)

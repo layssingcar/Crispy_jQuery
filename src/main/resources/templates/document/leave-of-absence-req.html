@@ -1,4 +1,4 @@
-<div class="vacation" th:fragment="leave-of-absence-req">
+<div class="time-off" th:fragment="leave-of-absence-req">
     <table>
         <tbody>
             <tr>
@@ -14,21 +14,32 @@
             <tr>
                 <th class="col inp-col">성명</th>
                 <!-- 기안자 출력 -->
-                <td colspan="3"></td>
+                <td colspan="3" class="emp-name"></td>
 
                 <th class="col inp-col">직책</th>
                 <!-- 직책 출력 -->
-                <td colspan="3" class="row"></td>
+                <td colspan="3" class="row" id="pos-name"></td>
             </tr>
             <tr>
                 <th class="col inp-col">주소</th>
                 <!-- 주소 출력 (도로명주소 + 상세주소) -->
-                <td colspan="7"></td>
+                <td colspan="7" id="emp-address"></td>
             </tr>
             <tr>
                 <th class="col inp-col">휴직 기간</th>
-                <!-- 휴직 기간 입력 -->
-                <td colspan="7">2024년 05월 22일 ~ 2024년 05월 30일 (09일간)</td>
+                <td colspan="7">
+                    <!-- 휴직 시작일 입력 -->
+                    <input type="date"/>
+                    <span>~</span>
+
+                    <!--휴직 종료일 입력 -->
+                    <input type="date">
+                    <span>(</span>
+
+                    <!-- 휴직 기간 출력 -->
+                    <span>00</span>
+                    <span>일간 )</span>
+                </td>
             </tr>
             <tr>
                 <th class="col inp-col">휴직 사유</th>
@@ -40,16 +51,16 @@
             <tr>
                 <td colspan="8">
                     <div id="doc-cont">
-                        <div>위 본인은 상기의 사유로 휴직를 신청합니다.</div>
+                        <div>위 본인은 상기의 사유로 휴직을 신청합니다.</div>
 
-                        <!-- 기안일 출력 (2024년 05월 22일 수요일) -->
-                        <div></div>
+                        <!-- 기안일 출력 -->
+                        <div id="appr-dt"></div>
 
                         <div class="appr-emp">
                             <div>신청인:&nbsp;</div>
 
                             <!-- 기안자 출력 -->
-                            <div id="emp-name"></div>
+                            <div class="emp-name" id="emp-name"></div>
                             
                             <div id="emp-sign">
                                 <span>(인)</span>
@@ -60,4 +71,12 @@
             </tr>
         </tbody>
     </table>
+
+    <!-- 파일 선택 -->
+    <div class="file-attach">
+        <div class="mb-3">
+            <input class="form-control" type="file" id="formFileMultiple" multiple
+                   style="font-size: 1.5rem;">
+        </div>
+    </div>
 </div>

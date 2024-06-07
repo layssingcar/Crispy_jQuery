@@ -24,4 +24,5 @@ public class ChatRoomDto {
     private List<CrEmpDto> participants;
     private String empName;
     private Integer empNo;
+    private String msgContent;
 }

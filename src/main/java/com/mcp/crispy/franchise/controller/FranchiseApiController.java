@@ -138,6 +138,20 @@ public class FranchiseApiController {
         Integer modifier = franchiseUtil.getModifier();
         franchiseService.updateFormFrn(frnUpdateDto, modifier);
         return ResponseEntity.ok(Map.of("message","정보가 수정되었습니다."));
+    }
 
+    // 가맹점 삭제
+    @DeleteMapping("/{frnNo}/v1")
+    public ResponseEntity<?> removeFranchise(@PathVariable Integer frnNo) {
+        log.info("removeFranchise: {}", frnNo);
+        franchiseService.removeFranchise(frnNo);
+        return ResponseEntity.ok().build();
+    }
+
+    // 선택한 가맹점 삭제
+    @DeleteMapping("/franchises/v1")
+    public ResponseEntity<?> removeFranchises(@RequestBody List<Integer> frnNos) {
+        franchiseService.removeFranchises(frnNos);
+        return ResponseEntity.ok().build();
     }
 }

@@ -93,10 +93,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 </update>
 
 
-<delete id="completeDeleteSchedule">
+<delete id="completeDeleteSchedule"
+		parameterType="ScheduleDto">
 	DELETE 
-		FROM ANNUAL_T 
-	WHERE ANN_ID = #{annId}
+		FROM SCHEDULE_T 
+	WHERE SCHE_ID = #{scheId}
 </delete>
 
 </mapper>

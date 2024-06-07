@@ -15,31 +15,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CalendarService {
 
-	private final CalendarMapper commentMapper;
+	private final CalendarMapper calendarMapper;
 
 	@Transactional(readOnly=true)
-	public List<CalendarDto> getCalendarList(Model model, int boardNo) 
+	public List<CalendarDto> getTrashList() 
 	{
-		List<CalendarDto> cmtList = commentMapper.getCalendarList(boardNo);
-		model.addAttribute("commentList", cmtList);
-		return commentMapper.getCalendarList(boardNo);
-	}
-
-	@Transactional
-	public int insertCalendar()
-	{
-		return 0;
-	}
-	
-	@Transactional
-	public int deleteCalendar() 
-	{
-		return 0;
-	}
-
-	@Transactional
-	public int modifyCalendar() 
-	{	
-		return 0;
+		return calendarMapper.getTrashList();
 	}
 }

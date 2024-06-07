@@ -1,6 +1,7 @@
 package com.mcp.crispy.franchise.controller;
 
 import com.mcp.crispy.common.annotation.IsAdmin;
+import com.mcp.crispy.common.annotation.IsAdminOrIsOwner;
 import com.mcp.crispy.franchise.dto.FranchiseDto;
 import com.mcp.crispy.franchise.service.FranchiseService;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +55,7 @@ public class FranchiseController {
      * @param model 모델 객체
      * @return forward (franchise.html)
      */
+    @IsAdminOrIsOwner
     @GetMapping("/franchise")
     public String getFranchise(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

@@ -74,7 +74,9 @@
 
                                     <td>
                                         <!-- 수량 -->
-                                        <span class="strong" th:text="${stock.isCount}"></span>
+                                        <span class="strong"
+                                              th:with="formattedCount=${#numbers.formatDecimal(stock.isCount, 0, 'COMMA', 0, 'COMMA')}"
+                                              th:text="${formattedCount}"></span>
                                         <span>개</span>
                                     </td>
                                 </tr>

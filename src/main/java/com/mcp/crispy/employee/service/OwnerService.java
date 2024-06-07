@@ -110,4 +110,22 @@ public class OwnerService {
         }
         return employeeByFranchise;
     }
+
+    // 직원 삭제
+    @Transactional
+    public void removeEmployeeById(Integer empNo) {
+        int count = ownerMapper.countByEmpNo(empNo);
+        if (count > 0) {
+            ownerMapper.deleteEmployee(empNo);
+        } else {
+            throw new IllegalArgumentException("해당하는 직원이 존재하지 않습니다.");
+        }
+    }
+
+    // 직원 선택 삭제
+    @Transactional
+    public void removeEmployees(List<Integer> empNos) {
+        log.info("선택된 직원: {}", empNos);
+        ownerMapper.deleteEmployees(empNos);
+    }
 }
