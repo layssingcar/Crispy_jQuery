@@ -1,3 +1,4 @@
+/* 폰트 크기 설정 */
 .employee-profile input,
 .employee-profile label,
 .employee-profile span,
@@ -5,21 +6,27 @@
 .employee-profile a {
     font-size: 1.5rem;
 }
-.employee-profile header {
-    height: 65px !important; /* 다른 모든 규칙을 오버라이드 */
-    line-height: 65px;
-    background-color: var(--main-color);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 20px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+
+/* 폼 외벽 설정 */
+.employee-profile-container {
+    width: 100%;
+    margin: auto;
+    padding: 20px;
 }
 
+/* 상단 영역 스타일 */
+.employee-info-header {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+
+/* input 태그 width 설정 */
 .employee-profile input {
     width: 300px;
 }
 
+/* 폼 설정 */
 .employee-profile .emp-wrap {
     width: 550px;
     display: flex;
@@ -34,6 +41,8 @@
 
 .employee-profile .file-input {display: none;}
 
+
+/* 프로필 이미지 크기 설정 */
 .employee-profile .profile-img{
     float: right;
     width: 150px;
@@ -51,7 +60,8 @@
 .employee-profile-form .profile-img:hover {filter: brightness(50%);}
 .employee-profile-form .profile-img:hover + .update-img {display: block;}
 .employee-profile-form .profile-img:hover + .update-img-detail {display: block;}
-/* 프로필 이미지 변경 텍스트 */
+
+/* 프로필 이미지 변경 텍스트 위치 - 프로필 (마이 페이지) */
 .employee-profile-form .update-img {
     display: none;
     position: absolute;
@@ -59,6 +69,7 @@
     color: #fff;
 }
 
+/* 프로필 이미지 변경 텍스트 위치 - 프로필 ( 관리자가 보는 페이지 ) */
 .employee-profile-form .update-img-detail {
     display: none;
     position: absolute;
@@ -66,11 +77,22 @@
     color: #fff;
 }
 
-.employee-info-header {
-    display: flex;
-    margin-bottom: 20px;
+/* 사진 저장 버튼 */
+.employee-profile .btn-save-profile{
+    align-self: center;
+    border: 0;
+    padding: 5px 25px;
+    width: 150px;
+    border-radius: 7px;
 }
 
+/* 프로필 이미지 크기*/
+.employee-profile img {
+    width: 100px;
+    height: 100px;
+}
+
+/* 버튼 영역 */
 .pw-change-btn {
     display: flex;
     flex-direction: column;
@@ -80,6 +102,16 @@
     align-items: flex-end;
 }
 
+/* 결재 서명 이미지 */
+.pw-change-btn .sign-img {
+    width: 200px;
+    height: 150px;
+    border: 1px solid #e6e7eb;
+    border-radius: 0.375rem;
+    margin-bottom: 10px;
+}
+
+/* 비밀번호 변경 버튼 */
 .employee-profile .change-password{
     height: 35px;
     width: 115px;
@@ -90,7 +122,15 @@
     --bs-btn-hover-color: #fff;
     color: #fff;
 }
+/* 비밀번호 리셋 */
+.employee-profile .reset-password {
+    padding: 5px 25px;
+    border-radius: 7px;
+    border: 0;
+}
 
+
+/* 결재서명 버튼 */
 #add-approval {
     width: 115px;
     padding: 5px 10px;
@@ -100,19 +140,23 @@
     background-color: var(--sub-color) !important;
 }
 
+/* 구분 영역 */
+.employee-profile .emp-info {
+    display: flex;
+    font-size: 1.5rem;
+}
+
+/* 구분선 */
+.employee-profile .emp-info hr {
+    width: 83%;
+    margin-left: 10px;
+}
+
 .form-control {
     margin-top: 0 !important;
 }
 
-.employee-profile-container {
-    width: 100%;
-    margin: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-}
-
+/* 정보 수정 버튼 제외한 크기 설정 */
 .info-wrap {
     width: 500px;
     display: flex;
@@ -121,63 +165,20 @@
     justify-content: center;
 }
 
+/* 마진 설정 */
 .info-wrap div {
     margin-top: 10px;
 }
 
-.img-wrap {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.employee-position {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.employee-position div {
-    margin-top: 10px;
-}
-
-.franchise-place {
-    width: 200px;
-}
-
-.employee-role {
-    width: 200px;
-    display: flex;
-    align-items: center;
-}
-
-
-.employee-profile .btn-save-profile{
-    align-self: center;
-    border: 0;
-    padding: 5px 25px;
-    width: 150px;
-    border-radius: 7px;
-}
-
-.employee-profile img {
-    width: 100px;
-    height: 100px;
-}
-
+/* 주소 설정 */
 .address-wrap {
     display: flex;
     flex-direction: column;
     margin-left: 6%;
 }
 
+/* 우편번호 스타일 */
 .address-wrap div:nth-child(2) {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
     margin-top: 0;
 }
 
@@ -185,38 +186,24 @@
     display: flex;
 }
 
+/* 우편번호 width */
 .address-wrap .zipcode {
     width: 150px !important;
 }
 
+/* 주소찾기 버튼 */
 .address-wrap .search-address {
     width: 100px !important;
     background-color: var(--sub-color) !important;
 }
 
+/* 상세 주소 */
 .detail-wrap {
-    display: flex;
-    align-items: flex-start;
     margin-top: 0 !important;
     margin-bottom: 10px;
 }
 
-.detail-wrap button {
-    position: relative;
-    right: -40px;
-}
-
-.operating-time {
-    display: flex;
-    align-items: center;
-    width: 150px;
-}
-
-.operating-time input{
-    width: 70px;
-    margin-top: 0;
-}
-
+/* 각 필드 수정 버튼 */
 .emp-modify-btn {
     width: 100%;
     display: flex;
@@ -224,10 +211,12 @@
     justify-content: space-between;
 }
 
+/* 각 인풋 필드 */
 .emp-modify-btn div:first-child {
     margin-left: 30px;
 }
 
+/* 수정 버튼 크기 */
 .emp-modify-btn button{
     width: 70px;
     border-radius: 7px;
@@ -235,11 +224,13 @@
     border: 0;
 }
 
+/* 주소 컨테이너 */
 .address-container {
     width: 100%;
     display: flex;
 }
 
+/* 주소 수정 컨테이너 스타일 */
 .address-container .change-address-container {
     display: flex;
     align-items: center;
@@ -249,12 +240,15 @@
     margin-bottom: 50px;
 }
 
+/* 주소 변경 버튼 스타일*/
 .address-container .change-address-container button {
     width: 100px;
     border-radius: 7px;
     padding: 5px 10px;
     border: 0;
 }
+
+/* 수정 버튼 스타일 */
 .address-container .change-address-container .btn-edit-address {
     width: 70px;
     border-radius: 7px;
@@ -262,20 +256,13 @@
     border: 0;
 }
 
+/* 주소 찾기 버튼 스타일 */
 .address-wrap button{
     border-radius: 7px;
     padding: 5px 10px;
     border: 0;
 }
-
-.pw-change-btn .sign-img {
-    width: 200px;
-    height: 150px;
-    border: 1px solid #e6e7eb;
-    border-radius: 0.375rem;
-    margin-bottom: 10px;
-}
-
+/* 결재 서명 모달 */
 #signature-modal {
     position: fixed;
     left: 0;
@@ -290,6 +277,7 @@
     margin-left: 140px;
 }
 
+/* 모달 내부 */
 .modal-content {
     background: white;
     padding: 20px;
@@ -298,12 +286,7 @@
     text-align: center;
 }
 
-.employee-profile .reset-password {
-    padding: 5px 25px;
-    border-radius: 7px;
-    border: 0;
-}
-
+/* 직책 및 재직 상태 */
 .employee-profile input[type=radio]{
     width: 25px;
     height: 1.5rem;
@@ -323,31 +306,17 @@
     margin-bottom: 0;
 }
 
-.employee-profile .emp-info {
-    display: flex;
-    font-size: 1.5rem;
-}
-.employee-profile .emp-info hr {
-    width: 83%;
-    margin-left: 10px;
-}
-
+/* 전체 수정 스타일 */
 .form-buttons {
     display: flex;
     justify-content: center;
     margin-top: 20px;
 }
 
+/* 전체 수정 버튼 스타일 */
 .form-buttons button {
     width: 200px;
     border-radius: 7px;
     padding: 5px 10px;
     border: 0;
-}
-
-.error-message {
-    display: none;
-    color: red;
-    font-size: 1.5rem;
-    margin-top: 0 !important;
 }

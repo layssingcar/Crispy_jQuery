@@ -1,7 +1,23 @@
+/* 폰트 크기 설정 */
 .emp-register .emp-reg-form input, button, label  {
     font-size: 1.5rem;
 }
 
+/* 제목 */
+.emp-register .emp-reg-title {
+    font-size: 2.5rem;
+}
+
+/* 직원 등록 페이지 설정 */
+.emp-register .emp-register-container {
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 20px 20px 20px;
+}
+
+/* 직원 등록 폼 스타일 */
 .emp-register .emp-info {
     width: 550px;
     display: flex;
@@ -17,18 +33,6 @@
     margin-top: 0 !important;
 }
 
-.emp-register .emp-reg-title {
-    font-size: 2.5rem;
-}
-
-.emp-register .emp-register-container {
-    max-width: 500px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 30px 20px 20px 20px;
-}
-
 .emp-register .info-wrap input {
     width: 250px;
 }
@@ -37,15 +41,13 @@
     margin-top: 10px;
 }
 
-.emp-register .employee-position {
-    margin-top: 0 !important;
-}
-
+/* 직책 버튼 스타일 */
 .emp-register .employee-role input[type=radio]{
     width: 25px;
     height: 1.5rem;
 }
 
+/* 직원 등록 */
 .emp-register #btn-emp-register {
     width: 250px;
     border-radius: 7px;

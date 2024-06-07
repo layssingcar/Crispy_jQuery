@@ -208,7 +208,7 @@ const employee = {
     },
     changeProfileImage: function () {
         const empNo = document.querySelector(".empNo").value;
-        const profileForm = document.getElementById("profileImageForm")
+        const profileForm = document.getElementById("profile-image-form")
 
         const formData = new FormData(profileForm);
         formData.append('empNo', empNo);

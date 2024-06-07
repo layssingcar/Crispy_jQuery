@@ -1,13 +1,4 @@
-.form-control {
-    width: 250px;
-    box-sizing: border-box;
-    margin: 0;
-}
-
-.verify-email {
-    display: flex;
-}
-
+/* 페이지 틀 */
 .find-container {
     padding-top: 30px; /* 내용을 위로 조금 더 올립니다 */
     padding-bottom: 50px;
@@ -22,27 +13,24 @@
     background-color: #fff;
 }
 
-.email-validate-btn,
-.check-verify-code {
-    width: 80px;
-}
-
 .find-container > div:first-child {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.find-form {
-    padding: 40px;
-    border-radius: 15px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
+/* 로고 이미지 */
 .find-container img {
     width: 200px;
     height: 100px;
     margin-bottom: 20px;
+}
+
+/* 폼 스타일 */
+.find-form {
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .find-header {
@@ -52,35 +40,49 @@
     font-size: 3rem;
 }
 
+/* 아이디 찾기 input 영역 */
 .find-emp-id {
     flex-direction: column;
     align-items: center;
 }
 
-
+/* 페이지 공통 font-size */
 .find-emp-id label,
 .find-emp-id input,
 .find-emp-id button{
     font-size: 1.4rem;
 }
 
+/* 이메일 */
+.email-wrap {
+    display: flex;
+}
+
+/* 인증 요청 */
+.verify-email {
+    display: flex;
+}
+
+/* 인증요청, 확인버튼 공통 사이즈  */
+.email-validate-btn,
+.check-verify-code {
+    width: 80px;
+}
+
+/* input 공통 */
+.form-control {
+    width: 250px;
+    box-sizing: border-box;
+    margin: 0;
+}
+
+/* 찾기 버튼  */
 .find-btn {
     width: 100%;
     font-size: 1.3rem;
 }
 
-.container.my-3 {
-     /* 자동으로 마진을 설정하여 중앙 정렬 */
-}
-
-form {
-    width: 100%; /* 폼의 너비를 최대로 설정 */
-}
-
-.email-wrap {
-    display: flex;
-}
-
+/* 아이디 찾기 결과*/
 .find-result {
     display: flex;
     justify-content: center;
@@ -89,16 +91,29 @@ form {
     font-size: 1.5rem;
 }
 
-.find-result h4 {
-    text-align: center;
-}
-
+/* 아이디 찾기 결과 폼 */
 .find-result-form {
     padding: 40px;
     border-radius: 15px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
+/* 아이디 찾기 결과 제목 */
+.find-result h4 {
+    text-align: center;
+}
+
+/* 비밀번호 찾기 */
+.result-to-find-password {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.result-to-find-password a:hover {
+    color: var(--main-color);
+}
+
+/* 로그인 버튼 */
 .result-to-login{
     display: block;
     width: 100%;
@@ -108,18 +123,4 @@ form {
     border-radius: 7px;
     background-color: var(--main-color);
     color: #fff;
-}
-
-.find-result-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.result-to-find-password {
-    text-align: center;
-    margin-top: 30px;
-}
-
-.result-to-find-password a:hover {
-    color: var(--main-color);
 }

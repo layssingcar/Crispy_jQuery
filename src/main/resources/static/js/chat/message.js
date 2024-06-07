@@ -164,7 +164,6 @@ const message = {
                 this.stompClient.subscribe('/user/' + username + '/queue/roomUpdate', (roomUpdateOutput) => {
                     this.updateChatRooms(JSON.parse(roomUpdateOutput.body));
                 });
-
                 this.isSubscribed = true;
             }
             if (callback) callback();

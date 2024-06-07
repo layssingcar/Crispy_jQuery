@@ -12,10 +12,12 @@
     <div>
         <header th:replace="~{layout/navbar :: navbar}"></header>
         <main>
+            <!-- 가맹점 상세 페이지 -->
             <div class="franchise">
                 <div class="container frn-container" id="frn-Img" style="display: none">
                     <div class="frn-detail-wrap">
                         <div class="frn-info-wrap">
+                            <!-- 가맹점 이미지 저장 폼 -->
                             <form class="frn-info-form" id="frn-form" method="post" enctype="multipart/form-data" autocomplete="off">
                                 <div class="img-wrap frn-profile">
                                     <span class="update-img"></span>
@@ -27,14 +29,17 @@
                                 </div>
                                 <button type="button" id="btn-update-frn-img" class="btn-save-profile">사진 저장</button>
                             </form>
+                            <!-- 구분선 -->
                             <div class="frn-info">
                                 가맹점정보
                                 <hr>
                             </div>
+                            <!-- 가맹점 정보 본문 정보  -->
                             <form class="frn-profile-form" method="post" autocomplete="off">
                                 <div class="info-wrap">
                                     <input type="hidden" th:value="${owner.frnNo}" class="frnNo">
                                     <input type="hidden" th:value="${owner.empNo}" class="empNo">
+                                    <!-- 가맹점 이름 -->
                                     <div class="frn-modify-btn">
                                         <div>
                                             <label for="frn-frnName" class="form-label">가맹점 이름</label>
@@ -42,11 +47,13 @@
                                                    placeholder="가맹점 이름" autocomplete="on" th:value="${owner.frnName}">
                                             <div class="error-message" id="frnName-error" style="display: none;"></div>
                                         </div>
+                                        <!-- 관리자만 볼 수 있는 버튼 -->
                                         <div sec:authorize="hasRole('ROLE_ADMIN')">
                                         <button type="button" id="btn-edit-frnName">수정</button>
                                         <button type="button" id="btn-change-frnName" style="display: none;">변경</button>
                                         </div>
                                     </div>
+                                    <!-- 대표자 이름 -->
                                     <div class="frn-modify-btn">
                                         <div>
                                             <label for="frn-frnOwner" class="form-label">대표자</label>
@@ -57,18 +64,21 @@
                                         <button type="button" id="btn-edit-frnOwner">수정</button>
                                         <button type="button" id="btn-change-frnOwner" style="display: none;">변경</button>
                                     </div>
+                                    <!-- 가게 전화번호 -->
                                     <div class="frn-modify-btn">
                                         <div>
-                                            <label for="frn-frnTel" class="form-label">전화번호</label>
+                                            <label for="frn-frnTel" class="form-label">가맹점번호</label>
                                             <input type="text" class="form-control frnTel" id="frn-frnTel" name="frnTel"
                                                    placeholder="- 제외하고 입력해주세요." th:value="${owner.frnTel}">
                                             <div class="error-message frnTel-error" id="frnTel-error" style="display: none;"></div>
                                         </div>
+                                        <!-- 관리자만 볼 수 있는 버튼 -->
                                         <div sec:authorize="hasRole('ROLE_ADMIN')">
                                             <button type="button" id="btn-edit-frnTel">수정</button>
                                             <button type="button" id="btn-change-frnTel" style="display: none;">변경</button>
                                         </div>
                                     </div>
+                                    <!-- 가맹점 주소 -->
                                     <div class="address-container">
                                         <div class="address-wrap">
                                             <label class="form-label">주소</label>
@@ -76,6 +86,7 @@
                                                 <div class="d-flex">
                                                     <input type="text" id="frn-frnZip" name="frnZip" class="form-control zipcode mb-2"
                                                            placeholder="우편번호" th:value="${owner.frnZip}">
+                                                    <!-- 관리자만 볼 수 있는 버튼 -->
                                                     <div sec:authorize="hasRole('ROLE_ADMIN')">
                                                         <button type="button" class="mt-0 search-address" onclick="execPostCode(false)">주소 찾기</button>
                                                     </div>
@@ -91,10 +102,12 @@
                                                 <div class="error-message frnDetail-error" style="display: none;"></div>
                                             </div>
                                         </div>
+                                        <!-- 관리자만 볼 수 있는 버튼 -->
                                         <div class="change-address-container" sec:authorize="hasRole('ROLE_ADMIN')">
                                             <button type="button" class="btn-change-address">주소 변경</button>
                                         </div>
                                     </div>
+                                    <!-- 가맹일 -->
                                     <div class="frn-modify-btn mt-0">
                                         <div>
                                             <label for="signup-empInDt" class="form-label">가맹일</label>
@@ -102,6 +115,7 @@
                                                    th:value="${#temporals.format(owner.frnJoinDt, 'yyyy-MM-dd')}" disabled>
                                         </div>
                                     </div>
+                                    <!-- 운영 시간 -->
                                     <div class="frn-modify-btn mt-0">
                                         <div>
                                             <label class="form-label mt-3">운영시간</label>
@@ -116,6 +130,7 @@
                                         <button type="button" id="btn-change-operating-time" style="display: none;">변경</button>
                                     </div>
                                 </div>
+                                <!-- 관리자만 볼 수 있는 버튼 -->
                                 <div class="form-buttons" sec:authorize="hasRole('ROLE_ADMIN')">
                                     <button type="button" class="btn-edit-form">정보 수정</button>
                                     <button type="button" class="btn-save-form" style="display: none;">수정 완료</button>

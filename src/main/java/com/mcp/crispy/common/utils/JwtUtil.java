@@ -27,7 +27,8 @@ import java.util.stream.Collectors;
 public class JwtUtil {
 
     public static final String ISSUER = "moz1mozi.com";
-    public static final int EXP = 900000; //15분
+    public static final int EXP_SHORT = 15 * 60 * 1000; // 15분
+    public static final int EXP_LONG = 60 * 60 * 1000;  // 1시간
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final String HEADER = "Authorization";
 
@@ -51,7 +52,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .issuer(ISSUER)
                 .subject(username) // empId
-                .expiration(new Date(System.currentTimeMillis() + EXP))
+                .expiration(new Date(System.currentTimeMillis() + EXP_LONG))
                 .claim("username", username)
                 .claim("roles", authorities)
                 .signWith(key)

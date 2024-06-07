@@ -11,42 +11,47 @@
     <div>
         <header th:replace="~{layout/navbar :: navbar}"></header>
         <main>
+            <!-- 직원 관리 (리스트) -->
             <div class="employees">
                 <input type="hidden" id="employees-frnNo" th:value="${frnNo}">
                 <div>
                     <h1>직원 관리</h1>
                 </div>
                 <div class="employees-wrap">
+                    <!-- 상단 버튼 -->
                     <div class="employee-register">
                         <a role="button" href="/crispy/owner/employee/register" class="btn-employee-register">직원 등록</a>
                         <button id="btn-delete-selected">선택 삭제</button>
                     </div>
+                    <!-- 직책 / 재직 상태 검색 셀렉트박스 -->
                     <div>
-                        <label for="searchRole">직책:</label>
-                        <select id="searchRole">
+                        <label for="search-role">직책:</label>
+                        <select id="search-role">
                             <option value="">전체</option>
                             <option value="1">매니저</option>
                             <option value="2">직원</option>
                         </select>
 
-                        <label for="searchStatus">상태:</label>
-                        <select id="searchStatus">
+                        <label for="search-status">상태:</label>
+                        <select id="search-status">
                             <option value="">전체</option>
                             <option value="0">재직</option>
                             <option value="1">휴직</option>
                             <option value="2">퇴직</option>
                         </select>
                     </div>
+                    <!-- 직원 검색 -->
                     <div class="employee-search">
                         <span class="icon"><i class="fa fa-search"></i></span>
                         <input type="search" class="form-control" id="search" placeholder="검색" />
                     </div>
 
                 </div>
+                <!-- 테이블 -->
                 <table class="table">
                     <thead>
                     <tr>
-                        <th scope="col"><input type="checkbox" name="employeeCheckbox"></th>
+                        <th scope="col"><input type="checkbox" name="employee-checkbox"></th>
                         <th scope="col">사원번호</th>
                         <th scope="col">이름</th>
                         <th scope="col" class="id-column">아이디</th>
