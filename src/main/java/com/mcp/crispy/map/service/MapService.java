@@ -13,9 +13,8 @@ public class MapService {
 
     private final MapMapper mapMapper;
 
-    // 가맹점 목록 및 정보조회
-    public List<MapDto> getMapList() {
-        return mapMapper.getMapList();
+    public List<MapDto> getMapList(String search) {
+        return mapMapper.getMapList(search);
     }
 }
 
