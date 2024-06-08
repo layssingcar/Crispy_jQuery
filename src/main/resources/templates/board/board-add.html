@@ -11,31 +11,30 @@
 	<div>
 		<main>
 			<div class="main">
-				<form id="frm-board-add" action="/crispy/add-form" method="POST" enctype="multipart/form-data" class="my-3">
+				<form id="frm-board-add" method="POST" class="my-3" enctype="multipart/form-data">
 					<h1 class="border-bottom py-2">게시물 작성하기</h1>
 					<div class="col-md-5">
 						<label for="cate" class="form-label">카테고리</label>
-						<select class="form-select" id="cate" name="boardCtNo" required>
+						<select class="form-select board-ct-no" id="cate" name="boardCtNo" required>
 							<option value="">카테고리</option>
 							<option value="0">공지사항</option>
 							<option value="1">자유게시판</option>
 						</select>
 					</div>
 					<label for="boardTitle" class="form-label">제목</label>
-					<input type="text" name="boardTitle" id="boardTitle" class="form-control" style="white-space: pre-line;" placeholder="제목은 15자 내외로 입력해주세요." maxlength="15" required />
+					<input type="text" name="boardTitle" id="boardTitle" class="form-control board-title" style="white-space: pre-line;" placeholder="제목은 15자 내외로 입력해주세요." maxlength="15" required />
 					<div class="mb-3">
 						<label for="summernote" class="form-label mt-2">내용</label>
-						<textarea th:utext="${boardContent}" id="summernote" name="boardContent" class="boardContent"></textarea>
+						<textarea id="summernote" name="boardContent" class="boardContent board-content"></textarea>
 					</div>
 					<div class="file-attach">
-						<input type="hidden" name="empNo" th:value="*{inserted.empNo ?: ''}" />
 						<div class="mb-3">
 							<input class="form-control" type="file" id="formFileMultiple" name="files" multiple>
 						</div>
 					</div>
 					<div class="d-flex justify-content-end" id="btn">
 						<a id="cancelBtn" class="btn btn-primary btn-lg">취소</a>
-						<button type="submit" id="addBtn" class="btn btn-primary btn-lg">등록</button>
+						<button type="button" id="addBtn" class="btn btn-primary btn-lg">등록</button>
 					</div>
 
 				</form>
@@ -72,20 +71,34 @@
 		$('#cancelBtn').on('click', () => {
 			window.location.href="/board/board-list";
 		});
+	</script>
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			const addBoard = document.getElementById("addBtn");
+			addBoard.addEventListener("click", function () {
+				const form = document.getElementById('frm-board-add');
+				const formData = new FormData(form);
 
-		/*		$('#frm-board-add').on('submit', function(evt) {
-                    if ($('#boardTitle').val().trim() === '') {
-                        alert('제목 입력은 필수입니다.');
-                        evt.preventDefault();
-                    } else if ($('#summernote').val().trim() === '') {
-                        alert('내용 입력은 필수입니다.');
-                        evt.preventDefault();
-                    } else {
-                        alert("게시물이 등록되었습니다.");
-                        window.location.href = '/crispy/board-detail';
+				const boardDto = {
+					boardCtNo: form.boardCtNo.value,
+					boardTitle: form.boardTitle.value,
+					boardContent: $('<div>').html($('#summernote').summernote('code')).text()
+				};
 
-                    }
-                });*/
+				formData.append('boardDto', new Blob([JSON.stringify(boardDto)], { type: 'application/json' }));
+
+				fetch('/crispy/api/board/v1', {
+					method: "POST",
+					body: formData
+				}).then(response => response.json())
+						.then(data => {
+							alert(data.message)
+							location.href ="/crispy/board-list"
+						}).catch(error => {
+					alert("등록에 실패했습니다.");
+				})
+			})
+		})
 	</script>
 </div>
 </body>

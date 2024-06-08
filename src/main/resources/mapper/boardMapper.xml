@@ -8,16 +8,17 @@
         <result property="boardTitle" column="BOARD_TITLE" />
         <result property="boardContent" column="BOARD_CONTENT" />
         <result property="boardHit" column="BOARD_HIT" />
+        <result property="boardLikeCount" column="BOARD_LIKE_COUNT"/>
         <result property="createDt" column="CREATE_DT" />
         <result property="creator" column="CREATOR" />
         <result property="modifyDt" column="MODIFY_DT" />
         <result property="modifier" column="MODIFIER" />
-        <association property="employee" javaType="EmployeeDto">
-            <id property="empNo" column="EMP_NO" />
-            <result property="empId" column="EMP_ID" />
-            <result property="empName" column="EMP_NAME" />
-            <result property="empProfile" column="EMP_PROFILE" />
-        </association>
+        <collection property="files" ofType="BoardFileDto">
+            <id property="boardFileNo" column="BOARD_FILE_NO"/>
+            <result property="boardOrigin" column="BOARD_ORIGIN"/>
+            <result property="boardRename" column="BOARD_RENAME"/>
+            <result property="boardPath" column="BOARD_PATH"/>
+        </collection>
     </resultMap>
 
     <!-- 자유게시판 LIST -->
@@ -47,13 +48,13 @@
         , CREATE_DT
         , CREATOR
         ) VALUES (
-        #{boardNo}
+          #{boardNo}
         , #{boardCtNo}
         , #{boardTitle}
         , #{boardContent}
-        , 1
+        , #{empNo}
         , CURRENT_TIMESTAMP
-        ,#{creator}
+        , #{empNo}
         )
     </insert>
 
@@ -94,11 +95,13 @@
     <!--        WHERE RN BETWEEN #{begin} AND #{end}-->
     <!--    </select>-->
 
-    <select id="getBoardByNo" resultMap="BoardMap">
-        SELECT B.BOARD_NO, B.BOARD_CT_NO, B.BOARD_TITLE, B.BOARD_CONTENT, B.BOARD_HIT, B.CREATE_DT, B.MODIFY_DT, E.EMP_NO, F.BOARD_ORIGIN
+    <select id="getBoardByNo"  resultMap="BoardMap">
+        SELECT B.BOARD_NO, B.BOARD_CT_NO, B.BOARD_TITLE, B.BOARD_CONTENT,
+               B.BOARD_HIT, B.CREATE_DT, B.MODIFY_DT, E.EMP_NO, F.BOARD_ORIGIN, B.BOARD_LIKE_COUNT,
+               E.EMP_NAME
         FROM BOARD_T B
                  INNER JOIN EMPLOYEE_T E ON E.EMP_NO = B.EMP_NO
-                 INNER JOIN BOARD_FILE_T F ON B.BOARD_NO = F.BOARD_NO
+                 LEFT JOIN BOARD_FILE_T F ON B.BOARD_NO = F.BOARD_NO
         WHERE B.BOARD_NO = #{boardNo}
     </select>
 
@@ -124,13 +127,21 @@
 
     <update id="updateBoard"
             parameterType="BoardDto">
-        UPDATE BOARD_T
-        SET BOARD_TITLE = #{title}
-          , BOARD_CONTENT = #{contents}
-          , MODIFY_DT = TO_CHAR(CURRENT_DATE, 'YYYY-MM-DD HH24:MI:SS')
-        WHERE BOARD_NO = #{boardNo}
+        UPDATE BOARD_T B
+        SET B.BOARD_TITLE = #{boardTitle}
+          , B.BOARD_CONTENT = #{boardContent}
+          , B.MODIFY_DT = CURRENT_DATE
+          , B.MODIFIER = #{modifier}
+        WHERE B.BOARD_NO = #{boardNo}
     </update>
 
+    <delete id="deleteBoard">
+        DELETE
+          FROM BOARD_T B
+         WHERE 1 = 1
+           AND B.BOARD_NO = #{boardNo}
+           AND B.EMP_NO = #{empNo}
+    </delete>
 
     <delete id="deleteBoardFile">
         DELETE
@@ -138,9 +149,30 @@
         WHERE BOARD_FILE_NO = #{boardFileNo}
     </delete>
 
-    <delete id="deleteBoard">
-        DELETE
-        FROM BOARD_T
-        WHERE BOARD_NO = #{boardNo}
+    <!-- 좋아요 확인 -->
+    <select id="isLiked" resultType="int">
+        SELECT COUNT(1)
+          FROM BOARD_LIKE_T BL
+         WHERE 1 = 1
+           AND BL.BOARD_NO = #{boardNo}
+           AND BL.EMP_NO = #{empNo}
+    </select>
+
+    <!-- 좋아요 추가 -->
+    <insert id="addLike">
+        INSERT INTO BOARD_LIKE_T (BOARD_NO, EMP_NO)
+        VALUES (#{boardNo}, #{empNo})
+    </insert>
+
+    <delete id="removeLike">
+        DELETE FROM BOARD_LIKE_T
+        WHERE BOARD_NO = #{boardNo} AND EMP_NO = #{empNo}
     </delete>
+
+    <update id="updateLikeCount">
+        UPDATE BOARD_T B
+           SET B.BOARD_LIKE_COUNT = #{boardLikeCount}
+         WHERE BOARD_NO = #{boardNo}
+    </update>
+
 </mapper>

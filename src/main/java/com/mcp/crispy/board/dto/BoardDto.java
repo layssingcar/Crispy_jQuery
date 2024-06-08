@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -23,8 +24,21 @@ public class BoardDto {
     private Date modifyDt;
     private int modifier;
     private int empNo;
+    private int boardLikeCount;
+    private String empName;
     private EmployeeDto employee;
-
     /* 파일 이름*/
-    private String boardOrigin;
+    private List<BoardFileDto> files;
+
+    private boolean isLiked;
+
+    // 좋아요 증가
+    public void addLike() {
+        this.boardLikeCount++;
+    }
+
+    // 좋아요 취소
+    public void removeLike() {
+        this.boardLikeCount--;
+    }
 }

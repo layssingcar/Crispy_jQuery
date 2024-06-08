@@ -1,98 +1,137 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-	<th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
-	<link rel="stylesheet" href="/css/summernote/summernote-lite.css">
-	<link href="/css/board/board-add.css" rel="stylesheet">
+    <th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
+    <!-- 특정 페이지 css -->
+    <link href="/css/board/board-list.css" rel="stylesheet">
+    <link href="/css/board/board-detail.css" rel="stylesheet">
+
 </head>
 <body>
-<div class="crispy-container">
-	<aside th:replace="~{layout/sidebar :: sidebar}"></aside>
-	<div>
-		<main>
-			<div class="main">
-				<form id="frm-board-add" action="/crispy/add-form" method="POST" enctype="multipart/form-data" class="my-3">
-					<div class="col-md-5">
-						<label for="cate" class="form-label">카테고리</label>
-						<select class="form-select" id="cate" name="boardCtNo" required>
-							<option value="">카테고리</option>
-							<option value="0" th:selected="${board.boardCtNo == 0}">공지사항</option>
-							<option value="1" th:selected="${board.boardCtNo == 1}">자유게시판</option>
-						</select>
-					</div>
-					<label for="boardTitle" class="form-label">제목</label>
-					<input type="text" name="boardTitle" id="boardTitle" th:value="${board.boardTitle}" class="form-control" style="white-space: pre-line;" placeholder="제목은 15자 내외로 입력해주세요." maxlength="15" required />
-					<div class="mb-3">
-						<label for="summernote" class="form-label mt-2">내용</label>
-						<textarea id="summernote" name="boardContent" class="boardContent"></textarea>
-					</div>
-					<div class="file-attach">
-						<!-- board.empNo가 null이면 빈 문자열을, 아니면 해당 값을 설정 -->
-						<input type="hidden" name="empNo" th:value="${board.empNo != null ? board.empNo : ''}" />
-						<div class="mb-3">
-							<input class="form-control" type="file" id="formFileMultiple" name="files" multiple>
-							<!-- 여기다 등록된 파일 detail 표시 -->
-							<input type="hidden" name="boardOrigin" value="${board.boardOrigin}">
-						</div>
-					</div>
-					<div class="d-flex justify-content-end" id="btn">
-						<a id="cancelBtn" class="btn btn-primary btn-lg">삭제</a>
-						<button type="submit" id="addBtn" class="btn btn-primary btn-lg">수정</button>
-					</div>
-				</form>
-				<!-- Hidden div to hold boardContent value -->
-				<div id="hiddenBoardContent" th:text="${board.boardContent}" style="display:none;"></div>
-			</div>
-		</main>
-		<footer th:replace="~{layout/footer :: footer}"></footer>
-	</div>
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	<script src="/js/summernote/summernote-lite.js"></script>
-	<script src="/js/summernote/lang/summernote-ko-KR.js"></script>
-	<script>
-		$(document).ready(function() {
-			// Initialize Summernote
-			$('#summernote').summernote({
-				placeholder: '500자',
-				tabsize: 2,
-				height: 400,
-				toolbar: [
-					['style', ['style']],
-					['font', ['bold', 'underline', 'clear']],
-					['color', ['color']],
-					['para', ['ul', 'ol', 'paragraph']],
-					['table', ['table']],
-					['insert', ['link', 'picture', 'video']],
-					['view', ['fullscreen', 'codeview', 'help']]
-				],
-				callbacks: {
-					onInit: function() {
-						$('#summernote').next().find('.note-placeholder').css('font-size', '16px');
-						// Set the content from hidden div
-						const boardContent = $('#hiddenBoardContent').text();
-						$('#summernote').summernote('code', boardContent);
-					}
-				},
-			});
-		});
-
-		$('#cancelBtn').on('click', () => {
-			window.location.href = "/board/board-list";
-		});
-
-		/* $('#frm-board-add').on('submit', function(evt) {
-            if ($('#boardTitle').val().trim() === '') {
-                alert('제목 입력은 필수입니다.');
-                evt.preventDefault();
-            } else if ($('#summernote').val().trim() === '') {
-                alert('내용 입력은 필수입니다.');
-                evt.preventDefault();
-            } else {
-                alert("게시물이 등록되었습니다.");
-                window.location.href = '/crispy/board-detail';
-            }
-        }); */
-	</script>
+<div>
+    <aside th:replace="~{layout/sidebar :: sidebar}"></aside>
+    <div>
+        <main>
+            <h4 class="detail-title" id="detail-title">상세보기</h4>
+            <input type="hidden" class="board-no" th:value="${board.boardNo}">
+            <div class="body">
+                <div class="detail-body">
+                    <div>
+                        <span>제목:dㅇ <span class="writer" id="writer" th:text="${board.boardTitle}"></span></span>
+                        <span>작성자: <span class="detail-writer" id="detail-writer" th:text="${board.empName}">: 정은</span></span>
+                        <input type="hidden" class="emp-no" th:value="${board.empNo}">
+                    </div>
+                    <div>
+                        <span class="date" id="date" th:value="${board.createDt}">2024/05/19</span>
+                    </div>
+                    <div>
+                        <span class="hit" id="hit">조회수</span> <span>20</span>
+                    </div>
+                    <hr>
+                    <div>
+                        <span class="text" id="text" th:text="${board.boardContent}"></span>
+                    </div>
+                </div>
+                <div>
+                <a th:href="@{|/crispy/board-modify/${board.boardNo}|}" role="button" class="btn btn-primary" id="btn-modify-board">수정</a>
+                <button type="button" id="btn-delete-board" class="board-delete">삭제</button>
+                </div>
+                <div id="div1">
+                    <div>
+                        <img th:src="${board.isLiked ? '/img/heart2.png' : '/img/heart1.png'}" width="20px" id="like-button">
+                        좋아요 수 : <span id="like-count" th:text="${board.boardLikeCount}"></span>
+                    </div>
+                </div>
+                <div class="boardfile" id="boardfile">* 첨부파일</div>
+                <ul>
+                    <li th:each="file : ${files}">
+                        <a th:href="@{/uploads/{fileName}(fileName=${file.boardRename})}" th:text="${file.boardOrigin}"></a>
+                    </li>
+                </ul>
+                <hr>
+                <div class="mb-3">
+                    <label for="boardContent" class="form-label mt-2" id="comment">댓글</label>
+                    <textarea type="text" name="boardcomment" id="boardcomment"
+                              class="form-control" placeholder="내용은 500자 내외로 입력해주세요."
+                              maxlength="500" wrap="hard" rows="2" cols="1"></textarea>
+                    <button type="button" class="btn btn-primary" id="comment-add">등록</button>
+                </div>
+                <div>
+                    <div>
+                        <span>정은</span>
+                    </div>
+                    <div>
+                        <span>2024/05/19</span>
+                        <hr>
+                    </div>
+                    <div>
+                        <span>첫번째 댓글 내용 </span><span>크리스피</span>
+                        <button type="button" class="btn btn-primary" id="comment-modify">수정</button>
+                        <button type="button" class="btn btn-primary" id="comment-delete">삭제</button>
+                    </div>
+                    <div class="mb-3 reply-container">
+                        <button type="button" class="btn btn-primary" id="reply-button">답글</button>
+                        <textarea type="text" name="reply" id="reply" class="form-control"
+                                  placeholder="내용은 500자 내외로 입력해주세요." maxlength="500" wrap="hard"
+                                  rows="2" cols="50"></textarea>
+                        <button type="button" class="btn btn-primary" id="recomment">등록</button>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary" id="listbtn">목록</button>
+                <button type="button" class="btn btn-secondary">삭제</button>
+                <button type="button" class="btn btn-primary" id="modifyBtn">수정</button>
+            </div>
+        </main>
+    </div>
+    <footer th:replace="~{layout/footer :: footer}"></footer>
 </div>
+<!-- 특정 JS -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById('modifyBtn').addEventListener('click', function () {
+            window.location.href = '/board/board-modify';
+        });
+
+        const boardDelete = document.querySelector('.board-delete');
+        const likeButton = document.getElementById("like-button");
+        const boardNo = document.querySelector(".board-no").value;
+        console.log(boardNo)
+        const empNo = document.querySelector(".emp-no").value;
+
+        boardDelete.addEventListener("click", function () {
+            console.log("호출 됨?");
+            fetch(`/crispy/api/board/${boardNo}/v1`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ boardNo: boardNo, empNo: empNo })
+            }).then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    location.href = "/crispy/board-list";
+                }).catch(error => {
+                alert("삭제에 실패했습니다.");
+            });
+        });
+
+        likeButton.addEventListener("click", function () {
+            fetch(`/crispy/api/${boardNo}/like/v1`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({boardNo: parseInt(boardNo)})
+            }).then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    location.reload();
+                }).catch(error => {
+                alert("좋아요 상태 변경에 실패했습니다.");
+            });
+        });
+    });
+
+</script>
 </body>
 </html>
