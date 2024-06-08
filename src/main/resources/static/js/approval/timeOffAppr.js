@@ -19,8 +19,37 @@ const changeDateFn = () => {
     document.querySelector("#end-dt").addEventListener("change", getPeriodFn);
 }
 
-// 휴가, 휴직 신청 임시저장
-const timeOffTempFn = async () => {
+// 휴가, 휴직 임시저장
+const timeOffTempFn = () => {
+    const formData = new FormData(document.querySelector("#form-container"));
+
+    fetch ("/crispy/time-off-temp", {
+        method: "POST",
+        body: formData
+    })
+        .then(response => response.text())
+        .then(result => {
+            if (result > 0) {
+                Swal.fire({
+                    icon: "success",
+                    title: "임시저장이 완료되었습니다.",
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "임시저장에 실패했습니다.",
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            }
+        })
+}
+
+// 임시저장 값 존재 여부 확인
+const checkTimeOffTempFn = async () => {
     const timeOffCtNo = document.querySelector("#time-off-ct-no").value;
     const response = await fetch(`/crispy/check-time-off-temp?timeOffCtNo=${timeOffCtNo}`);
     const result = await response.text();
@@ -36,39 +65,14 @@ const timeOffTempFn = async () => {
             width: "525px",
         })
             .then ((result) => {
-                if (result.isConfirmed) {
-                    const formData = new FormData(document.querySelector("#form-container"));
-
-                    fetch ("/crispy/time-off-temp", {
-                        method: "POST",
-                        body: formData
-                    })
-                        .then(response => response.text())
-                        .then(result => {
-                            if (result > 0) {
-                                Swal.fire({
-                                    icon: "success",
-                                    title: "임시저장이 완료되었습니다.",
-                                    showConfirmButton: false,
-                                    timer: 1500
-                                })
-
-                            } else {
-                                Swal.fire({
-                                    icon: "error",
-                                    title: "임시저장에 실패했습니다.",
-                                    showConfirmButton: false,
-                                    timer: 1500
-                                })
-                            }
-                        })
-                }
+                if (result.isConfirmed) timeOffTempFn();
             })
-    }
+
+    } else timeOffTempFn();
 }
 
 // 임시저장 버튼
-document.querySelector("#temp").addEventListener("click", timeOffTempFn)
+document.querySelector("#temp").addEventListener("click", checkTimeOffTempFn)
 
 // 임시저장 내용 불러오기
 document.querySelector("#temp-content").addEventListener("click", async () => {
