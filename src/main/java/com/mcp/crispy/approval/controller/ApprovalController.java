@@ -71,7 +71,7 @@ public class ApprovalController {
 	 * @return result
 	 */
 	@GetMapping("check-time-off-temp")
-	public ResponseEntity<?> ckeckTimeOffTemp(Authentication authentication,
+	public ResponseEntity<?> checkTimeOffTemp(Authentication authentication,
 											  @RequestParam("timeOffCtNo") int timeOffCtNo) {
 		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
 		return ResponseEntity.ok(approvalService.checkTimeOffTemp(userDetails.getEmpNo(), timeOffCtNo));
