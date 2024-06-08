@@ -1,10 +1,14 @@
 package com.mcp.crispy.common.config;
 
+import com.mcp.crispy.auth.service.AuthenticationService;
 import com.mcp.crispy.common.CustomAuthenticationEntryPoint;
+import com.mcp.crispy.common.CustomLogoutSuccessHandler;
 import com.mcp.crispy.common.filter.JwtAuthorizationFilter;
+import com.mcp.crispy.employee.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -13,11 +17,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -28,17 +30,16 @@ public class SecurityConfig {
 	private final AuthenticationConfiguration authenticationConfiguration;
 	private final JwtAuthorizationFilter jwtAuthorizationFilter;
 	private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
-
+	private final EmployeeService employeeService;
+	@Lazy
+	private final AuthenticationService authenticationService;
+	private final PasswordEncoder passwordEncoder;
 
 	@Bean
 	public AuthenticationManager authenticationManager() throws Exception {
 		return authenticationConfiguration.getAuthenticationManager();
 	}
 
-	@Bean
-	PasswordEncoder passwordEncoder() {
-		return new Argon2PasswordEncoder(16, 32, 4, 512, 5);
-	}
 
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -49,6 +50,7 @@ public class SecurityConfig {
 						.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
 				.authorizeHttpRequests(config -> config
 						.requestMatchers("/api/auth/**").permitAll()
+						.requestMatchers("api/auth//login/v1").authenticated()
 						.requestMatchers("/api/email/**").permitAll()
 						.requestMatchers("/app/**").permitAll()
 						.requestMatchers("/user/**").permitAll()
@@ -65,10 +67,8 @@ public class SecurityConfig {
 				.formLogin(login -> login
 						.loginPage("/crispy/login"))
 				.logout(logout -> logout
-						.logoutRequestMatcher(new AntPathRequestMatcher("/api/auth/logout"))
-						.logoutSuccessUrl("/crispy/login")
-						.invalidateHttpSession(true)
-						.deleteCookies("accessToken", "refreshToken"))
+						.logoutUrl("/crispy/logout")
+						.logoutSuccessHandler(new CustomLogoutSuccessHandler(employeeService, authenticationService)))
 				.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.exceptionHandling(exceptionHandling -> exceptionHandling
 						.authenticationEntryPoint(customAuthenticationEntryPoint));
