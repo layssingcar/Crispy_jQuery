@@ -29,10 +29,10 @@ public class AttendanceController {
 		return ResponseEntity.ok(insertCount);
 	}
 	
-	@GetMapping(value="/attend", produces="application/json")
-	public String getAttList(Model model) {
-		model.addAttribute("attenList", attendanceService.getAttList(6));
-		return "attendance/attendance";
+	@ResponseBody
+	@GetMapping(value="/getAttendList", produces="application/json")
+	public List<AttendanceDto> getAttList(@RequestParam("month") int month) {
+		return attendanceService.getAttList(month);
 	}
 	
 }
