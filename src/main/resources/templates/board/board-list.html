@@ -17,7 +17,7 @@
 					<button type="submit" id="addBtn" class="btn btn-primary btn-lg">등록</button>
 					<div class="container-1">
 						<span class="icon"><i class="fa fa-search"></i></span><input
-							type="text" name="" id="search" class="form-control"
+							type="text" name="" id="board-search" class="form-control search"
 							placeholder="검색어를 입력하세요.">
 					</div>
 				</div>
@@ -26,10 +26,16 @@
 					<table class="table">
 						<thead>
 						<tr>
-							<th scope="col">게시물 번호</th>
+							<th scope="col" class="col-sort">
+								<span>게시물번호</span>
+								<i class="fa-solid fa-sort" id="board-no-sort"></i>
+							</th>
 							<th scope="col">제목</th>
 							<th scope="col">내용</th>
-							<th scope="col">조회수</th>
+							<th scope="col" class="col-sort">
+								<span>조회수</span>
+								<i class="fa-solid fa-sort" id="board-hit-sort"></i>
+							</th>
 							<th scope="col">작성일</th>
 						</tr>
 						</thead>
@@ -39,7 +45,7 @@
 						<tr th:each="free : ${freeList.items}" th:data-boardNo="${free.boardNo}">
 							<td th:text="${free.boardNo}">자유게시판 번호</td>
 							<td>
-								<a th:href="@{/crispy/board-detail(boardNo=${free.boardNo})}" th:text="${free.boardTitle}">제목</a>	</td>					</td>
+							<a th:href="@{/crispy/board-detail(boardNo=${free.boardNo})}" th:text="${free.boardTitle}" class="board-title">제목</a></td>
 							<td th:text="${free.boardContent}">내용</td>
 							<td th:text="${free.boardHit}">조회수</td>
 							<td th:text="${free.createDt}">작성일</td>

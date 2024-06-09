@@ -54,20 +54,20 @@
                 <!-- 댓글 작성 부분 -->
                 <div class="mb-3">
                     <label for="cmt-comment" class="form-label mt-2" id="comment">댓글</label>
-                    <textarea type="text" name="cmtComment" id="cmt-comment"
-                              class="form-control" placeholder="내용은 500자 내외로 입력해주세요."
+                    <textarea type="text" name="cmtContent" id="cmt-comment"
+                              class="form-control" placeholder="내용은 300자 내외로 입력해주세요."
                               maxlength="500" wrap="hard" rows="2" cols="1"></textarea>
+                    <div class="error-message cmtContent-error" style="display: none;"></div>
                     <button type="button" class="btn btn-primary" id="comment-add">등록</button>
                 </div>
                 <!-- 댓글 목록 부분 -->
                 <div id="comment-list">
                     <div th:each="comment : ${comments}">
                         <div th:class="'comment-level-' + ${comment.level}" th:if="${comment.cmtStat != 1}">
-                            <div>
+                            <div class="cmt-wrap">
                                 <input type="hidden" th:value="${comment.cmtNo}" class="cmt-no">
                                 <p th:text="${comment.cmtContent}"></p>
                                 <small>작성자: <span th:text="${comment.empName}"></span></small>
-
                             </div>
                             <div th:if="${comment.creator == currentEmpNo}">
                                 <button type="button" class="btn btn-secondary comment-delete" th:data-comment-no="${comment.cmtNo}">삭제</button>
@@ -75,7 +75,8 @@
                             </div>
                             <div class="mb-3 reply-container">
                                 <div class="mb-3 reply-container">
-                                    <input type="hidden" class="cmt-no" th:value="${comment.cmtNo}">
+                                    <input type="hidden" class="cmt-no" name="cmtContent" th:value="${comment.cmtNo}">
+                                    <div class="error-message cmtContent-error" style="display: none;"></div>
                                     <button type="button" class="btn btn-primary" id="reply-button">답글</button>
                                 </div>
                             </div>

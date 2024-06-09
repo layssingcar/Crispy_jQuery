@@ -1,15 +1,17 @@
 const boardList = {
     optionObj: {
         "pageNo": 1,            // 페이지번호
-        "sortKey": "boardHit", // 정렬기준
+        "sortKey": "boardNo", // 정렬기준
         "sortOrder": "ASC",     // 정렬순서
-        "stockNameSearch": ""   // 재고명검색
+        "boardTitleSearch": ""   // 재고명검색
     },
 
     init: function() {
-            this.addPageLinkEventFn(1);
+            this.addPageLinkEventFn(this.optionObj.pageNo);
             this.addSortEventFn();
+            this.searchBoardTitle();
             this.bindAddBoardEvent();
+            this.truncateText(10);
     },
 
     getBoardItemsFn: async function(optionObj) {
@@ -26,6 +28,8 @@ const boardList = {
         // 이벤트 재추가
         this.addPageLinkEventFn(optionObj.pageNo === undefined ? 1 : optionObj.pageNo);
         this.addSortEventFn();
+        this.truncateText(10); // 텍스트 자르기 재적용
+
     },
 
     addPageLinkEventFn: function(pageNo) {
@@ -35,7 +39,7 @@ const boardList = {
             pageLink.addEventListener("click", e => {
                 e.preventDefault(); // a 태그 기본 동작 방지
 
-                this.optionObj["pageNo"] = pageLink.dataset.pageNo;
+                this.optionObj.pageNo = pageLink.dataset.pageNo;
                 this.getBoardItemsFn(this.optionObj);
             });
 
@@ -47,13 +51,49 @@ const boardList = {
     },
 
     addSortEventFn: function() {
-        // 정렬 이벤트 추가 코드 작성
+        // 게시물 번호 정렬
+        document.querySelector("#board-no-sort").addEventListener("click", e => {
+            if (this.optionObj.sortKey === "boardNo")
+                this.optionObj.sortOrder = (this.optionObj.sortOrder === "ASC") ? "DESC" : "ASC";
+            else {
+                this.optionObj.sortKey = "boardNo";
+                this.optionObj.sortOrder = "DESC";
+            }
+            this.getBoardItemsFn(this.optionObj);
+        })
+
+        // 조회수 정렬
+        document.querySelector("#board-hit-sort").addEventListener("click", e => {
+            if (this.optionObj.sortKey === "boardHit") {
+                this.optionObj.sortOrder = (this.optionObj.sortOrder === "ASC") ? "DESC" : "ASC";
+            } else {
+                this.optionObj.sortKey = "boardHit";
+                this.optionObj.sortOrder = "DESC";
+            }
+            this.getBoardItemsFn(this.optionObj);
+        });
+    },
+    searchBoardTitle: function() {
+        document.querySelector(".search").addEventListener("input", e => {
+            this.optionObj.boardTitleSearch = e.target.value;
+            this.optionObj.pageNo = 1;
+            this.getBoardItemsFn(this.optionObj);
+        })
     },
 
     bindAddBoardEvent: function() {
         document.getElementById('addBtn').addEventListener('click', function() {
             window.location.href = '/crispy/board/save';
         });
+    },
+
+    truncateText: function (maxLength) {
+        const boardTitle = document.querySelectorAll(".board-title");
+        boardTitle.forEach(e => {
+            if (e.textContent.length > maxLength) {
+                e.textContent = e.textContent.slice(0, maxLength) + '...';
+            }
+        })
     }
 };
 

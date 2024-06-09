@@ -29,11 +29,13 @@
 					<label for="boardTitle" class="form-label">제목</label>
 					<input type="text" name="boardTitle" id="boardTitle"
 						class="form-control  board-title" th:value="${board.boardTitle}"/>
+					<div class="error-message boardTitle-error" style="display: none;"></div>
 					<!-- 내용 -->
 					<div class="mb-3">
 							<label for="summernote" class="form-label mt-2">내용</label>
 							<textarea id="summernote" name="editordata" class="board-content" th:text="${board.boardContent}"></textarea>
 					</div>
+					<div class="error-message boardContent-error" style="display: none;"></div>
 
 					<!-- 파일 선택 -->
 					<div class="file-attach">

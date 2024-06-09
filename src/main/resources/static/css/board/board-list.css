@@ -31,7 +31,7 @@
 }
 
 /* 검색 창 */
-.board-list #search {
+.board-list .search {
     width: 240px;
     height: 40px;
     padding-left: 35px;
@@ -60,7 +60,7 @@
 .board-list .fa-sort {
     position: absolute;
     top: 7px;
-    right: 163px;
+    right: 25px;
 }
 
 /* 데이터 셀 */

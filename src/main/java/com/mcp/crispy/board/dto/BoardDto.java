@@ -1,6 +1,8 @@
 package com.mcp.crispy.board.dto;
 
 import com.mcp.crispy.employee.dto.EmployeeDto;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,7 +18,12 @@ import java.util.List;
 public class BoardDto {
     private int boardNo;
     private int boardCtNo;
+    @NotBlank(message = "제목은 필수입니다.")
+    @Size(max = 100, message = "제목은 100자 이내여야합니다.")
     private String boardTitle;
+
+    @Size(max = 1000, message = "내용은 1000자 이내여야합니다.")
+    @NotBlank(message = "내용은 필수입니다.")
     private String boardContent;
     private int boardHit;
     private Date createDt; ;
@@ -24,14 +31,17 @@ public class BoardDto {
     private Date modifyDt;
     private int modifier;
     private int empNo;
-    private int boardLikeCount;
+    private int boardLikeCount; // 게시물 좋아요 개수
     private String empName;
     private EmployeeDto employee;
     /* 파일 이름*/
     private List<BoardFileDto> files;
 
-    private boolean isLiked;
-    private int pageNo;
+    private boolean isLiked; // 좋아요 여부
+    private int pageNo; // 페이지번호
+    private String sortKey;         // 정렬기준
+    private String sortOrder;       // 정렬순서
+    private String boardTitleSearch; // 게시물명
 
     // 좋아요 증가
     public void addLike() {

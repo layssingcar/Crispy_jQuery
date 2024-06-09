@@ -4,6 +4,7 @@ package com.mcp.crispy.comment.controller;
 import com.mcp.crispy.auth.domain.EmployeePrincipal;
 import com.mcp.crispy.comment.dto.CommentDto;
 import com.mcp.crispy.comment.service.CommentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class CommentApiController {
 
     // 댓글 등록
     @PostMapping("/v1")
-    public ResponseEntity<?> createComment(@RequestBody CommentDto commentDto,
+    public ResponseEntity<?> createComment(@Valid  @RequestBody CommentDto commentDto,
                                            Authentication authentication) {
         EmployeePrincipal employee = (EmployeePrincipal) authentication.getPrincipal();
         CommentDto comment = commentService.insertComment(commentDto, employee.getEmpNo());
@@ -48,7 +49,7 @@ public class CommentApiController {
 
     // 댓글 수정
     @PutMapping("/v1")
-    public ResponseEntity<?> updateComment(@RequestBody CommentDto commentDto,
+    public ResponseEntity<?> updateComment(@Valid @RequestBody CommentDto commentDto,
                                            Authentication authentication) {
         EmployeePrincipal employee = (EmployeePrincipal) authentication.getPrincipal();
         commentService.updateComment(commentDto, employee.getEmpNo());

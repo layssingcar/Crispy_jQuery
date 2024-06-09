@@ -25,18 +25,30 @@
 
     <!-- 게시판 LIST -->
     <select id="getFreeBoardList">
-        SELECT B.BOARD_NO
-             , B.BOARD_TITLE
-             , B.BOARD_CONTENT
-             , B.BOARD_HIT
-             , B.CREATE_DT
+        SELECT ROW_NUMBER() OVER(
+        ORDER BY
+        <choose>
+            <when test="sortKey == 'boardHit'">B.BOARD_HIT</when>
+            <otherwise>B.BOARD_NO</otherwise>
+        </choose>
+        <choose>
+            <when test="sortOrder == 'DESC'">DESC</when>
+            <otherwise>ASC</otherwise>
+        </choose>
+        ) RN
+        , B.BOARD_NO
+        , B.BOARD_TITLE
+        , B.BOARD_CONTENT
+        , B.BOARD_HIT
+        , B.CREATE_DT
         FROM BOARD_T B
         WHERE 1 = 1
-          AND BOARD_CT_NO = 1
-          AND B.BOARD_STAT = 0
-        order by B.BOARD_NO DESC
+        AND B.BOARD_CT_NO = 1
+        AND B.BOARD_STAT = 0
+        <if test="boardTitleSearch != null and boardTitleSearch != ''">
+            AND B.BOARD_TITLE LIKE '%' || #{boardTitleSearch} || '%'
+        </if>
     </select>
-
 
     <!-- INSERT 수행 이전에 파라미터 BoardDto의 boardNo 속성(필드)에 BOARD_SEQ.NEXTVAL 값을 저장한다. -->
     <insert id="insertBoard"

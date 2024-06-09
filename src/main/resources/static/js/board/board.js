@@ -49,15 +49,33 @@ const board = {
         fetch('/api/board/v1', {
             method: "POST",
             body: formData
-        }).then(response => response.json())
-            .then(data => {
-                alert(data.message)
-                const boardNo = data.boardNo
-                location.href =`/crispy/board-detail?boardNo=${boardNo}`
-            }).catch(error => {
-            alert("등록에 실패했습니다.");
-        })
+        }).then(response => {
+            if (!response.ok) {
+                return response.json().then(err => {
+                    this.displayValidationErrors(err);
+                });
+            } else {
+                return response.json()
+            }
+        }).then(data => {
+            alert(data.message);
+            const boardNo = data.boardNo
+            location.href =`/crispy/board-detail?boardNo=${boardNo}`
+        }).catch(error => {
+            console.error('Error:', error);
+        });
     },
+
+    displayValidationErrors: function (errors) {
+        Object.keys(errors).forEach(field => {
+            const errorContainer = document.querySelector(`.${field}-error`);
+            if (errorContainer) {
+                errorContainer.textContent = errors[field];
+                errorContainer.style.display = 'block';
+            }
+        });
+    },
+
 
     modifyBoard: function() {
         const form = document.getElementById('frm-board-modify');
@@ -83,12 +101,20 @@ const board = {
         fetch('/api/board/v1', {
             method: "PUT",
             body: formData
-        }).then(response => response.json())
-            .then(data => {
-                alert(data.message);
-                location.href = `/crispy/board-detail?boardNo=${data.boardNo}`;
-            }).catch(error => {
-            alert("수정에 실패했습니다.");
+        }).then(response => {
+            if (!response.ok) {
+                return response.json().then(err => {
+                    this.displayValidationErrors(err);
+                });
+            } else {
+                return response.json()
+            }
+        }).then(data => {
+            alert(data.message);
+            const boardNo = data.boardNo
+            location.href =`/crispy/board-detail?boardNo=${boardNo}`
+        }).catch(error => {
+            console.error('Error:', error);
         });
     },
 
@@ -144,12 +170,19 @@ const board = {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(data)
-        }).then(response => response.json())
-            .then(data => {
-                alert(data.message);
-                location.reload();
-            }).catch(error => {
-            alert("댓글 등록에 실패했습니다.");
+        }).then(response => {
+            if (!response.ok) {
+                return response.json().then(err => {
+                    this.displayValidationErrors(err);
+                });
+            } else {
+                return response.json()
+            }
+        }).then(data => {
+            alert(data.message);
+            location.reload()
+        }).catch(error => {
+            console.error('Error:', error);
         });
     },
 
@@ -157,8 +190,10 @@ const board = {
         const cmtModify = document.querySelectorAll('.comment-modify');
         cmtModify.forEach(button => {
             button.addEventListener("click", function() {
+                console.log(button)
                 const cmtNo = this.getAttribute("data-comment-no");
-                const commentDiv = this.closest("div");
+                const commentDiv = this.closest(".comment-level-0, .comment-level-1"); // 댓글 블록 선택
+                console.log(commentDiv);
                 const originalContent = commentDiv.querySelector("p").innerText;
                 const textarea = document.createElement("textarea");
                 textarea.classList.add("form-control");
@@ -179,10 +214,17 @@ const board = {
                         method: "PUT",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(data)
-                    }).then(response => response.json())
-                        .then(data => {
-                            alert(data.message);
-                            location.reload();
+                    }).then(response => {
+                        if (!response.ok) {
+                            return response.json().then(err => {
+                                this.displayValidationErrors(err);
+                            });
+                        } else {
+                            return response.json()
+                        }
+                    }).then(data => {
+                        alert(data.message);
+                        location.reload()
                         }).catch(error => {
                         alert("댓글 수정에 실패했습니다.");
                     });
@@ -234,12 +276,23 @@ const board = {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
                             body: JSON.stringify(data)
-                        }).then(response => response.json())
-                            .then(data => {
-                                alert(data.message);
-                                location.reload();
-                            }).catch(error => {
-                            alert("답글 등록에 실패했습니다.");
+                        }).then(response => {
+                            if (!response.ok) {
+                                return response.json().then(err => {
+                                    const errorMessage = err.cmtContent || "답글 등록 실패";
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        text: errorMessage
+                                    });
+                                });
+                            } else {
+                                return response.json();
+                            }
+                        }).then(data => {
+                            alert(data.message);
+                            location.reload();
+                        }).catch(error => {
                         });
                     });
 

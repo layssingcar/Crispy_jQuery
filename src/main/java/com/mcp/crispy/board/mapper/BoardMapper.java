@@ -13,7 +13,6 @@ import java.util.List;
 public interface BoardMapper {
     // 자유게시판 LIST
     List<BoardDto> getFreeBoardList(BoardDto boardDto, RowBounds rowBounds);
-
     // 게시판 생성
     int insertBoard(BoardDto boardDto);
     // 파일 추가

@@ -6,6 +6,7 @@ import com.mcp.crispy.board.dto.BoardFileDto;
 import com.mcp.crispy.board.service.BoardFileService;
 import com.mcp.crispy.board.service.BoardService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -30,7 +31,7 @@ public class BoardApiController {
     private final BoardFileService boardFileService;
 
     @PostMapping("/v1")
-    public ResponseEntity<?> insertBoard(@RequestPart BoardDto boardDto,
+    public ResponseEntity<?> insertBoard(@Valid @RequestPart BoardDto boardDto,
                                          @RequestPart(required = false) List<MultipartFile> files,
                                          Authentication authentication) {
         EmployeePrincipal employee = (EmployeePrincipal) authentication.getPrincipal();
@@ -40,7 +41,7 @@ public class BoardApiController {
 
 
     @PutMapping("/v1")
-    public ResponseEntity<?> modifyBoard(@RequestPart BoardDto boardDto,
+    public ResponseEntity<?> modifyBoard(@Valid @RequestPart BoardDto boardDto,
                                          @RequestPart(required = false) List<MultipartFile> files,
                                          @RequestPart(required = false) List<Integer> deletedFileNo,
                                          Authentication authentication) {
