@@ -128,7 +128,18 @@ document.querySelector("#temp-content").addEventListener("click", async () => {
         confirmButtonText: "선택 완료",
         cancelButtonText: "취소",
         width: "450px",
-        inputValidator: (value) => {
+        inputValidator: async (value) => {
+            const response = await fetch(`/crispy/check-time-off-temp?timeOffCtNo=${value}`);
+            const result = await response.text();
+
+            if (result == 0) {
+                Swal.fire({
+                    text: "임시저장된 내용이 존재하지 않습니다.",
+                    width: "365px"
+                })
+                return;
+            }
+
             fetch (`/crispy/get-time-off-temp?timeOffCtNo=${value}`)
                 .then(response => response.text())
                 .then(html => {

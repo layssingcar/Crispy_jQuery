@@ -89,7 +89,18 @@ document.querySelector("#temp").addEventListener("click", checkstockOrderTempFn)
 
 // 임시저장 내용 불러오기
 const getOrderTempFn = async () => {
-    const response = await fetch ("/crispy/get-order-temp");
+    let response = await fetch("/crispy/check-order-temp");
+    const result = await response.text();
+
+    if (result == 0) {
+        Swal.fire({
+            text: "임시저장된 내용이 존재하지 않습니다.",
+            width: "365px"
+        })
+        return;
+    }
+
+    response = await fetch ("/crispy/get-order-temp");
     const html = await response.text();
     document.querySelector("#stock-temp-container").outerHTML = html;
 }
