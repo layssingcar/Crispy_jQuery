@@ -24,27 +24,45 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</resultMap>
 	
 <insert id="insertAttendance" parameterType="AttendanceDto">
-    INSERT INTO ATTENDANCE_T (
-        ATT_NO,
-        ATT_IN_TIME,
-        ATT_OUT_TIME,
-        ATT_WORK_TIME,
-        CREATE_DT,
-        CREATOR,
-        MODIFY_DT,
-        MODIFIER,
-        EMP_NO
-    ) VALUES (
-        ATTENDANCE_SEQ.NEXTVAL,
-       	#{attInTime},
-        #{attOutTime},
-        #{attWorkTime},
-        CURRENT_DATE,
-        #{creator},
-        CURRENT_DATE,
-        #{modifier},
-        #{empNo}
-    )
+	MERGE INTO ATTENDANCE_T DEST
+	USING ( SELECT 
+	       	#{attInTime} AS ATT_IN_TIME,
+	        #{attOutTime} AS ATT_OUT_WORK,
+	        #{attWorkTime} AS ATT_WORK_TIME,
+	        #{createDt} AS CREATE_DT,
+	        #{creator} AS CREATOR,
+	        CURRENT_DATE AS MODIFY_DT,
+	        #{modifier} AS MODIFIER,
+	        #{empNo} AS EMP_NO 
+	        FROM DUAL ) SRC
+	ON (DEST.CREATE_DT = SRC.CREATE_DT )
+	WHEN MATCHED THEN
+		UPDATE SET 
+			ATT_IN_TIME = #{attInTime}, 
+			ATT_OUT_TIME = #{attOutTime}, 
+			ATT_WORK_TIME = #{attWorkTime}
+	WHEN NOT MATCHED THEN
+    	INSERT (
+	        ATT_NO,
+	        ATT_IN_TIME,
+	        ATT_OUT_TIME,
+	        ATT_WORK_TIME,
+	        CREATE_DT,
+	        CREATOR,
+	        MODIFY_DT,
+	        MODIFIER,
+	        EMP_NO
+	    ) VALUES (
+	        ATTENDANCE_SEQ.NEXTVAL,
+	       	#{attInTime},
+	        #{attOutTime},
+	        #{attWorkTime},
+	        #{createDt},
+	        #{creator},
+	        CURRENT_DATE,
+	        #{modifier},
+	        #{empNo}
+	    )
 </insert>
 
 <select id="getAttList"
