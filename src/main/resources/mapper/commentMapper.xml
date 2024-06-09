@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mcp.crispy.comment.mapper.CommentMapper">
+    <!-- 댓글 작성 -->
+    <insert id="insertComment" parameterType="CommentDto">
+        <selectKey keyProperty="cmtNo" order="BEFORE" resultType="int">
+            SELECT COMMENT_SEQ.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO COMMENT_T (
+              CMT_NO
+            , CMT_CONTENT
+            , CMT_CREATE_DT
+            , CREATE_DT
+            , CREATOR
+            , BOARD_NO
+            , PARENT_CMT_NO
+            ) VALUES (
+                  #{cmtNo}
+                , #{cmtContent}
+                , CURRENT_DATE
+                , CURRENT_DATE
+                , #{creator}
+                , #{boardNo}
+                , #{parentCmtNo, jdbcType=INTEGER}
+        )
+        </insert>
+
+    <!-- 게시글에 달린 댓글 조회 -->
+    <select id="selectCommentByNo" parameterType="CommentDto">
+        SELECT LEVEL,
+               C.CMT_NO, C.CMT_CONTENT, C.CMT_CREATE_DT, C.PARENT_CMT_NO, C.CMT_STAT, C.CREATOR
+                , E.EMP_NAME
+        FROM
+            COMMENT_T C
+                INNER JOIN BOARD_T B ON C.BOARD_NO = B.BOARD_NO
+                LEFT JOIN EMPLOYEE_T E ON C.CREATOR = E.EMP_NO
+        WHERE
+            C.BOARD_NO = #{boardNo}
+        START WITH PARENT_CMT_NO IS NULL
+        CONNECT BY PRIOR CMT_NO = PARENT_CMT_NO
+        ORDER SIBLINGS BY CMT_NO ASC
+    </select>
+    <!-- 댓글 조회 -->
+    <select id="getComment" parameterType="CommentDto">
+        SELECT C.CMT_NO, C.CMT_CONTENT, C.CMT_STAT, C.CREATOR
+        FROM COMMENT_T C WHERE C.CMT_NO = ${cmtNo}
+    </select>
+
+    <!-- 댓글 삭제 -->
+    <update id="deleteCommentByNo">
+        UPDATE COMMENT_T C
+           SET C.CMT_STAT = 1,
+               C.MODIFIER = #{modifier},
+               C.MODIFY_DT = CURRENT_DATE
+         WHERE C.CMT_NO = #{cmtNo}
+    </update>
+
+    <!-- 댓글 수정 -->
+    <update id="updateComment">
+        UPDATE COMMENT_T C
+        SET C.CMT_CONTENT = #{cmtContent},
+            C.MODIFY_DT = CURRENT_DATE,
+            C.MODIFIER = #{modifier}
+        WHERE C.CMT_NO = #{cmtNo}
+    </update>
+
+</mapper>

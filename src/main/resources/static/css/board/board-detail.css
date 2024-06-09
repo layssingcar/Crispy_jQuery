@@ -12,6 +12,19 @@
 	margin-bottom: 20px;
 }
 
+.comment-level-1 {
+	margin-left: 0;
+}
+
+.comment-level-2 {
+	margin-left: 20px;
+}
+
+.comment-level-3 {
+	margin-left: 40px;
+}
+
+
 .boardfile {
 	margin: 5px;
 	margin-top: 15rem;
