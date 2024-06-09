@@ -19,6 +19,30 @@ const changeDateFn = () => {
     document.querySelector("#end-dt").addEventListener("change", getPeriodFn);
 }
 
+// 값 입력 여부 확인
+const checkInputFn = () => {
+    const startDt = document.querySelector("#start-dt");    // 시작일
+    const endDt = document.querySelector("#end-dt");        // 종료일
+    const vctCont = document.querySelector("#vct-cont");    // 문서내용
+    const timeOffCtNo = document.querySelector("#time-off-ct-no");  // 카테고리번호
+    let message = "";   // alert 메시지
+
+    if (startDt.value === "") message = "시작일을 입력하세요.";
+    else if (endDt.value === "") message = "종료일을 입력하세요.";
+    else if (vctCont.value === "") {
+        if (timeOffCtNo.value === "0") message = "휴가 사유를 입력하세요.";
+        else message = "휴직 사유를 입력하세요.";
+    }
+
+    Swal.fire({
+        text: message,
+        width: "365px"
+    })
+
+    // 확인 완료
+    return message === "";
+}
+
 // 휴가, 휴직 임시저장
 const timeOffTempFn = () => {
     const formData = new FormData(document.querySelector("#form-container"));
@@ -72,7 +96,9 @@ const checkTimeOffTempFn = async () => {
 }
 
 // 임시저장 버튼
-document.querySelector("#temp").addEventListener("click", checkTimeOffTempFn)
+document.querySelector("#temp").addEventListener("click", () => {
+    if (checkInputFn()) checkTimeOffTempFn();
+})
 
 // 임시저장 내용 불러오기
 document.querySelector("#temp-content").addEventListener("click", async () => {
