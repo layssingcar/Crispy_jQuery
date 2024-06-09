@@ -5,8 +5,22 @@ const getPeriodFn = () => {
     const timeOffPeriod = document.querySelector("#time-off-period");   // 휴직 기간 출력
 
     if (startDt.value != "" && endDt.value != "") {
+        // 시작일, 종료일 비교
+        if (new Date(startDt.value) > new Date(endDt.value)) {
+            Swal.fire({
+                icon: "warning",
+                text: "종료일은 시작일보다 빠를 수 없습니다.",
+                width: "365px"
+            });
+            endDt.value = "";
+            timeOffPeriod.innerHTML = "00";
+            timeOffPeriod.nextElementSibling.value = 0;
+            return;
+        }
+
+        // 기간 출력
         const sub = new Date(endDt.value).getTime() - new Date(startDt.value).getTime();
-        const period = sub / (1000 * 3600 * 24);
+        const period = sub / (1000 * 3600 * 24) + 1; // 종료일 포함
         timeOffPeriod.innerHTML = String(period).padStart(2, "0");
         timeOffPeriod.nextElementSibling.value = period;
 
