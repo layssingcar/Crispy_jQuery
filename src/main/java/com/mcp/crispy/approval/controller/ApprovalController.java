@@ -143,11 +143,5 @@ public class ApprovalController {
 	public String apprDetail() {
 		return "approval/approval-detail";
 	}
-	
-	// 결재선 선택 (임시)
-	@GetMapping("time-off-approval-2")
-	public String timeOffAppr2() {
-		return "approval/time-off-approval-2";
-	}
 
 }
