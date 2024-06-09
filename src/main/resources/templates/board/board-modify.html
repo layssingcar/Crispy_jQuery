@@ -20,10 +20,10 @@
 					<h1 class="border-bottom py-2">게시물 수정하기</h1>
 					<div class="col-md-5">
 						<label for="cate" class="form-label">카테고리</label>
-						<select class="form-select board-ct-no" id="cate" required="">
-							<option value="">카테고리</option>
-							<option value="0">공지사항</option>
-							<option value="1">자유게시판</option>
+						<select class="form-select board-ct-no" id="cate" required="" th:value="${board.boardCtNo}">
+							<option value="" th:selected="${board.boardCtNo == null}">카테고리</option>
+							<option value="0" th:selected="${board.boardCtNo == 0}">공지사항</option>
+							<option value="1" th:selected="${board.boardCtNo == 1}">자유게시판</option>
 						</select>
 					</div>
 					<label for="boardTitle" class="form-label">제목</label>
@@ -47,9 +47,7 @@
 						</ul>
 					</div>
 					<div class="d-flex justify-content-end" id="btn">
-						<input type="hidden" name="userNo"
-							   value="${sessionScope.user.userNo}"> <a type="submit"
-																	   id="cancelBtn" class="btn btn-primary btn-lg ">취소</a>
+						<a type="submit" id="cancelBtn" class="btn btn-primary btn-lg ">취소</a>
 						<button type="button" id="addBtn" class="btn btn-primary btn-lg btn-modify">등록</button>
 					</div>
 				</form>
@@ -84,45 +82,7 @@
 		});
 	});
 	</script>
-	<script>
-		document.addEventListener("DOMContentLoaded", function () {
-			const addBoard = document.querySelector(".btn-modify");
-			const boardNo = document.querySelector(".board-no").value
-			addBoard.addEventListener("click", function () {
-				const form = document.getElementById('frm-board-modify');
-				const formData = new FormData(form);
-
-				const data = {
-					boardNo: parseInt(boardNo),
-					boardCtNo: 1,
-					boardTitle: document.querySelector(".board-title").value,
-					boardContent: $('<div>').html($('#summernote').summernote('code')).text()
-				}
-
-				formData.append('boardDto', new Blob([JSON.stringify(data)], { type: 'application/json' }));
-
-				const deleteFileNos = [];
-				document.querySelectorAll('#existing-files .delete-file').forEach(function (button) {
-					if (button.closest('li').style.display === 'none') {
-						deleteFileNos.push(button.getAttribute('data-file-id'));
-					}
-				})
-				formData.append('deletedFileNo', new Blob([JSON.stringify(deleteFileNos)], { type: 'application/json' }));
-
-
-				fetch('/crispy/api/board/v1', {
-					method: "PUT",
-					body: formData
-				}).then(response => response.json())
-						.then(data => {
-							alert(data.message)
-							location.href = `/crispy/board-detail?boardNo=${boardNo}`
-						}).catch(error => {
-					alert("수정에 실패했습니다.");
-				})
-			})
-		})
-	</script>
+	<script src="/js/board/board.js"></script>
 </div>
 </body>
 </html>

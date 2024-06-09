@@ -21,70 +21,61 @@
 							placeholder="검색어를 입력하세요.">
 					</div>
 				</div>
+				<div class="board-list-container" th:fragment="board-list-container">
+					<!-- 테이블 -->
+					<table class="table">
+						<thead>
+						<tr>
+							<th scope="col">게시물 번호</th>
+							<th scope="col">제목</th>
+							<th scope="col">내용</th>
+							<th scope="col">조회수</th>
+							<th scope="col">작성일</th>
+						</tr>
+						</thead>
 
-				<!-- 테이블 -->
-				<table class="table">
-					<thead>
-					<tr>
-						<th scope="col">게시물 번호</th>
-						<th scope="col">제목</th>
-						<th scope="col">내용</th>
-						<th scope="col">조회수</th>
-						<th scope="col">작성일</th>
-					</tr>
-					</thead>
+						<!-- 리스트 -->
+						<tbody>
+						<tr th:each="free : ${freeList.items}" th:data-boardNo="${free.boardNo}">
+							<td th:text="${free.boardNo}">자유게시판 번호</td>
+							<td>
+								<a th:href="@{/crispy/board-detail(boardNo=${free.boardNo})}" th:text="${free.boardTitle}">제목</a>	</td>					</td>
+							<td th:text="${free.boardContent}">내용</td>
+							<td th:text="${free.boardHit}">조회수</td>
+							<td th:text="${free.createDt}">작성일</td>
+						</tr>
+						</tbody>
+					</table>
 
-					<!-- 리스트 -->
-					<tbody>
-					<tr th:each="free : ${freeList}" th:data-boardNo="${free.boardNo}">
-						<td th:text="${free.boardNo}">자유게시판 번호</td>
-						<td>
-							<a th:href="@{/crispy/board-detail(boardNo=${free.boardNo})}" th:text="${free.boardTitle}">제목</a>	</td>					</td>
-						<td th:text="${free.boardContent}">내용</td>
-						<td th:text="${free.boardHit}">조회수</td>
-						<td th:text="${free.createDt}">작성일</td>
-					</tr>
-					</tbody>
-				</table>
+					<!-- 페이지네이션 -->
+					<nav aria-label="Page navigation example">
+						<ul class="pagination pagination-lg">
+							<li class="page-item">
+								<a class="page-link" href="#" aria-label="Previous" data-page-no="1">
+									<span aria-hidden="true">&laquo;</span>
+								</a>
+							</li>
 
-				<nav aria-label="Page navigation example">
-					<ul class="pagination pagination-lg">
-						<li class="page-item"><a class="page-link" href="#"
-												 aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
-						</a></li>
-						<li class="page-item active"><a class="page-link" href="#">1</a></li>
-						<li class="page-item"><a class="page-link" href="#">2</a></li>
-						<li class="page-item"><a class="page-link" href="#">3</a></li>
-						<li class="page-item"><a class="page-link" href="#">4</a></li>
-						<li class="page-item"><a class="page-link" href="#">5</a></li>
-						<li class="page-item"><a class="page-link" href="#">6</a></li>
-						<li class="page-item"><a class="page-link" href="#">7</a></li>
-						<li class="page-item"><a class="page-link" href="#">8</a></li>
-						<li class="page-item"><a class="page-link" href="#">9</a></li>
-						<li class="page-item"><a class="page-link" href="#">10</a></li>
-						<li class="page-item"><a class="page-link" href="#"
-												 aria-label="Next"> <span aria-hidden="true">&raquo;</span>
-						</a></li>
-					</ul>
-				</nav>
+							<!-- 페이지 이동 버튼 -->
+							<th:block th:each="pageNo : ${#numbers.sequence(freeList.startPage, freeList.endPage)}">
+								<li class="page-item">
+									<a class="page-link" href="#" th:text="${pageNo}" th:data-page-no="${pageNo}"></a>
+								</li>
+							</th:block>
+
+							<li class="page-item">
+								<a class="page-link" href="#" aria-label="Next" th:data-page-no="${freeList.totalPage}">
+									<span aria-hidden="true">&raquo;</span>
+								</a>
+							</li>
+						</ul>
+					</nav>
+				</div>
 			</div>
 		</main>
 		<footer th:replace="~{layout/footer :: footer}"></footer>
 	</div>
-	<script>
-		document.getElementById('addBtn').addEventListener('click',
-				function() {
-					window.location.href = '/crispy/board/save';
-				});
-
-		// document.querySelectorAll('tbody tr').forEach(row => {
-		// 	row.addEventListener('click', function() {
-		// 		const boardNo = this.getAttribute('data-boardNo');
-		// 		window.location.href = `/crispy/board-detail?boardNo=${boardNo}`;
-		// 	});
-		// });
-
-	</script>
+	<script src="/js/board/boardList.js"></script>
 </div>
 </body>
 </html>
