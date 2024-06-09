@@ -8,6 +8,8 @@
         <result property="boardTitle" column="BOARD_TITLE" />
         <result property="boardContent" column="BOARD_CONTENT" />
         <result property="boardHit" column="BOARD_HIT" />
+        <result property="empNo" column="EMP_NO"/>
+        <result property="empName" column="EMP_NAME"/>
         <result property="boardLikeCount" column="BOARD_LIKE_COUNT"/>
         <result property="createDt" column="CREATE_DT" />
         <result property="creator" column="CREATOR" />
@@ -21,15 +23,18 @@
         </collection>
     </resultMap>
 
-    <!-- 자유게시판 LIST -->
+    <!-- 게시판 LIST -->
     <select id="getFreeBoardList">
-        SELECT BOARD_NO
-             , BOARD_TITLE
-             , BOARD_CONTENT
-             , BOARD_HIT
-             , CREATE_DT
-        FROM BOARD_T
-        WHERE BOARD_CT_NO = 1
+        SELECT B.BOARD_NO
+             , B.BOARD_TITLE
+             , B.BOARD_CONTENT
+             , B.BOARD_HIT
+             , B.CREATE_DT
+        FROM BOARD_T B
+        WHERE 1 = 1
+          AND BOARD_CT_NO = 1
+          AND B.BOARD_STAT = 0
+        order by B.BOARD_NO DESC
     </select>
 
 
@@ -77,28 +82,15 @@
 
     <select id="getBoardCount">
         SELECT COUNT(*)
-        FROM BOARD_T
+        FROM BOARD_T B
+        WHERE B.BOARD_CT_NO = 1
     </select>
 
-    <!--    <select id="getBoardList"-->
-    <!--            parameterType="Map"-->
-    <!--            resultMap="BoardMap">-->
-    <!--        SELECT-->
-    <!--            BOARD_NO, BOARD_CT_NO, BOARD_TITLE, BOARD_CONTENT, BOARD_HIT, CREATE_DT, MODIFY_DT, EMP_NO, CREATOR, MODIFIER-->
-    <!--        FROM (-->
-    <!--                 SELECT-->
-    <!--                     ROW_NUMBER() OVER (ORDER BY BOARD_NO ${sort}) AS RN,-->
-    <!--                         BOARD_NO, BOARD_CT_NO, BOARD_TITLE, BOARD_CONTENT, BOARD_HIT, CREATE_DT, MODIFY_DT, EMP_NO, CREATOR, MODIFIER-->
-    <!--                 FROM-->
-    <!--                     BOARD_T-->
-    <!--             )-->
-    <!--        WHERE RN BETWEEN #{begin} AND #{end}-->
-    <!--    </select>-->
-
     <select id="getBoardByNo"  resultMap="BoardMap">
-        SELECT B.BOARD_NO, B.BOARD_CT_NO, B.BOARD_TITLE, B.BOARD_CONTENT,
-               B.BOARD_HIT, B.CREATE_DT, B.MODIFY_DT, E.EMP_NO, F.BOARD_ORIGIN, B.BOARD_LIKE_COUNT,
-               E.EMP_NAME
+        SELECT B.BOARD_NO, B.BOARD_CT_NO, B.BOARD_TITLE, B.BOARD_CONTENT, B.EMP_NO, B.CREATOR,
+               B.BOARD_HIT, B.CREATE_DT, B.MODIFY_DT, B.BOARD_LIKE_COUNT,
+               E.EMP_NO, E.EMP_NAME,
+               F.BOARD_ORIGIN
         FROM BOARD_T B
                  INNER JOIN EMPLOYEE_T E ON E.EMP_NO = B.EMP_NO
                  LEFT JOIN BOARD_FILE_T F ON B.BOARD_NO = F.BOARD_NO
@@ -112,6 +104,7 @@
         WHERE BOARD_NO = #{boardNo}
     </select>
 
+    <!-- 파일 번호 가져오기 -->
     <select id="getBoardFileByNo"
             resultType="BoardFileDto">
         SELECT BOARD_FILE_NO, BOARD_PATH, BOARD_RENAME, BOARD_ORIGIN
@@ -119,30 +112,29 @@
         WHERE BOARD_FILE_NO = #{boardFileNo}
     </select>
 
-    <!--    <update id="updateDownloadCount">-->
-    <!--        UPDATE BOARD_FILE_T-->
-    <!--        SET DOWNLOAD_COUNT = DOWNLOAD_COUNT + 1-->
-    <!--        WHERE BOARD_FILE_NO = #{boardFileNo}-->
-    <!--    </update>-->
-
+    <!-- 게시판 수정 -->
     <update id="updateBoard"
             parameterType="BoardDto">
         UPDATE BOARD_T B
         SET B.BOARD_TITLE = #{boardTitle}
           , B.BOARD_CONTENT = #{boardContent}
+          , B.BOARD_CT_NO = #{boardCtNo}
           , B.MODIFY_DT = CURRENT_DATE
           , B.MODIFIER = #{modifier}
         WHERE B.BOARD_NO = #{boardNo}
     </update>
 
-    <delete id="deleteBoard">
-        DELETE
-          FROM BOARD_T B
+    <!-- 게시판 삭제 -->
+    <update id="deleteBoard">
+        UPDATE BOARD_T B
+          SET B.BOARD_STAT = 1,
+              B.MODIFY_DT = CURRENT_DATE,
+              B.MODIFIER = #{modifier}
          WHERE 1 = 1
            AND B.BOARD_NO = #{boardNo}
-           AND B.EMP_NO = #{empNo}
-    </delete>
+    </update>
 
+    <!-- 파일 삭제 -->
     <delete id="deleteBoardFile">
         DELETE
         FROM BOARD_FILE_T
@@ -164,6 +156,7 @@
         VALUES (#{boardNo}, #{empNo})
     </insert>
 
+    <!-- 좋아요 삭제 -->
     <delete id="removeLike">
         DELETE FROM BOARD_LIKE_T
         WHERE BOARD_NO = #{boardNo} AND EMP_NO = #{empNo}
@@ -173,6 +166,13 @@
         UPDATE BOARD_T B
            SET B.BOARD_LIKE_COUNT = #{boardLikeCount}
          WHERE BOARD_NO = #{boardNo}
+    </update>
+
+    <!-- 조회수 증가 -->
+    <update id="increaseBoardHit">
+        UPDATE BOARD_T B
+        SET B.BOARD_HIT = B.BOARD_HIT + 1
+        WHERE BOARD_NO = #{boardNo}
     </update>
 
 </mapper>

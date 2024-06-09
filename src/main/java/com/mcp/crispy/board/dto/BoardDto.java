@@ -31,6 +31,7 @@ public class BoardDto {
     private List<BoardFileDto> files;
 
     private boolean isLiked;
+    private int pageNo;
 
     // 좋아요 증가
     public void addLike() {

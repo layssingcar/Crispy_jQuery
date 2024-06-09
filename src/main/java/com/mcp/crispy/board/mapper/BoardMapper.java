@@ -4,31 +4,46 @@ import com.mcp.crispy.board.dto.BoardDto;
 import com.mcp.crispy.board.dto.BoardFileDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.session.RowBounds;
 
 import java.util.List;
-import java.util.Map;
 
 
 @Mapper
 public interface BoardMapper {
     // 자유게시판 LIST
-    List<BoardDto> getFreeBoardList();
+    List<BoardDto> getFreeBoardList(BoardDto boardDto, RowBounds rowBounds);
+
+    // 게시판 생성
     int insertBoard(BoardDto boardDto);
+    // 파일 추가
     int insertBoardFile(BoardFileDto BoardFile);
+    // 게시판 수
     int getBoardCount();
-    List<BoardDto> getBoardList(Map<String, Object> map);
+    // 게시판 번호로 정보 가져오기
     BoardDto getBoardByNo(int BoardNo);
+    // 게시판내에 파일 리스트 가져오기
     List<BoardFileDto> getBoardFileList(int BoardNo);
+    // 파일번호로 파일 정보 가져오기
     BoardFileDto getBoardFileByNo(int BoardFileNo);
-    //    int updateDownloadCount(int BoardFileNo);
-    int updateBoard(BoardDto Board);
-    int deleteBoardFile(int BoardFileNo);
-    int deleteBoard (@Param("boardNo")int BoardNo, @Param("empNo") int empNo);
+
+    // 게시판 수정
+    void updateBoard(BoardDto Board);
+    // 게시판 삭제
+    void deleteBoard(@Param("boardNo")int BoardNo, @Param("modifier") int modifier);
+    // 파일 삭제
+    void deleteBoardFile(int BoardFileNo);
 
 
-    // 좋아요
+    // 좋아요 확인
     int isLiked(@Param("boardNo") int BoardNo, @Param("empNo") int empNo);
+    // 좋아요 추가
     void addLike(@Param("boardNo") int BoardNo, @Param("empNo") int empNo);
+    // 좋아요 삭제
     void removeLike(@Param("boardNo") int BoardNo, @Param("empNo") int empNo);
+    // 좋아요 수 증가
     void updateLikeCount(@Param("boardLikeCount") int boardLikeCount, @Param("boardNo") int boardNo);
+
+    // 조회수
+    void increaseBoardHit(int boardNo);
 }

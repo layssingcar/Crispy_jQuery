@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.core.io.Resource;
 
 @Builder
 @Data
@@ -15,4 +16,13 @@ public class BoardFileDto {
     private String boardRename;
     private String boardPath;
     private int boardNo;
+    private Resource resource;
+    private long contentLength;
+
+    public BoardFileDto(Resource resource, String boardRename, long contentLength) {
+        this.resource = resource;
+        this.boardRename = boardRename;
+        this.contentLength = contentLength;
+    }
+
 }
