@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mcp.crispy.sales.mapper.SalesMapper">
+    <!-- 매출 INSERT -->
+    <insert id="insertSales" parameterType="SalesDto">
+            INSERT INTO SALES_T(
+                        SAL_NO
+                      , SAL_DT
+                      , SAL_PRICE
+                      , CREATE_DT
+                      , CREATOR
+                      , MODIFY_DT
+                      , MODIFIER
+                      , FRN_NO
+            ) VALUES (
+                        SALES_SEQ.NEXTVAL
+                      , #{salDt}
+                      , #{salPrice}
+                      , CURRENT_TIMESTAMP
+                      , #{creator}
+                      , CURRENT_TIMESTAMP
+                      , #{modifier}
+                      , #{frnNo})
+    </insert>
+
+    <!-- 일별 매출 SELECT-->
+    <select id="findDailySales">
+            SELECT TO_CHAR(TRUNC(TO_DATE(SAL_DT, 'yyyy-mm-dd')), 'dd') AS SAL_DT
+                 , SUM(SAL_PRICE) AS SAL_PRICE
+              FROM SALES_T
+          GROUP BY TO_CHAR(TRUNC(TO_DATE(SAL_DT, 'yyyy-mm-dd')), 'dd')
+          ORDER BY SAL_DT
+    </select>
+
+    <!-- 주간 매출 SELECT -->
+    <select id="findWeeklySales">
+            SELECT TO_CHAR(TRUNC(TO_DATE(SAL_DT,'yyyy-mm-dd'), 'IW'), 'yyyy-mm-dd') AS SAL_DT
+                 , SUM(SAL_PRICE) AS SAL_PRICE
+              FROM SALES_T
+          GROUP BY TO_CHAR(TRUNC(TO_DATE(SAL_DT,'yyyy-mm-dd'), 'IW'), 'yyyy-mm-dd')
+          ORDER BY SAL_DT
+    </select>
+
+    <!-- 달별 매출 SELECT -->
+    <select id="findMonthlySales">
+            SELECT TO_CHAR(TRUNC(TO_DATE(SAL_DT, 'yyyy-mm-dd'), 'mm'), 'mm') AS SAL_DT
+                 , SUM(SAL_PRICE) AS SAL_PRICE
+              FROM SALES_T
+          GROUP BY TO_CHAR(TRUNC(TO_DATE(SAL_DT, 'yyyy-mm-dd'), 'mm'), 'mm')
+          ORDER BY SAL_DT
+    </select>
+
+    <!-- 년별 매출 SELECT-->
+    <select id="findYearlySales">
+            SELECT TO_CHAR(TO_DATE(SAL_DT,'yyyy-mm-dd'),'yyyy')
+                 , SUM(SAL_PRICE)
+              FROM SALES_T
+          GROUP BY TO_CHAR(TO_DATE(SAL_DT,'yyyy-mm-dd'),'yyyy')
+    </select>
+
+    <!-- 기간별 평균 매출 -->
+    <select id="findAvgSales">
+        SELECT AVG(SAL_PRICE) AS SAL_PRICE
+          FROM (
+                SELECT SAL_PRICE
+                  FROM SALES_T
+                 WHERE SAL_DT BETWEEN #{startDate} AND #{endDate}
+               ) AS SAL_DT
+    </select>
+
+    <!-- 구별 매출 조회 : 카테고리, 가맹점 테이블 -->
+    <select id="findGuAvgSales">
+
+    </select>
+
+    <!-- 이달의 매장 순위 -->
+    <select id="findSalesRenk">
+
+    </select>
+
+    <select id="getSalesList">
+            SELECT F.FRN_NO, F.FRN_NAME, F.FRN_OWNER, F.FRN_GU, F.FRN_IMG
+                 , S.SAL_NO, S.SAL_DT, S.SAL_PRICE, S.CREATE_DT, S.CREATOR, S.MODIFY_DT, S.MODIFIER
+              FROM FRANCHISE_T F
+        INNER JOIN SALES_T S
+                ON F.FRN_NO = S.FRN_NO
+             WHERE 1=1
+    </select>
+
+</mapper>

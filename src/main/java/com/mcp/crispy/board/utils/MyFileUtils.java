@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class MyFileUtils {
-    @Value("${file.board-dir.sign}")
+/*    @Value("${file.board-dir.sign}")*/
     public String UP_DIR;
 
 
