@@ -51,13 +51,15 @@ const checkInputFn = () => {
         else message = "휴직 사유를 입력하세요.";
     }
 
+    if (message === "") return true;
+
     Swal.fire({
         text: message,
         width: "365px"
     })
 
     // 확인 완료
-    return message === "";
+    return false;
 }
 
 // 휴가, 휴직 임시저장
