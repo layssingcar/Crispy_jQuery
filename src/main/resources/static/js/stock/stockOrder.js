@@ -34,7 +34,36 @@ const sumOrderCostFn = () => {
 }
 
 // 발주 재고 임시저장
-const stockOrderTempFn = async () => {
+const stockOrderTempFn = () => {
+    const formData = new FormData(document.querySelector("#form-container"));
+
+    fetch ("/crispy/stock-order-temp", {
+        method: "POST",
+        body: formData
+    })
+        .then(response => response.text())
+        .then(result => {
+            if (result > 0) {
+                Swal.fire({
+                    icon: "success",
+                    title: "임시저장이 완료되었습니다.",
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "임시저장에 실패했습니다.",
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            }
+        })
+}
+
+// 임시저장 값 존재 여부 확인
+const checkstockOrderTempFn = async () => {
     const response = await fetch ("/crispy/check-order-temp");
     const result = await response.text();
 
@@ -49,43 +78,29 @@ const stockOrderTempFn = async () => {
             width: "525px",
         })
             .then((result) => {
-            if (result.isConfirmed) {
-                const formData = new FormData(document.querySelector("#form-container"));
+                if (result.isConfirmed) stockOrderTempFn();
+            })
 
-                fetch ("/crispy/stock-order-temp", {
-                    method: "POST",
-                    body: formData
-                })
-                    .then(response => response.text())
-                    .then(result => {
-                        if (result > 0) {
-                            Swal.fire({
-                                icon: "success",
-                                title: "임시저장이 완료되었습니다.",
-                                showConfirmButton: false,
-                                timer: 1500
-                            })
-
-                        } else {
-                            Swal.fire({
-                                icon: "error",
-                                title: "임시저장에 실패했습니다.",
-                                showConfirmButton: false,
-                                timer: 1500
-                            })
-                        }
-                    })
-            }
-        })
-    }
+    } else stockOrderTempFn();
 }
 
 // 임시저장 버튼
-document.querySelector("#temp").addEventListener("click", stockOrderTempFn)
+document.querySelector("#temp").addEventListener("click", checkstockOrderTempFn)
 
 // 임시저장 내용 불러오기
 const getOrderTempFn = async () => {
-    const response = await fetch ("/crispy/get-order-temp");
+    let response = await fetch("/crispy/check-order-temp");
+    const result = await response.text();
+
+    if (result == 0) {
+        Swal.fire({
+            text: "임시저장된 내용이 존재하지 않습니다.",
+            width: "365px"
+        })
+        return;
+    }
+
+    response = await fetch ("/crispy/get-order-temp");
     const html = await response.text();
     document.querySelector("#stock-temp-container").outerHTML = html;
 }
