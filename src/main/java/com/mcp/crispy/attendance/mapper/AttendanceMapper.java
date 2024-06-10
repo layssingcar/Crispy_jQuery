@@ -11,4 +11,7 @@ import java.util.Map;
 public interface AttendanceMapper {
 	int insertAttendance(AttendanceDto attendanceDto);
 	List<AttendanceDto> getAttList(int month);
+	
+	List<AttendanceDto> getAttListByInsert();
+	int updateAttendance(AttendanceDto attendanceDto);
 }
