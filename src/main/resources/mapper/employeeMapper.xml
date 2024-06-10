@@ -359,4 +359,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE 1 = 1
           AND E.EMP_NO = #{empNo}
     </select>
+
+    <update id="updateRefreshToken">
+        UPDATE EMPLOYEE_T E
+           SET E.REFRESH_TOKEN = #{refreshToken}
+         WHERE 1 = 1
+           AND E.EMP_NO = #{empNo}
+    </update>
+
+    <update id="removeRefreshToken">
+        UPDATE EMPLOYEE_T E
+          SET E.REFRESH_TOKEN = null
+         WHERE 1 = 1
+           AND E.EMP_NO = #{empNo}
+    </update>
 </mapper>

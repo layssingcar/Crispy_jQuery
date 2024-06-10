@@ -78,4 +78,9 @@ public interface EmployeeMapper {
 	boolean existsByEmpId(String empId);
 	// 이메일 중복 검증
 	boolean existsByEmpEmail(String empEmail);
+
+	// 리프레쉬 토큰 삽입
+	void updateRefreshToken(@Param("refreshToken") String refreshToken, @Param("empNo") Integer empNo);
+
+	void removeRefreshToken(@Param("empNo") Integer empNo);
 }

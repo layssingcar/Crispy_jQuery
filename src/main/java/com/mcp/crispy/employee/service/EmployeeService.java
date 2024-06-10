@@ -7,6 +7,7 @@ import com.mcp.crispy.employee.dto.*;
 import com.mcp.crispy.employee.mapper.EmployeeMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,6 +29,7 @@ public class EmployeeService {
     private final EmailService emailService;
     private final OwnerNameService ownerNameService;
     private final ImageService imageService;
+    @Lazy
     private final PasswordEncoder passwordEncoder;
     private final PasswordChangeValidator passwordChangeValidator;
 

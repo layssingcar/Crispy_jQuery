@@ -29,6 +29,7 @@ public class JwtUtil {
     public static final String ISSUER = "moz1mozi.com";
     public static final int EXP_SHORT = 15 * 60 * 1000; // 15분
     public static final int EXP_LONG = 60 * 60 * 1000;  // 1시간
+    public static final int REFRESH_EXP = 7 * 24 * 60 * 60 * 1000; // 7일
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final String HEADER = "Authorization";
 
@@ -62,12 +63,11 @@ public class JwtUtil {
     public String createRefreshToken(UserDetails userDetails) {
         String username = userDetails.getUsername();
         log.info("createRefreshToken : {}", username);
-        long refreshExp = 7 * 24 * 60 * 60 * 1000; // 7일
 
         return Jwts.builder()
                 .issuer(ISSUER)
                 .subject(username) // empId
-                .expiration(new Date(System.currentTimeMillis() + refreshExp))
+                .expiration(new Date(System.currentTimeMillis() + REFRESH_EXP))
                 .signWith(key)
                 .compact();
     }
@@ -97,7 +97,7 @@ public class JwtUtil {
 
     public String getUsernameFromToken(String token) {
         Claims claims = verify(token);
-
+        log.info("getUsernameFromToken : {} {}", token, claims.getSubject());
         return claims.getSubject();
     }
 
