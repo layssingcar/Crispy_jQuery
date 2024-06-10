@@ -113,6 +113,7 @@
 <script>
 let daycount = [];	
 let chartcount = [];
+let overcount = [];
 let chartInstance;	
 	
 document.addEventListener('DOMContentLoaded', function() {
@@ -152,6 +153,7 @@ document.addEventListener('DOMContentLoaded', function() {
       $('.table tbody').empty();
 	  daycount.length = 0;
 	  chartcount.length = 0;
+	  overcount.length = 0;
       // 6월의 날짜만 테이블에 추가
       const datetmp = {
           'Sat' : 0,
@@ -206,21 +208,40 @@ document.addEventListener('DOMContentLoaded', function() {
 		        $(data).each(function() {
 		            if (date.format('YYYY-MM-DD') == this.createDt) {
 		            	if(this.annCtNo == 0 || this.annCtNo == 1 || this.annCtNo == 2){
-			                tablestr += '<td></td>';
-			                tablestr += '<td></td>';
-			                tablestr += '<td></td>';
-			                tablestr += '<td></td>';
-			                tablestr += (this.annCtNo == 0)? '<td>연차</td>' : (this.annCtNo == 1) ? '<td>반차</td>' : '<td>반반차</td>';
+			                tablestr += (this.annCtNo == 0)? '<td></td>' : '<td>정상</td>';
+			                tablestr += (this.annCtNo == 0)? '<td></td>' : '<td>' + this.attInTime + '</td>';
+			                tablestr += (this.annCtNo == 0)? '<td></td>' : '<td>' + this.attOutTime + '</td>';
+			                tablestr += (this.annCtNo == 0)? '<td></td>' : '<td>' + this.attWorkTime + '</td>';
+			                tablestr += (this.annCtNo == 0)? '<td></td>' : (this.annCtNo == 1) ? '<td>반차</td>' : '<td>반반차</td>';
 		            	}
 		            	else{
 			                tablestr += '<td>정상</td>';
 			                tablestr += '<td>' + this.attInTime + '</td>';
 			                tablestr += '<td>' + this.attOutTime + '</td>';
 			                tablestr += '<td>' + this.attWorkTime + '</td>';
-			                tablestr += '<td>' + this.attWorkTime + '</td>';
+			                tablestr += '<td></td>';
 		            	}
 		                found = true;
-		                chartcount.push(parseFloat(this.attWorkTime.substring(0, 2)) + parseFloat(this.attWorkTime.substring(3, 5)) + parseFloat(this.attWorkTime.substring(6, 8)));
+						
+						let workTime, overWorkTime;
+						workTime = parseFloat(this.attWorkTime.substring(0, 2));
+						overWorkTime = ((parseFloat(this.attWorkTime.substring(3, 5)) * 60) + parseFloat(this.attWorkTime.substring(6, 8))) / 3600;
+						console.log(workTime);
+						console.log(overWorkTime);
+						
+						if(workTime + overWorkTime >= 9.00){
+							if(workTime > 9){
+								chartcount.push(workTime - (workTime - 9));
+								overcount.push(overWorkTime + (workTime - 9));								
+							}else{
+			                	chartcount.push(workTime);
+								overcount.push(overWorkTime);							
+							}
+						}
+						else{
+							chartcount.push(workTime + overWorkTime);
+							overcount.push(0);
+						}
 		            }
 		        });
 		    }
@@ -231,13 +252,14 @@ document.addEventListener('DOMContentLoaded', function() {
 		        tablestr += '<td></td>';
 		        tablestr += '<td></td>';
 		        chartcount.push(0);
+				overcount.push(0);
 		    }
 		    tablestr += '</tr>';
 		    $('.table tbody').append(tablestr);
 		}
 		chartInstance.data.labels = daycount;
 		chartInstance.data.datasets[0].data = chartcount;
-		chartInstance.data.datasets[1].data = chartcount;
+		chartInstance.data.datasets[1].data = overcount;
 		chartInstance.update();
 	  })
 	  .fail(function(jqXHR){
@@ -265,7 +287,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		          },
 		          {
 		              label: '추가 근무 시간',
-		              data: chartcount,
+		              data: overcount,
 		              borderWidth: 0.1,
 		              backgroundColor: 'rgba(54, 162, 235, 0.5)',
 		              stack: 'stack1'

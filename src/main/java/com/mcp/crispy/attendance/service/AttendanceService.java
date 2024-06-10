@@ -23,7 +23,26 @@ public class AttendanceService {
 	@Transactional
 	public int insertAttendance(AttendanceDto attendanceDto)
 	{
-		return attendanceMapper.insertAttendance(attendanceDto);
+		List<AttendanceDto> attenList = attendanceMapper.getAttListByInsert();
+		AttendanceDto attend = null;
+		for(int i = 0; i < attenList.size(); i++) {
+			if(attenList.get(i).getCreateDt().equals(attendanceDto.getCreateDt())) {
+				attend = AttendanceDto.builder()
+										.attInTime(attendanceDto.getAttInTime())
+										.attOutTime(attendanceDto.getAttOutTime())
+										.attWorkTime(attendanceDto.getAttWorkTime())
+										.createDt(attendanceDto.getCreateDt())
+										.empNo(attendanceDto.getEmpNo())
+										.build();
+				break;
+			}
+		}
+		
+		if(attend == null)
+			return attendanceMapper.insertAttendance(attendanceDto);
+		else
+			return attendanceMapper.updateAttendance(attend);
+		
 	}
 	
 	@Transactional(readOnly = true)

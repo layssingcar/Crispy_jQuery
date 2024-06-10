@@ -48,17 +48,39 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	    )
 </insert>
 
+<select id="getAttListByInsert"
+		resultMap="AttendanceMap">
+	SELECT ATT_IN_TIME, ATT_OUT_TIME, ATT_WORK_TIME, CREATE_DT
+	FROM ATTENDANCE_T
+</select>
+
+<update id="updateAttendance"
+		parameterType="AttendanceDto">
+	UPDATE ATTENDANCE_T
+		SET ATT_IN_TIME = #{attInTime},
+			ATT_OUT_TIME = #{attOutTime},
+			ATT_WORK_TIME = #{attWorkTime},
+			MODIFY_DT = CURRENT_DATE
+		WHERE CREATE_DT = #{createDt} AND EMP_NO = #{empNo}
+</update>
+
 <select id="getAttList"
 		resultMap="AttendanceMap">
-<!--     SELECT ATT_IN_TIME, ATT_OUT_TIME, ATT_WORK_TIME, CREATE_DT -->
-<!--         FROM ATTENDANCE_T -->
-<!--     WHERE EXTRACT(MONTH FROM CREATE_DT) = #{month} -->
-<!-- 	ORDER BY CREATE_DT ASC, ATT_IN_TIME ASC  -->
-	SELECT N.ANN_CT_NO, A.ATT_IN_TIME, A.ATT_OUT_TIME, A.ATT_WORK_TIME, A.CREATE_DT
+	SELECT
+	    CASE 
+	        WHEN TRUNC(A.CREATE_DT) = TRUNC(TO_DATE(SUBSTR(N.ANN_START_TIME, 1, 10), 'YYYY-MM-DD'))
+	        THEN N.ANN_CT_NO
+	        ELSE 3
+	    END AS ANN_CT_NO, 
+	    A.ATT_IN_TIME, 
+	    A.ATT_OUT_TIME, 
+	    A.ATT_WORK_TIME, 
+	    A.CREATE_DT
 	FROM ATTENDANCE_T A 
-	INNER JOIN ANNUAL_T N ON A.EMP_NO = N.EMP_NO
-	WHERE EXTRACT(MONTH FROM A.CREATE_DT) = #{month} AND TRUNC(A.CREATE_DT) = TRUNC(TO_DATE(SUBSTR(N.ANN_START_TIME, 1, 10), 'YYYY-MM-DD'))
-	GROUP BY N.ANN_CT_NO, A.ATT_IN_TIME, A.ATT_OUT_TIME, A.ATT_WORK_TIME, A.CREATE_DT
+		LEFT JOIN ANNUAL_T N 
+		ON A.EMP_NO = N.EMP_NO
+		AND TRUNC(A.CREATE_DT) = TRUNC(TO_DATE(SUBSTR(N.ANN_START_TIME, 1, 10), 'YYYY-MM-DD'))
+	WHERE EXTRACT(MONTH FROM A.CREATE_DT) = #{month}
 	ORDER BY A.CREATE_DT ASC, A.ATT_IN_TIME ASC
 </select>
 
