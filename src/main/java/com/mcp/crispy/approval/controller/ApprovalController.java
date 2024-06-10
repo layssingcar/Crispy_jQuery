@@ -39,11 +39,12 @@ public class ApprovalController {
 	@GetMapping("change-time-off-ct")
 	public String changeTimeOffCt(@RequestParam("timeOffCtNo") int timeOffCtNo) {
 
-		String path = null;
+		String path;
 
 		switch (timeOffCtNo) {
 			case 0: path = "document/vacation-req :: vacation-req"; break;
 			case 1: path = "document/leave-of-absence-req :: leave-of-absence-req"; break;
+			default: path = "";
 		}
 
 		return path;
@@ -68,6 +69,7 @@ public class ApprovalController {
 	 * 우혜진 (24. 06. 05.)
 	 *
 	 * @param authentication
+	 * @param timeOffCtNo
 	 * @return result
 	 */
 	@GetMapping("check-time-off-temp")
@@ -115,11 +117,12 @@ public class ApprovalController {
 		ApprovalDto approvalDto = approvalService.getTimeOffTemp(userDetails.getEmpNo(), timeOffCtNo);
 		model.addAttribute("approvalDto", approvalDto);
 
-		String path = null;
+		String path;
 
 		switch (timeOffCtNo) {
 			case 0: path = "document/vacation-req :: vacation-req"; break;
 			case 1: path = "document/leave-of-absence-req :: leave-of-absence-req"; break;
+			default: path = "";
 		}
 
 		return path;
