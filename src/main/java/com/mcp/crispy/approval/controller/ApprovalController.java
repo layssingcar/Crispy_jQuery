@@ -71,7 +71,7 @@ public class ApprovalController {
 	 * @return result
 	 */
 	@GetMapping("check-time-off-temp")
-	public ResponseEntity<?> ckeckTimeOffTemp(Authentication authentication,
+	public ResponseEntity<?> checkTimeOffTemp(Authentication authentication,
 											  @RequestParam("timeOffCtNo") int timeOffCtNo) {
 		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
 		return ResponseEntity.ok(approvalService.checkTimeOffTemp(userDetails.getEmpNo(), timeOffCtNo));
@@ -142,12 +142,6 @@ public class ApprovalController {
 	@GetMapping("approval-detail")
 	public String apprDetail() {
 		return "approval/approval-detail";
-	}
-	
-	// 결재선 선택 (임시)
-	@GetMapping("time-off-approval-2")
-	public String timeOffAppr2() {
-		return "approval/time-off-approval-2";
 	}
 
 }

@@ -10,5 +10,5 @@ import java.util.Map;
 @Mapper
 public interface AttendanceMapper {
 	int insertAttendance(AttendanceDto attendanceDto);
-	List<AttendanceDto> getAttList();
+	List<AttendanceDto> getAttList(int month);
 }
