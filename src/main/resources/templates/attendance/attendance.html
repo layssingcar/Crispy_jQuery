@@ -202,7 +202,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		        count = 0;
 
 		    daycount.push(daycounttmp++);
-
 		    let found = false;
 		    if (data.length != 0) {
 		        $(data).each(function() {
@@ -212,7 +211,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			                tablestr += (this.annCtNo == 0)? '<td></td>' : '<td>' + this.attInTime + '</td>';
 			                tablestr += (this.annCtNo == 0)? '<td></td>' : '<td>' + this.attOutTime + '</td>';
 			                tablestr += (this.annCtNo == 0)? '<td></td>' : '<td>' + this.attWorkTime + '</td>';
-			                tablestr += (this.annCtNo == 0)? '<td></td>' : (this.annCtNo == 1) ? '<td>반차</td>' : '<td>반반차</td>';
+			                tablestr += (this.annCtNo == 0)? '<td>연차</td>' : (this.annCtNo == 1) ? '<td>반차</td>' : '<td>반반차</td>';
 		            	}
 		            	else{
 			                tablestr += '<td>정상</td>';
@@ -222,26 +221,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			                tablestr += '<td></td>';
 		            	}
 		                found = true;
-						
-						let workTime, overWorkTime;
-						workTime = parseFloat(this.attWorkTime.substring(0, 2));
-						overWorkTime = ((parseFloat(this.attWorkTime.substring(3, 5)) * 60) + parseFloat(this.attWorkTime.substring(6, 8))) / 3600;
-						console.log(workTime);
-						console.log(overWorkTime);
-						
-						if(workTime + overWorkTime >= 9.00){
-							if(workTime > 9){
-								chartcount.push(workTime - (workTime - 9));
-								overcount.push(overWorkTime + (workTime - 9));								
-							}else{
-			                	chartcount.push(workTime);
-								overcount.push(overWorkTime);							
-							}
-						}
-						else{
-							chartcount.push(workTime + overWorkTime);
-							overcount.push(0);
-						}
+						fnCalWorkTimeByChart(this.attWorkTime);
 		            }
 		        });
 		    }
@@ -269,6 +249,26 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 	createChart();	
   });
+  
+  function fnCalWorkTimeByChart(attWorkTime){
+	let workTime, overWorkTime;
+	workTime = parseFloat(attWorkTime.substring(0, 2));
+	overWorkTime = ((parseFloat(attWorkTime.substring(3, 5)) * 60) + parseFloat(attWorkTime.substring(6, 8))) / 3600;
+
+	if(workTime + overWorkTime >= 9.00){
+		if(workTime > 9){
+			chartcount.push(workTime - (workTime - 9));
+			overcount.push(overWorkTime + (workTime - 9));								
+		}else{
+	    	chartcount.push(workTime);
+			overcount.push(overWorkTime);							
+		}
+	}
+	else{
+		chartcount.push(workTime + overWorkTime);
+		overcount.push(0);
+	}	
+  }
   
   	// 차트 영역
 	function createChart(){
