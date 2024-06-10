@@ -6,6 +6,7 @@
       const radioBtnsByVacType = document.getElementsByName('var-elem-radio');
       const currentDate = moment().format('YYYY-MM-DD');
       let selectScheduleId;
+      let idCount = 0;
     	  
       myModal.on("hidden.bs.modal", function () {
         $("#form-modal")[0].reset();
@@ -121,7 +122,6 @@
 				dataType:'json'
 			})
 			.done(function(scheList){
-				console.log(scheList);
 				$(scheList).each(function(){
 					if(this.scheDiv == 0){
 						loadEventList.push({
@@ -319,7 +319,7 @@
       
       	if(selectScheType == 'notice'){
 	         schedule = {
-				  id: "일정" + (calendar.getEvents()).length,
+				  id: "일정" + crypto.randomUUID(),
 	              title: $("#sch-title").val(),
 	              start: startDt + "T" + $("#start option:selected").val(),
 	              end : endDt + "T" + $("#end option:selected").val(),
@@ -328,10 +328,9 @@
 	              borderColor: "rgba(255, 0, 0, 0.7)"
 	          };			
 		}
-		
 		else if(selectScheType == 'mysche') {
 	         schedule = {
-				  id: "일정" + (calendar.getEvents()).length,
+				  id: "일정" + crypto.randomUUID(),
 	              title: $("#sch-title").val(),
 	              start: startDt + "T" + $("#start option:selected").val(),
 	              end : endDt + "T" + $("#end option:selected").val(),
@@ -343,7 +342,7 @@
 		else if(selectScheType == 'vac') {
 	        if(selectVacType == 'all'){ // 전체일정
 	         schedule = {
-				  id: "연차" + (calendar.getEvents()).length,
+				  id: "연차" + crypto.randomUUID(),
 	              title: $("#sch-title").val(),
 	              start: startDt,
 	              end : endDt,
@@ -354,7 +353,7 @@
 	        }
 	        else if(selectVacType != 'all'){	// 지정시간일정
 	          schedule = {
-				  id: "연차" + (calendar.getEvents()).length,
+				  id: "연차" + crypto.randomUUID(),
 	              title: $("#sch-title").val(),
 	              start:  startDt + "T" + $("#start option:selected").val(),
 	              end : startDt + "T" + $("#end option:selected").val(),
@@ -541,7 +540,6 @@
 	  // 일정 삭제 관련
 	  function fnDeleteSchedule(){
   		let selectScheType = $("input:radio[name=notice-or-vac]:checked").val();	// 공지,개인,연차
-//	  	let selectVacType = $("input:radio[name=var-elem-radio]:checked").val();	// 연차,반차,반반차,
 			
 		if(selectScheType == 'vac'){
 			fnDeleteAnnAjax();
