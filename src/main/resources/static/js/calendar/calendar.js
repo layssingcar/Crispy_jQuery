@@ -392,7 +392,7 @@
 		        'annId': selectScheduleId,
 		        'annCtNo' : 3,
 		        'modifyDt': currentDate, 
-		        'empNo': 17
+		        'empNo': empNo
 		    });			
 		    $.ajax({
 		        type: 'POST',
@@ -421,7 +421,7 @@
 		        'annStartTime':  startDt + "T" + $("#start option:selected").val(),
 		        'annEndTime':  endTime + "T" + $("#end option:selected").val(),
 		        'modifyDt': currentDate, 
-		        'empNo': 17
+		        'empNo': empNo
 		    });			
 		    $.ajax({
 		        type: 'POST',
@@ -452,10 +452,10 @@
 		        'annStartTime':  startDt + "T" + $("#start option:selected").val(),
 		        'annEndTime':  endTime + "T" + $("#end option:selected").val(),
 		        'createDt': currentDate,
-		        'creator': 1,
+		        'creator': empNo,
 		        'modifyDt': currentDate, 
-		        'modifier': 1,
-		        'empNo': 17
+		        'modifier': empNo,
+		        'empNo': empNo
 		    });			
 		    $.ajax({
 		        type: 'POST',
@@ -503,11 +503,11 @@
 			        'scheStartTime': startDt + "T" + $("#start option:selected").val(), 
 			        'scheEndTime': endDt + "T" + $("#end option:selected").val(),
 			        'createDt': currentDate,
-			        'creator': 1,
+			        'creator': empNo,
 			        'modifyDt': currentDate, 
-			        'modifier': 1,
+			        'modifier': empNo,
 			        'scheStat': 0,
-			        'empNo': 17
+			        'empNo': empNo
 			    });
 			    $.ajax({
 			        type: 'POST',
@@ -549,7 +549,7 @@
 			        'scheId': selectScheduleId,
 			        'scheStat': 1,
 			        'modifyDt': currentDate, 
-			        'empNo': 17
+			        'empNo': empNo
 			    });
 			    $.ajax({
 			        type: 'POST',
@@ -597,7 +597,7 @@
 			        'scheStartTime': startDt + "T" + $("#start option:selected").val(), 
 			        'scheEndTime': endDt + "T" + $("#end option:selected").val(),
 			        'modifyDt': currentDate, 
-			        'empNo': 17
+			        'empNo': empNo
 			    });
 			    $.ajax({
 			        type: 'POST',
