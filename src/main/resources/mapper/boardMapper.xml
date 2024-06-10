@@ -51,7 +51,7 @@
         , #{boardCtNo}
         , #{boardTitle}
         , #{boardContent}
-        , 1
+        , #{empNo}
         , CURRENT_TIMESTAMP
         ,#{creator}
         )
@@ -125,10 +125,11 @@
     <update id="updateBoard"
             parameterType="BoardDto">
         UPDATE BOARD_T
-        SET BOARD_TITLE = #{title}
-          , BOARD_CONTENT = #{contents}
-          , MODIFY_DT = TO_CHAR(CURRENT_DATE, 'YYYY-MM-DD HH24:MI:SS')
+        SET BOARD_TITLE = #{boardTitle}
+          , BOARD_CONTENT = #{boardContent}
         WHERE BOARD_NO = #{boardNo}
+
+
     </update>
 
 
@@ -143,4 +144,28 @@
         FROM BOARD_T
         WHERE BOARD_NO = #{boardNo}
     </delete>
+
+    <select id="boardLikeCheck" parameterType="map" resultType="_int">
+        SELECT COUNT(*) FROM BOARD_LIKE_T
+        WHERE BOARD_NO = #{boardNo}
+          AND EMP_NO = #{empNo}
+    </select>
+
+    <insert id="insertBoardLike" parameterType="map">
+        INSERT INTO BOARD_LIKE_T VALUES(#{boardNo}, #{empNo})
+    </insert>
+
+    <delete id="deleteBoardLike" parameterType="map">
+        DELETE FROM BOARD_LIKE_T
+        WHERE BOARD_NO = #{boardNo}
+          AND EMP_NO = #{empNo}
+    </delete>
+
+    <select id="countBoardLike" parameterType="map" resultType="_int">
+        SELECT COUNT(*) FROM BOARD_LIKE_T
+        WHERE BOARD_NO = #{boardNo}
+    </select>
+
+
+
 </mapper>
