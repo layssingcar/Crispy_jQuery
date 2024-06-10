@@ -79,13 +79,13 @@
 
     </select>
 
+    <!-- 등록된 직원 가맹점의 매출 목록-->
     <select id="getSalesList">
-            SELECT F.FRN_NO, F.FRN_NAME, F.FRN_OWNER, F.FRN_GU, F.FRN_IMG
-                 , S.SAL_NO, S.SAL_DT, S.SAL_PRICE, S.CREATE_DT, S.CREATOR, S.MODIFY_DT, S.MODIFIER
+            SELECT F.FRN_IMG, F.FRN_OWNER, F.FRN_NAME, F.FRN_NO
+                 , SUM(S.SAL_PRICE) AS SAL_PRICE, S.SAL_DT
               FROM FRANCHISE_T F
         INNER JOIN SALES_T S
                 ON F.FRN_NO = S.FRN_NO
-             WHERE 1=1
+          GROUP BY S.SAL_PRICE, S.SAL_DT, F.FRN_IMG, F.FRN_OWNER, F.FRN_NAME, F.FRN_NO
     </select>
-
 </mapper>

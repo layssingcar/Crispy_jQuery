@@ -10,7 +10,7 @@
 		<div>
 			<main>
 				<div class="sales-list">
-					<h1>해당 가맹점 명 : 매출</h1>
+                        <h1>가맹점 매출</h1>
 
 					<!-- 상단 영역 -->
 					<div class="top-area">
@@ -24,7 +24,10 @@
                         <!-- 카테고리 선택 -->
                         <select class="form-select form-select-lg mb-3 m-left" id="sales-ct" aria-label="Large select example" name="salesCt">
                             <option value="0">카테고리 선택</option>
-
+                            <option value="1">일별 매출</option>
+                            <option value="2">주간 매출</option>
+                            <option value="3">달별 매출</option>
+                            <option value="4">년별 매출</option>
                             <!-- 카테고리 옵션 -->
 <!--                            <th:block th:each="salesCt : ${salesCtList}">
                                 <option th:value="${salesCt.salesCtNo}" th:text="${salesCt.salesCtName}"></option>
@@ -51,7 +54,7 @@
                                     <th scope="col">대표자 명</th>
                                     <th scope="col">매출 등록일</th>
                                     <th scope="col" class="col-sort">
-                                        <span>매출액</span>
+                                        <span>총 매출</span>
                                         <i class="fa-solid fa-sort" id="is-count-sort"></i>
                                     </th>
 
