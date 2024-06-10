@@ -126,6 +126,27 @@ public class ApprovalController {
 
 	}
 
+	/**
+	 * 휴가, 휴직 신청
+	 * 우혜진 (24. 06. 09.)
+	 *
+	 * @param authentication
+	 * @param approvalDto
+	 * @return redirect (apprList())
+	 */
+	@PostMapping("insert-time-off-appr")
+	public String insertTimeOffAppr(Authentication authentication,
+									@ModelAttribute ApprovalDto approvalDto) {
+
+		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
+		approvalDto.setEmpNo(userDetails.getEmpNo());
+
+		approvalService.insertTimeOffAppr(approvalDto);
+
+		return "redirect:/crispy/approval-list";
+
+	}
+
 	/** 휴가 및 휴직 신청 목록 조회
 	 * 
 	 * @return forward (approval-list.html)

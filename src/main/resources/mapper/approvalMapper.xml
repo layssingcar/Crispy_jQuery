@@ -66,4 +66,55 @@
                AND TIME_OFF_CT_NO = #{timeOffCtNo}
     </select>
 
+    <!-- 휴가/휴직 신청 (전자결재 테이블) -->
+    <insert id="insertApproval" useGeneratedKeys="true">
+        <selectKey order="BEFORE" resultType="_int" keyProperty="apprNo">
+            SELECT APPROVAL_SEQ.NEXTVAL
+              FROM DUAL
+        </selectKey>
+            INSERT INTO APPROVAL_T (
+                        APPR_NO
+                      , EMP_NO
+               ) VALUES (
+                        #{apprNo}
+                      , #{empNo})
+    </insert>
+
+    <!-- 휴가/휴직 신청 (휴가/휴직신청서 테이블) -->
+    <insert id="insertTimeOff">
+            INSERT INTO TIME_OFF_T (
+                        APPR_NO
+                      , TIME_OFF_CT_NO
+                      , TIME_OFF_START_DT
+                      , TIME_OFF_END_DT
+                      , TIME_OFF_PERIOD
+                      , TIME_OFF_CONTENT
+               ) VALUES (
+                        #{apprNo}
+                      , #{timeOffCtNo}
+                      , TO_DATE(#{timeOffStartDt})
+                      , TO_DATE(#{timeOffEndDt})
+                      , #{timeOffPeriod}
+                      , #{timeOffContent})
+    </insert>
+
+    <!-- 휴가/휴직 신청 (결재선 테이블) -->
+    <insert id="insertApprLine">
+            INSERT INTO APPR_LINE_T (
+                        APPR_LINE_NO
+                      , APPR_LINE_ORDER
+                      , APPR_NO
+                      , EMP_NO
+               ) SELECT APPR_LINE_SEQ.NEXTVAL AS APPR_LINE_NO
+                      , TEMP_T.*
+                   FROM (
+                   <foreach collection="list" item="apprLineDto" separator="UNION ALL">
+                        SELECT #{apprLineDto.apprLineOrder} AS APPR_LINE_ORDER
+                             , #{apprLineDto.apprNo} AS APPR_NO
+                             , #{apprLineDto.empNo} AS EMP_NO
+                          FROM DUAL
+                   </foreach>
+               ) TEMP_T
+    </insert>
+
 </mapper>

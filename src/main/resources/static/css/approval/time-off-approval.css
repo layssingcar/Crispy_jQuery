@@ -1,3 +1,6 @@
+/* 화면 전환 */
+.d-none {display: none;}
+
 /* 휴가, 휴직 신청 페이지 */
 .time-off-appr {
     width: -webkit-fill-available;
@@ -86,7 +89,6 @@
 
 /* 결재선 선택 페이지 */
 .appr-line {
-    display: none;
     width: -webkit-fill-available;
     font-size: 1.7rem;
 }
