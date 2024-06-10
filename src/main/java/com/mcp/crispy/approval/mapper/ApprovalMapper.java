@@ -1,9 +1,12 @@
 package com.mcp.crispy.approval.mapper;
 
 import com.mcp.crispy.approval.dto.ApplicantDto;
+import com.mcp.crispy.approval.dto.ApprLineDto;
 import com.mcp.crispy.approval.dto.ApprovalDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 @Mapper
 public interface ApprovalMapper {
@@ -22,5 +25,14 @@ public interface ApprovalMapper {
     
     // 임시저장 내용 불러오기
     ApprovalDto getTimeOffTemp(@Param("empNo") int empNo, @Param("timeOffCtNo") int timeOffCtNo);
+
+    // 휴가,휴직 신청 (전자결재 테이블)
+    int insertApproval(ApprovalDto approvalDto);
+
+    // 휴가,휴직 신청 (휴가,휴직신청서 테이블)
+    int insertTimeOff(ApprovalDto approvalDto);
+
+    // 휴가,휴직 신청 (결재선 테이블)
+    int insertApprLine(List<ApprLineDto> apprLineDtoList);
 
 }

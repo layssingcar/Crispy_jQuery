@@ -1,3 +1,6 @@
+let empObj; // 선택된 결재선 객체
+const empNoSet = new Set(); // 선택된 결재선 목록
+
 // 휴가, 휴직 기간 계산
 const getPeriodFn = () => {
     const startDt = document.querySelector("#start-dt");                // 시작일
@@ -48,13 +51,15 @@ const checkInputFn = () => {
         else message = "휴직 사유를 입력하세요.";
     }
 
+    if (message === "") return true;
+
     Swal.fire({
         text: message,
         width: "365px"
     })
 
     // 확인 완료
-    return message === "";
+    return false;
 }
 
 // 휴가, 휴직 임시저장
@@ -167,6 +172,7 @@ document.querySelector("#time-off-ct").addEventListener("change", e => {
             // 이벤트 재추가
             getEmpInfoFn();
             changeDateFn();
+            changeUIFn();
         })
 })
 
@@ -184,6 +190,68 @@ const getEmpInfoFn = async () => {
     document.querySelector("#emp-address").innerHTML = result.empStreet + ", " + result.empDetail;
 }
 
+// 결재선 목록
+$('#tree').on('changed.jstree', function (e, data) {
+    const selectTarget = data.instance.get_node(data.selected[0]);
+
+    // 결재선 객체에 선택된 노드 정보 저장
+    empObj = {
+        "empNo" : selectTarget.a_attr.empNo,
+        "empName" : selectTarget.text,
+        "position" : selectTarget.parent === "owner" ? "점주" : "매니저"}
+
+}).jstree({
+    'core' : {
+        'data' : [
+            { "id" : "owner",   "parent" : "#",       "text" : "점주",   "icon" : "glyphicon glyphicon-home"},
+            { "id" : "manager", "parent" : "#",       "text" : "매니저", "icon" : "glyphicon glyphicon-home"},
+            { "id" : "o1",      "parent" : "owner",   "text" : "우혜진", "icon" : "glyphicon glyphicon-picture", "a_attr" : {"empNo" : 10}},
+            { "id" : "m1",      "parent" : "manager", "text" : "박종구", "icon" : "glyphicon glyphicon-picture", "a_attr" : {"empNo" : 7}},
+            { "id" : "m2",      "parent" : "manager", "text" : "배영욱", "icon" : "glyphicon glyphicon-picture", "a_attr" : {"empNo" : 8}},
+            { "id" : "m3",      "parent" : "manager", "text" : "최동환", "icon" : "glyphicon glyphicon-picture", "a_attr" : {"empNo" : 11}}
+        ]
+    }
+})
+
+// 결재선 추가
+document.querySelector("#add-emp").addEventListener("click", () => {
+    if (empObj === undefined) return;
+    if (empNoSet.has(empObj.empNo)) return;
+    empNoSet.add(empObj.empNo);
+
+    const div = document.createElement("div");
+
+    const span = document.createElement("span");
+    span.innerText = `${empObj.empName} (${empObj.position})`;
+
+    const input = document.createElement("input");
+    const idx = document.querySelectorAll("#select-tree > div").length; // 선택된 결재선 개수
+    input.type = "hidden";
+    input.value = empObj.empNo;
+    input.name = `apprLineDtoList[${idx}].empNo`;
+
+    div.append(span, input);
+    document.querySelector("#select-tree").append(div);
+})
+
+// 화면 전환
+const changeUIFn = () => {
+    const timeOffAppr = document.querySelector(".time-off-appr");   // 결재 신청 화면
+    const apprLine = document.querySelector(".appr-line");          // 결재선 선택 화면
+
+    // 결재 신청 -> 결재선 선택
+    document.querySelector("#next-btn").addEventListener("click", () => {
+        timeOffAppr.classList.add("d-none");
+        apprLine.classList.remove("d-none");
+    })
+
+    // 결재선 선택 -> 결재 신청
+    document.querySelector("#rollback").addEventListener("click", () => {
+        timeOffAppr.classList.remove("d-none");
+        apprLine.classList.add("d-none");
+    })
+}
+
 // 초기화
 document.addEventListener("DOMContentLoaded", function () {
     // 기안일 출력
@@ -196,4 +264,5 @@ document.addEventListener("DOMContentLoaded", function () {
 
     getEmpInfoFn();
     changeDateFn();
+    changeUIFn();
 })
