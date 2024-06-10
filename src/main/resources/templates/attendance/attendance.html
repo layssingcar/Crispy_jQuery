@@ -4,6 +4,7 @@
     <th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
 		.attendance {
 		    width: -webkit-fill-available;
@@ -46,6 +47,23 @@
 		    background-color: rgba(200, 200, 200, 0.2) !important;
 		    cursor: pointer;
 		}    	
+		
+		.chartarea{
+			width:-webkit-fill-available;
+			height:400px;
+		    display:flex !important;
+		    justify-content: space-around !important;
+		}
+		#myChart{
+			margin-top: 20px;
+			width:100%;
+		}
+		.month-btn-group{
+			width:1300px;
+			margin-top: 20px;
+			display: flex;
+			justify-content: center;
+		}
     </style>
 </head>
 <body>
@@ -61,6 +79,11 @@
                 <div>
                     <h1>개인 근태 관리</h1>
                 </div>
+                <div class="month-btn-group">
+                	<button id="prev-btn" class="btn btn-primary">&lt;</button>
+                	<span id="monthtext">2024년 6월</span>
+                	<button id="next-btn" class="btn btn-primary">&gt;</button>
+                </div>
                 <div>
 	                <table class="table">
 	                    <thead>
@@ -73,16 +96,14 @@
 	                    </tr>
 	                    </thead>
 	                    <tbody>
-	                    <tr th:each="attendance : ${attenList}">
-	                    	<td th:text="${attendance.createDt}"></td>
-	                    	<td>아</td>
-	                    	<td th:text="${attendance.attInTime}"></td>
-	                    	<td th:text="${attendance.attOutTime}"></td>
-	                    	<td th:text="${attendance.attWorkTime}"></td>
-	                    </tr>
 	                    </tbody>
 	                </table>
                 </div>
+				<br>
+                <div><h1>월별 근로 시간 현황</h1></div>
+				<div class="chartarea">
+					<canvas id="myChart"></canvas>
+				</div>
             </div>
         </main>
         <footer th:replace="~{layout/footer :: footer}"></footer>
@@ -90,26 +111,47 @@
     <!-- 특정 JS -->
 <!--     <script src="/js/owner.js"></script> -->
 <script>
+let daycount = [];	
+let chartcount = [];
+let chartInstance;	
+	
 document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
-
     var calendar = new FullCalendar.Calendar(calendarEl, {
-      headerToolbar: {
-        left: 'prev,next'
-      },
       showNonCurrentDates:false,
       datesSet: function(info) {
         var start = info.start;
         var end = info.end;
         var currentDay = start.toString().substring(0,3);
         updateTable(start, end, currentDay);
+        var startmonth = info.start.getMonth();
       }
     });
     calendar.render();
     $('#calendar').hide();
+	$('#monthtext').text(calendar.getDate().getFullYear() + "년 " + (calendar.getDate().getMonth() + 1) + "월");
+	// 이전 달 버튼 클릭 이벤트 리스너
+	document.getElementById('prev-btn').addEventListener('click', function() {
+	  var currentDate = calendar.getDate();
+	  var prevMonthDate = new Date(currentDate);
+	  prevMonthDate.setMonth(currentDate.getMonth() - 1);
+	  calendar.gotoDate(prevMonthDate);
+	  $('#monthtext').text(calendar.getDate().getFullYear() + "년 " + (calendar.getDate().getMonth() + 1) + "월");
+	});
+	
+	// 다음 달 버튼 클릭 이벤트 리스너
+	document.getElementById('next-btn').addEventListener('click', function() {
+	  var currentDate = calendar.getDate();
+	  var nextMonthDate = new Date(currentDate);
+	  nextMonthDate.setMonth(currentDate.getMonth() + 1);
+	  calendar.gotoDate(nextMonthDate);
+	  $('#monthtext').text(calendar.getDate().getFullYear() + "년 " + (calendar.getDate().getMonth() + 1) + "월");
+	});    
     
     function updateTable(start, end, currentDay) {
-      //$('.table tbody').empty();
+      $('.table tbody').empty();
+	  daycount.length = 0;
+	  chartcount.length = 0;
       // 6월의 날짜만 테이블에 추가
       const datetmp = {
           'Sat' : 0,
@@ -118,7 +160,7 @@ document.addEventListener('DOMContentLoaded', function() {
           'Tue' : 3,
           'Wed' : 4,
           'Thu' : 5,
-          'Fri' : 6,
+          'Fri' : 6
       }
       const datetmp2 = {
           0 : '토',
@@ -127,28 +169,108 @@ document.addEventListener('DOMContentLoaded', function() {
           3 : '화',
           4 : '수',
           5 : '목',
-          6 : '금',
+          6 : '금'
       }
       let count = datetmp[currentDay];
-      for (var date = moment(start); date.isBefore(end); date.add(1, 'days')) {
-          switch (count) {
-              case 0:
-              $('.table tbody').append('<tr><td style="color: blue;">' + date.format('YYYY-MM-DD') + ' (' + datetmp2[count] + ')' + '</td></tr>');
-              break;
-              case 1:
-              $('.table tbody').append('<tr><td style="color: red;">' + date.format('YYYY-MM-DD') + ' (' + datetmp2[count] + ')' + '</td></tr>');
-              break;
-              default:
-              $('.table tbody').append('<tr><td>' + date.format('YYYY-MM-DD') + ' (' + datetmp2[count] + ')' + '</td></tr>');
-              break;
-          }
-          count++;
-          if(count > 6){
-              count = 0;
-          }
-      }
+	  let daycounttmp = 1;
+	  
+	  $.ajax({
+	  	type:'GET',
+	  	url:'/crispy/getAttendList',
+	  	contentType: 'application/json',
+		data:'month=' + (calendar.getDate().getMonth() + 1),
+	  	dataType:'json'
+	  })
+	  .done(function(data){
+		for (var date = moment(start); date.isBefore(end); date.add(1, 'days')) {
+		    let tablestr = '<tr>'; 
+		    
+
+		    switch (count) {
+		        case 0:
+		            tablestr += '<td style="color: blue;">' + date.format('YYYY-MM-DD') + ' (' + datetmp2[count] + ')' + '</td>';
+		            break;
+		        case 1:
+		            tablestr += '<td style="color: red;">' + date.format('YYYY-MM-DD') + ' (' + datetmp2[count] + ')' + '</td>';
+		            break;
+		        default:
+		            tablestr += '<td>' + date.format('YYYY-MM-DD') + ' (' + datetmp2[count] + ')' + '</td>';
+		            break;
+		    }
+		    count++;
+		    if (count > 6)
+		        count = 0;
+
+		    daycount.push(daycounttmp++);
+
+		    let found = false;
+		    if (data.length != 0) {
+		        $(data).each(function() {
+		            if (date.format('YYYY-MM-DD') == this.createDt) {
+		                tablestr += '<td></td>';
+		                tablestr += '<td>' + this.attInTime + '</td>';
+		                tablestr += '<td>' + this.attOutTime + '</td>';
+		                tablestr += '<td>' + this.attWorkTime + '</td>';
+		                found = true;
+		                chartcount.push(parseFloat(this.attWorkTime.substring(0, 2)) + parseFloat(this.attWorkTime.substring(3, 5)) + parseFloat(this.attWorkTime.substring(6, 8)));
+		            }
+		        });
+		    }
+		    if (!found) {
+		        tablestr += '<td></td>';
+		        tablestr += '<td></td>';
+		        tablestr += '<td></td>';
+		        tablestr += '<td></td>';
+		        chartcount.push(0);
+		    }
+		    tablestr += '</tr>';
+		    $('.table tbody').append(tablestr);
+		}
+		chartInstance.data.labels = daycount;
+		chartInstance.data.datasets[0].data = chartcount;
+		chartInstance.data.datasets[1].data = chartcount;
+		chartInstance.update();
+	  })
+	  .fail(function(jqXHR){
+	  	alert("실패");
+	  	alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
+	  })    
     }
+	createChart();	
   });
+  
+  	// 차트 영역
+	function createChart(){
+		const ctx = document.querySelector('#myChart');
+		chartInstance = new Chart(ctx, {
+		  type: 'bar',  // bar, line, pie, doughnut, radar 등등...
+		  data: {
+		      labels: daycount,
+		      datasets: [
+		          {
+		              label: '기본 근무 시간',
+		              data: chartcount,
+		              borderWidth: 0.1,
+		              backgroundColor: 'rgba(255, 99, 132, 0.5)',
+		              stack: 'stack1'
+		          },
+		          {
+		              label: '추가 근무 시간',
+		              data: chartcount,
+		              borderWidth: 0.1,
+		              backgroundColor: 'rgba(54, 162, 235, 0.5)',
+		              stack: 'stack1'
+		          }
+		      ]
+		  },
+		  options: {
+		      scales: { y:{beginAtZero: true, stacked:true}, 
+		    	  		x:{grid:{offset:true}, stacked:true} 
+		      }
+		  }
+		});	  
+	}
+
 </script>
 </div>
 </body>

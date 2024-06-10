@@ -45,7 +45,12 @@ public class AnnualService {
 		return annualMapper.deleteAnnual(annualDto);
 	}
 	@Transactional
-	public int completeDeleteAnnual(int scheduleId){
-		return annualMapper.completeDeleteAnnual(scheduleId);
+	public int completeDeleteAnn(AnnualDto annualDto){
+		return annualMapper.completeDeleteAnn(annualDto);
+	}
+	
+	@Transactional(readOnly = true)
+	public int getCountAnn() {
+		return annualMapper.getCountAnn();
 	}
 }
