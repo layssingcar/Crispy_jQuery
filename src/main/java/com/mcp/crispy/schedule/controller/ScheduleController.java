@@ -50,10 +50,16 @@ public class ScheduleController {
 		return ResponseEntity.ok(deleteCount);
 	}
 	
+	@ResponseBody
 	@DeleteMapping(value="/completeDeleteSche", produces = "application/json")
 	public ResponseEntity<Integer> completeDeleteSchedule(@RequestBody ScheduleDto scheduleDto){
 		int deleteCount = scheduleService.completeDeleteSchedule(scheduleDto);
 		return ResponseEntity.ok(deleteCount);
 	}
 	
+	@ResponseBody
+	@GetMapping(value="/getCountSche", produces = "application/json")
+	public int getCountSche() {
+		return scheduleService.getCountSche();
+	}
 }

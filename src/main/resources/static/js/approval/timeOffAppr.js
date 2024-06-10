@@ -1,3 +1,6 @@
+let empObj; // 선택된 결재선 객체
+const empNoSet = new Set(); // 선택된 결재선 목록
+
 // 휴가, 휴직 기간 계산
 const getPeriodFn = () => {
     const startDt = document.querySelector("#start-dt");                // 시작일
@@ -5,8 +8,22 @@ const getPeriodFn = () => {
     const timeOffPeriod = document.querySelector("#time-off-period");   // 휴직 기간 출력
 
     if (startDt.value != "" && endDt.value != "") {
+        // 시작일, 종료일 비교
+        if (new Date(startDt.value) > new Date(endDt.value)) {
+            Swal.fire({
+                icon: "warning",
+                text: "종료일은 시작일보다 빠를 수 없습니다.",
+                width: "365px"
+            });
+            endDt.value = "";
+            timeOffPeriod.innerHTML = "00";
+            timeOffPeriod.nextElementSibling.value = 0;
+            return;
+        }
+
+        // 기간 출력
         const sub = new Date(endDt.value).getTime() - new Date(startDt.value).getTime();
-        const period = sub / (1000 * 3600 * 24);
+        const period = sub / (1000 * 3600 * 24) + 1; // 종료일 포함
         timeOffPeriod.innerHTML = String(period).padStart(2, "0");
         timeOffPeriod.nextElementSibling.value = period;
 
@@ -19,8 +36,63 @@ const changeDateFn = () => {
     document.querySelector("#end-dt").addEventListener("change", getPeriodFn);
 }
 
-// 휴가, 휴직 신청 임시저장
-const timeOffTempFn = async () => {
+// 값 입력 여부 확인
+const checkInputFn = () => {
+    const startDt = document.querySelector("#start-dt");    // 시작일
+    const endDt = document.querySelector("#end-dt");        // 종료일
+    const vctCont = document.querySelector("#vct-cont");    // 문서내용
+    const timeOffCtNo = document.querySelector("#time-off-ct-no");  // 카테고리번호
+    let message = "";   // alert 메시지
+
+    if (startDt.value === "") message = "시작일을 입력하세요.";
+    else if (endDt.value === "") message = "종료일을 입력하세요.";
+    else if (vctCont.value === "") {
+        if (timeOffCtNo.value === "0") message = "휴가 사유를 입력하세요.";
+        else message = "휴직 사유를 입력하세요.";
+    }
+
+    if (message === "") return true;
+
+    Swal.fire({
+        text: message,
+        width: "365px"
+    })
+
+    // 확인 완료
+    return false;
+}
+
+// 휴가, 휴직 임시저장
+const timeOffTempFn = () => {
+    const formData = new FormData(document.querySelector("#form-container"));
+
+    fetch ("/crispy/time-off-temp", {
+        method: "POST",
+        body: formData
+    })
+        .then(response => response.text())
+        .then(result => {
+            if (result > 0) {
+                Swal.fire({
+                    icon: "success",
+                    title: "임시저장이 완료되었습니다.",
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "임시저장에 실패했습니다.",
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            }
+        })
+}
+
+// 임시저장 값 존재 여부 확인
+const checkTimeOffTempFn = async () => {
     const timeOffCtNo = document.querySelector("#time-off-ct-no").value;
     const response = await fetch(`/crispy/check-time-off-temp?timeOffCtNo=${timeOffCtNo}`);
     const result = await response.text();
@@ -36,39 +108,16 @@ const timeOffTempFn = async () => {
             width: "525px",
         })
             .then ((result) => {
-                if (result.isConfirmed) {
-                    const formData = new FormData(document.querySelector("#form-container"));
-
-                    fetch ("/crispy/time-off-temp", {
-                        method: "POST",
-                        body: formData
-                    })
-                        .then(response => response.text())
-                        .then(result => {
-                            if (result > 0) {
-                                Swal.fire({
-                                    icon: "success",
-                                    title: "임시저장이 완료되었습니다.",
-                                    showConfirmButton: false,
-                                    timer: 1500
-                                })
-
-                            } else {
-                                Swal.fire({
-                                    icon: "error",
-                                    title: "임시저장에 실패했습니다.",
-                                    showConfirmButton: false,
-                                    timer: 1500
-                                })
-                            }
-                        })
-                }
+                if (result.isConfirmed) timeOffTempFn();
             })
-    }
+
+    } else timeOffTempFn();
 }
 
 // 임시저장 버튼
-document.querySelector("#temp").addEventListener("click", timeOffTempFn)
+document.querySelector("#temp").addEventListener("click", () => {
+    if (checkInputFn()) checkTimeOffTempFn();
+})
 
 // 임시저장 내용 불러오기
 document.querySelector("#temp-content").addEventListener("click", async () => {
@@ -84,7 +133,18 @@ document.querySelector("#temp-content").addEventListener("click", async () => {
         confirmButtonText: "선택 완료",
         cancelButtonText: "취소",
         width: "450px",
-        inputValidator: (value) => {
+        inputValidator: async (value) => {
+            const response = await fetch(`/crispy/check-time-off-temp?timeOffCtNo=${value}`);
+            const result = await response.text();
+
+            if (result == 0) {
+                Swal.fire({
+                    text: "임시저장된 내용이 존재하지 않습니다.",
+                    width: "365px"
+                })
+                return;
+            }
+
             fetch (`/crispy/get-time-off-temp?timeOffCtNo=${value}`)
                 .then(response => response.text())
                 .then(html => {
@@ -112,6 +172,7 @@ document.querySelector("#time-off-ct").addEventListener("change", e => {
             // 이벤트 재추가
             getEmpInfoFn();
             changeDateFn();
+            changeUIFn();
         })
 })
 
@@ -129,6 +190,68 @@ const getEmpInfoFn = async () => {
     document.querySelector("#emp-address").innerHTML = result.empStreet + ", " + result.empDetail;
 }
 
+// 결재선 목록
+$('#tree').on('changed.jstree', function (e, data) {
+    const selectTarget = data.instance.get_node(data.selected[0]);
+
+    // 결재선 객체에 선택된 노드 정보 저장
+    empObj = {
+        "empNo" : selectTarget.a_attr.empNo,
+        "empName" : selectTarget.text,
+        "position" : selectTarget.parent === "owner" ? "점주" : "매니저"}
+
+}).jstree({
+    'core' : {
+        'data' : [
+            { "id" : "owner",   "parent" : "#",       "text" : "점주",   "icon" : "glyphicon glyphicon-home"},
+            { "id" : "manager", "parent" : "#",       "text" : "매니저", "icon" : "glyphicon glyphicon-home"},
+            { "id" : "o1",      "parent" : "owner",   "text" : "우혜진", "icon" : "glyphicon glyphicon-picture", "a_attr" : {"empNo" : 10}},
+            { "id" : "m1",      "parent" : "manager", "text" : "박종구", "icon" : "glyphicon glyphicon-picture", "a_attr" : {"empNo" : 7}},
+            { "id" : "m2",      "parent" : "manager", "text" : "배영욱", "icon" : "glyphicon glyphicon-picture", "a_attr" : {"empNo" : 8}},
+            { "id" : "m3",      "parent" : "manager", "text" : "최동환", "icon" : "glyphicon glyphicon-picture", "a_attr" : {"empNo" : 11}}
+        ]
+    }
+})
+
+// 결재선 추가
+document.querySelector("#add-emp").addEventListener("click", () => {
+    if (empObj === undefined) return;
+    if (empNoSet.has(empObj.empNo)) return;
+    empNoSet.add(empObj.empNo);
+
+    const div = document.createElement("div");
+
+    const span = document.createElement("span");
+    span.innerText = `${empObj.empName} (${empObj.position})`;
+
+    const input = document.createElement("input");
+    const idx = document.querySelectorAll("#select-tree > div").length; // 선택된 결재선 개수
+    input.type = "hidden";
+    input.value = empObj.empNo;
+    input.name = `apprLineDtoList[${idx}].empNo`;
+
+    div.append(span, input);
+    document.querySelector("#select-tree").append(div);
+})
+
+// 화면 전환
+const changeUIFn = () => {
+    const timeOffAppr = document.querySelector(".time-off-appr");   // 결재 신청 화면
+    const apprLine = document.querySelector(".appr-line");          // 결재선 선택 화면
+
+    // 결재 신청 -> 결재선 선택
+    document.querySelector("#next-btn").addEventListener("click", () => {
+        timeOffAppr.classList.add("d-none");
+        apprLine.classList.remove("d-none");
+    })
+
+    // 결재선 선택 -> 결재 신청
+    document.querySelector("#rollback").addEventListener("click", () => {
+        timeOffAppr.classList.remove("d-none");
+        apprLine.classList.add("d-none");
+    })
+}
+
 // 초기화
 document.addEventListener("DOMContentLoaded", function () {
     // 기안일 출력
@@ -141,4 +264,5 @@ document.addEventListener("DOMContentLoaded", function () {
 
     getEmpInfoFn();
     changeDateFn();
+    changeUIFn();
 })

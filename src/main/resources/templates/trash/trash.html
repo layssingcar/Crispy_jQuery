@@ -84,6 +84,7 @@
     			    	  $.ajax({
     			    		  type:'DELETE',
     			    		  url:'/crispy/completeDeleteSche',
+    			    		  contentType: 'application/json',
     			    		  dataType:'json',
     			    		  data: data
     			    	  })
@@ -97,11 +98,12 @@
     				  }
     				  else if($(this).val().substring(0, 2) == '연차'){
     					    const data = JSON.stringify({
-    					        'scheId': $(this).val()
+    					        'annId': $(this).val()
     					    });
     			    	  $.ajax({
     			    		  type:'DELETE',
     			    		  url:'/crispy/completeDeleteAnn',
+    			    		  contentType: 'application/json',
     			    		  dataType:'json',
     			    		  data: data
     			    	  })

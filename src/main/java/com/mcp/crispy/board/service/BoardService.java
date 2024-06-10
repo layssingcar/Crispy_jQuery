@@ -63,13 +63,13 @@ public class BoardService {
     // BoardService 클래스에 registerBoardFile 메서드 수정
     @Transactional
     public boolean registerBoardFile(MultipartHttpServletRequest multipartRequest, int boardNo) {
-        // Retrieve attached files
+        // Retrieve boardFileed files
         List<MultipartFile> files = multipartRequest.getFiles("files");
 
         // Count of successfully inserted board files
         int insertBoardFileCount = 0;
 
-        // Iterate over attached files and process them
+        // Iterate over boardFileed files and process them
         for (MultipartFile multipartFile : files) {
             if (multipartFile != null && !multipartFile.isEmpty()) {
                 try {
@@ -107,7 +107,6 @@ public class BoardService {
         // Ensure all files were successfully inserted
         return insertBoardFileCount == files.size();
     }
-
 //    @Transactional(readOnly=true)
 //    public void loadBoardList(Model model) {
 //
@@ -157,131 +156,73 @@ public class BoardService {
     }
 
 
-    @Transactional(readOnly=true)
-    public void loadBoardByNo(int boardNo, Model model) {
-        model.addAttribute("board", boardMapper.getBoardByNo(boardNo));
-        model.addAttribute("boardFileList", boardMapper.getBoardFileList(boardNo));
-    }
 
 
-
-    public ResponseEntity<Resource> download(HttpServletRequest request) {
-
-        // 첨부 파일 정보를 DB 에서 가져오기
-        int boardFileNo = Integer.parseInt(request.getParameter("boardFileNo"));
+    public ResponseEntity<Resource> download(int boardFileNo, HttpServletRequest request) {
         BoardFileDto boardFile = boardMapper.getBoardFileByNo(boardFileNo);
-
-        // 첨부 파일 정보를 File 객체로 만든 뒤 Resource 객체로 변환
         File file = new File(boardFile.getBoardPath(), boardFile.getBoardRename());
         Resource resource = new FileSystemResource(file);
 
-        // 첨부 파일이 없으면 다운로드 취소
-        if(!resource.exists()) {
+        if (!resource.exists()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        // DOWNLOAD_COUNT 증가
-//        boardMapper.updateDownloadCount(boardFileNo);
-
-        // 사용자가 다운로드 받을 파일명 결정 (boardOrigin 을 브라우저에 따라 다르게 인코딩 처리)
         String boardOrigin = boardFile.getBoardOrigin();
-        String employeeAgent = request.getHeader("Employee-Agent");
+        String userAgent = request.getHeader("User-Agent");
         try {
-            // IE
-            if(employeeAgent.contains("Trident")) {
+            if (userAgent.contains("Trident")) {
                 boardOrigin = URLEncoder.encode(boardOrigin, "UTF-8").replace("+", " ");
-            }
-            // Edge
-            else if(employeeAgent.contains("Edg")) {
+            } else if (userAgent.contains("Edg")) {
                 boardOrigin = URLEncoder.encode(boardOrigin, "UTF-8");
-            }
-            // Other
-            else {
+            } else {
                 boardOrigin = new String(boardOrigin.getBytes("UTF-8"), "ISO-8859-1");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        // 다운로드용 응답 헤더 설정 (HTTP 참조)
         HttpHeaders responseHeader = new HttpHeaders();
-        responseHeader.add("Content-Type", "application/octet-stream");
         responseHeader.add("Content-Disposition", "boardFilement; filename=" + boardOrigin);
-        responseHeader.add("Content-Length", file.length() + "");
+        responseHeader.add("Content-Length", String.valueOf(file.length()));
 
-        // 다운로드 진행
-        return new ResponseEntity<Resource>(resource, responseHeader, HttpStatus.OK);
-
+        return new ResponseEntity<>(resource, responseHeader, HttpStatus.OK);
     }
 
-    public ResponseEntity<Resource> downloadAll(HttpServletRequest request) {
-
-        // 다운로드 할 모든 첨부 파일들의 정보를 DB 에서 가져오기
-        int boardNo = Integer.parseInt(request.getParameter("boardNo"));
+    public ResponseEntity<Resource> downloadAll(int boardNo, HttpServletRequest request) {
         List<BoardFileDto> boardFileList = boardMapper.getBoardFileList(boardNo);
-
-        // 첨부 파일이 없으면 종료
-        if(boardFileList.isEmpty()) {
-            return new ResponseEntity<Resource>(HttpStatus.NOT_FOUND);
+        if (boardFileList.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        // 임시 zip 파일 저장할 경로
-        File tempDir = new File(myFileUtils.getTempPath());
-        if(!tempDir.exists()) {
+        File tempDir = new File(System.getProperty("java.io.tmpdir"));
+        if (!tempDir.exists()) {
             tempDir.mkdirs();
         }
 
-        // 임시 zip 파일 이름
-        String tempFilename = myFileUtils.getTempFilename() + ".zip";
-
-        // 임시 zip 파일 File 객체
+        String tempFilename = "boardFiles_" + boardNo + ".zip";
         File tempFile = new File(tempDir, tempFilename);
 
-        // 첨부 파일들을 하나씩 zip 파일로 모으기
-        try {
-
-            // ZipOutputStream 객체 생성
-            ZipOutputStream zout = new ZipOutputStream(new FileOutputStream(tempFile));
-
+        try (ZipOutputStream zout = new ZipOutputStream(new FileOutputStream(tempFile))) {
             for (BoardFileDto boardFile : boardFileList) {
-
-                // zip 파일에 포함할 ZipEntry 객체 생성
                 ZipEntry zipEntry = new ZipEntry(boardFile.getBoardOrigin());
-
-                // zip 파일에 ZipEntry 객체 명단 추가 (파일의 이름만 등록한 상황)
                 zout.putNextEntry(zipEntry);
 
-                // 실제 첨부 파일을 zip 파일에 등록 (첨부 파일을 읽어서 zip 파일로 보냄)
-                BufferedInputStream in = new BufferedInputStream(new FileInputStream(new File(boardFile.getBoardPath(), boardFile.getBoardRename())));
-                zout.write(in.readAllBytes());
+                try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(new File(boardFile.getBoardPath(), boardFile.getBoardRename())))) {
+                    zout.write(in.readAllBytes());
+                }
 
-                // 사용한 자원 정리
-                in.close();
                 zout.closeEntry();
-
-                // DOWNLOAD_COUNT 증가
-//                boardMapper.updateDownloadCount(boardFile.getBoardFileNo());
-
-            }  // for
-
-            // zout 자원 반납
-            zout.close();
-
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        // 다운로드 할 zip File 객체 -> Resource 객체
         Resource resource = new FileSystemResource(tempFile);
-
-        // 다운로드용 응답 헤더 설정 (HTTP 참조)
         HttpHeaders responseHeader = new HttpHeaders();
         responseHeader.add("Content-Disposition", "boardFilement; filename=" + tempFilename);
-        responseHeader.add("Content-Length", tempFile.length() + "");
+        responseHeader.add("Content-Length", String.valueOf(tempFile.length()));
 
-        // 다운로드 진행
-        return new ResponseEntity<Resource>(resource, responseHeader, HttpStatus.OK);
-
+        return new ResponseEntity<>(resource, responseHeader, HttpStatus.OK);
     }
 
 
@@ -300,6 +241,12 @@ public class BoardService {
     public BoardDto getBoardByNo(int boardNo) {
         return boardMapper.getBoardByNo(boardNo);
     }
+    @Transactional(readOnly=true)
+    public void loadBoardByNo(int boardNo, Model model) {
+        model.addAttribute("board", boardMapper.getBoardByNo(boardNo));
+        model.addAttribute("boardFileList", boardMapper.getBoardFileList(boardNo));
+    }
+
 
 
     public int modifyBoard(BoardDto board) {
@@ -359,40 +306,65 @@ public class BoardService {
     }
 
     public ResponseEntity<Map<String, Object>> removeBoardFile(int boardFileNo) {
-
-        // 삭제할 첨부 파일 정보를 DB 에서 가져오기
+        // 삭제할 첨부 파일 정보를 DB에서 가져오기
         BoardFileDto boardFile = boardMapper.getBoardFileByNo(boardFileNo);
 
         // 파일 삭제
         File file = new File(boardFile.getBoardPath(), boardFile.getBoardRename());
-        if(file.exists()) {
+        if (file.exists()) {
             file.delete();
         }
 
-
-        // DB 삭제
+        // DB에서 첨부 파일 삭제
         int deleteCount = boardMapper.deleteBoardFile(boardFileNo);
 
         return ResponseEntity.ok(Map.of("deleteCount", deleteCount));
-
     }
 
     public int removeBoard(int boardNo) {
-
         // 파일 삭제
         List<BoardFileDto> boardFileList = boardMapper.getBoardFileList(boardNo);
-        for(BoardFileDto boardFile : boardFileList) {
-
+        for (BoardFileDto boardFile : boardFileList) {
             File file = new File(boardFile.getBoardPath(), boardFile.getBoardRename());
-            if(file.exists()) {
+            if (file.exists()) {
                 file.delete();
             }
-
         }
 
-        // UPLOAD_T 삭제
+        // DB에서 게시물 삭제
         return boardMapper.deleteBoard(boardNo);
-
     }
+//    // 좋아요 여부 확인 서비스
+//    public int boardLikeCheck(Map<String, Object> map) {
+//        return BoardMapper.boardLikeCheck(map);
+//    }
+//
+//    // 좋아요 처리 서비스
+//    @Transactional(rollbackFor = Exception.class)
+//
+//    public int like(Map<String, Integer> paramMap) {
+//
+//        int result = 0;
+//
+//        if(paramMap.get("check") == 0) { // 좋아요 상태 X
+//            // BOARD_LIKE 테이블 INSERT
+//            result = BoardMapper.insertBoardLike(paramMap);
+//
+//        } else { // 좋아요 상태 O
+//            // BOARD_LIKE 테이블 DELETE
+//            result = BoardMapper.deleteBoardLike(paramMap);
+//        }
+//
+//        // SQL 수행 결과가 0 == DB 또는 파라미터에 문제가 있다.
+//        // 1) 에러를 나타내는 임의의 값을 반환 (-1)
+//
+//        if(result == 0) return -1;
+//
+//        // 현재 게시글의 좋아요 개수 조회
+//        int count = BoardMapper.countBoardLike(paramMap.get("boardNo"));
+//
+//        return count;
+//
+//    }
 
 }

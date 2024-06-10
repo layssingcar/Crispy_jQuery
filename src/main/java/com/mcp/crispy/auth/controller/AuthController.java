@@ -10,12 +10,14 @@ import com.mcp.crispy.common.exception.InvalidLoginRequestException;
 import com.mcp.crispy.common.utils.CookieUtil;
 import com.mcp.crispy.common.utils.JwtUtil;
 import com.mcp.crispy.employee.dto.EmployeeDto;
+import com.mcp.crispy.employee.service.EmployeeService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +30,7 @@ public class AuthController {
     private final AuthenticationService authenticationService;
     private final CrispyUserDetailsService crispyUserDetailsService;
     private final JwtUtil jwtUtil;
+    private final EmployeeService employeeService;
 
     /**
      * 로그인 요청 처리
@@ -93,6 +96,7 @@ public class AuthController {
      */
     @PostMapping("/refresh")
     public ResponseEntity<?> refresh(@CookieValue("refreshToken") String refreshToken, HttpServletResponse response) {
+
         log.info("Refresh 요청 수신: {}", refreshToken);
 
         if(!jwtUtil.validateToken(refreshToken)) {
@@ -105,17 +109,12 @@ public class AuthController {
 
         if (userDetails instanceof EmployeePrincipal employeePrincipal) {
             String newAccessToken = jwtUtil.createAccessToken(employeePrincipal);
-            String newRefreshToken = jwtUtil.createRefreshToken(employeePrincipal);
             employeePrincipal.getEmployee().setAccessToken(newAccessToken);
-            employeePrincipal.getEmployee().setRefreshToken(newRefreshToken);
-            setTokensAndCookies(newAccessToken, newRefreshToken, response);
+            employeePrincipal.getEmployee().setRefreshToken(refreshToken);
             return ResponseEntity.ok(employeePrincipal.getEmployee());
         } else if (userDetails instanceof AdminPrincipal adminPrincipal) {
             String newAccessToken = jwtUtil.createAccessToken(adminPrincipal);
-            String newRefreshToken = jwtUtil.createRefreshToken(adminPrincipal);
             adminPrincipal.getAdmin().setAccessToken(newAccessToken);
-            adminPrincipal.getAdmin().setRefreshToken(newRefreshToken);
-            setTokensAndCookies(newAccessToken, newRefreshToken, response);
             return ResponseEntity.ok(adminPrincipal.getAdmin());
         }
 
@@ -130,6 +129,9 @@ public class AuthController {
      */
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse response) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        EmployeeDto employee = employeeService.getEmployeeName(auth.getName());
+        authenticationService.logout(employee.getEmpNo());
         // 쿠키에서 토큰 삭제
         CookieUtil.deleteCookie(response, "accessToken");
         CookieUtil.deleteCookie(response, "refreshToken");

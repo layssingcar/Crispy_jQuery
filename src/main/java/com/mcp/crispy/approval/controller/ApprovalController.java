@@ -39,11 +39,12 @@ public class ApprovalController {
 	@GetMapping("change-time-off-ct")
 	public String changeTimeOffCt(@RequestParam("timeOffCtNo") int timeOffCtNo) {
 
-		String path = null;
+		String path;
 
 		switch (timeOffCtNo) {
 			case 0: path = "document/vacation-req :: vacation-req"; break;
 			case 1: path = "document/leave-of-absence-req :: leave-of-absence-req"; break;
+			default: path = "";
 		}
 
 		return path;
@@ -68,10 +69,11 @@ public class ApprovalController {
 	 * 우혜진 (24. 06. 05.)
 	 *
 	 * @param authentication
+	 * @param timeOffCtNo
 	 * @return result
 	 */
 	@GetMapping("check-time-off-temp")
-	public ResponseEntity<?> ckeckTimeOffTemp(Authentication authentication,
+	public ResponseEntity<?> checkTimeOffTemp(Authentication authentication,
 											  @RequestParam("timeOffCtNo") int timeOffCtNo) {
 		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
 		return ResponseEntity.ok(approvalService.checkTimeOffTemp(userDetails.getEmpNo(), timeOffCtNo));
@@ -115,14 +117,36 @@ public class ApprovalController {
 		ApprovalDto approvalDto = approvalService.getTimeOffTemp(userDetails.getEmpNo(), timeOffCtNo);
 		model.addAttribute("approvalDto", approvalDto);
 
-		String path = null;
+		String path;
 
 		switch (timeOffCtNo) {
 			case 0: path = "document/vacation-req :: vacation-req"; break;
 			case 1: path = "document/leave-of-absence-req :: leave-of-absence-req"; break;
+			default: path = "";
 		}
 
 		return path;
+
+	}
+
+	/**
+	 * 휴가, 휴직 신청
+	 * 우혜진 (24. 06. 09.)
+	 *
+	 * @param authentication
+	 * @param approvalDto
+	 * @return redirect (apprList())
+	 */
+	@PostMapping("insert-time-off-appr")
+	public String insertTimeOffAppr(Authentication authentication,
+									@ModelAttribute ApprovalDto approvalDto) {
+
+		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
+		approvalDto.setEmpNo(userDetails.getEmpNo());
+
+		approvalService.insertTimeOffAppr(approvalDto);
+
+		return "redirect:/crispy/approval-list";
 
 	}
 
@@ -142,12 +166,6 @@ public class ApprovalController {
 	@GetMapping("approval-detail")
 	public String apprDetail() {
 		return "approval/approval-detail";
-	}
-	
-	// 결재선 선택 (임시)
-	@GetMapping("time-off-approval-2")
-	public String timeOffAppr2() {
-		return "approval/time-off-approval-2";
 	}
 
 }

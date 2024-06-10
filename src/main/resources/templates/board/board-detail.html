@@ -3,7 +3,7 @@
 <head>
 	<th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
 	<link rel="stylesheet" href="/css/summernote/summernote-lite.css">
-	<link href="/css/board/board-add.css" rel="stylesheet">
+	<link href="/css/board/board-detail.css" rel="stylesheet">
 </head>
 <body>
 <div class="crispy-container">
@@ -11,87 +11,198 @@
 	<div>
 		<main>
 			<div class="main">
-				<form id="frm-board-add" action="/crispy/add-form" method="POST" enctype="multipart/form-data" class="my-3">
+<!--				<form id="frm-board-add" action="/crispy/add-form" method="POST" enctype="multipart/form-data" class="my-3">-->
+					<h1 class="border-bottom py-2">게시물 상세보기</h1>
 					<div class="col-md-5">
-						<label for="cate" class="form-label">카테고리</label>
-						<select class="form-select" id="cate" name="boardCtNo" required>
-							<option value="">카테고리</option>
-							<option value="0" th:selected="${board.boardCtNo == 0}">공지사항</option>
-							<option value="1" th:selected="${board.boardCtNo == 1}">자유게시판</option>
-						</select>
+						<div th:if="${board.boardCtNo == 0}">
+							<p>공지사항</p>
+						</div>
+						<div th:if="${board.boardCtNo == 1}">
+							<p>자유게시판</p>
+						</div>
 					</div>
 					<label for="boardTitle" class="form-label">제목</label>
-					<input type="text" name="boardTitle" id="boardTitle" th:value="${board.boardTitle}" class="form-control" style="white-space: pre-line;" placeholder="제목은 15자 내외로 입력해주세요." maxlength="15" required />
+					<input type="text" name="boardTitle" id="boardTitle" class="form-control" style="white-space: pre-line;" placeholder="제목은 15자 내외로 입력해주세요." th:value="${board.boardTitle}" readonly />
 					<div class="mb-3">
-						<label for="summernote" class="form-label mt-2">내용</label>
-						<textarea id="summernote" name="boardContent" class="boardContent"></textarea>
+						<label for="boardContent" class="form-label mt-2">내용</label><br>
+						<input th:value="${board.boardContent}" id="boardContent" name="boardContent" class="form-control" readonly></input>
 					</div>
 					<div class="file-attach">
-						<!-- board.empNo가 null이면 빈 문자열을, 아니면 해당 값을 설정 -->
-						<input type="hidden" name="empNo" th:value="${board.empNo != null ? board.empNo : ''}" />
-						<div class="mb-3">
-							<input class="form-control" type="file" id="formFileMultiple" name="files" multiple>
-							<!-- 여기다 등록된 파일 detail 표시 -->
-							<input type="hidden" name="boardOrigin" value="${board.boardOrigin}">
+						<input type="hidden" name="empNo" th:value="${empNo}"/>
+						<div th:if="${#lists.isEmpty(boardFileList)}">
+							<div>첨부 파일 없음</div>
+						</div>
+						<div th:if="${not #lists.isEmpty(boardFileList)}">
+							<div th:each="boardFile : ${boardFileList}" class="attach">
+								<a th:text="${boardFile.boardOrigin}"
+								   th:href="@{/crispy/download(boardFileNo=${boardFile.boardFileNo})}">다운로드</a>
+							</div>
 						</div>
 					</div>
 					<div class="d-flex justify-content-end" id="btn">
-						<a id="cancelBtn" class="btn btn-primary btn-lg">삭제</a>
-						<button type="submit" id="addBtn" class="btn btn-primary btn-lg">수정</button>
+						<form id="frm-btn" method="POST" action="/crispy/removeBoard">
+							<input type="hidden" name="boardNo" th:value="${board.boardNo}">
+							<button type="submit" id="btn-delete" class="btn btn-primary btn-lg">삭제</button>
+						</form>
+						<form id="frm-btn-modify" method="GET" action="/crispy/board-modify">
+							<input type="hidden" name="boardNo" th:value="${board.boardNo}">
+							<button type="submit" id="btn-modify" class="btn btn-primary btn-lg">수정</button>
+						</form>
 					</div>
-				</form>
-				<!-- Hidden div to hold boardContent value -->
-				<div id="hiddenBoardContent" th:text="${board.boardContent}" style="display:none;"></div>
+<!--				</form>-->
 			</div>
 		</main>
 		<footer th:replace="~{layout/footer :: footer}"></footer>
 	</div>
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src="/js/summernote/summernote-lite.js"></script>
 	<script src="/js/summernote/lang/summernote-ko-KR.js"></script>
 	<script>
-		$(document).ready(function() {
-			// Initialize Summernote
-			$('#summernote').summernote({
-				placeholder: '500자',
-				tabsize: 2,
-				height: 400,
-				toolbar: [
-					['style', ['style']],
-					['font', ['bold', 'underline', 'clear']],
-					['color', ['color']],
-					['para', ['ul', 'ol', 'paragraph']],
-					['table', ['table']],
-					['insert', ['link', 'picture', 'video']],
-					['view', ['fullscreen', 'codeview', 'help']]
-				],
-				callbacks: {
-					onInit: function() {
-						$('#summernote').next().find('.note-placeholder').css('font-size', '16px');
-						// Set the content from hidden div
-						const boardContent = $('#hiddenBoardContent').text();
-						$('#summernote').summernote('code', boardContent);
+		var frmBtn = document.getElementById('frm-btn');
+
+
+		document.getElementById('btn-delete').addEventListener('click', (evt) => {
+			if (!confirm('해당 게시글을 삭제할까요?')) {
+				evt.preventDefault(); // 삭제 취소 시 폼 전송 방지
+			}
+		});
+
+
+
+		const fnDownload = () => {
+			document.querySelectorAll('.boardFile').forEach(attach => {
+				attach.addEventListener('click', (evt) => {
+					if (confirm('해당 첨부 파일을 다운로드 할까요?')) {
+						location.href = /*[[@{/upload/download.do(attachNo=__${evt.currentTarget.dataset.attachNo}__)}]]*/'';
 					}
-				},
+				});
+			});
+		}
+
+		const fnDownloadAll = () => {
+			document.getElementById('download-all').addEventListener('click', (evt) => {
+				if (!confirm('모두 다운로드 할까요?')) {
+					evt.preventDefault();
+					return;
+				}
+			});
+		}
+
+		$(document).ready(function() {
+			$('#frm-btn-modify').submit(function(event) {
+				event.preventDefault(); // 폼 제출을 중지합니다.
+
+				// 폼을 직접 제출합니다.
+				$.ajax({
+					type: $(this).attr('method'),
+					url: $(this).attr('action'),
+					data: $(this).serialize(),
+					success: function(response) {
+						// 서버에서 받은 boardNo를 사용하여 URL을 구성합니다.
+						var boardNo = response.boardNo;
+						var redirectURL = '/crispy/board-modify?boardNo=' + boardNo;
+
+						// 수정 페이지로 이동합니다.
+						window.location.href = redirectURL;
+					},
+					error: function(xhr, status, error) {
+						console.error(xhr.responseText);
+						// 오류 처리 로직을 추가하세요.
+					}
+				});
 			});
 		});
 
-		$('#cancelBtn').on('click', () => {
-			window.location.href = "/board/board-list";
-		});
+		function getBoardNoFromURL() {
+			var urlParams = new URLSearchParams(window.location.search);
+			return urlParams.get('boardNo');	// 요청 파라미터에서 boardNo 를 찾아서 값을 리턴해줌
+		}
 
-		/* $('#frm-board-add').on('submit', function(evt) {
-            if ($('#boardTitle').val().trim() === '') {
-                alert('제목 입력은 필수입니다.');
-                evt.preventDefault();
-            } else if ($('#summernote').val().trim() === '') {
-                alert('내용 입력은 필수입니다.');
-                evt.preventDefault();
-            } else {
-                alert("게시물이 등록되었습니다.");
-                window.location.href = '/crispy/board-detail';
-            }
-        }); */
+
+
+
+
+
+		var boardNo = getBoardNoFromURL();	// 이전 페이지에서 보드 넘버 받아온거
+		//
+		// const fnAddBoardHit = () =>{
+		//     $.ajax({
+		//         type:'GET',
+		//         url: '/crispy/putBoardHit',
+		//         data:'boardNo=' + boardNo,
+		//         dataType:'json',
+		//         success: function(data){
+		//         },
+		//         error:function(jqXHR){
+		//             alert(jqXHR.statusText + '(' + jqXHR.status + ')');
+		//         }
+		//     })
+		// }
+
+
+
+
+		//
+		// // 좋아요 버튼이 클릭되었을 때
+		// const boardLike = document.getElementById("boardLike");
+		//
+		// boardLike.addEventListener("click", e => {
+		//
+		// 	// 로그인 여부 검사
+		// 	if(loginMemberNo == ""){
+		// 		alert("로그인 후 이용해 주세요.");
+		// 		return;
+		// 	}
+		//
+		// 	let check; // 기존에 좋아요 체크 X (빈하트)   : 0
+		// 			   // 기존에 좋아요 체크 O (꽉찬하트) : 1
+		//
+		// 	// contains("클래스명"): 클래스가 있으면 true, 없으면 false
+		// 	if(e.target.classList.contains("fa-regular")){ // 좋아요 체크 X (빈하트)
+		// 		check = 0;
+		// 	} else{ // 좋아요 체크 O (꽉찬하트)
+		// 		check = 1;
+		// 	}
+		//
+		// 	// ajax로 서버로 제출할 파라미터를 모아둔 JS 객체
+		// 	// 로그인한 회원 번호, 게시글 번호, check
+		// 	const data = { "boardNo" : boardNo,
+		// 		"memberNo" : loginMemberNo,
+		// 		"check" : check};
+		//
+		// 	// ajax 코드 작성
+		// 	fetch("/board/like", {
+		// 		method : "POST",
+		// 		headers : {"Content-Type" : "application/json"},
+		// 		body : JSON.stringify(data)
+		// 	})
+		// 			.then(response => response.text()) // 응답 객체를 필요한 형태로 파싱하여 리턴
+		// 			.then(count => {
+		// 				console.log("count : " + count);
+		//
+		// 				if(count == -1){ // INSERT, DELETE 실패 시
+		// 					console.log("좋아요 처리 실패");
+		// 					return;
+		// 				}
+		//
+		// 				// toggle() : 클래스가 있으면 없애고, 없으면 추가하고
+		// 				e.target.classList.toggle("fa-regular");
+		// 				e.target.classList.toggle("fa-solid");
+		//
+		// 				// 현재 게시글의 좋아요 수를 화면에 출력
+		// 				e.target.nextElementSibling.innerText = count;
+		//
+		// 			}) // 파싱된 데이터를 받아서 처리하는 코드 작성
+		//
+		// 			.catch(err => {
+		//
+		// 				console.log("예외 발생");
+		// 				console.log(err);
+		//
+		// 			}) // 예외 발생 시 처리하는 부분
+		// })
+		fnDownload();
+		fnDownloadAll();
+
 	</script>
 </div>
 </body>

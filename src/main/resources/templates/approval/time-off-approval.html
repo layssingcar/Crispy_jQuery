@@ -4,51 +4,91 @@
 <th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
 <link rel="stylesheet" href="/css/approval/time-off-approval.css" type="text/css"> <!-- 휴가/휴직 신청 페이지 -->
 <link rel="stylesheet" href="/css/document/time-off-req.css" type="text/css"> <!-- 휴가/휴직 신청 양식 -->
+<!-- jstree -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.16/themes/default-dark/style.min.css" integrity="sha512-CQDjN7GvO35Yq+qvFhfRO6mNhjEHoJ2xGcCV4EOQB10jdBjLKZN5DkXkoNg0VKq4/BfKyMtkqoZ2WmhGnT9Tmw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.16/themes/default/style.min.css" integrity="sha512-A5OJVuNqxRragmJeYTW19bnw9M2WyxoshScX/rGTgZYj5hRXuqwZ+1AVn2d6wYTZPzPXxDeAGlae0XwTQdXjQA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
 	<div class="crispy-container">
 		<aside th:replace="~{layout/sidebar :: sidebar}"></aside>
 		<div>
 			<main>
-				<div class="time-off-appr">
-					<h1>휴가/휴직 신청</h1>
+                <!-- 문서 작성 form -->
+                <form method="post" action="insert-time-off-appr" id="form-container" enctype="multipart/form-data">
 
-					<!-- 상단 영역 -->
-					<div class="top-area">
+                    <!-- 휴가/휴직 신청 -->
+                    <div class="time-off-appr">
+                        <h1>휴가/휴직 신청</h1>
 
-                        <!-- 문서 선택 -->
-                        <select class="form-select form-select-lg mb-3 m-left" aria-label="Large select example" id="time-off-ct">
-                            <option value="">문서 선택</option>
-                            <option value="0">휴가신청서</option>
-                            <option value="1">휴직신청서</option>
-                        </select>
+                        <!-- 상단 영역 -->
+                        <div class="top-area">
 
-                        <!-- 임시저장 내용 불러오기 -->
-						<button type="button" class="btn" id="temp-content">임시저장 내용 불러오기</button>
-					</div>
+                            <!-- 문서 선택 -->
+                            <select class="form-select form-select-lg mb-3 m-left" aria-label="Large select example" id="time-off-ct">
+                                <option value="">문서 선택</option>
+                                <option value="0">휴가신청서</option>
+                                <option value="1">휴직신청서</option>
+                            </select>
 
-                    <!-- 문서 작성 form -->
-                    <form method="post" id="form-container">
+                            <!-- 임시저장 내용 불러오기 -->
+                            <button type="button" class="btn" id="temp-content">임시저장 내용 불러오기</button>
+                        </div>
+
+                        <!-- 문서 양식 -->
                         <div id="time-off-doc" th:replace="~{document/vacation-req :: vacation-req}"></div>
                         <input type="hidden" name="timeOffCtNo" value="0" id="time-off-ct-no">
 
                         <!-- 하단 버튼 -->
                         <div class="bottom-btn">
-                            
+
                             <!-- 임시저장 -->
                             <div><button type="button" class="btn" id="temp">임시저장</button></div>
 
                             <div>
-                                <button class="btn" id="cancel">취소</button>
-                                <button class="btn" id="approval">다음</button>
+                                <button type="button" class="btn" id="cancel-1st">취소</button>
+                                <button type="button" class="btn" id="next-btn">다음</button>
                             </div>
                         </div>
-                    </form>
-				</div>
+                    </div>
+
+                    <!-- 결재선 선택 -->
+                    <div class="appr-line d-none">
+                        <h1>결재선 선택</h1>
+
+                        <!-- 메인 영역 -->
+                        <div class="main-area">
+                            <!-- 결재선 선택 -->
+                            <div class="tree-box" id="tree"></div>
+                            <div id="select">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" id="add-emp"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" id="remove-emp"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/></svg>
+                            </div>
+
+                            <!-- 선택한 결재선 목록 -->
+                            <div class="tree-box" id="select-tree"></div>
+                        </div>
+
+                        <div class="bottom-area">
+                            <!-- 하단 버튼 -->
+                            <div class="bottom-btn">
+                                <div><button type="button" class="btn" id="rollback">뒤로가기</button></div>
+
+                                <div>
+                                    <button type="button" class="btn" id="cancel-2nd">취소</button>
+                                    <button class="btn" id="request">신청하기</button> <!--approval-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
 			</main>
 			<footer th:replace="~{layout/footer :: footer}"></footer>
 		</div>
 	</div>
+
+    <!-- jstree -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.16/jstree.min.js" integrity="sha512-ekwRoEshEqHU64D4luhOv/WNmhml94P8X5LnZd9FNOiOfSKgkY12cDFz3ZC6Ws+7wjMPQ4bPf94d+zZ3cOjlig==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
     <script src="/js/approval/timeOffAppr.js"></script>
 </body>
 </html>

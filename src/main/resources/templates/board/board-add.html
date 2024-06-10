@@ -28,7 +28,7 @@
 						<textarea th:utext="${boardContent}" id="summernote" name="boardContent" class="boardContent"></textarea>
 					</div>
 					<div class="file-attach">
-						<input type="hidden" name="empNo" th:value="*{inserted.empNo ?: ''}" />
+						<input type="hidden" name="empNo" th:value="${empNo}"/>
 						<div class="mb-3">
 							<input class="form-control" type="file" id="formFileMultiple" name="files" multiple>
 						</div>
@@ -73,19 +73,43 @@
 			window.location.href="/board/board-list";
 		});
 
-		/*		$('#frm-board-add').on('submit', function(evt) {
-                    if ($('#boardTitle').val().trim() === '') {
-                        alert('제목 입력은 필수입니다.');
-                        evt.preventDefault();
-                    } else if ($('#summernote').val().trim() === '') {
-                        alert('내용 입력은 필수입니다.');
-                        evt.preventDefault();
-                    } else {
-                        alert("게시물이 등록되었습니다.");
-                        window.location.href = '/crispy/board-detail';
+		$('#frm-board-add').on('submit', function(evt) {
+			var content = $('#summernote').summernote('code').trim();
 
-                    }
-                });*/
+			if ($('#boardTitle').val().trim() === '') {
+				alert('제목 입력은 필수입니다.');
+				evt.preventDefault();
+			} else if (content === '') {
+				alert('내용 입력은 필수입니다.');
+				evt.preventDefault();
+			} else {
+				// Remove <p> tags and keep text content
+				var cleanContent = content.replace(/<\/?p>/g, '');
+				$('#summernote').summernote('code', cleanContent);
+
+				alert("게시물이 등록되었습니다.");
+				// Prevent the default form submission to avoid navigation before saving
+				evt.preventDefault();
+				window.history.back();
+
+
+				// Submit the form using AJAX to stay on the page for the alert
+				$.ajax({
+					type: 'POST',
+					url: $('#frm-board-add').attr('action'),
+					data: new FormData($('#frm-board-add')[0]),
+					processData: false,
+					contentType: false,
+					success: function(response) {
+						window.location.href = '/crispy/board-detail';
+					},
+					error: function(xhr, status, error) {
+						alert('오류가 발생했습니다. 다시 시도해 주세요.');
+					}
+				});
+			}
+		});
+
 	</script>
 </div>
 </body>

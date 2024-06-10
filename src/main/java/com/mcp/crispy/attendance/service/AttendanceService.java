@@ -27,18 +27,16 @@ public class AttendanceService {
 	}
 	
 	@Transactional(readOnly = true)
-	public List<AttendanceDto> getAttList() {
-		List<AttendanceDto> attenList = attendanceMapper.getAttList(); 
-		String inWorkForm, outWorkForm, workingTimeForm;
+	public List<AttendanceDto> getAttList(int month) {
+		List<AttendanceDto> attenList = attendanceMapper.getAttList(month); 
+		String workingTimeForm;
 		for(int i = 0; i < attenList.size(); i++) {
-			
 			workingTimeForm = attenList.get(i).getAttWorkTime().substring(0 ,2) + "h" +  
 								attenList.get(i).getAttWorkTime().substring(3 , 5)+ "m" +
 									attenList.get(i).getAttWorkTime().substring(6 , 8) + "s";
 			
 			attenList.get(i).setAttWorkTime(workingTimeForm);
 		}
-		
 		
 		return attenList;
 	}

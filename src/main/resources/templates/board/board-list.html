@@ -26,7 +26,6 @@
 				<table class="table">
 					<thead>
 					<tr>
-						<th scope="col">게시물 번호</th>
 						<th scope="col">제목</th>
 						<th scope="col">내용</th>
 						<th scope="col">조회수</th>
@@ -37,12 +36,19 @@
 					<!-- 리스트 -->
 					<tbody>
 					<tr th:each="free : ${freeList}" th:data-boardNo="${free.boardNo}">
-						<td th:text="${free.boardNo}">자유게시판 번호</td>
+						<td th:text="${free.boardNo}" style="display: none;">자유게시판 번호</td>
 						<td>
-							<a th:href="@{/crispy/board-detail(boardNo=${free.boardNo})}" th:text="${free.boardTitle}">제목</a>	</td>					</td>
-						<td th:text="${free.boardContent}">내용</td>
-						<td th:text="${free.boardHit}">조회수</td>
-						<td th:text="${free.createDt}">작성일</td>
+							<a th:href="@{/crispy/board-detail(boardNo=${free.boardNo})}" th:text="${free.boardTitle}">제목</a>
+						</td>
+						<td>
+							<a th:href="@{/crispy/board-detail(boardNo=${free.boardNo})}" th:text="${free.boardContent}">내용</a>
+						</td>
+						<td>
+							<a th:href="@{/crispy/board-detail(boardNo=${free.boardNo})}" th:text="${free.boardHit}">조회수</a>
+						</td>
+						<td>
+							<a th:href="@{/crispy/board-detail(boardNo=${free.boardNo})}" th:text="${free.createDt}">작성일</a>
+						</td>
 					</tr>
 					</tbody>
 				</table>
