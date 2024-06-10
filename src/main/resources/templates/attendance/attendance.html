@@ -183,7 +183,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	  })
 	  .done(function(data){
 		for (var date = moment(start); date.isBefore(end); date.add(1, 'days')) {
-		    let tablestr = '<tr>'; // 각 행을 추가할 때마다 tablestr 초기화
+		    let tablestr = '<tr>'; 
+		    
 
 		    switch (count) {
 		        case 0:
@@ -227,6 +228,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 		chartInstance.data.labels = daycount;
 		chartInstance.data.datasets[0].data = chartcount;
+		chartInstance.data.datasets[1].data = chartcount;
 		chartInstance.update();
 	  })
 	  .fail(function(jqXHR){
@@ -246,14 +248,25 @@ document.addEventListener('DOMContentLoaded', function() {
 		      labels: daycount,
 		      datasets: [
 		          {
-		              label: '근무시간',
+		              label: '기본 근무 시간',
 		              data: chartcount,
 		              borderWidth: 0.1,
+		              backgroundColor: 'rgba(255, 99, 132, 0.5)',
+		              stack: 'stack1'
+		          },
+		          {
+		              label: '추가 근무 시간',
+		              data: chartcount,
+		              borderWidth: 0.1,
+		              backgroundColor: 'rgba(54, 162, 235, 0.5)',
+		              stack: 'stack1'
 		          }
 		      ]
 		  },
 		  options: {
-		      scales: { y: { beginAtZero: true } }
+		      scales: { y:{beginAtZero: true, stacked:true}, 
+		    	  		x:{grid:{offset:true}, stacked:true} 
+		      }
 		  }
 		});	  
 	}
