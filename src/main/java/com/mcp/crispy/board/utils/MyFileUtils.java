@@ -9,15 +9,16 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class MyFileUtils {
-    @Value("${file.upload-dir.sign}")
+/*    @Value("${file.board-dir.sign}")*/
     public String UP_DIR;
+
 
     // 현재 날짜
     public static final LocalDate TODAY = LocalDate.now();
 
     // 업로드 경로 반환
     public String getBoardPath() {
-        return UP_DIR+"upload" + DateTimeFormatter.ofPattern("/yyyy/MM/dd").format(TODAY);
+        return UP_DIR+"board" + DateTimeFormatter.ofPattern("/yyyy/MM/dd").format(TODAY);
     }
 
     // 저장될 파일명 반환
@@ -39,16 +40,6 @@ public class MyFileUtils {
     // 임시 파일 이름 반환 (확장자 제외)
     public String getTempFilename() {
         return System.currentTimeMillis() + "";
-    }
-
-    // 블로그 작성시 사용된 이미지가 저장될 경로 반환하기
-    public String getBlogImageUploadPath() {
-        return "c:/blog" + DateTimeFormatter.ofPattern("/yyyy/MM/dd").format(TODAY);
-    }
-
-    // 블로그 이미지가 저장된 어제 경로를 반환
-    public String getBlogImageUploadPathInYesterday() {
-        return "c:/blog" + DateTimeFormatter.ofPattern("/yyyy/MM/dd").format(TODAY.minusDays(1));
     }
 
 }

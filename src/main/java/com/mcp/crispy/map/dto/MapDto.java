@@ -19,6 +19,8 @@ public class MapDto {
     private String frnStreet;
     private String frnDetail;
     private String frnTel;
+    private String frnStartTime;
+    private String frnEndTime;
 
     /* 재고 */
     private int stockNo;
@@ -30,5 +32,8 @@ public class MapDto {
 
     /* 재고현황 수량 */
     private int isCount;
+
+    /* 매출 */
+    private int salPrice;
 
 }

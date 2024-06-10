@@ -8,7 +8,6 @@
 <div class="crispy-container">
 	<aside th:replace="~{layout/sidebar :: sidebar}"></aside>
 	<div>
-		<header th:replace="~{layout/navbar :: navbar}"></header>
 		<main>
 			<div class="board-list">
 				<h1>자유게시판</h1>
@@ -37,16 +36,15 @@
 
 					<!-- 리스트 -->
 					<tbody>
-					<tr th:each="free : ${freeList}">
+					<tr th:each="free : ${freeList}" th:data-boardNo="${free.boardNo}">
 						<td th:text="${free.boardNo}">자유게시판 번호</td>
-						<td class="title" th:text="${free.boardTitle}">제묵</td>
+						<td>
+							<a th:href="@{/crispy/board-detail(boardNo=${free.boardNo})}" th:text="${free.boardTitle}">제목</a>	</td>					</td>
 						<td th:text="${free.boardContent}">내용</td>
 						<td th:text="${free.boardHit}">조회수</td>
 						<td th:text="${free.createDt}">작성일</td>
 					</tr>
 					</tbody>
-
-
 				</table>
 
 				<nav aria-label="Page navigation example">
@@ -79,15 +77,13 @@
 					window.location.href = '/crispy/board-add';
 				});
 
-		document.querySelectorAll('tr[data-href]').forEach(row => {
-			row.addEventListener('click', function() {
-				window.location.href = this.getAttribute('data-href');
-			});
-		});
+		// document.querySelectorAll('tbody tr').forEach(row => {
+		// 	row.addEventListener('click', function() {
+		// 		const boardNo = this.getAttribute('data-boardNo');
+		// 		window.location.href = `/crispy/board-detail?boardNo=${boardNo}`;
+		// 	});
+		// });
 
-		$('tr td').on('click', () => {
-			window.location.href = "/crispy/board-detail";
-		})
 	</script>
 </div>
 </body>
