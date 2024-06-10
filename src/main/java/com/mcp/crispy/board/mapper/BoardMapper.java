@@ -6,10 +6,16 @@ import java.util.Map;
 import com.mcp.crispy.board.dto.BoardDto;
 import com.mcp.crispy.board.dto.BoardFileDto;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 
 
 @Mapper
 public interface BoardMapper {
+    //    int countBoardLike(Integer boardNo);
+//    int deleteBoardLike(Map<String, Integer> paramMap);
+//    int insertBoardLike(Map<String, Integer> paramMap);
+//    int boardLikeCheck(Map<String, Object> map);
     // 자유게시판 LIST
     List<BoardDto> getFreeBoardList();
     int insertBoard(BoardDto board);
@@ -23,4 +29,5 @@ public interface BoardMapper {
     int updateBoard(BoardDto Board);
     int deleteBoardFile(int BoardFileNo);
     int deleteBoard(int BoardNo);
+
 }
