@@ -176,12 +176,15 @@ document.addEventListener('DOMContentLoaded', function() {
       let count = datetmp[currentDay];
 	  let daycounttmp = 1;
 	  
+	  const data = {
+	      month: (calendar.getDate().getMonth() + 1),
+	      empNo: empNo
+	  };
 	  $.ajax({
-	  	type:'GET',
-	  	url:'/crispy/getAttendList',
-	  	contentType: 'application/json',
-		data:'month=' + (calendar.getDate().getMonth() + 1),
-	  	dataType:'json'
+		type: 'GET',
+		url: '/crispy/getAttendList',
+		data: data,
+		dataType: 'json',
 	  })
 	  .done(function(data){
 		for (var date = moment(start); date.isBefore(end); date.add(1, 'days')) {
@@ -206,22 +209,30 @@ document.addEventListener('DOMContentLoaded', function() {
 		    if (data.length != 0) {
 		        $(data).each(function() {
 		            if (date.format('YYYY-MM-DD') == this.createDt) {
-		            	if(this.annCtNo == 0 || this.annCtNo == 1 || this.annCtNo == 2){
-			                tablestr += (this.annCtNo == 0)? '<td></td>' : '<td>정상</td>';
-			                tablestr += (this.annCtNo == 0)? '<td></td>' : '<td>' + this.attInTime + '</td>';
-			                tablestr += (this.annCtNo == 0)? '<td></td>' : '<td>' + this.attOutTime + '</td>';
-			                tablestr += (this.annCtNo == 0)? '<td></td>' : '<td>' + this.attWorkTime + '</td>';
-			                tablestr += (this.annCtNo == 0)? '<td>연차</td>' : (this.annCtNo == 1) ? '<td>반차</td>' : '<td>반반차</td>';
+		            	if(this.category == 1 || this.category == 2){
+			                tablestr += '<td>정상</td>';
+			                tablestr += '<td>' + this.attInTime + '</td>';
+			                tablestr += '<td>' + this.attOutTime + '</td>';
+			                tablestr += '<td>' + this.attWorkTime + '</td>';
+			                tablestr += (this.category == 1) ? '<td>반차</td>' : '<td>반반차</td>';
+							fnCalWorkTimeByChart(this.attWorkTime);
 		            	}
+						else if(this.category == 0){
+							tablestr += '<td></td>';
+							tablestr += '<td></td>';
+							tablestr += '<td></td>';
+							tablestr += '<td></td>';
+							tablestr += '<td>연차</td>';							
+						}
 		            	else{
 			                tablestr += '<td>정상</td>';
 			                tablestr += '<td>' + this.attInTime + '</td>';
 			                tablestr += '<td>' + this.attOutTime + '</td>';
 			                tablestr += '<td>' + this.attWorkTime + '</td>';
 			                tablestr += '<td></td>';
+							fnCalWorkTimeByChart(this.attWorkTime);
 		            	}
 		                found = true;
-						fnCalWorkTimeByChart(this.attWorkTime);
 		            }
 		        });
 		    }
