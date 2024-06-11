@@ -42,7 +42,7 @@
                                         <img th:if="${employee.empSign != null}" th:src="${employee.empSign}" class="sign-img">
                                     </div>
                                     <!-- 비밀번호 변경-->
-                                    <button id="add-approval">결재 서명 추가</button>
+                                    <button type="button" id="add-approval">결재 서명 추가</button>
                                     <a href="/crispy/employee/changeEmpPw" role="button" class="change-password">
                                         비밀번호 변경
                                     </a>
@@ -118,7 +118,7 @@
                                                 <span class="close">❌</span>
                                                 <h2>결재 서명 추가</h2>
                                                 <canvas id="signature-pad" width="400" height="200" style="border: 1px solid #ccc;"></canvas>
-                                                <button id="save-signature">저장</button>
+                                                <button type="button" id="save-signature">저장</button>
                                                 <button id="clear-signature">지우기</button>
                                             </div>
                                         </div>

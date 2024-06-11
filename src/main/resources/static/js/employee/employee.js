@@ -3,7 +3,6 @@ const employee = {
         this.bindEvents();
         this.setupFormButtons();
         this.setupProfileImageUpload();
-        this.setupValidationListeners();
         document.getElementById("btn-update-profile")?.addEventListener("click", () => {
             this.changeProfileImage();
         })
@@ -116,24 +115,6 @@ const employee = {
             }
         });
     },
-
-    hideValidationError: function(inputElement) {
-        const fieldName = inputElement.name;
-        const errorContainer = document.querySelector(`.${fieldName}-error`);
-        if (errorContainer) {
-            errorContainer.style.display = 'none';
-            errorContainer.textContent = '';
-        }
-    },
-
-    showValidationError: function(inputElement, message) {
-        const fieldName = inputElement.name;
-        const errorContainer = document.querySelector(`.${fieldName}-error`);
-        if (errorContainer) {
-            errorContainer.style.display = 'block';
-            errorContainer.textContent = message;
-        }
-    },
     changeEmpPhone: function () {
         const empPhone = document.querySelector(".empPhone").value;
         const data = {
@@ -170,10 +151,14 @@ const employee = {
             empNo: empNo,
             empSign: empSign
         }
+
+        const token = Auth.getCookie('accessToken');
+
         Auth.authenticatedFetch('/api/employee/empSign/v1', {
-            method: 'POST',
+            method: 'PUT',
             headers: {
-                'Content-Type': 'application/json'
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
             },
             body: JSON.stringify(data)
         }).then(response => {
@@ -413,9 +398,16 @@ const employee = {
             })
             .then(data => {
                 if (data.message) {
-                    alert(data.message);
-                    this.toggleEditMode(false);
-                    location.reload();
+                    Swal.fire({
+                        icon: "success",
+                        title: data.message,
+                        showConfirmButton: true,
+                        timer: 1500
+                    }).then(result => {
+                        if (result.isConfirmed) {
+                            location.reload();
+                        }
+                    });
                 } else {
                     alert('저장 중 오류가 발생했습니다.');
                 }
@@ -428,14 +420,6 @@ const employee = {
                     alert('저장 중 오류가 발생했습니다.');
                 }
             });
-    },
-    setupValidationListeners: function() {
-        const inputFields = document.querySelectorAll('.form-control');
-        inputFields.forEach(input => {
-            input.addEventListener('change', (e) => {
-                this.hideValidationError(e.target);
-            });
-        });
     },
     updateEmployeeProfile: function(employee) {
         if (employee.empProfile) {

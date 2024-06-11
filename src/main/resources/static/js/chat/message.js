@@ -27,8 +27,16 @@ const message = {
             chatInput.removeEventListener("keydown", this.sendMessageEnterHandler);
             this.sendMessageEnterHandler = (event) => {
                 if (event.key === "Enter" && !event.shiftKey) {
-                    event.preventDefault();
+                    // IME 입력 중인지 확인
+                    if (event.isComposing) {
+                        return; // IME 입력 중이면 전송하지 않음
+                    }
+
+                    event.preventDefault(); // 기본 엔터 동작(새 줄 삽입)을 방지
+
+                    // 메시지 전송 함수 호출
                     this.sendMessage();
+                    chatInput.value = ""; // 입력창 비우기
                 }
             };
             chatInput.addEventListener("keydown", this.sendMessageEnterHandler);

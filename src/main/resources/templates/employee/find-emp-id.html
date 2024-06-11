@@ -13,6 +13,7 @@
             <form class="find-form" th:action="@{/crispy/employee/findEmpId}"
                   th:object="${findEmployeeDto}" method="post" autocomplete="off">
                 <h1 class="find-header">아이디 찾기</h1>
+                <input type="hidden" th:value="${findEmployeeDto.empId}" name="empId">
                 <!-- 직원 이름 -->
                 <div class="find-emp-id">
                     <div class="mb-3">
