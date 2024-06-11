@@ -1,5 +1,6 @@
 package com.mcp.crispy.approval.dto;
 
+import com.mcp.crispy.stock.dto.StockDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,13 +18,15 @@ public class ApprovalDto {
     private int apprStat;   // 문서상태
     private int empNo;      // 직원번호
 
-    private List<ApprLineDto> apprLineDtoList;  // 결재선 리스트
-
     private int timeOffCtNo;        // 문서카테고리
     private String timeOffStartDt;  // 시작일
     private String timeOffEndDt;    // 종료일
     private int timeOffPeriod;      // 기간
     private String timeOffContent;  // 문서내용
 
+    private List<ApprLineDto> apprLineDtoList;  // 결재선 리스트
+    private List<StockDto> stockOrderList;      // 발주재고 리스트
+
     private int timeOffTempNo;  // 휴가휴직임시번호
+    private int orderTempNo;    // 발주임시번호
 }

@@ -1,10 +1,10 @@
 package com.mcp.crispy.stock.controller;
 
+import com.mcp.crispy.approval.dto.ApprovalDto;
 import com.mcp.crispy.auth.domain.EmployeePrincipal;
 import com.mcp.crispy.common.page.PageResponse;
 import com.mcp.crispy.stock.dto.StockDto;
 import com.mcp.crispy.stock.dto.StockOptionDto;
-import com.mcp.crispy.stock.dto.StockOrderDto;
 import com.mcp.crispy.stock.service.StockService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -134,17 +134,17 @@ public class StockController {
 	 * 우혜진 (24. 06. 03.)
 	 *
 	 * @param authentication
-	 * @param stockOrderDto
+	 * @param approvalDto
 	 * @return result
 	 */
 	@PostMapping("stock-order-temp")
 	public ResponseEntity<?> stockOrderTemp(Authentication authentication,
-								 			@RequestBody @ModelAttribute StockOrderDto stockOrderDto) {
+								 			@RequestBody @ModelAttribute ApprovalDto approvalDto) {
 
 		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
-		stockOrderDto.setEmpNo(userDetails.getEmpNo());
+		approvalDto.setEmpNo(userDetails.getEmpNo());
 
-		return ResponseEntity.ok(stockService.insertOrderTemp(stockOrderDto));
+		return ResponseEntity.ok(stockService.insertOrderTemp(approvalDto));
 
 	}
 

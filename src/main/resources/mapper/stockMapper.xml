@@ -98,7 +98,7 @@
     </delete>
 
     <!-- 발주 재고 임시저장 -->
-    <insert id="insertOrderTemp" parameterType="com.mcp.crispy.stock.dto.StockOrderDto">
+    <insert id="insertOrderTemp" parameterType="ApprovalDto">
             INSERT INTO STOCK_ORDER_TEMP_T (
                         ORDER_TEMP_NO
                       , STOCK_NO
