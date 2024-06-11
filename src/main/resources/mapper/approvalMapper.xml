@@ -121,4 +121,74 @@
                ) TEMP_T
     </insert>
 
+    <!-- 결재 문서 목록 수 조회 -->
+    <select id="getApprCount">
+            SELECT COUNT(*)
+              FROM APPROVAL_T A
+        INNER JOIN TIME_OFF_T T
+                ON A.APPR_NO = T.APPR_NO
+        INNER JOIN EMPLOYEE_T E
+                ON A.EMP_NO = E.EMP_NO
+                <choose>
+                    <when test="type == 'draft'">
+                          WHERE 1=1
+                            AND E.EMP_NO = #{empNo}
+                    </when>
+                    <otherwise>
+                          RIGHT OUTER JOIN APPR_LINE_T L
+                                        ON A.APPR_NO = L.APPR_NO
+                                     WHERE 1=1
+                                       AND L.EMP_NO = #{empNo}
+                                       AND (
+                                           L.APPR_LINE_ORDER = 0
+                                           OR (
+                                           SELECT 'temp'
+                                             FROM APPR_LINE_T AL
+                                            WHERE AL.APPR_NO = A.APPR_NO
+                                              AND AL.APPR_LINE_ORDER = 0
+                                              AND AL.APPR_LINE_STAT = 1
+                                              ) = 'temp'
+                                           )
+                        </otherwise>
+                </choose>
+    </select>
+
+    <!-- 결재 문서 목록 조회 -->
+    <select id="getApprList">
+            SELECT A.APPR_NO, A.APPR_DT, A.APPR_STAT
+                 , T.TIME_OFF_CT_NO
+                 , E.EMP_NO, E.EMP_NAME
+                   <if test="type == 'sign'">
+                       , L.APPR_LINE_NO
+                   </if>
+              FROM APPROVAL_T A
+        INNER JOIN TIME_OFF_T T
+                ON A.APPR_NO = T.APPR_NO
+        INNER JOIN EMPLOYEE_T E
+                ON A.EMP_NO = E.EMP_NO
+                <choose>
+                    <when test="type == 'draft'">
+                          WHERE 1=1
+                            AND E.EMP_NO = #{empNo}
+                    </when>
+                    <otherwise>
+                          RIGHT OUTER JOIN APPR_LINE_T L
+                                        ON A.APPR_NO = L.APPR_NO
+                                     WHERE 1=1
+                                       AND L.EMP_NO = #{empNo}
+                                       AND (
+                                           L.APPR_LINE_ORDER = 0
+                                           OR (
+                                              SELECT 'temp'
+                                                FROM APPR_LINE_T AL
+                                               WHERE AL.APPR_NO = A.APPR_NO
+                                                 AND AL.APPR_LINE_ORDER = 0
+                                                 AND AL.APPR_LINE_STAT = 1
+                                              ) = 'temp'
+                                           )
+                    </otherwise>
+                </choose>
+          ORDER BY APPR_DT DESC
+    </select>
+
 </mapper>

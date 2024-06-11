@@ -13,13 +13,16 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class ApprovalDto {
-    private int apprNo;     // 문서번호
-    private String apprDt;  // 기안일
-    private int apprStat;   // 문서상태
-    private int empNo;      // 직원번호
-    private int creator;    // 생성자
+    private int apprNo;             // 문서번호
+    private String apprDt;          // 기안일
+    private int apprStat;           // 문서상태번호
+    private String apprStatName;    // 문서상태명
+    private int empNo;              // 직원번호
+    private String empName;         // 직원명
+    private int creator;            // 생성자
 
-    private int timeOffCtNo;        // 문서카테고리
+    private int timeOffCtNo;        // 문서카테고리번호
+    private String timeOffCtName;   // 문서카테고리명
     private String timeOffStartDt;  // 시작일
     private String timeOffEndDt;    // 종료일
     private int timeOffPeriod;      // 기간
