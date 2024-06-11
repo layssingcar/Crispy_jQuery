@@ -69,7 +69,7 @@
                         </div>
 
                         <!--채팅-->
-                        <div class="nav-item">
+                        <div class="nav-item" sec:authorize="!hasRole('ROLE_ADMIN')">
                             <div class="nav-profile-ui chat-menu">
                                 <a href="/crispy/chat">
                                     <i class="fa-regular fa-comments me-5"></i>
