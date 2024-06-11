@@ -8,7 +8,15 @@ const franchiseRegister = {
             _this.registerFranchiseAndOwner();
         });
 
-        // 입력 필드에 대한 실시간 검증 이벤트 리스너 추가
+        // 운영 시간 검증 이벤트 리스너 추가
+        document.getElementById("frnStartTime").addEventListener("change", function () {
+            _this.validateOperatingHours();
+        });
+        document.getElementById("frnEndTime").addEventListener("change", function () {
+            _this.validateOperatingHours();
+        });
+
+        // 기존 입력 필드에 대한 실시간 검증 이벤트 리스너 추가
         document.getElementById("frn-frnName").addEventListener("input", function () {
             _this.validateField("frn-frnName", "frnName-error", "가맹점 이름을 입력해주세요.");
         });
@@ -142,6 +150,7 @@ const franchiseRegister = {
                 alert('등록에 실패했습니다.');
             });
     },
+
     displayErrorMessages: function (errorResponse) {
         document.querySelectorAll('.error-message').forEach(errorContainer => {
             errorContainer.style.display = 'none';
@@ -193,7 +202,31 @@ const franchiseRegister = {
             document.getElementById("frnTel-error").style.display = "none";
         }
 
+        // 운영 시간 유효성 검증
+        if (!this.validateOperatingHours()) {
+            isValid = false;
+        }
+
         return isValid;
+    },
+
+    // 운영 시간 유효성 검증 함수
+    validateOperatingHours: function () {
+        const startTime = document.querySelector(".frnStartTime").value;
+        const endTime = document.querySelector(".frnEndTime").value;
+
+        if (startTime && endTime && startTime > endTime) {
+            Swal.fire({
+                icon: "warning",
+                text: "종료 시간은 시작 시간보다 빠를 수 없습니다.",
+                width: "365px"
+            }).then(() => {
+                document.querySelector(".frnEndTime").focus();
+            });
+            endTime.value = "";
+            return;
+        }
+        return true;
     },
 
     updateStepIndicator: function (step) {

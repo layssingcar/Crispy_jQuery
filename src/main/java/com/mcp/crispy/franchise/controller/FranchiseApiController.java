@@ -118,8 +118,9 @@ public class FranchiseApiController {
     }
 
     @GetMapping("/franchises/v1")
-    public ResponseEntity<PageResponse<FranchiseDto>> getFranchises(@RequestParam(value ="page", defaultValue = "1")int page) {
-        PageResponse<FranchiseDto> franchiseList = franchiseService.getFranchiseList(page, 10);
+    public ResponseEntity<PageResponse<FranchiseDto>> getFranchises(@RequestParam(value ="page", defaultValue = "1")int page,
+                                                                    @RequestParam(value = "search", required = false) String frnName) {
+        PageResponse<FranchiseDto> franchiseList = franchiseService.getFranchiseList(page, 10, frnName);
         return ResponseEntity.ok(franchiseList);
     }
 

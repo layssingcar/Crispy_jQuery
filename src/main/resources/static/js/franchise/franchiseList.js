@@ -1,11 +1,11 @@
 const franchiseList = {
     currentPage: 1,
-    pageSize: 10,
+    "frnName": "",
 
     init: function() {
         this.loadCurrentPage()
         this.bindEvents();
-        this.loadFrnData(this.currentPage, this.pageSize);
+        this.loadFrnData(this.currentPage, this.frnName);
         this.clearCurrentPage();
         this.clearSelectedEmpNo();
         this.searchAction();
@@ -31,6 +31,11 @@ const franchiseList = {
         }
         if (deleteSelectedButton) {
             deleteSelectedButton.addEventListener("click", this.confirmDeleteSelectedFrns.bind(this))
+        }
+
+        const searchInput = document.querySelector('.search-input');
+        if (searchInput) {
+            searchInput.addEventListener('input', this.handleSearchInput.bind(this));
         }
 
         // 페이지네이션 이벤트 바인딩
@@ -60,11 +65,24 @@ const franchiseList = {
         }
 
         this.saveCurrentPage();
-        this.loadFrnData(this.currentPage, this.pageSize);
+        this.loadFrnData(this.currentPage, this.frnName);
     },
 
-    loadFrnData: function(page, size) {
-        fetch(`/api/franchise/franchises/v1?page=${page}&size=${size}`)
+    handleSearchInput: function(event) {
+        this.frnName = event.target.value.trim();
+        this.currentPage = 1;
+        this.loadFrnData(this.currentPage, this.frnName);
+    },
+
+
+    loadFrnData: function(page, frnName) {
+        const url = new URL('/api/franchise/franchises/v1', window.location.origin);
+        url.searchParams.append('page', page);
+        if (frnName) {
+            url.searchParams.append('search', frnName);
+        }
+
+        fetch(url.toString())
             .then(response => response.json())
             .then(data => {
                 this.renderFrnTable(data.items);
@@ -85,13 +103,27 @@ const franchiseList = {
         this.setupClickableRows();
     },
 
+    formatTelNumber(telNumber) {
+        if (telNumber.length === 8) { // 1234-5678
+            return telNumber.replace(/(\d{4})(\d{4})/, '$1-$2');
+        } else if (telNumber.length === 9) { // 02-123-5678
+            return telNumber.replace(/(\d{2})(\d{3})(\d{4})/, '$1-$2-$3');
+        } else if (telNumber.length === 11) { // 010-1234-5678
+            return telNumber.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+        } else {
+            return telNumber; // 형식에 맞지 않으면 원본 반환
+        }
+    },
+
     appendFranchiseRow: function(tr, franchise) {
         const frnJoinDt = formatDate(franchise.frnJoinDt);
+        const formattedTel = this.formatTelNumber(franchise.frnTel);
+        console.log(formattedTel);
         tr.appendChild(this.createCell('checkbox', franchise.frnNo));
         tr.appendChild(this.createCell('text', franchise.frnName));
         tr.appendChild(this.createCell('text', franchise.frnOwner));
         tr.appendChild(this.createCell('text', franchise.frnStreet));
-        tr.appendChild(this.createCell('text', franchise.frnTel));
+        tr.appendChild(this.createCell('text', formattedTel));
         tr.appendChild(this.createCell('text', frnJoinDt));
         tr.appendChild(this.createActionsCell(franchise.frnNo));
     },
@@ -207,7 +239,7 @@ const franchiseList = {
         }).then(response => {
             if (response.ok) {
                 alert("삭제되었습니다.");
-                this.loadFrnData(this.currentPage, this.pageSize);
+                this.loadFrnData(this.currentPage);
             } else {
                 return response.json().then(data => {
                     throw new Error(data.message);

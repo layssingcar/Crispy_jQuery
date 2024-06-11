@@ -18,14 +18,10 @@
                         <a href="/crispy/franchise/register" role="button" class="btn frnBtn">가맹점 등록</a>
                         <button class="btn-delete-selected">선택 삭제</button>
                     </div>
-                    <div style="display: flex;">
-                        <input type="date">
-                        <input type="date">
-                    </div>
                     <!-- 기안자 검색 -->
                     <div class="container-1">
                         <span class="icon"><i class="fa fa-search"></i></span>
-                        <input type="text" name="" id="search" class="form-control" placeholder="가맹점을 입력해주세요.">
+                        <input type="text" name="" id="search" class="form-control search-input" placeholder="가맹점을 입력해주세요.">
                     </div>
                 </div>
 
@@ -44,13 +40,6 @@
                     </thead>
                     <!-- 리스트 -->
                     <tbody>
-                    <tr>
-                        <td>가맹점 명</td>
-                        <td>대표자 명</td>
-                        <td>주소</td>
-                        <td>전화번호</td>
-                        <td>가맹일</td>
-                    </tr>
                     </tbody>
                 </table>
 
@@ -66,92 +55,7 @@
         <footer th:replace="~{layout/footer :: footer}"></footer>
     </div>
 </div>
-
-<!-- 모달 영역 -->
-<!--<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="position: absolute; top: 50%; left: 56%; transform: translate(-50%, -50%);">-->
-<!--    <div class="modal-dialog modal-dialog-centered">-->
-<!--        <div class="modal-content">-->
-<!--            <div class="modal-header">-->
-<!--                <h1 class="modal-title fs-5" id="exampleModalToggleLabel">지점명 - 상세보기</h1>-->
-<!--                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
-<!--            </div>-->
-<!--            <div class="modal-body">-->
-<!--                <div class="row g-3">-->
-<!--                    <div class="col-sm-6">-->
-<!--                        <label for="franchiseName" class="form-label">가맹점 명</label>-->
-<!--                        <input type="text" class="form-control" id="franchiseName" th:value="${franchiseList[0].frnName}" placeholder="가맹점 명을 입력해주세요." required>-->
-<!--                    </div>-->
-<!--                    <div class="col-sm-6">-->
-<!--                        <label for="ownerName" class="form-label">대표자 명</label>-->
-<!--                        <input type="text" class="form-control" id="ownerName" placeholder="대표자 명을 입력해주세요." required>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="row g-3">-->
-<!--                    <div class="col-sm-6">-->
-<!--                        <label for="phone" class="form-label">전화번호</label>-->
-<!--                        <input type="text" class="form-control" id="phone" placeholder="전화번호를 입력해주세요." required>-->
-<!--                    </div>-->
-<!--                    <div class="col-sm-6">-->
-<!--                        <label for="postcode" class="form-label">우편번호</label>-->
-<!--                        <input type="text" class="form-control" id="postcode" placeholder="우편번호를 입력해주세요." required>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="col-12">-->
-<!--                    <label for="address" class="form-label">도로명 주소</label>-->
-<!--                    <input type="text" class="form-control" id="address" placeholder="도로명 주소를 입력해주세요." required>-->
-<!--                </div>-->
-<!--                <div class="col-12">-->
-<!--                    <label for="detailedAddress" class="form-label">상세 주소</label>-->
-<!--                    <input type="text" class="form-control" id="detailedAddress" placeholder="상세 주소를 입력해주세요." required>-->
-<!--                </div>-->
-<!--                <div class="row g-3">-->
-<!--                    <div class="col-sm-6">-->
-<!--                        <label for="startTime" class="form-label">운영시작 시간</label>-->
-<!--                        <input type="time" class="form-control" id="startTime" required>-->
-<!--                    </div>-->
-<!--                    <div class="col-sm-6">-->
-<!--                        <label for="endTime" class="form-label">운영종료 시간</label>-->
-<!--                        <input type="time" class="form-control" id="endTime" required>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="row g-3">-->
-<!--                    <div class="col-sm-6">-->
-<!--                        <label for="franchiseDate" class="form-label">가맹일</label>-->
-<!--                        <input type="date" class="form-control" id="franchiseDate">-->
-<!--                    </div>-->
-<!--                    <div class="col-sm-6">-->
-<!--                        <label for="frnImg" class="form-label">가맹점 이미지</label>-->
-<!--                        <input type="file" class="form-control" id="frnImg" required>-->
-<!--                    </div>-->
-<!--                </div>-->
-
-<!--            </div>-->
-<!--            <div class="modal-footer">-->
-<!--                <div>-->
-<!--                    <span class="create" style="margin-right: 17.5rem;">생성자: 홍길동 | 생성일 2024-05-16</span>-->
-<!--                    <br>-->
-<!--                    <span class="modify">수정자: 홍길동 | 수정일 2024-05-16</span>-->
-<!--                </div>-->
-<!--                <div class="modal-btn">-->
-<!--                    <button class="btn btn-primary" id="delete-btn" data-bs-target="#exampleModalToggle2" data-bs-toggle="modal">삭제</button>-->
-<!--                    <button class="btn btn-primary" id="modify-btn" data-bs-target="#exampleModalToggle2" data-bs-toggle="modal">수정</button>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
 </body>
-<script>
-    /* 모달 */
-    // $('tr td').on('click', function () {
-    //     $('#exampleModal').modal('show');
-    // });
-    //
-    // $('.frnBtn').on('click', function () {
-    //     window.location.href = "/crispy/franchise/register";
-    // })
-
-</script>
 <!-- 특정 JS -->
 <script src="/js/franchise/franchiseList.js"></script>
 </html>

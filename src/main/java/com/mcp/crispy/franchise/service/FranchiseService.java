@@ -184,7 +184,7 @@ public class FranchiseService {
     }
 
     // 가맹점 페이징
-    public PageResponse<FranchiseDto> getFranchiseList(int page, int limit) {
+    public PageResponse<FranchiseDto> getFranchiseList(int page, int limit, String frnName) {
 
         int totalCount = franchiseMapper.getFrnCount();
         log.info("totalCount: {}", totalCount);
@@ -202,7 +202,7 @@ public class FranchiseService {
         RowBounds rowBounds = new RowBounds(limit * (page - 1), limit);
 
         // 재고 항목 리스트
-        List<FranchiseDto> items = franchiseMapper.getFranchiseList(rowBounds);
+        List<FranchiseDto> items = franchiseMapper.getFranchiseList(frnName, rowBounds);
         log.info("items: {}", items.size());
 
         // PageResponse 객체
