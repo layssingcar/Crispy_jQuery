@@ -39,6 +39,7 @@ public class ApprovalService {
     }
 
     // 휴가, 휴직 신청
+    @Transactional
     public int insertTimeOffAppr(ApprovalDto approvalDto) {
 
         // 전자결재 테이블
@@ -57,6 +58,7 @@ public class ApprovalService {
         for (int i = 0; i < apprLineDtoList.size(); i++) {
             apprLineDtoList.get(i).setApprLineOrder(i);
             apprLineDtoList.get(i).setApprNo(apprNo);
+            apprLineDtoList.get(i).setCreator(approvalDto.getEmpNo());
         }
 
         // 결재선 테이블

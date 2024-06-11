@@ -75,8 +75,10 @@
             INSERT INTO APPROVAL_T (
                         APPR_NO
                       , EMP_NO
+                      , CREATOR
                ) VALUES (
                         #{apprNo}
+                      , #{empNo}
                       , #{empNo})
     </insert>
 
@@ -99,12 +101,13 @@
     </insert>
 
     <!-- 휴가/휴직 신청 (결재선 테이블) -->
-    <insert id="insertApprLine">
+    <insert id="insertApprLine" parameterType="java.util.List">
             INSERT INTO APPR_LINE_T (
                         APPR_LINE_NO
                       , APPR_LINE_ORDER
                       , APPR_NO
                       , EMP_NO
+                      , CREATOR
                ) SELECT APPR_LINE_SEQ.NEXTVAL AS APPR_LINE_NO
                       , TEMP_T.*
                    FROM (
@@ -112,6 +115,7 @@
                         SELECT #{apprLineDto.apprLineOrder} AS APPR_LINE_ORDER
                              , #{apprLineDto.apprNo} AS APPR_NO
                              , #{apprLineDto.empNo} AS EMP_NO
+                             , #{apprLineDto.creator} AS CREATOR
                           FROM DUAL
                    </foreach>
                ) TEMP_T
