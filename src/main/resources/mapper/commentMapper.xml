@@ -30,7 +30,7 @@
     <select id="selectCommentByNo" parameterType="CommentDto">
         SELECT LEVEL,
                C.CMT_NO, C.CMT_CONTENT, C.CMT_CREATE_DT, C.PARENT_CMT_NO, C.CMT_STAT, C.CREATOR
-                , E.EMP_NAME
+                , E.EMP_NAME, E.EMP_PROFILE
         FROM
             COMMENT_T C
                 INNER JOIN BOARD_T B ON C.BOARD_NO = B.BOARD_NO

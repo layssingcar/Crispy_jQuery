@@ -66,6 +66,7 @@ public class BoardController {
         boardService.increaseBoardHit(boardNo);
         BoardDto boardDto = boardService.loadBoardByNo(boardNo, employee.getEmpNo());
         model.addAttribute("board", boardDto);
+        log.info("boardDto: {}", boardDto.getBoardHit());
         model.addAttribute("files", boardDto.getFiles());
 
         List<CommentDto> comments = commentService.getComments(boardNo);
@@ -74,7 +75,7 @@ public class BoardController {
         log.info("comments: " + comments);
         log.info("currentEmpNo: {}", employee.getEmpNo());
         log.info(boardDto.toString());
-        return "board/board-detail";
+        return "board/byu-board-detail";
     }
 
     @GetMapping("/board-modify/{boardNo}")

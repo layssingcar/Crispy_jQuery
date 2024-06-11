@@ -41,12 +41,21 @@
 					<div class="file-attach">
 						<label for="formFileMultiple" class="form-label">첨부파일</label>
 						<input class="form-control" type="file" id="formFileMultiple" name="files" multiple>
-						<ul id="existing-files">
-							<li th:each="file : ${files}">
-								<a th:href="@{/uploads/{fileName}(fileName=${file.boardRename})}" th:text="${file.boardOrigin}"></a>
-								<button type="button" class="delete-file" th:data-file-id="${file.boardFileNo}">삭제</button>
-							</li>
-						</ul>
+					</div>
+					<div class="file-wrap">
+						<div class="existing-files-wrap">
+							<p>기존 파일</p>
+							<ul id="existing-files">
+								<li th:each="file : ${files}">
+									<a th:href="@{/uploads/{fileName}(fileName=${file.boardRename})}" th:text="${file.boardOrigin}"></a>
+									<button type="button" class="existing-file-delete" th:data-file-id="${file.boardFileNo}">삭제</button>
+								</li>
+							</ul>
+						</div>
+						<div class="new-files-wrap">
+							<p>추가 파일</p>
+							<div class="file-list"></div> <!-- 선택된 파일 이름을 표시할 요소 -->
+						</div>
 					</div>
 					<div class="d-flex justify-content-end" id="btn">
 						<a type="submit" id="cancelBtn" class="btn btn-primary btn-lg ">취소</a>

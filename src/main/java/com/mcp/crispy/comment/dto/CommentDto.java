@@ -20,6 +20,7 @@ public class CommentDto {
     @Size(max = 300, message = "댓글은 300자 이내여야합니다.")
     private String cmtContent;
     private String empName;
+    private String empProfile;
     private Date cmtCreateDt; // 작성일
     private Date createDt; // 생성일
     private int creator;
