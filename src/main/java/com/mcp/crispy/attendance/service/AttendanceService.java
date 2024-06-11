@@ -1,8 +1,11 @@
 package com.mcp.crispy.attendance.service;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,17 +49,31 @@ public class AttendanceService {
 	}
 	
 	@Transactional(readOnly = true)
-	public List<AttendanceDto> getAttList(int month) {
-		List<AttendanceDto> attenList = attendanceMapper.getAttList(month); 
-		String workingTimeForm;
-		for(int i = 0; i < attenList.size(); i++) {
-			workingTimeForm = attenList.get(i).getAttWorkTime().substring(0 ,2) + "h" +  
-								attenList.get(i).getAttWorkTime().substring(3 , 5)+ "m" +
-									attenList.get(i).getAttWorkTime().substring(6 , 8) + "s";
-			
-			attenList.get(i).setAttWorkTime(workingTimeForm);
-		}
-		
-		return attenList;
+	public List<AttendanceDto> getAttList(Map<String, Object> params) {
+	    List<AttendanceDto> attenList = attendanceMapper.getAttList(params);
+	    List<AttendanceDto> annList = attendanceMapper.getAnnList(params);
+	    List<AttendanceDto> totalList = new ArrayList<>();
+	    Map<Date, AttendanceDto> annualMap = new HashMap<>();
+	    
+	    for (AttendanceDto annual : annList) {
+	        annualMap.put(annual.getCreateDt(), annual);
+	    }
+	    
+	    for (AttendanceDto atten : attenList) {
+	        if (annualMap.containsKey(atten.getCreateDt())) {					
+	            AttendanceDto annual = annualMap.get(atten.getCreateDt());		
+	            if (annual.getCategory() == 1 || annual.getCategory() == 2) {
+	                annual.setAttInTime(atten.getAttInTime());
+	                annual.setAttOutTime(atten.getAttOutTime());
+	                annual.setAttWorkTime(atten.getAttWorkTime());
+	            }
+	            totalList.add(annual);
+	            annualMap.remove(atten.getCreateDt());
+	        } else {
+	            totalList.add(atten);
+	        }
+	    }
+	    totalList.addAll(annualMap.values());
+	    return totalList;
 	}
 }
