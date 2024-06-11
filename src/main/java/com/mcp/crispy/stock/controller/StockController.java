@@ -13,7 +13,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -167,7 +166,25 @@ public class StockController {
 
 		return "stock/stock-order :: stock-temp-container";
 
-
 	}
 
+	/**
+	 * 발주 신청
+	 * 우혜진 (24. 06. 11.)
+	 *
+	 * @param authentication
+	 * @param approvalDto
+	 * @return
+	 */
+	@PostMapping("insert-order-appr")
+	public String insertOrderAppr(Authentication authentication,
+								  @ModelAttribute ApprovalDto approvalDto) {
+
+		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
+		approvalDto.setEmpNo(userDetails.getEmpNo());
+
+		stockService.insertOrderAppr(approvalDto);
+		return "redirect:/crispy/stock-list";
+
+	}
 }

@@ -81,4 +81,19 @@ public class StockService {
         return stockMapper.getOrderTemp(empNo);
     }
 
+    // 발주 신청
+    @Transactional
+    public int insertOrderAppr(ApprovalDto approvalDto) {
+
+        stockMapper.insertApproval(approvalDto);
+        int apprNo = approvalDto.getApprNo();
+
+        stockMapper.insertOrder(approvalDto);
+        stockMapper.insertStockOrder(approvalDto);
+        stockMapper.insertApprLine(approvalDto);
+
+        return 1;
+
+    }
+
 }

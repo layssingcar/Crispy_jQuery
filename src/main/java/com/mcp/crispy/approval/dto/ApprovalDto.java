@@ -17,6 +17,7 @@ public class ApprovalDto {
     private String apprDt;  // 기안일
     private int apprStat;   // 문서상태
     private int empNo;      // 직원번호
+    private int creator;    // 생성자
 
     private int timeOffCtNo;        // 문서카테고리
     private String timeOffStartDt;  // 시작일
@@ -24,8 +25,9 @@ public class ApprovalDto {
     private int timeOffPeriod;      // 기간
     private String timeOffContent;  // 문서내용
 
-    private List<ApprLineDto> apprLineDtoList;  // 결재선 리스트
+    private int orderCost;                      // 합계금액
     private List<StockDto> stockOrderList;      // 발주재고 리스트
+    private List<ApprLineDto> apprLineDtoList;  // 결재선 리스트
 
     private int timeOffTempNo;  // 휴가휴직임시번호
     private int orderTempNo;    // 발주임시번호
