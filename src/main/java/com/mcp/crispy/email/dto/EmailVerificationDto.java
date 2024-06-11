@@ -22,5 +22,5 @@ public class EmailVerificationDto {
      *  1: USED
      *  2: EXPIRED
      */
-    private int verifyStat;
+    private VerifyStat verifyStat;
 }
