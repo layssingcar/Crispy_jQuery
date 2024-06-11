@@ -25,5 +25,6 @@ public class AttendanceDto {
 	private int modifier;
 	private int empNo;
 	private int annCtNo;
+	private int category;
 }
 

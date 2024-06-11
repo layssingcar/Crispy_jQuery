@@ -18,6 +18,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="modifier" column="MODIFIER"/>
 		<result property="empNo" column="EMP_NO"/>
 	  	<result property="annCtNo" column="ANN_CT_NO"/>
+	  	<result property="category" column="CATEGORY"/>
 	</resultMap>
 	
 <insert id="insertAttendance" parameterType="AttendanceDto">
@@ -65,23 +66,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 </update>
 
 <select id="getAttList"
-		resultMap="AttendanceMap">
-	SELECT
-	    CASE 
-	        WHEN TRUNC(A.CREATE_DT) = TRUNC(TO_DATE(SUBSTR(N.ANN_START_TIME, 1, 10), 'YYYY-MM-DD'))
-	        THEN N.ANN_CT_NO
-	        ELSE 3
-	    END AS ANN_CT_NO, 
-	    A.ATT_IN_TIME, 
-	    A.ATT_OUT_TIME, 
-	    A.ATT_WORK_TIME, 
-	    A.CREATE_DT
-	FROM ATTENDANCE_T A 
-		LEFT JOIN ANNUAL_T N 
-		ON A.EMP_NO = N.EMP_NO
-		AND TRUNC(A.CREATE_DT) = TRUNC(TO_DATE(SUBSTR(N.ANN_START_TIME, 1, 10), 'YYYY-MM-DD'))
-	WHERE EXTRACT(MONTH FROM A.CREATE_DT) = #{month}
-	ORDER BY A.CREATE_DT ASC, A.ATT_IN_TIME ASC
+		resultMap="AttendanceMap"
+		parameterType="map">
+	SELECT ATT.ATT_IN_TIME, ATT.ATT_OUT_TIME, ATT.ATT_WORK_TIME, ATT.CREATE_DT, 3 AS CATEGORY
+	FROM EMPLOYEE_T E
+	JOIN ATTENDANCE_T ATT 
+	ON E.EMP_NO = ATT.EMP_NO
+	WHERE EXTRACT(MONTH FROM ATT.CREATE_DT) = #{month} AND E.EMP_NO = #{empNo}
+</select>
+
+<select id="getAnnList"
+		resultMap="AttendanceMap"
+		parameterType="map">
+	SELECT A.ANN_CT_NO, TO_DATE(SUBSTR(A.ANN_START_TIME, 1, 10), 'YYYY-MM-DD') AS CREATE_DT
+	FROM EMPLOYEE_T E
+	JOIN ANNUAL_T A 
+	ON E.EMP_NO = A.EMP_NO
+	WHERE EXTRACT(MONTH FROM A.CREATE_DT) = #{month} AND E.EMP_NO = #{empNo}
 </select>
 
 
