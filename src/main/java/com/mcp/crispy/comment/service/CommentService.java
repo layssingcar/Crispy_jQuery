@@ -2,12 +2,15 @@ package com.mcp.crispy.comment.service;
 
 import com.mcp.crispy.comment.dto.CommentDto;
 import com.mcp.crispy.comment.mapper.CommentMapper;
+import com.vane.badwordfiltering.BadWordFiltering;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import static com.mcp.crispy.comment.service.BadWordFilteringHelper.getBadWordFiltering;
 
 @Slf4j
 @Service
@@ -20,6 +23,7 @@ public class CommentService {
     @Transactional
     public CommentDto insertComment(CommentDto commentDto, int creator) {
         log.info("Insert comment into database: {}", creator);
+
         CommentDto comment = CommentDto.builder()
                 .cmtContent(commentDto.getCmtContent())
                 .creator(creator)
@@ -34,6 +38,12 @@ public class CommentService {
     // 게시글에 달린 댓글 조회
     @Transactional(readOnly = true)
     public List<CommentDto> getComments(int boardNo) {
+        BadWordFiltering badWordFiltering1 = getBadWordFiltering();
+        List<CommentDto> commentDtos = commentMapper.selectCommentByNo(boardNo);
+        commentDtos.forEach(comment -> {
+            String change = badWordFiltering1.change(comment.getCmtContent());
+            comment.setCmtContent(change);
+        });
         return commentMapper.selectCommentByNo(boardNo);
     }
 

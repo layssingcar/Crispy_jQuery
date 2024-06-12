@@ -41,7 +41,9 @@
         , B.BOARD_CONTENT
         , B.BOARD_HIT
         , B.CREATE_DT
+        , E.EMP_NAME
         FROM BOARD_T B
+        LEFT JOIN EMPLOYEE_T E ON B.EMP_NO = E.EMP_NO
         WHERE 1 = 1
         AND B.BOARD_CT_NO = 1
         AND B.BOARD_STAT = 0

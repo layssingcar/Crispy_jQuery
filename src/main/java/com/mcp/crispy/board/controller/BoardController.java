@@ -7,6 +7,8 @@ import com.mcp.crispy.board.service.BoardService;
 import com.mcp.crispy.comment.dto.CommentDto;
 import com.mcp.crispy.comment.service.CommentService;
 import com.mcp.crispy.common.page.PageResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -60,10 +62,11 @@ public class BoardController {
 
     @GetMapping("/board-detail")
     public String detail(@RequestParam(value = "boardNo", required = false, defaultValue = "0") int boardNo,
-                         Model model, Authentication authentication) {
+                         Model model, Authentication authentication,
+                         HttpServletRequest request, HttpServletResponse response) {
         log.info("boardNo: " + boardNo);
         EmployeePrincipal employee = (EmployeePrincipal) authentication.getPrincipal();
-        boardService.increaseBoardHit(boardNo);
+        boardService.increaseBoardHit(boardNo,request, response);
         BoardDto boardDto = boardService.loadBoardByNo(boardNo, employee.getEmpNo());
         model.addAttribute("board", boardDto);
         log.info("boardDto: {}", boardDto.getBoardHit());

@@ -52,4 +52,10 @@ public class BoardDto {
     public void removeLike() {
         this.boardLikeCount--;
     }
+
+    // 조회수 증가
+    public void addBoardHit() {
+        this.boardHit+= 1;
+    }
+
 }
