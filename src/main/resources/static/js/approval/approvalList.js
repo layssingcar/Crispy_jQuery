@@ -1,8 +1,10 @@
 // 페이지네이션 옵션 객체
 const optionObj = {
-    "pageNo": 1,        // 페이지번호
-    "timeOffCtNo": 0,   // 문서카테고리번호
-    "apprStat": 0       // 문서상태번호
+    "pageNo": 1,            // 페이지번호
+    "timeOffCtNo": -1,      // 문서카테고리번호
+    "apprStat": -1,         // 문서상태번호
+    "apprDtSort": "DESC",   // 기안일정렬
+    "empName": ""           // 기안자검색
 }
 
 // 페이지 이동
@@ -24,6 +26,35 @@ const addPageLinkEventFn = pageNo => {
     })
 }
 
+// 기안자 검색
+document.querySelector("#search")?.addEventListener("input", e => {
+    optionObj["empName"] = e.target.value;
+    optionObj["pageNo"] = 1;
+    getApprItemsFn(optionObj);
+})
+
+// 카테고리 구분 조회
+document.querySelector("#time-off-ct-no").addEventListener("change", e => {
+    optionObj["timeOffCtNo"] = e.target.value;
+    optionObj["pageNo"] = 1;
+    getApprItemsFn(optionObj);
+})
+
+// 문서상태 구분 조회
+document.querySelector("#appr-stat").addEventListener("change", e => {
+    optionObj["apprStat"] = e.target.value;
+    optionObj["pageNo"] = 1;
+    getApprItemsFn(optionObj);
+})
+
+// 기안일 정렬
+const addSortEventFn = () => {
+    document.querySelector("#appr-dt-sort").addEventListener("click", e => {
+        optionObj["apprDtSort"] = (optionObj["apprDtSort"] === "DESC") ? "ASC" : "DESC";
+        getApprItemsFn(optionObj);
+    })
+}
+
 // 결재 문서 항목 리스트
 const getApprItemsFn = async (optionObj) => {
     const params = new URLSearchParams(); // URL 쿼리 문자열 객체
@@ -41,9 +72,25 @@ const getApprItemsFn = async (optionObj) => {
 
     // 이벤트 재추가
     addPageLinkEventFn(optionObj.pageNo === undefined ? 1 : optionObj.pageNo);
+    addApprRowsEventFn();
+    addSortEventFn();
 }
 
 // 초기화
 document.addEventListener("DOMContentLoaded", function () {
     addPageLinkEventFn(1);
+    addApprRowsEventFn();
+    addSortEventFn();
 })
+
+// 결재 문서 항목
+const addApprRowsEventFn = () => {
+    const apprRows = document.querySelectorAll(".appr-row");
+
+    apprRows.forEach(apprRow => {
+        apprRow.addEventListener("click", () => {
+            const apprNo = apprRow.dataset.apprNo;
+            location.href = `/crispy/approval-detail/${apprNo}`;
+        })
+    })
+}

@@ -99,16 +99,16 @@ public class ApprovalService {
     }
 
     // 결재 문서 조회 (기안함, 결재함)
-    public PageResponse<ApprovalDto> getApprList(ApprOptionDto apprOptionDto, int limit) {
+    public PageResponse<ApprovalDto> getTimeOffApprList(ApprOptionDto apprOptionDto, int limit) {
 
         int page = Math.max(apprOptionDto.getPageNo(), 1);
-        int totalCount = approvalMapper.getApprCount(apprOptionDto);
+        int totalCount = approvalMapper.getTimeOffApprCount(apprOptionDto);
         int totalPage = totalCount / limit + ((totalCount % limit > 0) ? 1 : 0);
         int startPage = Math.max(page - 2, 1);
         int endPage = Math.min(page + 2,  totalPage);
 
         RowBounds rowBounds = new RowBounds(limit * (page - 1), limit);
-        List<ApprovalDto> items = approvalMapper.getApprList(apprOptionDto, rowBounds);
+        List<ApprovalDto> items = approvalMapper.getTimeOffApprList(apprOptionDto, rowBounds);
 
         for (ApprovalDto approvalDto : items) {
 

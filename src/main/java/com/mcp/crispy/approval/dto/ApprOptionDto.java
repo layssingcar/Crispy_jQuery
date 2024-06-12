@@ -10,9 +10,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class ApprOptionDto {
-    private String type;        // 문서타입 (기안,결재)
-    private int empNo;          // 직원번호
-    private int pageNo;         // 페이지번호
-    private int timeOffCtNo;    // 문서카테고리
-    private int apprStat;       // 문서상태
+    private String type;            // 문서타입 (기안,결재)
+    private int empNo;              // 직원번호
+    private int pageNo;             // 페이지번호
+    private int timeOffCtNo;        // 문서카테고리구분
+    private int apprStat;           // 문서상태구분
+    private String apprDtSort;      // 기안일정렬
+    private String empName;         // 기안자검색
 }
