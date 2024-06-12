@@ -207,6 +207,10 @@ public class FranchiseService {
 
         // PageResponse 객체
         return new PageResponse<>(items, totalPage, startPage, endPage, page, page - 1, page + 1);
+    }
 
+    @Transactional(readOnly = true)
+    public FranchiseDto getFrnByEmpNo(Integer empNo) {
+        return franchiseMapper.getFrnByEmpNo(empNo);
     }
 }
