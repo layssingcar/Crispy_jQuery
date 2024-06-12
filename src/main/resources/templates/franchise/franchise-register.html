@@ -16,11 +16,11 @@
                 <!-- 단계 나타내는 인디케이터 가맹점 등록시 1번 -->
                 <div class="container">
                     <section class="step-indicator">
-                        <div class="step step1 active">
+                        <div class="step step1">
                             <div class="step-icon">1</div>
                             <p>가맹점 등록</p>
                         </div>
-                        <div class="indicator-line active"></div>
+                        <div class="indicator-line"></div>
                         <div class="step step2">
                             <div class="step-icon">2</div>
                             <p>점주 등록</p>
@@ -111,6 +111,7 @@
     <!-- 특정 JS -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+            franchiseRegister.updateStepIndicator(1);
             function populateTimeOptions(selectElement) {
                 for (let hour = 6; hour < 24; hour++) {
                     for (let minute = 0; minute < 60; minute += 30) {  // 30분 간격으로 옵션 생성

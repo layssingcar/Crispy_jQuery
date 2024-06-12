@@ -75,7 +75,7 @@ const franchiseList = {
     },
 
 
-    loadFrnData: function(page, frnName) {
+    loadFrnData: function(page, frnName = '') {
         const url = new URL('/api/franchise/franchises/v1', window.location.origin);
         url.searchParams.append('page', page);
         if (frnName) {
@@ -85,6 +85,7 @@ const franchiseList = {
         fetch(url.toString())
             .then(response => response.json())
             .then(data => {
+                console.log('Received data:', data.items);
                 this.renderFrnTable(data.items);
                 this.updatePagination(data);
             })
@@ -104,6 +105,11 @@ const franchiseList = {
     },
 
     formatTelNumber(telNumber) {
+
+        if(!telNumber) {
+            return 'N/A';
+        }
+
         if (telNumber.length === 8) { // 1234-5678
             return telNumber.replace(/(\d{4})(\d{4})/, '$1-$2');
         } else if (telNumber.length === 9) { // 02-123-5678
@@ -268,7 +274,7 @@ const franchiseList = {
 
     updatePagination: function(data) {
         const paginationContainer = document.querySelector('.pagination');
-        paginationContainer.innerHTML = ''; // Clear existing pagination
+        paginationContainer.innerHTML = '';
 
         // 이전 페이지
         const prevPageItem = document.createElement('li');
@@ -290,8 +296,8 @@ const franchiseList = {
         }
         paginationContainer.appendChild(prevPageItem);
 
+        console.log(data)
         for (let i = data.startPage; i <= data.endPage; i++) {
-
             const pageItem = document.createElement('li');
             pageItem.classList.add('page-item');
             if (i === data.currentPage) {
