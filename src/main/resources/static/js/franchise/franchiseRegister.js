@@ -158,7 +158,9 @@ const franchiseRegister = {
         });
 
         Object.keys(errorResponse).forEach(field => {
-            const errorContainer = document.getElementById(`${field}-error`);
+            // 점(.)을 하이픈으로 대체해서 사용
+            const sanitizedField = field.replace(/\./g, '-');
+            const errorContainer = document.querySelector(`.${sanitizedField}-error`);
             if (errorContainer) {
                 errorContainer.textContent = errorResponse[field];
                 errorContainer.style.display = 'block';
@@ -231,10 +233,18 @@ const franchiseRegister = {
 
     updateStepIndicator: function (step) {
         const indicatorLine = document.querySelector('.indicator-line');
+        const steps = document.querySelectorAll('.step');
+
+        steps.forEach(step => {
+            step.classList.remove("active");
+        })
         if (step === 1) {
+            steps[0].classList.add('active');
             indicatorLine.style.background =
                 `linear-gradient(to right, var(--main-color) 50%, #c2c2c2 50%)`;
         } else if (step === 2) {
+            steps[0].classList.add('active');
+            steps[1].classList.add('active');
             indicatorLine.style.background =
                 `linear-gradient(to left, var(--main-color) 100%, #c2c2c2 0%)`;
         }
