@@ -1,9 +1,16 @@
 package com.mcp.crispy.stock.service;
 
+
+import com.mcp.crispy.approval.dto.ApprLineDto;
+import com.mcp.crispy.approval.dto.ApprovalDto;
 import com.mcp.crispy.common.page.PageResponse;
+import com.mcp.crispy.franchise.dto.FranchiseDto;
+import com.mcp.crispy.franchise.service.FranchiseService;
+import com.mcp.crispy.notification.dto.NotifyCt;
+import com.mcp.crispy.notification.dto.NotifyDto;
+import com.mcp.crispy.notification.service.NotificationService;
 import com.mcp.crispy.stock.dto.StockDto;
 import com.mcp.crispy.stock.dto.StockOptionDto;
-import com.mcp.crispy.stock.dto.StockOrderDto;
 import com.mcp.crispy.stock.mapper.StockMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.session.RowBounds;
@@ -12,11 +19,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.mcp.crispy.notification.service.SseService.ADMIN_NO;
+
 @Service
 @RequiredArgsConstructor
 public class StockService {
 
     private final StockMapper stockMapper;
+    private final FranchiseService franchiseService;
+    private final NotificationService notificationService;
 
     // 재고 현황 조회
     public PageResponse<StockDto> getStockList(StockOptionDto stockOptionDto, int limit) {
@@ -71,14 +82,52 @@ public class StockService {
 
     // 발주 재고 임시저장
     @Transactional
-    public int insertOrderTemp(StockOrderDto stockOrderDto) {
-        stockMapper.deleteOrderTemp(stockOrderDto.getEmpNo()); // 이전 임시저장 내용 삭제
-        return stockMapper.insertOrderTemp(stockOrderDto);
+    public int insertOrderTemp(ApprovalDto approvalDto) {
+        stockMapper.deleteOrderTemp(approvalDto.getEmpNo()); // 이전 임시저장 내용 삭제
+        return stockMapper.insertOrderTemp(approvalDto);
     }
     
     // 임시저장 내용 불러오기
     public List<StockDto> getOrderTemp(int empNo) {
         return stockMapper.getOrderTemp(empNo);
+    }
+
+    // 발주 신청
+    @Transactional
+    public int insertOrderAppr(ApprovalDto approvalDto) {
+
+        stockMapper.insertApproval(approvalDto);
+        int apprNo = approvalDto.getApprNo();
+
+        stockMapper.insertOrder(approvalDto);
+
+        // ApprLineDto 업데이트
+        ApprLineDto.builder()
+                .apprLineOrder(0)
+                .apprNo(apprNo)
+                .creator(approvalDto.getEmpNo())
+                .build();
+
+        stockMapper.insertStockOrder(approvalDto);
+
+        stockMapper.insertApprLine(approvalDto);
+
+        // 결재자에게 알림 전송
+        FranchiseDto frn = franchiseService.getFrnByEmpNo(approvalDto.getEmpNo());
+        NotifyCt notifyCt = NotifyCt.ORDER;
+        NotifyDto notifyDto = NotifyDto.builder()
+                .notifyCt(notifyCt)
+                .notifyContent(frn.getFrnName() + "에서 " + notifyCt.getDescription() +"결재를 요청하였습니다.")
+                .build();
+
+        // 알림 전송
+        notificationService.sendApprovalNotification(notifyDto, ADMIN_NO);
+
+        stockMapper.insertStockOrder(approvalDto);
+        stockMapper.insertApprLine(approvalDto);
+
+        return 1;
+
     }
 
 }

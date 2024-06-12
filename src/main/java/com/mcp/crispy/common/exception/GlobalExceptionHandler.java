@@ -1,6 +1,7 @@
 package com.mcp.crispy.common.exception;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -26,14 +27,24 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        return getMapResponseEntity(ex.getBindingResult());
+    }
+
+    @ExceptionHandler(CustomValidationException.class)
+    public ResponseEntity<Map<String, String>> handleCustomValidationException(CustomValidationException ex) {
+        return getMapResponseEntity(ex.getBindingResult());
+    }
+
+    private static ResponseEntity<Map<String, String>> getMapResponseEntity(BindingResult ex) {
         Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
+        ex.getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
         return ResponseEntity.badRequest().body(errors);
     }
+
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Object> handlerIllegalArgumentException(IllegalArgumentException ex) {

@@ -1,6 +1,7 @@
 package com.mcp.crispy.email.service;
 
 import com.mcp.crispy.email.dto.EmailVerificationDto;
+import com.mcp.crispy.email.dto.VerifyStat;
 import com.mcp.crispy.email.mapper.EmailVerificationMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,13 +29,13 @@ public class EmailVerificationService {
     public void sendAndSaveVerificationCode(String verifyEmail) {
 
         //기존 인증코드 만료
-        emailVerificationMapper.expiredPreviousCodes(verifyEmail);
+        emailVerificationMapper.expiredPreviousCodes(verifyEmail, VerifyStat.NEW, VerifyStat.EXPIRED);
 
         String verificationCode = generateVerificationCode();
         EmailVerificationDto emailVerificationDto = EmailVerificationDto.builder()
                 .verifyEmail(verifyEmail)
                 .verifyCode(verificationCode)
-                .verifyStat(0) // 0 : NEW
+                .verifyStat(VerifyStat.NEW) // 0 : NEW
                 .build();
 
         emailVerificationMapper.insertVerification(emailVerificationDto);
@@ -46,13 +47,15 @@ public class EmailVerificationService {
     public boolean verifyCode(String email, String code) {
         List<EmailVerificationDto> emailVerificationDtos = emailVerificationMapper.findByEmail(email);
         for (EmailVerificationDto emailVerification : emailVerificationDtos) {
-            if(emailVerification.getVerifyStat() == 0) { // 0인지 확인
+            log.info("verifyCode: {}", emailVerification.getVerifyStat().getValue());
+            if(emailVerification.getVerifyStat() == VerifyStat.NEW) { // 0인지 확인
                 if (isCodeExpired(emailVerification.getVerifyEmail())) {
                     // 만료된 코드 2 : EXPIRED 로 업데이트
-                    emailVerificationMapper.updateCodeStatus(emailVerification.getVerifyEmail(), emailVerification.getVerifyCode(), 2);
+                    emailVerificationMapper.updateCodeStatus(emailVerification.getVerifyEmail(), emailVerification.getVerifyCode(), VerifyStat.EXPIRED);
                 } else if(emailVerification.getVerifyCode().equals(code)) {
                     // 유효한 코드 사용시 상태를 1 : USED 로 업데이트
-                    emailVerificationMapper.updateCodeStatus(emailVerification.getVerifyEmail(), emailVerification.getVerifyCode(), 1);
+                    emailVerificationMapper.updateCodeStatus(emailVerification.getVerifyEmail(), emailVerification.getVerifyCode(), VerifyStat.USED);
+                    log.info("updateCodeStatus: {} {} {}", emailVerification.getVerifyEmail(), emailVerification.getVerifyCode(), VerifyStat.USED);
                     return true;
                 }
             }

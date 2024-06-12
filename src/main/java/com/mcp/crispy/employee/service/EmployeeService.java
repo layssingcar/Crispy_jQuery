@@ -235,4 +235,16 @@ public class EmployeeService {
     public boolean existsByEmail(String email) {
         return employeeMapper.existsByEmpEmail(email);
     }
+
+    // 로그인시 리프레시 토큰 저장
+    @Transactional
+    public void updateRefreshToken(String refreshToken, int empNo) {
+        employeeMapper.updateRefreshToken(refreshToken, empNo);
+    }
+
+    // 로그아웃시 리프레시 토큰 삭제
+    @Transactional
+    public void removeRefreshToken(int empNo) {
+        employeeMapper.removeRefreshToken(empNo);
+    }
 }

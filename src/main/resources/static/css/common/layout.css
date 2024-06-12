@@ -1,14 +1,20 @@
+/* 사이드바 스크롤바 숨김 */
+aside::-webkit-scrollbar{
+	display: none;
+}
+
 .crispy-container {
 	display: flex;
 }
 
 aside {
 	display: flex;
-    flex-direction: column;
-    align-items: center;
+	flex-direction: column;
+	align-items: center;
 	position: fixed;
-    z-index: 1;
+	z-index: 1;
 	height: 100vh;
+	overflow: auto;
 	width: 280px;
 	background-color: white;
 	border-right: 1px solid #dbdbdb;

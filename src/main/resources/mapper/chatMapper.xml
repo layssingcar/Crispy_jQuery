@@ -16,8 +16,8 @@
         <result property="msgContent" column="MSG_CONTENT"/>
         <collection property="participants" ofType="CrEmpDto">
             <id property="empNo" column="EMP_NO"/>
-            <result property="entryStat" column="ENTRY_STAT" typeHandler="com.mcp.crispy.common.typehandler.EntryStatTypeHandler"/>
-            <result property="alarmStat" column="ALARM_STAT" typeHandler="com.mcp.crispy.common.typehandler.EntryStatTypeHandler"/>
+            <result property="entryStat" column="ENTRY_STAT" typeHandler="com.mcp.crispy.common.typeHandler.EntryStatTypeHandler"/>
+            <result property="alarmStat" column="ALARM_STAT" typeHandler="com.mcp.crispy.common.typeHandler.EntryStatTypeHandler"/>
             <result property="empName" column="EMP_NAME" />
             <result property="empProfile" column="EMP_PROFILE" />
         </collection>
@@ -158,7 +158,7 @@
     <!-- 채팅방에 참가자 추가 -->
     <insert id="addParticipant">
         INSERT INTO CR_EMP_T (CHAT_ROOM_NO, EMP_NO, ENTRY_STAT, ALARM_STAT)
-        VALUES (#{chatRoomNo}, #{empNo}, #{entryStat, typeHandler=com.mcp.crispy.common.typehandler.EntryStatTypeHandler}, #{alarmStat, typeHandler=com.mcp.crispy.common.typehandler.AlarmStatTypeHandler})
+        VALUES (#{chatRoomNo}, #{empNo}, #{entryStat, typeHandler=com.mcp.crispy.common.typeHandler.EntryStatTypeHandler}, #{alarmStat, typeHandler=com.mcp.crispy.common.typeHandler.AlarmStatTypeHandler})
     </insert>
 
 
@@ -166,8 +166,8 @@
     <!-- 채팅방 초대할 때 사용하는 메소드 -->
     <update id="updateParticipantEntryStat">
         UPDATE CR_EMP_T
-           SET ENTRY_STAT = #{entryStat, typeHandler=com.mcp.crispy.common.typehandler.EntryStatTypeHandler},
-               ALARM_STAT = #{alarmStat, typeHandler=com.mcp.crispy.common.typehandler.AlarmStatTypeHandler}
+           SET ENTRY_STAT = #{entryStat, typeHandler=com.mcp.crispy.common.typeHandler.EntryStatTypeHandler},
+               ALARM_STAT = #{alarmStat, typeHandler=com.mcp.crispy.common.typeHandler.AlarmStatTypeHandler}
         WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo}
     </update>
 
@@ -175,8 +175,8 @@
     <!-- 채팅방 나갈 때 사용하는 메소드 -->
     <update id="updateEntryStat">
         UPDATE CR_EMP_T
-           SET ENTRY_STAT = #{entryStat, typeHandler=com.mcp.crispy.common.typehandler.EntryStatTypeHandler},
-               ALARM_STAT = #{alarmStat, typeHandler=com.mcp.crispy.common.typehandler.AlarmStatTypeHandler}
+           SET ENTRY_STAT = #{entryStat, typeHandler=com.mcp.crispy.common.typeHandler.EntryStatTypeHandler},
+               ALARM_STAT = #{alarmStat, typeHandler=com.mcp.crispy.common.typeHandler.AlarmStatTypeHandler}
         WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo}
     </update>
 

@@ -131,7 +131,7 @@ public class EmployeeApiController {
      * @param employeeUpdateDto 직원 정보 업데이트 DTO
      * @return ResponseEntity
      */
-    @PostMapping("/empSign/v1")
+    @PutMapping("/empSign/v1")
     public ResponseEntity<Map<String, String>> updateEmpSign(@RequestBody EmployeeUpdateDto employeeUpdateDto) {
         employeeService.updateEmpSign(employeeUpdateDto);
         return ResponseEntity.ok(Map.of("message", "서명이 성공적으로 수정 되었습니다."));

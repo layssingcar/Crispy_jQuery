@@ -13,8 +13,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class OwnerRegisterDto {
     private int empNo;
-
-
     private String empPw;
     private String empName;
 
@@ -26,7 +24,6 @@ public class OwnerRegisterDto {
     @Pattern(regexp = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$", message = "올바른 이메일 형식을 입력해주세요.")
     private String empEmail;
 
-    @NotBlank(message = "휴대폰번호를 입력해주세요.")
     @Pattern(regexp = "^010\\d{3,4}\\d{4}$", message = "휴대폰 번호 형식을 확인해주세요.")
     private String empPhone;
     private String empProfile;

@@ -1,12 +1,14 @@
-<footer th:fragment="footer" class="footer pt-3">
+<footer th:fragment="footer" class="footer pt-3" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
     <div>MCP Crispy © 2024 All rights reserved.</div>
     <script src="/js/common/header.js"></script>
+    <script src="/js/common/sidebar.js"></script>
     <script>
         const isAdmin = [[${isAdmin}]]
         const empNo = [[${loggedEmp != null ? loggedEmp.empNo : 'null'}]]
-        const currentEmpNo = isAdmin ? 'admin' : empNo;
+        const currentEmpNo = isAdmin ? 10001 : empNo;
         console.log("currentEmpNo: ", currentEmpNo);
     </script>
+    <script src="/js/employee/alarm.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
@@ -14,6 +16,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.1/dist/sweetalert2.all.min.js"></script>
     <script src="/js/common/auth.js"></script>
-    <script defer src="/js/chat/message.js"></script>
-    <script src="/js/chat/notification.js"></script>
+    <script defer src="/js/chat/message.js" sec:authorize="!hasRole('ROLE_ADMIN')"></script>
+    <script src="/js/chat/notification.js" sec:authorize="!hasRole('ROLE_ADMIN')"></script>
 </footer>

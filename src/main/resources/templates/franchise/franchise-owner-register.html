@@ -16,12 +16,12 @@
                 <!-- 단계 나타내는 인디케이터 점주 등록시 2번 -->
                 <div class="container">
                     <section class="step-indicator">
-                        <div class="step step1 active">
+                        <div class="step step1">
                             <div class="step-icon">1</div>
                             <p>가맹점 등록</p>
                         </div>
-                        <div class="indicator-line active"></div>
-                        <div class="step step2 active">
+                        <div class="indicator-line"></div>
+                        <div class="step step2">
                             <div class="step-icon">2</div>
                             <p>점주 등록</p>
                         </div>
@@ -39,13 +39,14 @@
                                             <label for="owner-empId" class="form-label">아이디</label>
                                             <input type="text" id="owner-empId" name="empId" class="form-control empId"
                                                    placeholder="아이디를 입력해주세요." autocomplete="on">
-                                            <div id="owner.empId-error" class="error-message" style="display: none;"></div>
+                                            <div id="owner.empId-error" class="error-message owner-empId-error" style="display: none;"></div>
+                                            <div class="error-message empId-error" style="display: none;"></div>
                                         </div>
                                         <!-- 휴대폰 번호 -->
                                         <div>
                                             <label for="owner-empPhone" class="form-label">휴대폰번호</label>
                                             <input type="text" class="form-control" id="owner-empPhone" name="empPhone" placeholder="- 제외하고 입력해주세요.">
-                                            <div id="owner.empPhone-error" class="error-message" style="display: none;"></div>
+                                            <div id="owner.empPhone-error" class="error-message owner-empPhone-error" style="display: none;"></div>
                                         </div>
                                         <!-- 이메일 -->
                                         <div class="mt-0">
@@ -53,7 +54,8 @@
                                                 <label for="owner-empEmail" class="form-label">이메일</label>
                                                 <input type="email" id="owner-empEmail" name="empEmail" class="form-control empEmail"
                                                        placeholder="example@gmail.com" autocomplete="on">
-                                                <div id="owner.empEmail-error" class="error-message" style="display: none;"></div>
+                                                <div id="owner.empEmail-error" class="error-message owner-empEmail-error" style="display: none;"></div>
+                                                <div class="error-message empEmail-error" style="display: none;"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -69,6 +71,12 @@
     </div>
     <!-- 특정 JS -->
     <script src="/js/franchise/franchiseRegister.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            franchiseRegister.updateStepIndicator(2);
+        })
+
+    </script>
 </div>
 </body>
 </html>
