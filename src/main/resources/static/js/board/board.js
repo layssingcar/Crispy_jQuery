@@ -1,6 +1,8 @@
 const board = {
     init: function() {
         this.bindEvents();
+        this.selectedFiles = []; // 선택된 파일을 저장할 배열
+        this.deletedFiles = [];  // 삭제할 파일 번호를 저장할 배열
     },
 
     bindEvents: function() {
@@ -11,21 +13,13 @@ const board = {
         const addBoard = document.getElementById("addBtn");
         addBoard?.addEventListener("click", this.addBoard.bind(this));
 
+        // 파일 인풋 요소에 change 이벤트 리스너 추가
+        const fileInput = document.getElementById("formFileMultiple");
+        fileInput?.addEventListener("change", this.handleFileSelect.bind(this));
 
-        // 게시판 수정
+        // 기타 이벤트 바인딩
         const modifyBoard = document.querySelector(".btn-modify");
         modifyBoard?.addEventListener("click", this.modifyBoard.bind(this));
-
-
-        const deleteFile = document.querySelectorAll('.delete-file');
-        deleteFile.forEach(button => {
-            button.addEventListener("click", function() {
-                const li = this.closest('li');
-                if (li) {
-                    li.style.display = 'none'; // 요소를 숨김
-                }
-            });
-        });
 
         document.querySelector('.board-delete')?.addEventListener("click", this.deleteBoard.bind(this));
         document.getElementById("comment-add")?.addEventListener("click", this.createComment.bind(this));
@@ -33,6 +27,63 @@ const board = {
 
         this.bindCommentEvents();
         this.bindFileDownloadEvents();
+        this.bindExistingFileDeleteEvents();
+    },
+
+    handleFileSelect: function(event) {
+        const files = event.target.files;
+        this.selectedFiles = Array.from(files); // 파일 배열 초기화 후 선택된 파일들 추가
+        this.updateFileList();
+        this.updateFileInput();
+    },
+
+    updateFileList: function() {
+        const fileList = document.querySelector('.file-list');
+        fileList.innerHTML = '';
+
+        this.selectedFiles.forEach((file, index) => {
+            const fileItem = document.createElement('div');
+            fileItem.classList.add('file-item');
+            fileItem.innerHTML = `
+                <span>${file.name}</span>
+                <button type="button" class="delete-file" data-index="${index}">X</button>
+            `;
+            fileList.appendChild(fileItem);
+        });
+
+        // 삭제 버튼 이벤트 리스너 추가
+        const deleteButtons = document.querySelectorAll('.delete-file');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                const index = e.target.getAttribute('data-index');
+                this.selectedFiles.splice(index, 1);
+                this.updateFileList();
+                this.updateFileInput();
+            });
+        });
+    },
+
+    updateFileInput: function() {
+        const fileInput = document.getElementById('formFileMultiple');
+        const dataTransfer = new DataTransfer();
+
+        this.selectedFiles.forEach(file => {
+            dataTransfer.items.add(file);
+        });
+
+        fileInput.files = dataTransfer.files;
+    },
+
+    bindExistingFileDeleteEvents: function() {
+        const deleteButtons = document.querySelectorAll('.existing-file-delete');
+        console.log(deleteButtons);
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                const fileId = button.getAttribute('data-file-id');
+                this.deletedFiles.push(fileId);
+                button.closest('li').remove();
+            });
+        });
     },
 
     addBoard: function() {
@@ -55,18 +106,18 @@ const board = {
                     this.displayValidationErrors(err);
                 });
             } else {
-                return response.json()
+                return response.json();
             }
         }).then(data => {
             alert(data.message);
-            const boardNo = data.boardNo
-            location.href =`/crispy/board-detail?boardNo=${boardNo}`
+            const boardNo = data.boardNo;
+            location.href = `/crispy/board-detail?boardNo=${boardNo}`;
         }).catch(error => {
             console.error('Error:', error);
         });
     },
 
-    displayValidationErrors: function (errors) {
+    displayValidationErrors: function(errors) {
         Object.keys(errors).forEach(field => {
             const errorContainer = document.querySelector(`.${field}-error`);
             if (errorContainer) {
@@ -75,7 +126,6 @@ const board = {
             }
         });
     },
-
 
     modifyBoard: function() {
         const form = document.getElementById('frm-board-modify');
@@ -86,17 +136,12 @@ const board = {
             boardCtNo: parseInt(document.querySelector(".board-ct-no").value),
             boardTitle: document.querySelector(".board-title").value,
             boardContent: $('<div>').html($('#summernote').summernote('code')).text()
-        }
+        };
 
         formData.append('boardDto', new Blob([JSON.stringify(data)], { type: 'application/json' }));
 
-        const deleteFileNos = [];
-        document.querySelectorAll('#existing-files .delete-file').forEach(button => {
-            if (button.closest('li').style.display === 'none') {
-                deleteFileNos.push(parseInt(button.getAttribute('data-file-id')));
-            }
-        });
-        formData.append('deletedFileNo', new Blob([JSON.stringify(deleteFileNos)], { type: 'application/json' }));
+
+        formData.append('deletedFileNo', new Blob([JSON.stringify(this.deletedFiles)], { type: 'application/json' }));
 
         fetch('/api/board/v1', {
             method: "PUT",
@@ -107,12 +152,12 @@ const board = {
                     this.displayValidationErrors(err);
                 });
             } else {
-                return response.json()
+                return response.json();
             }
         }).then(data => {
             alert(data.message);
-            const boardNo = data.boardNo
-            location.href =`/crispy/board-detail?boardNo=${boardNo}`
+            const boardNo = data.boardNo;
+            location.href = `/crispy/board-detail?boardNo=${boardNo}`;
         }).catch(error => {
             console.error('Error:', error);
         });
@@ -306,7 +351,7 @@ const board = {
     bindFileDownloadEvents: function() {
         // 단일 파일 다운로드
         const fileDownload = document.querySelectorAll(".file-download");
-        fileDownload.forEach(function(element) {
+        fileDownload?.forEach(function(element) {
             element.addEventListener("click", function() {
                 const boardFileNo = this.dataset.fileNo;
                 window.location.href = `/api/board/file/download?boardFileNo=${boardFileNo}`;
@@ -315,7 +360,7 @@ const board = {
 
         // 전체 파일 다운로드
         const downloadAll = document.getElementById("downloadAllBtn");
-        downloadAll.addEventListener("click", function() {
+        downloadAll?.addEventListener("click", function() {
             const boardNo = document.querySelector(".board-no").value;
             window.location.href = `/api/board/file/downloadAll?boardNo=${boardNo}`;
         });

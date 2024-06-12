@@ -11,7 +11,7 @@ const boardList = {
             this.addSortEventFn();
             this.searchBoardTitle();
             this.bindAddBoardEvent();
-            this.truncateText(10);
+            this.truncateText(20);
     },
 
     getBoardItemsFn: async function(optionObj) {
@@ -28,7 +28,7 @@ const boardList = {
         // 이벤트 재추가
         this.addPageLinkEventFn(optionObj.pageNo === undefined ? 1 : optionObj.pageNo);
         this.addSortEventFn();
-        this.truncateText(10); // 텍스트 자르기 재적용
+        this.truncateText(20); // 텍스트 자르기 재적용
 
     },
 

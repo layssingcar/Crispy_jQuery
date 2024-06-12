@@ -18,12 +18,12 @@
                     <div class="detail-header">
                         <div>
                             <span>제목: <span class="writer" id="writer" th:text="${board.boardTitle}"></span></span>
-                            <span>작성일: <span class="date" th:text="${#temporals.format(board.createDt.toLocalDate(), 'yyyy-MM-dd')}">작성일</span></span>
+                            <span>작성자: <span class="detail-writer" id="detail-writer" th:text="${board.empName}">: 정은</span></span>
                             <input type="hidden" class="emp-no" th:value="${board.empNo}">
                         </div>
                         <div class="board-info">
-                            <span>조회수: <span class="detail-hit me-3" id="detail-hit" th:text="${board.boardHit}"></span></span>
-                            <span>작성자: <span class="detail-writer" id="detail-writer" th:text="${board.empName}">: 정은</span></span>
+                            <span>작성일: <span class="date me-4" th:text="${#temporals.format(board.createDt.toLocalDate(), 'yyyy-MM-dd')}">작성일</span></span>
+                            <span>조회수: <span class="detail-hit" id="detail-hit" th:text="${board.boardHit}"></span></span>
                         </div>
                         <hr>
                     </div>
@@ -58,7 +58,7 @@
                         </div>
                     </div>
                     <!-- 댓글 작성 부분 -->
-                    <div class="mb-3 cmt-container">
+                    <div class="mt-4 mb-3 cmt-container">
                         <label for="cmt-comment" class="form-label mt-2" id="comment">댓글</label>
                         <div>
                             <textarea type="text" name="cmtContent" id="cmt-comment"
@@ -71,7 +71,7 @@
                     <!-- 댓글 목록 부분 -->
                     <div id="comment-list">
                         <div th:each="comment : ${comments}">
-                            <div th:class="'comment-level-' + ${comment.level}" th:if="${comment.cmtStat != 1}">
+                            <div th:class="'comment-level-' + ${comment.lvl}" th:if="${comment.cmtStat != 1}">
                                 <div class="cmt-wrap">
                                     <div>
                                         <input type="hidden" th:value="${comment.cmtNo}" class="cmt-no">
@@ -79,23 +79,25 @@
                                             <div class="comment-emp">
                                                 <img class="comment-profile" th:src="${comment.empProfile}" alt="프로필 이미지">
                                                 <div>
-                                                    <small><span th:text="${comment.empName}"></span></small>
+                                                    <span th:text="${comment.empName}"></span>
+                                                    <small><span class="date ms-4" th:text="${#temporals.format(comment.cmtCreateDt.toLocalDate(), 'yyyy-MM-dd')}">작성일</span></small>
                                                     <p class="cmt-content" th:text="${comment.cmtContent}"></p>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div th:if="${comment.creator == currentEmpNo}">
-                                        <button type="button" class="btn btn-secondary comment-delete" th:data-comment-no="${comment.cmtNo}">삭제</button>
                                         <button type="button" class="btn btn-primary comment-modify" th:data-comment-no="${comment.cmtNo}">수정</button>
+                                        <button type="button" class="btn btn-secondary comment-delete" th:data-comment-no="${comment.cmtNo}">삭제</button>
                                     </div>
                                 </div>
                                 <div class="mb-3 reply-container">
                                         <input type="hidden" class="cmt-no" name="cmtContent" th:value="${comment.cmtNo}">
-                                        <button type="button" class="btn" id="reply-button">답글</button>
+                                        <!-- 댓글에만 답글 버튼 보이게 하기 -->
+                                        <button type="button" class="btn" id="reply-button" th:if="${comment.lvl == 1}">답글</button>
                                 </div>
                             </div>
-                            <div th:class="'comment comment-level-' + ${comment.level} + ' deleted-comment'" th:if="${comment.cmtStat == 1}">
+                            <div th:class="'comment comment-level-' + ${comment.lvl} + ' deleted-comment'" th:if="${comment.cmtStat == 1}">
                                 <div class="comment-emp">
                                     <img class="comment-profile" th:src="${comment.empProfile}" alt="프로필 이미지">
                                     <div>
@@ -104,6 +106,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <hr>
                         </div>
                     </div>
                 </div>

@@ -54,6 +54,20 @@
     text-align: center;
 }
 
+.board-list .board-no {
+    width: 160px;
+}
+
+.board-list .board-title {
+    width: 400px;
+}
+
+.board-list .board-creator,
+.board-list .board-create,
+.board-list .board-hit {
+    width: 200px;
+}
+
 /* 기안일 정렬 */
 .board-list .col-sort {position: relative;}
 
