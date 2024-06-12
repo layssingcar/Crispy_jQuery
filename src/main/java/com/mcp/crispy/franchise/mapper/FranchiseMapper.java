@@ -40,7 +40,7 @@ public interface FranchiseMapper {
     void updateOperatingTime(@Param("frnStartTime") String frnStartTime, @Param("frnEndTime") String frnEndTime,
                              @Param("modifier") Integer modifier, @Param("frnNo") Integer frnNo);
 
-    List<FranchiseDto> getFranchiseList(RowBounds rowBounds);
+    List<FranchiseDto> getFranchiseList(@Param("frnName") String frnName, RowBounds rowBounds);
 
     // 직원번호로 가맹점 정보 가져오기 ( 대표 이름 수정 용 )
     FranchiseDto getFrnByEmpNo(Integer empNo);

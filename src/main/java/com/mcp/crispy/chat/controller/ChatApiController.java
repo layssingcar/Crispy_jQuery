@@ -5,7 +5,6 @@ import com.mcp.crispy.chat.dto.ChatMessageDto;
 import com.mcp.crispy.chat.dto.ChatRoomDto;
 import com.mcp.crispy.chat.dto.CrEmpDto;
 import com.mcp.crispy.chat.dto.UnreadMessageCountDto;
-import com.mcp.crispy.chat.mapper.ChatMapper;
 import com.mcp.crispy.chat.service.ChatService;
 import com.mcp.crispy.employee.dto.EmployeeDto;
 import com.mcp.crispy.employee.service.EmployeeService;
@@ -36,7 +35,6 @@ public class ChatApiController {
     private final ChatService chatService;
     private final EmployeeService employeeService;
     private final SimpMessagingTemplate messagingTemplate;
-    private final ChatMapper chatMapper;
 
 
     /**

@@ -13,11 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,22 +29,10 @@ public class OwnerApiController {
 
     // 직원 등록
     @PostMapping("/employee/register/v1")
-    public ResponseEntity<?> registerEmployee(@Valid @RequestBody EmployeeRegisterDto employeeRegisterDto,
-                                              BindingResult bindingResult) {
+    public ResponseEntity<?> registerEmployee(@Valid @RequestBody EmployeeRegisterDto employeeRegisterDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        validationService.validateEmployee(employeeRegisterDto, bindingResult);
-
-        if (bindingResult.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
-            for (FieldError error : bindingResult.getFieldErrors()) {
-                String field = error.getField();
-                String message = error.getDefaultMessage();
-                errors.put(field, message);
-            }
-            return ResponseEntity.badRequest().body(errors);
-        }
-
+        validationService.validateEmployee(employeeRegisterDto);
         ownerService.registerEmployee(employeeRegisterDto, authentication);
 
         return ResponseEntity.ok(Map.of("message", "직원이 등록되었습니다."));

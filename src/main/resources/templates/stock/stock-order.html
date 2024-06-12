@@ -145,6 +145,7 @@
 									<input type="hidden"
 										   th:name="|stockOrderList[${stat.index}].stockNo|"
 										   th:value="${stockDto.stockNo}">
+									<i class="fa-solid fa-x"></i>
 									<hr>
 								</div>
 							</th:block>
@@ -256,6 +257,7 @@
 
 			// 선택된 항목을 발주 신청 목록에 추가
 			addSelectedItemsButton.addEventListener('click', () => {
+				const selectedItems = document.querySelectorAll('.select-item:checked');
 
 				// 모달 닫기
 				const stockModal = bootstrap.Modal.getInstance(document.getElementById('stockModal'));

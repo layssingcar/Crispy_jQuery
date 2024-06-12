@@ -50,7 +50,6 @@ public class SecurityConfig {
 						.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
 				.authorizeHttpRequests(config -> config
 						.requestMatchers("/api/auth/**").permitAll()
-						.requestMatchers("api/auth//login/v1").authenticated()
 						.requestMatchers("/api/email/**").permitAll()
 						.requestMatchers("/app/**").permitAll()
 						.requestMatchers("/user/**").permitAll()

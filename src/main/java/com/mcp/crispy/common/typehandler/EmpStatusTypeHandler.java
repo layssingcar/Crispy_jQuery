@@ -1,4 +1,4 @@
-package com.mcp.crispy.common.typehandler;
+package com.mcp.crispy.common.typeHandler;
 
 import com.mcp.crispy.employee.dto.EmpStatus;
 import lombok.extern.slf4j.Slf4j;

@@ -1,5 +1,6 @@
 package com.mcp.crispy.stock.service;
 
+
 import com.mcp.crispy.approval.dto.ApprLineDto;
 import com.mcp.crispy.approval.dto.ApprovalDto;
 import com.mcp.crispy.common.page.PageResponse;
@@ -100,6 +101,7 @@ public class StockService {
 
         stockMapper.insertOrder(approvalDto);
 
+        // ApprLineDto 업데이트
         ApprLineDto.builder()
                 .apprLineOrder(0)
                 .apprNo(apprNo)
@@ -120,8 +122,9 @@ public class StockService {
 
         // 알림 전송
         notificationService.sendApprovalNotification(notifyDto, ADMIN_NO);
-        // TODO: 발주 신청을 하면 발주 신청자 이름으로 관리자에게 알림 전송
 
+        stockMapper.insertStockOrder(approvalDto);
+        stockMapper.insertApprLine(approvalDto);
 
         return 1;
 
