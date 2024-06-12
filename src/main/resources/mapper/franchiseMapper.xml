@@ -156,7 +156,7 @@
     <!-- 직원번호로 가맹점 정보 가져오기 ( 대표 이름 수정 용 ) -->
     <select id="getFrnByEmpNo" parameterType="int"
             resultType="FranchiseDto">
-            SELECT F.FRN_NO, F.FRN_OWNER
+            SELECT F.FRN_NO, F.FRN_OWNER, F.FRN_NAME
                  , E.EMP_NO
             FROM FRANCHISE_T F
             JOIN EMPLOYEE_T E

@@ -124,9 +124,6 @@ public class StockService {
         // 알림 전송
         notificationService.sendApprovalNotification(notifyDto, ADMIN_NO);
 
-        stockMapper.insertStockOrder(approvalDto);
-        stockMapper.insertApprLine(approvalDto);
-
         return 1;
 
     }
