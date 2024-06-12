@@ -187,4 +187,10 @@ public class StockController {
 		return "redirect:/crispy/stock-list";
 
 	}
+
+	// 발주 신청 내역
+	@GetMapping("order-list")
+	public String orderList() {
+		return "stock/order-list";
+	}
 }
