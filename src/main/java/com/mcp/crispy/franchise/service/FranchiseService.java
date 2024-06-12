@@ -135,7 +135,7 @@ public class FranchiseService {
             String frnStartTime = frnUpdateDto.getFrnStartTime();
             String frnEndTime = frnUpdateDto.getFrnEndTime();
 
-            if (isValidTimeRange(frnStartTime, frnEndTime)) {
+            if (!isValidTimeRange(frnStartTime, frnEndTime)) {
                 throw new IllegalArgumentException("종료 시간이 시작 시간보다 빠르거나 같을 수 없습니다.");
             }
 
@@ -150,7 +150,7 @@ public class FranchiseService {
         LocalTime end = LocalTime.parse(frnEndTime);
 
         // 종료 시간이 시작 시간보다 빠르거나 같은지 여부를 반환
-        return !end.isAfter(start);
+        return  !end.isBefore(start);
     }
 
     public FranchiseDto getFrnDetailsByFrnNo(Integer frnNo) {
@@ -161,6 +161,12 @@ public class FranchiseService {
     // 폼 수정 메소드
     @Transactional
     public void updateFormFrn(FrnUpdateDto frnUpdateDto, Integer modifier) {
+        String frnStartTime = frnUpdateDto.getFrnStartTime();
+        String frnEndTime = frnUpdateDto.getFrnEndTime();
+        if (!isValidTimeRange(frnStartTime, frnEndTime)) {
+            throw new IllegalArgumentException("종료 시간이 시작 시간보다 빠르거나 같을 수 없습니다.");
+        }
+
         franchiseMapper.updateFormFranchise(frnUpdateDto, modifier);
     }
 
