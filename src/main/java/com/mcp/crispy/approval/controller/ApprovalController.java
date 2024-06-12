@@ -208,13 +208,28 @@ public class ApprovalController {
 
 	}
 
-	/** 결재 문서 열람
-	 * 
+	/**
+	 * 결재 문서 상세 조회 (휴가,휴직 신청서)
+	 * 우혜진 (24. 06. 11.)
+	 *
+	 * @param authentication
+	 * @param apprNo
+	 * @param model
 	 * @return forward (approval-detail.html)
 	 */
-	@GetMapping("approval-detail")
-	public String apprDetail() {
+	@GetMapping("approval-detail/{apprNo}")
+	public String timeOffApprDetail(Authentication authentication,
+									@PathVariable("apprNo") int apprNo,
+									Model model) {
+
+		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
+		ApprovalDto approvalDto = approvalService.getTimeOffApprDetail(userDetails.getEmpNo(), apprNo);
+
+		model.addAttribute("approvalDto", approvalDto);
 		return "approval/approval-detail";
+
+	}
+
 	}
 
 }

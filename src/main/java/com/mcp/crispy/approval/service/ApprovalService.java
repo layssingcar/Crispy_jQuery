@@ -128,4 +128,9 @@ public class ApprovalService {
 
     }
 
+    // 결재 문서 상세 조회 (휴가,휴직 신청서)
+    public ApprovalDto getTimeOffApprDetail(int empNo, int apprNo) {
+        return approvalMapper.getTimeOffApprDetail(empNo, apprNo);
+    }
+
 }

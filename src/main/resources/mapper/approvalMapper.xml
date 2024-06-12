@@ -3,6 +3,15 @@
 
 <mapper namespace="com.mcp.crispy.approval.mapper.ApprovalMapper">
 
+    <resultMap id="apprDtoResultMap" type="ApprovalDto">
+        <id property="apprNo" column="APPR_NO"/>
+        <collection property="apprLineDtoList"
+                    select="getApprLine"
+                    column="APPR_NO"
+                    javaType="java.util.ArrayList"
+                    ofType="ApprLineDTO"/>
+    </resultMap>
+
     <!-- 직원 정보 조회 -->
     <select id="getEmpInfo">
             SELECT E.EMP_NO, E.EMP_NAME, E.EMP_STREET, E.EMP_DETAIL
@@ -213,6 +222,51 @@
               <otherwise>DESC</otherwise>
           </choose>
     </select>
+
+    <!-- 결재 문서 상세 조회 (휴가/휴직 신청서) -->
+    <select id="getTimeOffApprDetail" resultMap="apprDtoResultMap">
+            SELECT DISTINCT A.APPR_NO, A.APPR_DT
+                          , T.TIME_OFF_CT_NO
+                          , TO_CHAR(T.TIME_OFF_START_DT, 'YYYY"년" MM"월" DD"일"') AS TIME_OFF_START_DT
+                          , TO_CHAR(T.TIME_OFF_END_DT, 'YYYY"년" MM"월" DD"일"') AS TIME_OFF_END_DT
+                          , T.TIME_OFF_PERIOD, T.TIME_OFF_CONTENT
+                          , E.EMP_NO, E.EMP_NAME, E.EMP_STREET, E.EMP_DETAIL, E.EMP_SIGN
+                          , P.POS_NAME
+                       FROM APPROVAL_T A
+                 INNER JOIN TIME_OFF_T T
+                         ON A.APPR_NO = T.APPR_NO
+                 INNER JOIN EMPLOYEE_T E
+                         ON A.EMP_NO = E.EMP_NO
+                 INNER JOIN POSITION_T P
+                         ON E.POS_NO = P.POS_NO
+                 INNER JOIN APPR_LINE_T L
+                         ON A.APPR_NO = L.APPR_NO
+                      WHERE 1=1
+                        AND (
+                            (E.EMP_NO = #{empNo} AND A.APPR_NO = #{apprNo})
+                            OR
+                            L.APPR_LINE_NO = (
+                                             SELECT APPR_LINE_NO
+                                               FROM APPR_LINE_T
+                                              WHERE 1=1
+                                                AND APPR_NO = #{apprNo}
+                                                AND EMP_NO = #{empNo})
+                            )
+    </select>
+
+    <!-- 결재선 조회 (결재 문서 상세 조회) -->
+    <select id="getApprLine" resultType="ApprLineDto">
+            SELECT L.APPR_LINE_STAT
+                 , E.EMP_NAME, E.EMP_SIGN
+                 , P.POS_NAME
+              FROM APPR_LINE_T L
+        INNER JOIN EMPLOYEE_T E
+                ON L.EMP_NO = E.EMP_NO
+        INNER JOIN POSITION_T P
+                ON E.POS_NO = P.POS_NO
+             WHERE 1=1
+               AND L.APPR_NO = #{apprNo}
+          ORDER BY L.APPR_LINE_ORDER ASC
     </select>
 
 </mapper>

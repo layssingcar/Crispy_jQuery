@@ -43,4 +43,7 @@ public interface ApprovalMapper {
     // 결재 문서 목록 조회 (휴가,휴직 신청서)
     List<ApprovalDto> getTimeOffApprList(ApprOptionDto apprOptionDto, RowBounds rowBounds);
 
+    // 결재 문서 상세 조회 (휴가,휴직 신청서)
+    ApprovalDto getTimeOffApprDetail(@Param("empNo") int empNo, @Param("apprNo") int apprNo);
+
 }
