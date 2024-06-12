@@ -36,6 +36,7 @@ public class CommentApiController {
     @GetMapping("/v1/{boardNo}")
     public ResponseEntity<?> getCommentByBoardNo(@PathVariable("boardNo") int boardNo) {
         List<CommentDto> comments = commentService.getComments(boardNo);
+        log.info("comments: {}", comments.toString());
         return ResponseEntity.ok(comments);
     }
 

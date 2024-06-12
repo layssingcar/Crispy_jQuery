@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.sql.Date;
 
 @Data
 @Builder
@@ -29,5 +29,5 @@ public class CommentDto {
     private int boardNo;
     private int cmtStat;
     private Integer parentCmtNo;
-    private int level;
+    private int lvl;
 }
