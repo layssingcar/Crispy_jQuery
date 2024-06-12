@@ -209,12 +209,12 @@ document.addEventListener('DOMContentLoaded', function() {
 		    if (data.length != 0) {
 		        $(data).each(function() {
 		            if (date.format('YYYY-MM-DD') == this.createDt) {
-		            	if(this.category == 1 || this.category == 2){
+		            	if(this.annCtNo == 1 || this.annCtNo == 2){
 			                tablestr += '<td>정상</td>';
 			                tablestr += '<td>' + this.attInTime + '</td>';
 			                tablestr += '<td>' + this.attOutTime + '</td>';
 			                tablestr += '<td>' + this.attWorkTime + '</td>';
-			                tablestr += (this.category == 1) ? '<td>반차</td>' : '<td>반반차</td>';
+			                tablestr += (this.annCtNo == 1) ? '<td>반차</td>' : '<td>반반차</td>';
 							fnCalWorkTimeByChart(this.attWorkTime);
 		            	}
 						else if(this.category == 0){

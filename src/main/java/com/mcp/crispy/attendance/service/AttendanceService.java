@@ -62,7 +62,7 @@ public class AttendanceService {
 	    for (AttendanceDto atten : attenList) {
 	        if (annualMap.containsKey(atten.getCreateDt())) {					
 	            AttendanceDto annual = annualMap.get(atten.getCreateDt());		
-	            if (annual.getCategory() == 1 || annual.getCategory() == 2) {
+	            if (annual.getAnnCtNo() == 1 || annual.getAnnCtNo() == 2) {
 	                annual.setAttInTime(atten.getAttInTime());
 	                annual.setAttOutTime(atten.getAttOutTime());
 	                annual.setAttWorkTime(atten.getAttWorkTime());
