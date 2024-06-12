@@ -215,8 +215,8 @@ $('#tree').on('changed.jstree', function (e, data) {
 }).jstree({
     'core' : {
         'data' : [
-            { "id" : "owner",   "parent" : "#",       "text" : "점주",   "icon" : "glyphicon glyphicon-home"},
-            { "id" : "manager", "parent" : "#",       "text" : "매니저", "icon" : "glyphicon glyphicon-home"},
+            { "id" : "owner",   "parent" : "#",       "text" : "점주",   "icon" : "glyphicon glyphicon-home",    "state"  : {"opened" : true}},
+            { "id" : "manager", "parent" : "#",       "text" : "매니저", "icon" : "glyphicon glyphicon-home",    "state"  : {"opened" : true}},
             { "id" : "o1",      "parent" : "owner",   "text" : "우혜진", "icon" : "glyphicon glyphicon-picture", "a_attr" : {"empNo" : 10}},
             { "id" : "m1",      "parent" : "manager", "text" : "박종구", "icon" : "glyphicon glyphicon-picture", "a_attr" : {"empNo" : 7}},
             { "id" : "m2",      "parent" : "manager", "text" : "배영욱", "icon" : "glyphicon glyphicon-picture", "a_attr" : {"empNo" : 8}},
@@ -253,8 +253,10 @@ const changeUIFn = () => {
 
     // 결재 신청 -> 결재선 선택
     document.querySelector("#next-btn").addEventListener("click", () => {
-        timeOffAppr.classList.add("d-none");
-        apprLine.classList.remove("d-none");
+        if (checkInputFn()) {
+            timeOffAppr.classList.add("d-none");
+            apprLine.classList.remove("d-none");
+        }
     })
 
     // 결재선 선택 -> 결재 신청
