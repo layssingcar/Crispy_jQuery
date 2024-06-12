@@ -153,6 +153,15 @@ const Auth = {
         const rememberMe = localStorage.getItem('rememberMe') === 'true';
         if (rememberMe) {
             await this.refreshAccessToken();
+        } else {
+            await this.checkAccessToken();
+        }
+    },
+
+    checkAccessToken: async function() {
+        const accessToken = this.getAccessToken();
+        if (!accessToken) {
+            await this.logout();
         }
     },
 

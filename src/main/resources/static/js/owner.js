@@ -101,7 +101,6 @@ const owner = {
         tr.appendChild(this.createCell('checkbox', employee.empNo));
         tr.appendChild(this.createCell('text', employee.empNo));
         tr.appendChild(this.createCell('text', employee.empName));
-        tr.appendChild(this.createCell('text', employee.empId));
         tr.appendChild(this.createCell('text', employee.frnName));
         tr.appendChild(this.createCell('text', employee.posName));
         tr.appendChild(this.createCell('text', employee.empPhone));
@@ -118,7 +117,6 @@ const owner = {
             checkbox.id = value;
             console.log(checkbox);
             checkbox.addEventListener('change', function() {
-                console.log(this.checked ? 'Checked' : 'Unchecked', 'Checkbox ID:', this.id);
             });
             td.appendChild(checkbox);
         } else {

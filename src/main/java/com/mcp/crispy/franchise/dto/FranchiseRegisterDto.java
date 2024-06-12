@@ -36,7 +36,6 @@ public class FranchiseRegisterDto {
     @NotBlank(message = "도로명 주소를 입력하세요.")
     private String frnStreet;
 
-    @NotBlank(message = "상세 주소를 입력하세요.")
     private String frnDetail;
 
     private String frnStartTime;

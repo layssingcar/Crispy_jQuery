@@ -1,13 +1,14 @@
 package com.mcp.crispy.auth.service;
 
 import com.mcp.crispy.admin.dto.AdminDto;
+import com.mcp.crispy.admin.service.AdminService;
 import com.mcp.crispy.auth.domain.AdminPrincipal;
 import com.mcp.crispy.auth.domain.EmployeePrincipal;
 import com.mcp.crispy.common.config.CrispyUserDetailsService;
 import com.mcp.crispy.common.exception.InvalidLoginRequestException;
 import com.mcp.crispy.common.utils.JwtUtil;
 import com.mcp.crispy.employee.dto.EmployeeDto;
-import com.mcp.crispy.employee.mapper.EmployeeMapper;
+import com.mcp.crispy.employee.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
@@ -26,7 +27,8 @@ public class AuthenticationService {
     @Lazy
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
-    private final EmployeeMapper employeeMapper;
+    private final EmployeeService employeeService;
+    private final AdminService adminService;
 
     // 로그인시 토큰 부여
     public UserDetails login(String username, String password) {
@@ -40,16 +42,16 @@ public class AuthenticationService {
         if (userDetails instanceof EmployeePrincipal employeePrincipal) {
             EmployeeDto employee = employeePrincipal.getEmployee();
             String accessToken = jwtUtil.createAccessToken(employeePrincipal);
-            // TODO : 리프레쉬 토큰을 제대로 관리하자
             String refreshToken = jwtUtil.createRefreshToken(employeePrincipal);
             employee.setAccessToken(accessToken);
-            employeeMapper.updateRefreshToken(refreshToken, employee.getEmpNo());
+            employeeService.updateRefreshToken(refreshToken, employee.getEmpNo());
             employee.setRefreshToken(refreshToken);
             return employeePrincipal;
         } else if (userDetails instanceof AdminPrincipal adminPrincipal) {
             AdminDto admin = adminPrincipal.getAdmin();
             String accessToken = jwtUtil.createAccessToken(adminPrincipal);
             String refreshToken = jwtUtil.createRefreshToken(adminPrincipal);
+            adminService.updateRefreshToken(refreshToken, admin.getAdminNo());
             admin.setAccessToken(accessToken);
             admin.setRefreshToken(refreshToken);
             return adminPrincipal;
@@ -59,8 +61,18 @@ public class AuthenticationService {
     }
 
     // 로그아웃 시 리프레시 토큰 삭제
-    public void logout(Integer empNo) {
-        employeeMapper.removeRefreshToken(empNo);
+    public void logout(String username) {
+        UserDetails userDetails = crispyUserDetailsService.loadUserByUsername(username);
+
+        if (userDetails instanceof EmployeePrincipal employeePrincipal) {
+            int empNo = employeePrincipal.getEmpNo();
+            employeeService.removeRefreshToken(empNo);
+        } else if (userDetails instanceof AdminPrincipal adminPrincipal) {
+            int adminNo = adminPrincipal.getAdmin().getAdminNo();
+            adminService.removeRefreshToken(adminNo);
+        } else {
+            throw new IllegalArgumentException("올바르지 못한 유저입니다.");
+        }
     }
 
     private void validateLoginRequest(String username, String password) {

@@ -4,6 +4,8 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mcp.crispy.email.mapper.EmailVerificationMapper">
 
+
+
     <insert id="insertVerification"
             parameterType="EmailVerificationDto">
         <selectKey keyProperty="verifyNo" resultType="int" order="BEFORE">
@@ -19,7 +21,42 @@
         #{verifyNo},
         #{verifyEmail},
         #{verifyCode},
-        #{verifyStat}
+        #{verifyStat, typeHandler=com.mcp.crispy.common.typeHandler.VerifyStatTypeHandler}
         )
     </insert>
+
+    <!-- 이메일에서 만료시간, 인증코드 가져오기 -->
+    <select id="findByEmail" parameterType="EmailVerificationDto">
+        SELECT V.VERIFY_EMAIL, V.VERIFY_END_DT, V.VERIFY_CODE, V.VERIFY_STAT
+          FROM VERIFICATION_T V
+         WHERE 1 = 1
+           AND V.VERIFY_EMAIL = #{verifyEmail}
+         ORDER BY V.VERIFY_END_DT DESC
+         FETCH FIRST 1 ROWS ONLY
+    </select>
+
+    <update id="expiredPreviousCodes">
+        UPDATE VERIFICATION_T V
+        SET V.VERIFY_STAT = #{verifyStat, typeHandler=com.mcp.crispy.common.typeHandler.VerifyStatTypeHandler}
+        WHERE 1 = 1
+        AND V.VERIFY_EMAIL = #{verifyEmail}
+        AND VERIFY_STAT = #{currentStat, typeHandler=com.mcp.crispy.common.typeHandler.VerifyStatTypeHandler}
+    </update>
+
+    <update id="updateCodeStatus">
+        UPDATE VERIFICATION_T V
+           SET V.VERIFY_STAT = #{verifyStat, typeHandler=com.mcp.crispy.common.typeHandler.VerifyStatTypeHandler}
+         WHERE 1 = 1
+           AND V.VERIFY_EMAIL = #{verifyEmail}
+           AND V.VERIFY_CODE = #{verifyCode}
+    </update>
+
+    <select id="getExpiryDateTime">
+        SELECT V.VERIFY_END_DT
+          FROM VERIFICATION_T V
+         WHERE 1 = 1
+           AND V.VERIFY_EMAIL = #{verifyEmail}
+         ORDER BY V.VERIFY_END_DT DESC
+         FETCH FIRST 1 ROWS ONLY
+    </select>
 </mapper>

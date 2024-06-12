@@ -19,6 +19,7 @@ public class EmployeeRequestDto {
     private String empName;
     private String empEmail;
     private String empPhone;
+    private String empSign;
     private String empZip;
     private String empStreet;
     private String empDetail;
