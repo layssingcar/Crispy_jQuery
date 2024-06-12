@@ -65,7 +65,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	resultMap="AnnualMap">
 	SELECT *
 		FROM ANNUAL_T
-	WHERE ANN_CT_NO != 3
+	WHERE ANN_CT_NO != 3 AND EMP_NO = #{empNo}
 </select>
 
 
