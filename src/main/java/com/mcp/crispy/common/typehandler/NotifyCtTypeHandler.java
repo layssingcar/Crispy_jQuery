@@ -1,4 +1,4 @@
-package com.mcp.crispy.notification;
+package com.mcp.crispy.common.typeHandler;
 
 import com.mcp.crispy.notification.dto.NotifyCt;
 import org.apache.ibatis.type.BaseTypeHandler;
