@@ -33,34 +33,13 @@
             C.CREATE_DT,
             C.CREATOR,
             C.MODIFY_DT,
-            C.MODIFIER,
-            LATEST_MSG.MSG_DT,
-            LATEST_MSG.MSG_CONTENT
-        FROM
-            CHAT_ROOM_T C
-                LEFT JOIN
-            CR_EMP_T P ON C.CHAT_ROOM_NO = P.CHAT_ROOM_NO
-                LEFT JOIN (
-                SELECT
-                    CM1.CHAT_ROOM_NO,
-                    CM1.MSG_DT,
-                    CM1.MSG_CONTENT
-                FROM
-                    CHAT_MESSAGE_T CM1
-                        INNER JOIN (
-                        SELECT
-                            CHAT_ROOM_NO,
-                            MAX(MSG_DT) AS LATEST_MSG_DT
-                        FROM
-                            CHAT_MESSAGE_T
-                        GROUP BY
-                            CHAT_ROOM_NO
-                    ) CM2 ON CM1.CHAT_ROOM_NO = CM2.CHAT_ROOM_NO AND CM1.MSG_DT = CM2.LATEST_MSG_DT
-            ) LATEST_MSG ON C.CHAT_ROOM_NO = LATEST_MSG.CHAT_ROOM_NO
-        WHERE
-            P.EMP_NO = #{empNo} AND P.ENTRY_STAT = 0
-        ORDER BY
-            LATEST_MSG.MSG_DT DESC
+            C.MODIFIER
+        FROM CHAT_ROOM_T C
+        LEFT JOIN CR_EMP_T P ON C.CHAT_ROOM_NO = P.CHAT_ROOM_NO
+        WHERE 1 = 1
+          AND P.EMP_NO = #{empNo}
+          AND P.ENTRY_STAT = 0
+        ORDER BY C.CREATE_DT DESC
     </select>
 
     <!-- 특정 채팅방의 정보 조회 -->
