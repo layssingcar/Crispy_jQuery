@@ -1,26 +1,26 @@
-/* 결재 문서 목록 페이지 */
-.approval-list {
+/* 발주 신청 내역 페이지 */
+.order-list {
     width: -webkit-fill-available;
     font-size: 1.7rem;
 }
 
 /* 페이지 제목 */
-.approval-list h1 {font-size: 2.5rem;}
+.order-list h1 {font-size: 2.5rem;}
 
 /* 상단 영역 */
-.approval-list .top-area {
+.order-list .top-area {
     display: flex;
     justify-content: flex-end;
 }
 
-/* 기안자 검색 */
-.approval-list .container-1 {
-    width: 240px;
+/* 가맹점명, 대표자 검색 */
+.order-list .container-1 {
+    width: 300px;
     position: relative;
 }
 
 /* 검색 아이콘 */
-.approval-list .container-1 .icon {
+.order-list .container-1 .icon {
     position: absolute;
     left: 15px;
     top: 22px;
@@ -30,58 +30,57 @@
 }
 
 /* 검색 창 */
-.approval-list #search {
-    width: 240px;
+.order-list #search {
     height: 40px;
     padding-left: 35px;
     font-size: 1.5rem;
 }
 
 /* 드롭다운 */
-.approval-list select {
+.order-list select {
     width: 165px;
     height: 40px;
     font-size: 1.5rem;
 }
 
 /* 상단 영역 margin-left */
-.approval-list .m-left {margin-left: 7px;}
+.order-list .m-left {margin-left: 7px;}
 
 /* 문서 목록 테이블 */
-.approval-list table {
+.order-list table {
     margin-top: 25px;
     text-align: center;
 }
 
-/* 기안일 정렬 */
-.approval-list .fa-sort {
+/* 가맹점명, 기안일 정렬 */
+.order-list .fa-sort {
     margin-left: 5px;
     cursor: pointer;
 }
 
 /* 데이터 셀 */
-.approval-list td {
+.order-list td {
     padding: 10px !important;
     /* width: 120px; */
     vertical-align: middle;
 }
 
 /* 행 hover */
-.approval-list tbody tr:hover td {
+.order-list tbody tr:hover td {
     background-color: rgba(200, 200, 200, 0.2);
     cursor: pointer;
 }
 
 /* 페이지네이션 */
-.approval-list .pagination {
+.order-list .pagination {
     display: flex;
     justify-content: center;
     margin-top: 30px;
 }
 
-.approval-list .page-link {color: var(--main-color);}
+.order-list .page-link {color: var(--main-color);}
 
-.approval-list .page-link:focus {
+.order-list .page-link:focus {
     z-index: 3;
     box-shadow: var(--main-color);
     background-color: var(--main-color);
@@ -90,7 +89,7 @@
     opacity: 0.65;
 }
 
-.approval-list .active > .page-link {
+.order-list .active > .page-link {
     color: var(--bs-pagination-active-color);
     background-color: var(--main-color);
     border-color: var(--main-color);

@@ -1,10 +1,10 @@
 // 페이지네이션 옵션 객체
 const optionObj = {
     "pageNo": 1,            // 페이지번호
-    "timeOffCtNo": -1,      // 문서카테고리번호
     "apprStat": -1,         // 문서상태번호
-    "apprDtSort": "DESC",   // 기안일정렬
-    "empName": ""           // 기안자검색
+    "sortKey": "apprDt",    // 정렬기준
+    "sortOrder": "DESC",    // 정렬순서
+    "searchKeyword": ""     // 검색키워드 (가맹점명, 대표자)
 }
 
 // 페이지 이동
@@ -26,16 +26,10 @@ const addPageLinkEventFn = pageNo => {
     })
 }
 
-// 기안자 검색
+// 가맹점명, 대표자 검색
 document.querySelector("#search")?.addEventListener("input", e => {
-    optionObj["empName"] = e.target.value;
-    optionObj["pageNo"] = 1;
-    getApprItemsFn(optionObj);
-})
-
-// 카테고리 구분 조회
-document.querySelector("#time-off-ct-no").addEventListener("change", e => {
-    optionObj["timeOffCtNo"] = e.target.value;
+    console.log(e.target.value)
+    optionObj["searchKeyword"] = e.target.value;
     optionObj["pageNo"] = 1;
     getApprItemsFn(optionObj);
 })
@@ -47,15 +41,32 @@ document.querySelector("#appr-stat").addEventListener("change", e => {
     getApprItemsFn(optionObj);
 })
 
-// 기안일 정렬
+// 정렬 (가맹점명, 기안일)
 const addSortEventFn = () => {
+    // 가맹점명 정렬
+    document.querySelector("#frn-name-sort").addEventListener("click", e => {
+        if (optionObj["sortKey"] === "frnName")
+            optionObj["sortOrder"] = (optionObj["sortOrder"] === "ASC") ? "DESC" : "ASC";
+        else {
+            optionObj["sortKey"] = "frnName";
+            optionObj["sortOrder"] = "ASC";
+        }
+        getApprItemsFn(optionObj);
+    })
+
+    // 기안일 정렬
     document.querySelector("#appr-dt-sort").addEventListener("click", e => {
-        optionObj["apprDtSort"] = (optionObj["apprDtSort"] === "DESC") ? "ASC" : "DESC";
+        if (optionObj["sortKey"] === "apprDt")
+            optionObj["sortOrder"] = (optionObj["sortOrder"] === "DESC") ? "ASC" : "DESC";
+        else {
+            optionObj["sortKey"] = "apprDt";
+            optionObj["sortOrder"] = "DESC";
+        }
         getApprItemsFn(optionObj);
     })
 }
 
-// 결재 문서 항목 리스트
+// 발주 신청 항목 리스트
 const getApprItemsFn = async (optionObj) => {
     const params = new URLSearchParams(); // URL 쿼리 문자열 객체
 
@@ -66,31 +77,17 @@ const getApprItemsFn = async (optionObj) => {
     const subIdx = location.pathname.lastIndexOf("/");
     const type = location.pathname.substring(subIdx + 1);
 
-    const response = await fetch(`/crispy/approval-items/${type}?${params.toString()}`);
+    const response = await fetch(`/crispy/order-items/${type}?${params.toString()}`);
     const html = await response.text();
-    document.querySelector(".appr-list-container").outerHTML = html;
+    document.querySelector(".order-list-container").outerHTML = html;
 
     // 이벤트 재추가
     addPageLinkEventFn(optionObj.pageNo === undefined ? 1 : optionObj.pageNo);
-    addApprRowsEventFn();
     addSortEventFn();
 }
 
 // 초기화
 document.addEventListener("DOMContentLoaded", function () {
     addPageLinkEventFn(1);
-    addApprRowsEventFn();
     addSortEventFn();
 })
-
-// 결재 문서 항목
-const addApprRowsEventFn = () => {
-    const apprRows = document.querySelectorAll(".appr-row");
-
-    apprRows.forEach(apprRow => {
-        apprRow.addEventListener("click", () => {
-            const apprNo = apprRow.dataset.apprNo;
-            location.href = `/crispy/approval-detail/${apprNo}`;
-        })
-    })
-}

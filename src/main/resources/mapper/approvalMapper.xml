@@ -3,6 +3,15 @@
 
 <mapper namespace="com.mcp.crispy.approval.mapper.ApprovalMapper">
 
+    <resultMap id="apprDtoResultMap" type="ApprovalDto">
+        <id property="apprNo" column="APPR_NO"/>
+        <collection property="apprLineDtoList"
+                    select="getApprLine"
+                    column="APPR_NO"
+                    javaType="java.util.ArrayList"
+                    ofType="ApprLineDTO"/>
+    </resultMap>
+
     <!-- 직원 정보 조회 -->
     <select id="getEmpInfo">
             SELECT E.EMP_NO, E.EMP_NAME, E.EMP_STREET, E.EMP_DETAIL
@@ -56,8 +65,8 @@
     <select id="getTimeOffTemp">
             SELECT TIME_OFF_TEMP_NO
                  , TIME_OFF_CT_NO
-                 , TO_CHAR(TIME_OFF_START_DT, 'YYYY-MM-DD') TIME_OFF_START_DT
-                 , TO_CHAR(TIME_OFF_END_DT, 'YYYY-MM-DD') TIME_OFF_END_DT
+                 , TO_CHAR(TIME_OFF_START_DT, 'YYYY-MM-DD') AS TIME_OFF_START_DT
+                 , TO_CHAR(TIME_OFF_END_DT, 'YYYY-MM-DD') AS TIME_OFF_END_DT
                  , TIME_OFF_PERIOD
                  , TIME_OFF_CONTENT
               FROM TIME_OFF_TEMP_T
@@ -121,8 +130,8 @@
                ) TEMP_T
     </insert>
 
-    <!-- 결재 문서 목록 수 조회 -->
-    <select id="getApprCount">
+    <!-- 결재 문서 목록 수 조회 (휴가/휴직 신청서) -->
+    <select id="getTimeOffApprCount">
             SELECT COUNT(*)
               FROM APPROVAL_T A
         INNER JOIN TIME_OFF_T T
@@ -144,18 +153,28 @@
                                            OR (
                                            SELECT 'temp'
                                              FROM APPR_LINE_T AL
-                                            WHERE AL.APPR_NO = A.APPR_NO
+                                            WHERE 1=1
+                                              AND AL.APPR_NO = A.APPR_NO
                                               AND AL.APPR_LINE_ORDER = 0
                                               AND AL.APPR_LINE_STAT = 1
-                                              ) = 'temp'
-                                           )
+                                              ) = 'temp')
                         </otherwise>
                 </choose>
+                <if test="timeOffCtNo != -1">
+                    AND T.TIME_OFF_CT_NO = #{timeOffCtNo}
+                </if>
+                <if test="apprStat != -1">
+                    AND A.APPR_STAT = #{apprStat}
+                </if>
+                <if test="empName != null">
+                    AND E.EMP_NAME LIKE '%' || #{empName} || '%'
+                </if>
     </select>
 
-    <!-- 결재 문서 목록 조회 -->
-    <select id="getApprList">
-            SELECT A.APPR_NO, A.APPR_DT, A.APPR_STAT
+    <!-- 결재 문서 목록 조회 (휴가/휴직 신청서) -->
+    <select id="getTimeOffApprList">
+            SELECT A.APPR_NO, A.APPR_STAT
+                 , TO_CHAR(A.APPR_DT, 'YYYY-MM-DD') AS APPR_DT
                  , T.TIME_OFF_CT_NO
                  , E.EMP_NO, E.EMP_NAME
                    <if test="type == 'sign'">
@@ -171,7 +190,7 @@
                           WHERE 1=1
                             AND E.EMP_NO = #{empNo}
                     </when>
-                    <otherwise>
+                    <when test="type == 'sign'">
                           RIGHT OUTER JOIN APPR_LINE_T L
                                         ON A.APPR_NO = L.APPR_NO
                                      WHERE 1=1
@@ -181,14 +200,73 @@
                                            OR (
                                               SELECT 'temp'
                                                 FROM APPR_LINE_T AL
-                                               WHERE AL.APPR_NO = A.APPR_NO
+                                               WHERE 1=1
+                                                 AND AL.APPR_NO = A.APPR_NO
                                                  AND AL.APPR_LINE_ORDER = 0
                                                  AND AL.APPR_LINE_STAT = 1
-                                              ) = 'temp'
-                                           )
-                    </otherwise>
+                                              ) = 'temp')
+                    </when>
                 </choose>
-          ORDER BY APPR_DT DESC
+                <if test="timeOffCtNo != -1">
+                    AND T.TIME_OFF_CT_NO = #{timeOffCtNo}
+                </if>
+                <if test="apprStat != -1">
+                    AND A.APPR_STAT = #{apprStat}
+                </if>
+                <if test="empName != null">
+                    AND E.EMP_NAME LIKE '%' || #{empName} || '%'
+                </if>
+          ORDER BY A.APPR_DT
+          <choose>
+              <when test="apprDtSort == 'ASC'">ASC</when>
+              <otherwise>DESC</otherwise>
+          </choose>
+    </select>
+
+    <!-- 결재 문서 상세 조회 (휴가/휴직 신청서) -->
+    <select id="getTimeOffApprDetail" resultMap="apprDtoResultMap">
+            SELECT DISTINCT A.APPR_NO, A.APPR_DT
+                          , T.TIME_OFF_CT_NO
+                          , TO_CHAR(T.TIME_OFF_START_DT, 'YYYY"년" MM"월" DD"일"') AS TIME_OFF_START_DT
+                          , TO_CHAR(T.TIME_OFF_END_DT, 'YYYY"년" MM"월" DD"일"') AS TIME_OFF_END_DT
+                          , T.TIME_OFF_PERIOD, T.TIME_OFF_CONTENT
+                          , E.EMP_NO, E.EMP_NAME, E.EMP_STREET, E.EMP_DETAIL, E.EMP_SIGN
+                          , P.POS_NAME
+                       FROM APPROVAL_T A
+                 INNER JOIN TIME_OFF_T T
+                         ON A.APPR_NO = T.APPR_NO
+                 INNER JOIN EMPLOYEE_T E
+                         ON A.EMP_NO = E.EMP_NO
+                 INNER JOIN POSITION_T P
+                         ON E.POS_NO = P.POS_NO
+                 INNER JOIN APPR_LINE_T L
+                         ON A.APPR_NO = L.APPR_NO
+                      WHERE 1=1
+                        AND (
+                            (E.EMP_NO = #{empNo} AND A.APPR_NO = #{apprNo})
+                            OR
+                            L.APPR_LINE_NO = (
+                                             SELECT APPR_LINE_NO
+                                               FROM APPR_LINE_T
+                                              WHERE 1=1
+                                                AND APPR_NO = #{apprNo}
+                                                AND EMP_NO = #{empNo})
+                            )
+    </select>
+
+    <!-- 결재선 조회 (결재 문서 상세 조회) -->
+    <select id="getApprLine" resultType="ApprLineDto">
+            SELECT L.APPR_LINE_STAT
+                 , E.EMP_NAME, E.EMP_SIGN
+                 , P.POS_NAME
+              FROM APPR_LINE_T L
+        INNER JOIN EMPLOYEE_T E
+                ON L.EMP_NO = E.EMP_NO
+        INNER JOIN POSITION_T P
+                ON E.POS_NO = P.POS_NO
+             WHERE 1=1
+               AND L.APPR_NO = #{apprNo}
+          ORDER BY L.APPR_LINE_ORDER ASC
     </select>
 
 </mapper>

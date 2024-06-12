@@ -20,8 +20,15 @@
 						<button type="button" class="btn" id="temp-content">결재하기</button>
 					</div>
 
-                    <!-- 문서 상세 -->
-                    <div th:replace="~{document/vacation-app :: vacation-app}"></div>
+					<!-- 문서 상세 -->
+					<th:block th:if="${approvalDto.timeOffCtNo == 0}">
+						<div th:replace="~{document/vacation-app :: vacation-app}"></div>
+					</th:block>
+
+					<th:block th:if="${approvalDto.timeOffCtNo == 1}">
+						<div th:replace="~{document/leave-of-absence-app :: leave-of-absence-app}"></div>
+					</th:block>
+
 				</div>
 			</main>
 			<footer th:replace="~{layout/footer :: footer}"></footer>
