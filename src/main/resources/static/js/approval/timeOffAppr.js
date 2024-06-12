@@ -153,6 +153,7 @@ document.querySelector("#temp-content").addEventListener("click", async () => {
 
                     // 이벤트 재추가
                     getEmpInfoFn();
+                    getCurrentDateFn();
                     changeDateFn();
                 })
         }
@@ -171,6 +172,7 @@ document.querySelector("#time-off-ct").addEventListener("change", e => {
 
             // 이벤트 재추가
             getEmpInfoFn();
+            getCurrentDateFn();
             changeDateFn();
             changeUIFn();
         })
@@ -188,6 +190,16 @@ const getEmpInfoFn = async () => {
 
     document.querySelector("#pos-name").innerHTML = result.posName;
     document.querySelector("#emp-address").innerHTML = result.empStreet + ", " + result.empDetail;
+}
+
+// 오늘 날짜
+const getCurrentDateFn = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const date = String(today.getDate()).padStart(2, "0");
+    const formattedDate = `${year}년 ${month}월 ${date}일`;
+    document.querySelector("#appr-dt").innerHTML = formattedDate;
 }
 
 // 결재선 목록
@@ -254,15 +266,8 @@ const changeUIFn = () => {
 
 // 초기화
 document.addEventListener("DOMContentLoaded", function () {
-    // 기안일 출력
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const date = String(today.getDate()).padStart(2, "0");
-    const formattedDate = `${year}년 ${month}월 ${date}일`;
-    document.querySelector("#appr-dt").innerHTML = formattedDate;
-
     getEmpInfoFn();
+    getCurrentDateFn();
     changeDateFn();
     changeUIFn();
 })
