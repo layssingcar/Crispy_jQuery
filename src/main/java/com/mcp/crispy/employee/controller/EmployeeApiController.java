@@ -233,6 +233,13 @@ public class EmployeeApiController {
         return ResponseEntity.ok(Map.of("message", "재직 상태가 변경되었습니다."));
     }
 
+    /**
+     *
+     * 정보 폼으로 수정
+     * 배영욱 (24. 06. 02)
+     * @param employeeUpdateDto 직원 정보 업데이트 DTO
+     * @return ResponseEntity
+     */
     @PutMapping("/form/v1")
     public ResponseEntity<Map<String, String>> changeForm(@Valid @RequestBody EmployeeUpdateDto employeeUpdateDto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

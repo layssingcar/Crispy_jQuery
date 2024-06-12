@@ -16,9 +16,10 @@ public interface ChatMapper {
     // 채팅방 내부 ( 참가자 )
     ChatRoomDto getChatRoom(@Param("chatRoomNo") Integer chatRoomNo);
 
-    // 채팅방 내에 메시지 목록
+    // 채팅방 초기 로딩시 50개 호출
     List<ChatMessageDto> getLoadMessages(@Param("chatRoomNo") Integer chatRoomNo, @Param("empNo") Integer empNo);
 
+    // 초기 로딩 이후 50개 호출
     List<ChatMessageDto> getMoreMessages(@Param("chatRoomNo") Integer chatRoomNo, @Param("beforeTimeStamp") Timestamp beforeTimeStamp,
                                      @Param("empNo") Integer empNo);
     // 최신 메시지 내용
@@ -30,6 +31,7 @@ public interface ChatMapper {
     // 채팅방 만들기
     void createChatRoom(ChatRoomDto chatRoomDto);
 
+    // 특정 채팅방에서 특정 참가자 조회
     CrEmpDto getParticipant(@Param("chatRoomNo") Integer chatRoomNo, @Param("empNo") Integer empNo);
 
     // 유저 초대
@@ -41,6 +43,7 @@ public interface ChatMapper {
     // 채팅방 나갈 때 사용하는 메소드
     void updateEntryStat(CrEmpDto crEmpDto);
 
+    // 특정 채팅방에 속한 모든 참가자 목록 조회
     List<CrEmpDto> getParticipantsByRoom(Integer chatRoomNo);
 
     // 채팅방 접속 기록 (최초 삽입, 이후 수정)

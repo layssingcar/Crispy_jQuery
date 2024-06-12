@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const collapseElement = document.querySelector(targetId);
 
         if (!collapseElement) {
-            console.error(`Element with selector ${targetId} not found.`);
             return;
         }
 

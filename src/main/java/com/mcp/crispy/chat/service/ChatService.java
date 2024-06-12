@@ -311,6 +311,7 @@ public class ChatService {
         messagingTemplate.convertAndSend("/topic/messages", chatMessage);
     }
 
+    // 채팅 필터 금지어 포함시 예외 반환
     public void checkBadWords(String msgContent) {
         BadWordFiltering badWordFiltering = new BadWordFiltering();
         if (badWordFiltering.blankCheck(msgContent)) {
