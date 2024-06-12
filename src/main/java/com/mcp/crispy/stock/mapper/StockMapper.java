@@ -1,8 +1,9 @@
 package com.mcp.crispy.stock.mapper;
 
+import com.mcp.crispy.approval.dto.ApprLineDto;
 import com.mcp.crispy.stock.dto.StockDto;
 import com.mcp.crispy.stock.dto.StockOptionDto;
-import com.mcp.crispy.stock.dto.StockOrderDto;
+import com.mcp.crispy.approval.dto.ApprovalDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.RowBounds;
 
@@ -33,9 +34,21 @@ public interface StockMapper {
     int deleteOrderTemp(int empNo);
     
     // 발주 재고 임시저장
-    int insertOrderTemp(StockOrderDto stockOrderDto);
+    int insertOrderTemp(ApprovalDto approvalDto);
 
     // 임시저장 내용 불러오기
     List<StockDto> getOrderTemp(int empNo);
+
+    // 발주 신청 (전자결재 테이블)
+    int insertApproval(ApprovalDto approvalDto);
+
+    // 발주 신청 (발주신청서 테이블)
+    int insertOrder(ApprovalDto approvalDto);
+
+    // 발주 신청 (발주재고 테이블)
+    int insertStockOrder(ApprovalDto approvalDto);
+
+    // 발주 신청 (결재선 테이블)
+    int insertApprLine(ApprovalDto approvalDto);
 
 }

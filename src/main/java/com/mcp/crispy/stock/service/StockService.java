@@ -1,9 +1,9 @@
 package com.mcp.crispy.stock.service;
 
+import com.mcp.crispy.approval.dto.ApprovalDto;
 import com.mcp.crispy.common.page.PageResponse;
 import com.mcp.crispy.stock.dto.StockDto;
 import com.mcp.crispy.stock.dto.StockOptionDto;
-import com.mcp.crispy.stock.dto.StockOrderDto;
 import com.mcp.crispy.stock.mapper.StockMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.session.RowBounds;
@@ -71,14 +71,29 @@ public class StockService {
 
     // 발주 재고 임시저장
     @Transactional
-    public int insertOrderTemp(StockOrderDto stockOrderDto) {
-        stockMapper.deleteOrderTemp(stockOrderDto.getEmpNo()); // 이전 임시저장 내용 삭제
-        return stockMapper.insertOrderTemp(stockOrderDto);
+    public int insertOrderTemp(ApprovalDto approvalDto) {
+        stockMapper.deleteOrderTemp(approvalDto.getEmpNo()); // 이전 임시저장 내용 삭제
+        return stockMapper.insertOrderTemp(approvalDto);
     }
     
     // 임시저장 내용 불러오기
     public List<StockDto> getOrderTemp(int empNo) {
         return stockMapper.getOrderTemp(empNo);
+    }
+
+    // 발주 신청
+    @Transactional
+    public int insertOrderAppr(ApprovalDto approvalDto) {
+
+        stockMapper.insertApproval(approvalDto);
+        int apprNo = approvalDto.getApprNo();
+
+        stockMapper.insertOrder(approvalDto);
+        stockMapper.insertStockOrder(approvalDto);
+        stockMapper.insertApprLine(approvalDto);
+
+        return 1;
+
     }
 
 }

@@ -19,4 +19,6 @@ public class ApprLineDto {
     private int apprNo;             // 문서번호
     private int empNo;              // 직원번호
     private int adminNo;            // 관리자번호
+    
+    private int creator;            // 생성자
 }
