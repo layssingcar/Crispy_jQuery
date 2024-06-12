@@ -15,6 +15,7 @@ import java.sql.Timestamp;
 public class ScheduleDto {
 	private int scheNo;
 	private String scheId;
+	private int frnNo;
 	private int scheDiv;
 	private String scheTitle;
 	private String scheContent;

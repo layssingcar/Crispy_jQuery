@@ -27,8 +27,8 @@ public class ScheduleController {
 	
 	@ResponseBody
 	@GetMapping(value="/getScheList", produces="application/json")
-	public List<ScheduleDto> getScheList() {
-		return scheduleService.getScheList();
+	public List<ScheduleDto> getScheList(@RequestParam("empNo") int empNo) {
+		return scheduleService.getScheList(empNo);
 	}
 	
 	@ResponseBody

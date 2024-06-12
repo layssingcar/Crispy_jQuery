@@ -9,6 +9,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<resultMap type="ScheduleDto" id="ScheduleMap">
 		<id property="scheNo" column="SCHE_NO" />
 		<result property="scheId" column="SCHE_ID"/>
+		<result property="frnNo" column="FRN_NO"/>
 		<result property="scheDiv" column="SCHE_DIV"/>
 		<result property="scheTitle" column="SCHE_TITLE"/>
 		<result property="scheContent" column="SCHE_CONTENT"/>
@@ -26,6 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     INSERT INTO SCHEDULE_T (
         SCHE_NO,
         SCHE_ID,
+        FRN_NO,
         SCHE_DIV,
         SCHE_TITLE,
         SCHE_CONTENT,
@@ -40,6 +42,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     ) VALUES (
         SCHEDULE_SEQ.NEXTVAL,
        	#{scheId},
+       	#{frnNo},
        	#{scheDiv},
         #{scheTitle},
         #{scheContent},
@@ -65,7 +68,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		resultMap="ScheduleMap">
 	SELECT * 
 		FROM SCHEDULE_T
-	WHERE SCHE_STAT != 1
+	WHERE SCHE_STAT != 1 AND FRN_NO = #{empNo}
 </select>
 
 <update id="modifySchedule"
