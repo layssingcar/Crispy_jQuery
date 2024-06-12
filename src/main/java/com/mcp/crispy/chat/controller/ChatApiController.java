@@ -373,4 +373,19 @@ public class ChatApiController {
         return ResponseEntity.ok().body(Map.of("message", "메시지가 삭제되었습니다."));
     }
 
+    // 삭제 알림 보내기
+    @MessageMapping("/chat/delete")
+    public void deleteMessage(ChatMessageDto chatMessageDto) {
+        log.info("deleteMessage received: {}", chatMessageDto); // 로그 추가
+        // WebSocket을 통해 다른 클라이언트에게 메시지 삭제 알림 전송
+        messagingTemplate.convertAndSend("/topic/chatRoom/" + chatMessageDto.getChatRoomNo(), chatMessageDto);
+    }
+
+    // 채팅 필터 메소드
+    @PostMapping("/checkBadWords")
+    public ResponseEntity<?> checkBadWords(@RequestBody ChatMessageDto chatMessageDto) {
+        chatService.checkBadWords(chatMessageDto.getMsgContent());
+        return ResponseEntity.ok().build();
+    }
+
 }

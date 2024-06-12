@@ -99,7 +99,7 @@
     <!-- 최신 메시지 내용 -->
     <select id="getRegentMsg" resultType="ChatMessageDto">
         SELECT CM.CHAT_ROOM_NO, CM.EMP_NO, CM.MSG_CONTENT, CM.MSG_DT,
-               CM.CREATOR, CM.CREATE_DT, CM.MODIFIER, CM.MODIFY_DT,
+               CM.CREATOR, CM.CREATE_DT, CM.MODIFIER, CM.MODIFY_DT, CM.MSG_STAT,
                E.EMP_PROFILE, E.EMP_NAME
         FROM CHAT_MESSAGE_T CM
                  JOIN EMPLOYEE_T E ON CM.EMP_NO = E.EMP_NO
@@ -263,10 +263,17 @@
     <!-- 채팅 삭제 ( 비활성화 ) -->
     <update id="removeMsgStat">
         UPDATE CHAT_MESSAGE_T CM
-           SET CM.MSG_STAT = #{msgStat},
+           SET CM.MSG_STAT = #{msgStat, typeHandler=com.mcp.crispy.common.typeHandler.MsgStatTypeHandler},
                CM.MODIFIER = #{modifier},
                CM.MODIFY_DT = CURRENT_TIMESTAMP
          WHERE MSG_NO = #{msgNo}
            AND CM.EMP_NO = #{modifier}
     </update>
+
+    <!-- 메시지 번호로 채팅방 번호 가져오기 -->
+    <select id="getChatRoomNoByMsgNo" resultType="int">
+            SELECT CHAT_ROOM_NO
+              FROM CHAT_MESSAGE_T C
+             WHERE C.MSG_NO = #{msgNo}
+    </select>
 </mapper>

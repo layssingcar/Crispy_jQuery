@@ -70,4 +70,7 @@ public interface ChatMapper {
     // 채팅 삭제 ( 비활성화 )
     void removeMsgStat(@Param("msgStat") MsgStat msgStat, @Param("modifier") Integer modifier,
                        @Param("msgNo") Integer msgNo);
+
+    // 메시지 번호로 채팅방 번호 가져오기
+    Integer getChatRoomNoByMsgNo(Integer msgNo);
 }
