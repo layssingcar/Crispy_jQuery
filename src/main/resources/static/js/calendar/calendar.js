@@ -67,40 +67,33 @@
           $("#end").append(newOption);
         }
       }
+
+	  function updateAMPM() {
+    	if ((startOpt.index($("#start option:selected")) + num) >= startOpt.length) {
+	        endOpt.eq(startOpt.length - 1).prop('selected', true);
+    	} else {
+	        endOpt.eq(startOpt.index($("#start option:selected")) + num).prop('selected', true);
+    	}
+	  }
       
       function radioControl(num){
       	if($("#btnradio2").is(":checked"))
     		startOpt.eq(10).prop('selected', true);
     	else if($("#btnradio1").is(":checked"))
     		startOpt.eq(0).prop('selected', true);
-    	
-    	$("#btnradio2").off('click').on('click', function(){
-    		startOpt.eq(10).prop('selected', true);
-    		if((startOpt.index($("#start option:selected")) + num) >= startOpt.length)
-    			endOpt.eq(startOpt.length - 1).prop('selected', true);
-    		else
-    			endOpt.eq(startOpt.index($("#start option:selected")) + num).prop('selected', true);
-    	})
-    	
-    	$("#btnradio1").off('click').on('click', function(){
-    		startOpt.eq(0).prop('selected', true);
-    		if((startOpt.index($("#start option:selected")) + num) >= startOpt.length)
-    			endOpt.eq(startOpt.length - 1).prop('selected', true);
-    		else
-    			endOpt.eq(startOpt.index($("#start option:selected")) + num).prop('selected', true);
-    	})
-    	
-    	$("#start").off('change').on('change', function(){
-    		if((startOpt.index($("#start option:selected")) + num) >= startOpt.length)
-    			endOpt.eq(startOpt.length - 1).prop('selected', true);
-    		else
-    			endOpt.eq(startOpt.index($("#start option:selected")) + num).prop('selected', true);
-    	})
-    	
-		if((startOpt.index($("#start option:selected")) + num) >= startOpt.length)
-			endOpt.eq(startOpt.length - 1).prop('selected', true);
-		else
-			endOpt.eq(startOpt.index($("#start option:selected")) + num).prop('selected', true);    	  
+			
+		$("#btnradio2").off('click').on('click', function() {
+		    startOpt.eq(10).prop('selected', true);
+		    updateAMPM();
+		});
+		$("#btnradio1").off('click').on('click', function() {
+		    startOpt.eq(0).prop('selected', true);
+		    updateAMPM();
+		});
+		$("#start").off('change').on('change', function() {
+		    updateAMPM();
+		});
+		updateAMPM();	  
       }
 
       ////////////////////////     캘린더 설정
@@ -123,64 +116,26 @@
 			})
 			.done(function(scheList){
 				$(scheList).each(function(){
-					if(this.scheDiv == 0){
-						loadEventList.push({
-							id: this.scheId,
-							title:this.scheTitle,
-							start:this.scheStartTime,
-							end:this.scheEndTime,
-			              	allDay: true, 
-			              	backgroundColor : "rgba(255, 0, 0, 0.7)",
-			              	borderColor: "rgba(255, 0, 0, 0.7)"							
-						});
-					}
-					else if(this.scheDiv == 1){
-						loadEventList.push({
-							id: this.scheId,
-							title:this.scheTitle,
-							start:this.scheStartTime,
-							end:this.scheEndTime,
-			              	allDay: true, 
-			              	backgroundColor : "rgba(0, 0, 255, 0.7)",
-			              	borderColor: "rgba(0, 0, 255, 0.7)"								
-						});						
-					}
+					loadEventList.push({
+						id: this.scheId,
+						title:this.scheTitle,
+						start:this.scheStartTime,
+						end:this.scheEndTime,
+		              	allDay: true, 
+		              	backgroundColor : (this.scheDiv == 0) ? "rgba(255, 0, 0, 0.7)" : "rgba(0, 0, 255, 0.7)",
+		              	borderColor: (this.scheDiv == 0) ? "rgba(255, 0, 0, 0.7)" : "rgba(0, 0, 255, 0.7)"			
+					});
 				});
-				
 				$(annList).each(function(){
-					if(this.annCtNo == 0){
-						loadEventList.push({
-							id: this.annId,
-							title:this.annTitle,
-							start:this.annStartTime,
-							end:this.annEndTime,
-			              	allDay: true, 
-          		  			backgroundColor : "rgba(0, 135, 0, 0.7)",
-	              			borderColor: "rgba(0, 135, 0, 0.7)"								
-						});
-					}
-					else if(this.annCtNo == 1){
-						loadEventList.push({
-							id: this.annId,
-							title:this.annTitle,
-							start:this.annStartTime,
-							end:this.annEndTime,
-             			 	allDay: false, 
-          		  			backgroundColor : "rgba(0, 135, 0, 0.7)",
-	              			borderColor: "rgba(0, 135, 0, 0.7)"							
-						});					
-					}
-					else if(this.annCtNo == 2){
-						loadEventList.push({
-							id: this.annId,
-							title:this.annTitle,
-							start:this.annStartTime,
-							end:this.annEndTime,
-			              	allDay: false, 
-		          		  	backgroundColor : "rgba(0, 135, 0, 0.7)",
-		              		borderColor: "rgba(0, 135, 0, 0.7)"						
-						});							
-					}					
+					loadEventList.push({
+						id: this.annId,
+						title:this.annTitle,
+						start:this.annStartTime,
+						end:this.annEndTime,
+		              	allDay: (this.annCtNo == 0) ? true : false, 
+      		  			backgroundColor : "rgba(0, 135, 0, 0.7)",
+              			borderColor: "rgba(0, 135, 0, 0.7)"								
+					});
 				});		
 				for(var i = 0; i < loadEventList.length; i++)
 						calendar.addEvent(loadEventList[i]);
@@ -299,9 +254,6 @@
   		startDt = info.event.startStr;
   		endDt = info.event.endStr;
       });
-      
-      calendar.on("dateClick", (info)=>{
-        });
 
       calendar.on("select", (info)=>{
    	 	$(".modal-title").text("일정 등록");  
@@ -317,51 +269,27 @@
       let selectVacType = $("input:radio[name=var-elem-radio]:checked").val();	// 연차,반차,반반차,
       let schedule;
       
-      	if(selectScheType == 'notice'){
+      	if(selectScheType == 'notice' || selectScheType == 'mysche'){
 	         schedule = {
 				  id: "일정" + crypto.randomUUID(),
 	              title: $("#sch-title").val(),
 	              start: startDt + "T" + $("#start option:selected").val(),
 	              end : endDt + "T" + $("#end option:selected").val(),
 	              allDay: true, 
-	              backgroundColor : "rgba(255, 0, 0, 0.7)",
-	              borderColor: "rgba(255, 0, 0, 0.7)"
+	              backgroundColor : (selectScheType == 'notice') ? "rgba(255, 0, 0, 0.7)" : "rgba(0, 0, 255, 0.7)",
+	              borderColor: (selectScheType == 'notice') ? "rgba(255, 0, 0, 0.7)" : "rgba(0, 0, 255, 0.7)"
 	          };			
 		}
-		else if(selectScheType == 'mysche') {
-	         schedule = {
-				  id: "일정" + crypto.randomUUID(),
-	              title: $("#sch-title").val(),
-	              start: startDt + "T" + $("#start option:selected").val(),
-	              end : endDt + "T" + $("#end option:selected").val(),
-	              allDay: true, 
-  	              backgroundColor : "rgba(0, 0, 255, 0.7)",
-	              borderColor: "rgba(0, 0, 255, 0.7)"
-	          };			
-		} 
 		else if(selectScheType == 'vac') {
-	        if(selectVacType == 'all'){ // 전체일정
 	         schedule = {
 				  id: "연차" + crypto.randomUUID(),
 	              title: $("#sch-title").val(),
-	              start: startDt,
-	              end : endDt,
-	              allDay: true, 
+	              start: (selectVacType == 'all') ? startDt : startDt + "T" + $("#start option:selected").val(),
+	              end : (selectVacType == 'all') ? endDt : startDt + "T" + $("#end option:selected").val(),
+	              allDay: (selectVacType == 'all') ? true : false, 
 	              backgroundColor : "rgba(0, 135, 0, 0.7)",
 	              borderColor: "rgba(0, 135, 0, 0.7)"
 	          };
-	        }
-	        else if(selectVacType != 'all'){	// 지정시간일정
-	          schedule = {
-				  id: "연차" + crypto.randomUUID(),
-	              title: $("#sch-title").val(),
-	              start:  startDt + "T" + $("#start option:selected").val(),
-	              end : startDt + "T" + $("#end option:selected").val(),
-	              allDay: false, 
-          		  backgroundColor : "rgba(0, 135, 0, 0.7)",
-	              borderColor: "rgba(0, 135, 0, 0.7)"
-	            };
-	          }
 		}
         calendar.addEvent(schedule);
       	fnAddScheduleAndAnnual(schedule.id);
