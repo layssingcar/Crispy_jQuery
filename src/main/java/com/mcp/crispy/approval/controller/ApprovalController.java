@@ -147,7 +147,7 @@ public class ApprovalController {
 		approvalDto.setEmpNo(userDetails.getEmpNo());
 
 		approvalService.insertTimeOffAppr(approvalDto);
-		return "redirect:/crispy/approval-list";
+		return "redirect:/crispy/approval-list/draft";
 
 	}
 
