@@ -11,9 +11,12 @@ import java.util.Map;
 @Service
 public class SseService {
 
+    public static final int ADMIN_NO = 10001;
+
+
     private final Map<Long, SseEmitter> emitters = new HashMap<>();
     public SseEmitter createEmitter(Long empNo) {
-        if (empNo == 10001) {
+        if (empNo == ADMIN_NO) {
             log.info("관리자용 emitter 생성");
             return createAdminEmitter();
         }

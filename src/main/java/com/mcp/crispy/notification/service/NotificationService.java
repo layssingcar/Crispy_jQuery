@@ -21,7 +21,7 @@ public class NotificationService {
 
     // 알림 보내기
     @Transactional
-    public void sendApprovalNotification(NotifyDto notifyDto, int empNo) {
+    public void sendApprovalNotification(NotifyDto notifyDto, Integer empNo) {
         NotifyDto notify = NotifyDto.builder()
                 .notifyCt(notifyDto.getNotifyCt())
                 .notifyContent(notifyDto.getNotifyContent())
