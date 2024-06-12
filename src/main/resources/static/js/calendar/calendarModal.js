@@ -94,7 +94,7 @@
       
       	if(selectScheType == 'notice' || selectScheType == 'mysche'){
 	         schedule = {
-				  id: "일정" + crypto.randomUUID(),
+				  id: (selectScheType == 'notice') ? "가맹" + crypto.randomUUID() : "개인" + crypto.randomUUID(),
 	              title: $("#sch-title").val(),
 	              start: startDt + "T" + $("#start option:selected").val(),
 	              end : endDt + "T" + $("#end option:selected").val(),
@@ -120,21 +120,63 @@
       };
 
       // 체크박스 관련 함수
+      var allEvents;
       function fnClickCheckAll(){
     	  if ($('#allscheChecked').is(':checked')){
       	    $('.form-check-input').prop('checked', true);
+      	    for(var i = 0; i < allEvents.length; i++){
+				calendar.addEvent(allEvents[i]);
+			}
+			calendar.refetchEvents();
       	  } else{
       	    $('.form-check-input').prop('checked', false);
+      	    allEvents = calendar.getEvents();
+      	    calendar.removeAllEvents();
       	  }
       }
       
       function fnClickCheckSingle(){
-    	  if($('#allscheChecked').is(':checked'))
+    	  if($('#allscheChecked').is(':checked')){
     		  $('#allscheChecked').prop('checked', false);
+    		  allEvents = calendar.getEvents();
+  	    	  calendar.removeAllEvents();
+		  }
       	  else if(!$('#allscheChecked').is(':checked'))
       	  	if($('#shopscheChecked').is(':checked') && $('#myscheChecked').is(':checked')){
 				$('#allscheChecked').prop('checked', true);
-			}    		  
+			}
+			
+		  if($('#shopscheChecked').is(':checked')){
+      	    for(var i = 0; i < allEvents.length; i++){
+				if(allEvents[i].id.substring(0, 2) == "가맹"){
+					calendar.addEvent(allEvents[i]);
+					calendar.refetchEvents();
+				}
+			}
+		  }
+		  else{
+      	    for(var i = 0; i < allEvents.length; i++){
+				if(allEvents[i].id.substring(0, 2) == "가맹"){
+					allEvents[i].remove();
+				}
+			}			
+		  }
+		  
+		  if($('#myscheChecked').is(':checked')){
+      	    for(var i = 0; i < allEvents.length; i++){
+				if(allEvents[i].id.substring(0, 2) != "가맹"){
+					calendar.addEvent(allEvents[i]);
+					calendar.refetchEvents();
+				}
+			}				
+		  }
+  		  else{
+      	    for(var i = 0; i < allEvents.length; i++){
+				if(allEvents[i].id.substring(0, 2) != "가맹"){
+					allEvents[i].remove();
+				}
+			}			
+		  }			    		  
       }
       
       // 연차 ajax

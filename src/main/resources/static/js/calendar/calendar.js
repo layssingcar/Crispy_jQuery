@@ -93,7 +93,7 @@
 		}
 		
 		function fnShowSelectEvent(info){
-	 	if(info.event.id.substring(0, 2) == "일정"){
+	 	if(info.event.id.substring(0, 2) == "가맹" || info.event.id.substring(0, 2) == "개인"){
 		    	$.ajax({
 					type:'GET',
 					url: '/crispy/getScheById',
