@@ -1,15 +1,22 @@
 package com.mcp.crispy.sales.mapper;
 
-import java.util.List;
-
 import com.mcp.crispy.sales.dto.SalesDto;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface SalesMapper {
 
-	/* 매출입력 */
-	void insertSales();
+	/* 매장 매출 LIST */
+	List<SalesDto> getSalesList(Map<String, Object> map);
+
+	/* 매출 COUNT*/
+	int getTotalCount(String search);
+
+	/* 매출 INSERT */
+	int insertSales(SalesDto salesDto);
 
 	/* 일별 매출 */
 	void findDailySales();
@@ -31,7 +38,5 @@ public interface SalesMapper {
 
 	/* 이달의 매장 순위 */
 	void findSalesRenk();
-	
-	/* 매장 매출 목록 */
-	List<SalesDto> getSalesList();
+
 }

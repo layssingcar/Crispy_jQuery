@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mcp.crispy.notification.mapper.NotificationMapper">
+    <insert id="insertNotification">
+        <selectKey keyProperty="notifyNo" resultType="int" order="BEFORE">
+            SELECT NOTIFICATION_SEQ.NEXTVAL
+              FROM DUAL
+        </selectKey>
+        INSERT INTO NOTIFICATION_T(
+                NOTIFY_NO
+              , NOTIFY_CT
+              , NOTIFY_CONTENT
+              , CREATOR
+              , CREATE_DT
+              , EMP_NO
+        ) VALUES (
+              #{notifyNo}
+            , #{notifyCt.value}
+            , #{notifyContent}
+            , #{empNo}
+            , CURRENT_DATE
+            , #{empNo})
+
+    </insert>
+
+    <!-- 안읽은 알림 개수 조회 -->
+    <select id="countUnreadNotify" resultType="int">
+        SELECT COUNT(1)
+          FROM NOTIFICATION_T N
+         WHERE 1 = 1
+           AND EMP_NO = #{empNo}
+           AND N.NOTIFY_STAT = 0
+    </select>
+
+    <select id="selectUnreadNotify" resultMap="NotifyResultMap">
+        SELECT N.NOTIFY_CT, N.NOTIFY_CONTENT, N.NOTIFY_STAT, N.EMP_NO
+          FROM NOTIFICATION_T N
+         WHERE 1 = 1
+           AND N.EMP_NO = #{empNo}
+           AND N.NOTIFY_STAT = 0
+         ORDER BY N.NOTIFY_NO
+    </select>
+
+    <resultMap id="NotifyResultMap" type="com.mcp.crispy.notification.dto.NotifyDto">
+        <id column="NOTIFY_NO" property="notifyNo"/>
+        <result column="NOTIFY_CT" property="notifyCt" typeHandler="com.mcp.crispy.common.typeHandler.NotifyCtTypeHandler"/>
+        <result column="NOTIFY_CONTENT" property="notifyContent"/>
+        <result column="NOTIFY_STAT" property="notifyStat" typeHandler="com.mcp.crispy.common.typeHandler.NotifyStatTypeHandler"/>
+        <result column="EMP_NO" property="empNo"/>
+    </resultMap>
+</mapper>

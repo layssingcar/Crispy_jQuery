@@ -1,22 +1,34 @@
 package com.mcp.crispy.stock.service;
 
+
+import com.mcp.crispy.approval.dto.*;
 import com.mcp.crispy.common.page.PageResponse;
+import com.mcp.crispy.franchise.dto.FranchiseDto;
+import com.mcp.crispy.franchise.service.FranchiseService;
+import com.mcp.crispy.notification.dto.NotifyCt;
+import com.mcp.crispy.notification.dto.NotifyDto;
+import com.mcp.crispy.notification.service.NotificationService;
 import com.mcp.crispy.stock.dto.StockDto;
 import com.mcp.crispy.stock.dto.StockOptionDto;
-import com.mcp.crispy.stock.dto.StockOrderDto;
 import com.mcp.crispy.stock.mapper.StockMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.mcp.crispy.notification.service.SseService.ADMIN_NO;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class StockService {
 
     private final StockMapper stockMapper;
+    private final FranchiseService franchiseService;
+    private final NotificationService notificationService;
 
     // 재고 현황 조회
     public PageResponse<StockDto> getStockList(StockOptionDto stockOptionDto, int limit) {
@@ -71,9 +83,9 @@ public class StockService {
 
     // 발주 재고 임시저장
     @Transactional
-    public int insertOrderTemp(StockOrderDto stockOrderDto) {
-        stockMapper.deleteOrderTemp(stockOrderDto.getEmpNo()); // 이전 임시저장 내용 삭제
-        return stockMapper.insertOrderTemp(stockOrderDto);
+    public int insertOrderTemp(ApprovalDto approvalDto) {
+        stockMapper.deleteOrderTemp(approvalDto.getEmpNo()); // 이전 임시저장 내용 삭제
+        return stockMapper.insertOrderTemp(approvalDto);
     }
     
     // 임시저장 내용 불러오기
@@ -81,4 +93,63 @@ public class StockService {
         return stockMapper.getOrderTemp(empNo);
     }
 
+    // 발주 신청
+    @Transactional
+    public int insertOrderAppr(ApprovalDto approvalDto) {
+
+        stockMapper.insertApproval(approvalDto);
+        int apprNo = approvalDto.getApprNo();
+
+        stockMapper.insertOrder(approvalDto);
+
+        // ApprLineDto 업데이트
+        ApprLineDto.builder()
+                .apprLineOrder(0)
+                .apprNo(apprNo)
+                .creator(approvalDto.getEmpNo())
+                .build();
+
+        stockMapper.insertStockOrder(approvalDto);
+
+        stockMapper.insertApprLine(approvalDto);
+
+        // 결재자에게 알림 전송
+        FranchiseDto frn = franchiseService.getFrnByEmpNo(approvalDto.getEmpNo());
+        NotifyCt notifyCt = NotifyCt.ORDER;
+        NotifyDto notifyDto = NotifyDto.builder()
+                .notifyCt(notifyCt)
+                .notifyContent(frn.getFrnName() + "에서 " + notifyCt.getDescription() +"결재를 요청하였습니다.")
+                .build();
+
+        // 알림 전송
+        notificationService.sendApprovalNotification(notifyDto, ADMIN_NO);
+
+        return 1;
+
+    }
+
+    // 발주 신청 목록 조회 (가맹점주, 관리자)
+    public PageResponse<ApprovalDto> getOrderApprList(ApprOptionDto apprOptionDto, int limit) {
+
+        int page = Math.max(apprOptionDto.getPageNo(), 1);
+        int totalCount = stockMapper.getOrderApprCount(apprOptionDto);
+        int totalPage = totalCount / limit + ((totalCount % limit > 0) ? 1 : 0);
+        int startPage = Math.max(page - 2, 1);
+        int endPage = Math.min(page + 2,  totalPage);
+
+        RowBounds rowBounds = new RowBounds(limit * (page - 1), limit);
+        List<ApprovalDto> items = stockMapper.getOrderApprList(apprOptionDto, rowBounds);
+
+        for (ApprovalDto approvalDto : items) {
+
+            // 문서상태명 설정 (대기, 진행중, 승인, 반려)
+            int apprStat = approvalDto.getApprStat();
+            String apprStatName = ApprStat.of(apprStat).getDesciption();
+            approvalDto.setApprStatName(apprStatName);
+
+        }
+
+        return new PageResponse<>(items, totalPage, startPage, endPage, page);
+
+    }
 }

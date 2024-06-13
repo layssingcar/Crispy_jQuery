@@ -129,6 +129,27 @@ const franchise = {
                 if (response.status === 401) {
                     alert('인증되지 않은 사용자입니다. 다시 로그인해 주세요.');
                     window.location.href = '/login';
+                } else if (response.status === 400) {
+                    return response.json().then(errors => {
+                        if (errors.error) {
+                            Swal.fire({
+                                icon: "warning",
+                                text: errors.error,
+                                width: "365px"
+                            }).then(() => {
+                                const frnEndTime = document.querySelector(".frnEndTime");
+                                if (frnEndTime) {
+                                    frnEndTime.value = "08:00";
+                                    setTimeout(() => {
+                                        frnEndTime.focus();
+                                    }, 400);
+                                }
+                            });
+                        } else if (errors) {
+                            this.displayValidationErrors(errors);
+                        }
+                        throw new Error("Validation errors");
+                    });
                 } else {
                     return response.json();
                 }
@@ -138,16 +159,13 @@ const franchise = {
                     alert(data.message);
                     this.toggleEditMode(false);
                     location.reload();
-                } else {
-                    alert('저장 중 오류가 발생했습니다.');
                 }
             })
             .catch(error => {
                 if (error.message === "Validation errors") {
                     console.error('Validation errors:', error);
                 } else {
-                    console.error('Error:', error);
-                    alert('저장 중 오류가 발생했습니다.');
+                    alert(error)
                 }
             });
     },

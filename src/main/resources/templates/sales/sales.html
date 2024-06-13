@@ -10,16 +10,19 @@
 		<div>
 			<main>
 				<div class="sales-list">
-                        <h1>가맹점 매출</h1>
+                    <h1 th:text="${emp.frnName}"></h1>
 
 					<!-- 상단 영역 -->
 					<div class="top-area">
 
                         <!-- 재고명 검색 -->
-                        <div class="container-1">
-                            <span class="icon"><i class="fa fa-search"></i></span>
-                            <input type="text" name="salesNameSearch" id="search" class="form-control" placeholder="재고명을 입력하세요.">
-						</div>
+                        <form action="/crispy/salesCalender?search=${param.search}" method="GET" name="searchform" onsubmit="return searchformaction(this,1)">
+                            <div class="container-1">
+                                <span class="icon"><i class="fa fa-search"></i></span>
+                                <input type="hidden" name="page" value="1"/>
+                                <input type="text" name="search" id="search" class="form-control" placeholder="검색어를 입력하세요." th:value="${param.search}">
+                            </div>
+                        </form>
 
                         <!-- 카테고리 선택 -->
                         <select class="form-select form-select-lg mb-3 m-left" id="sales-ct" aria-label="Large select example" name="salesCt">
@@ -35,8 +38,8 @@
 
                         </select>
 
-                        <!-- 발주 신청 -->
-						<button type="button" class="btn m-left" id="order">매출 등록</button>
+                        <!-- 매출 등록 버튼 -->
+						<button type="button" class="btn m-left" id="salesAdd">매출 등록</button>
 					</div>
 
                     <div class="sales-list-container" th:fragment="sales-list-container">
@@ -44,17 +47,14 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th scope="col">
-                                        <input type="checkbox" id="select-all"></th>
-                                    <th scope="col">가맹점 이미지</th>
                                     <th scope="col" class="col-sort">
                                         <span>가맹점 명</span>
                                         <i class="fa-solid fa-sort" id="sales-name-sort"></i>
                                     </th>
-                                    <th scope="col">대표자 명</th>
-                                    <th scope="col">매출 등록일</th>
+                                    <th scope="col">가맹점 점주</th>
+                                    <th scope="col">매출일</th>
                                     <th scope="col" class="col-sort">
-                                        <span>총 매출</span>
+                                        <span>매출액</span>
                                         <i class="fa-solid fa-sort" id="is-count-sort"></i>
                                     </th>
 
@@ -64,12 +64,6 @@
                             <tbody>
                                 <!-- 리스트 -->
                                 <tr class="sales-row" th:each="sales : ${salesList}">
-
-                                    <!-- 체크 박스 -->
-                                    <td><input type="checkbox" class="select-item"></td>
-
-                                    <!-- 가맹점 이미지 -->
-                                    <td th:text="${sales.frnImg}"></td>
 
                                     <!-- 가맹점 명 -->
                                     <td th:text="${sales.frnName}"></td>
@@ -86,68 +80,114 @@
                             </tbody>
                         </table>
 
-                        <!-- 페이지네이션 -->
                         <nav aria-label="Page navigation example">
-<!--                            <ul class="pagination pagination-lg">
-                                <li class="page-item">
-                                    <a class="page-link" href="#" aria-label="Previous" data-page-no="1">
-                                        <span aria-hidden="true">&laquo;</span>
-                                    </a>
+                            <ul class="pagination pagination-lg">
+                                <li class="page-item"><a class="page-link"
+                                                         th:classappend="${currentPage == 1} ? 'disabled'"
+                                                         th:href="|javascript:searchformaction(document.searchform, ${prevPage})|"
+                                                         aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
                                 </li>
-
-                                &lt;!&ndash; 페이지 이동 버튼 &ndash;&gt;
-                                <th:block th:each="pageNo : ${#numbers.sequence(salesDtoList.startPage, salesDtoList.endPage)}">
+                                <th:block th:each="p : ${#numbers.sequence(startPage, endPage)}">
                                     <li class="page-item">
-                                        <a class="page-link" href="#" th:text="${pageNo}" th:data-page-no="${pageNo}"></a>
+                                        <a class="page-link" th:classappend="${currentPage == p} ? 'active'"
+                                           th:href="|javascript:searchformaction(document.searchform, ${p})|"
+                                           th:text="${p}"></a>
                                     </li>
                                 </th:block>
-
                                 <li class="page-item">
-                                    <a class="page-link" href="#" aria-label="Next" th:data-page-no="${salesDtoList.totalPage}">
+                                    <a class="page-link" th:classappend="${currentPage == maxPage} ? 'disabled'"
+                                       th:href="|javascript:searchformaction(document.searchform, ${nextPage})|"
+                                       aria-label="Next">
                                         <span aria-hidden="true">&raquo;</span>
                                     </a>
                                 </li>
-                            </ul>-->
+                            </ul>
                         </nav>
                     </div>
+                </div>
+                <!-- Modal 호출 -->
+                <div class="modal" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 class="modal-title">매출 등록</h3>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
 
-                    <!-- 재고 상세 모달 -->
-                    <div class="modal">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
+                            <div class="modal-body">
+                                <form action="@{/crispy/salesInsert}" method="POST" id="salesForm">
+                                    <div class="row g-3">
+                                        <!-- 해당 가맹점 번호 -->
+                                        <input type="hidden" name="frnNo" th:value="${emp.frnNo}"/>
+                                        <div class="col-sm-6">
+                                            <label for="frnOwner" class="form-label">가맹점 점주</label>
+                                            <input type="text" class="form-control" id="frnOwner" placeholder=""
+                                                   th:value="${emp.frnOwner}" disabled>
+                                        </div>
 
-                                    <!-- 재고명 -->
-                                    <h2 class="modal-title"></h2>
+                                        <div class="col-sm-6">
+                                            <label for="frnName" class="form-label">가맹점 명</label>
+                                            <input type="text" class="form-control" id="frnName" placeholder=""
+                                                   th:value="${emp.frnName}" disabled>
+                                        </div>
 
-                                    <!-- 단가 -->
-                                    <div class="sales-price">
-                                        <span></span>
-                                        <span>원</span>
-                                        <span>&nbsp;/&nbsp;</span>
-                                        <span></span>
+                                        <div class="col-sm-6">
+                                            <label for="salDt" class="form-label">매출일</label>
+                                            <input type="date" class="form-control" id="salDt" placeholder="" value=""
+                                                   required="">
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <label for="salPrice" class="form-label">매출액</label>
+                                            <input type="text" class="form-control" id="salPrice" placeholder=""
+                                                   value="" required="">
+                                        </div>
                                     </div>
-
-                                    <!-- 닫기 버튼 -->
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-
-                                    <!-- 재고 이미지 -->
-                                    <img src="" alt="재고 이미지" class="sales-img">
-
-                                    <!-- 재고 설명 -->
-                                    <div class="sales-detail"></div>
-                                </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" id="modal-close" data-bs-dismiss="modal">취소</button>
+                                <button type="button" class="btn btn-primary" id="modal-add">저장</button>
                             </div>
                         </div>
                     </div>
-				</div>
+                </div>
 			</main>
 			<footer th:replace="~{layout/footer :: footer}"></footer>
 		</div>
 	</div>
+    <script>
+        $(document).ready(function () {
+            $('#salesAdd').on('click', function () {
+                $('.modal').modal('show');
+            });
 
-    <script src="/js/sales/sales.js"></script>
+            $('#modal-add').on('click', function () {
+                var formData = {
+                    salDt: $('#salDt').val(),
+                    salPrice: $('#salPrice').val(),
+                    frnNo: $('#frnNo').val()
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/crispy/salesInsert',
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    success: function (response) {
+                        console.log(response);
+                        // 입력 성공 시 모달 닫기 등 추가 작업 수행
+                        $('.modal').modal('hide');
+                        location.reload(); // 페이지 새로고침 예시
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

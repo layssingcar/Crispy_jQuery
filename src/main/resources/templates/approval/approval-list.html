@@ -10,177 +10,99 @@
 		<div>
 			<main>
 				<div class="approval-list">
-					<h1>결재 문서</h1>
+					<h1 th:if="${type == 'draft'}" th:text="기안함"></h1>
+					<h1 th:if="${type == 'sign'}" th:text="결재함"></h1>
 
 					<!-- 상단 영역 -->
 					<div class="top-area">
 
                         <!-- 기안자 검색 -->
-                        <div class="container-1">
+                        <div class="container-1" th:if="${type == 'sign'}">
 							<span class="icon"><i class="fa fa-search"></i></span>
-							<input type="text" name="" id="search" class="form-control" placeholder="기안자를 입력하세요.">
+							<input type="text" name="empName" id="search" class="form-control" placeholder="기안자를 입력하세요.">
 						</div>
                         
                         <!-- 휴가/휴직 구분 -->
-                        <select class="form-select form-select-lg mb-3 m-left" aria-label="Large select example" name="stockCt" id="">
-                            <option value="">구분</option>
-                            <option value="">휴가신청서</option>
-                            <option value="">휴직신청서</option>
+                        <select class="form-select form-select-lg mb-3 m-left" aria-label="Large select example" name="timeOffCtNo" id="time-off-ct-no">
+                            <option value="-1">구분</option>
+                            <option value="0">휴가신청서</option>
+                            <option value="1">휴직신청서</option>
                         </select>
 
                         <!-- 결재 상태 -->
-                        <select class="form-select form-select-lg mb-3 m-left" aria-label="Large select example" name="stockCt" id="">
-                            <option value="">결재 상태</option>
-                            <option value="">대기</option>
-                            <option value="">진행중</option>
-                            <option value="">승인</option>
-                            <option value="">반려</option>
+                        <select class="form-select form-select-lg mb-3 m-left" aria-label="Large select example" name="apprStat" id="appr-stat">
+                            <option value="-1">결재 상태</option>
+                            <option value="0">대기</option>
+                            <option value="1">진행중</option>
+                            <option value="2">승인</option>
+                            <option value="3">반려</option>
                         </select>
 					</div>
 
-					<!-- 테이블 -->
-					<table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">구분</th>
-                                <th scope="col">기안자</th>
-                                <th scope="col" class="col-sort">
-                                    <span>기안일</span>
-                                    <i class="fa-solid fa-sort"></i>
-                                </th>
-                                <th scope="col">결재 상태</th>
-                            </tr>
-                        </thead>
+                    <div class="appr-list-container" th:fragment="appr-list-container">
+                        <!-- 테이블 -->
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">구분</th>
+                                    <th scope="col">기안자</th>
+                                    <th scope="col" class="col-sort">
+                                        <span>기안일</span>
+                                        <i class="fa-solid fa-sort" id="appr-dt-sort"></i>
+                                    </th>
+                                    <th scope="col">결재 상태</th>
+                                </tr>
+                            </thead>
 
-                        <!-- 리스트 -->
-                        <tbody>
-                            <tr>
-                                <td>휴직신청서</td>
-                                <td>박종구</td>
-                                <td>2024-05-13</td>
-                                <td>대기</td>
-                            </tr>
-                        </tbody>
+                            <tbody>
+                                <!-- 리스트 -->
+                                <tr class="appr-row" th:each="appr : ${approvalDtoList.items}" th:data-appr-no="${appr.apprNo}">
 
-                        <!-- 리스트 -->
-                        <tbody>
-                            <tr>
-                                <td>휴가신청서</td>
-                                <td>배영욱</td>
-                                <td>2024-05-17</td>
-                                <td>진행중</td>
-                            </tr>
-                        </tbody>
+                                    <!-- 문서카테고리 -->
+                                    <td th:text="${appr.timeOffCtName}"></td>
 
-                        <!-- 리스트 -->
-                        <tbody>
-                            <tr>
-                                <td>휴직신청서</td>
-                                <td>오정은</td>
-                                <td>2024-05-13</td>
-                                <td>승인</td>
-                            </tr>
-                        </tbody>
+                                    <!-- 기안자 -->
+                                    <td th:text="${appr.empName}"></td>
 
-                        <!-- 리스트 -->
-                        <tbody>
-                            <tr>
-                                <td>휴가신청서</td>
-                                <td>우혜진</td>
-                                <td>2024-05-18</td>
-                                <td>반려</td>
-                            </tr>
-                        </tbody>
+                                    <!-- 기안일 -->
+                                    <td th:text="${appr.apprDt}"></td>
 
-                        <!-- 리스트 -->
-                        <tbody>
-                            <tr>
-                                <td>휴가신청서</td>
-                                <td>최동환</td>
-                                <td>2024-05-17</td>
-                                <td>진행중</td>
-                            </tr>
-                        </tbody>
+                                    <!-- 문서상태 -->
+                                    <td th:text="${appr.apprStatName}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-                        <!-- 리스트 -->
-                        <tbody>
-                            <tr>
-                                <td>휴직신청서</td>
-                                <td>박종구</td>
-                                <td>2024-05-13</td>
-                                <td>대기</td>
-                            </tr>
-                        </tbody>
+                        <!-- 페이지네이션 -->
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination pagination-lg">
+                                <li class="page-item">
+                                    <a class="page-link" href="#" aria-label="Previous" data-page-no="1">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
 
-                        <!-- 리스트 -->
-                        <tbody>
-                            <tr>
-                                <td>휴가신청서</td>
-                                <td>배영욱</td>
-                                <td>2024-05-17</td>
-                                <td>진행중</td>
-                            </tr>
-                        </tbody>
+                                <!-- 페이지 이동 버튼 -->
+                                <th:block th:each="pageNo : ${#numbers.sequence(approvalDtoList.startPage, approvalDtoList.endPage)}">
+                                    <li class="page-item">
+                                        <a class="page-link" href="#" th:text="${pageNo}" th:data-page-no="${pageNo}"></a>
+                                    </li>
+                                </th:block>
 
-                        <!-- 리스트 -->
-                        <tbody>
-                            <tr>
-                                <td>휴직신청서</td>
-                                <td>오정은</td>
-                                <td>2024-05-13</td>
-                                <td>승인</td>
-                            </tr>
-                        </tbody>
-
-                        <!-- 리스트 -->
-                        <tbody>
-                            <tr>
-                                <td>휴가신청서</td>
-                                <td>우혜진</td>
-                                <td>2024-05-18</td>
-                                <td>반려</td>
-                            </tr>
-                        </tbody>
-
-                        <!-- 리스트 -->
-                        <tbody>
-                            <tr>
-                                <td>휴가신청서</td>
-                                <td>최동환</td>
-                                <td>2024-05-17</td>
-                                <td>진행중</td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <nav aria-label="Page navigation example">
-                        <ul class="pagination pagination-lg">
-                            <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item"><a class="page-link" href="#">4</a></li>
-                            <li class="page-item"><a class="page-link" href="#">5</a></li>
-                            <li class="page-item"><a class="page-link" href="#">6</a></li>
-                            <li class="page-item"><a class="page-link" href="#">7</a></li>
-                            <li class="page-item"><a class="page-link" href="#">8</a></li>
-                            <li class="page-item"><a class="page-link" href="#">9</a></li>
-                            <li class="page-item"><a class="page-link" href="#">10</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
+                                <li class="page-item">
+                                    <a class="page-link" href="#" aria-label="Next" th:data-page-no="${approvalDtoList.totalPage}">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
 				</div>
 			</main>
 			<footer th:replace="~{layout/footer :: footer}"></footer>
 		</div>
 	</div>
+
+    <script src="/js/approval/approvalList.js"></script>
 </body>
 </html>

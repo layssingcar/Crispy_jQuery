@@ -13,6 +13,7 @@
 		.attendance button th, td,
 		.attendance input{
 		    font-size: 1.5rem;
+		    
 		}
     	.table{
 	      	border-collapse: collapse;
@@ -20,8 +21,7 @@
     	}
     	.table th, td{
 		  padding: 10px;
-		  text-align: left;
-		  width: 260px;
+		  width: 250px;
 		  text-align: center;
     	}
     	.table thead{
@@ -52,14 +52,14 @@
 			width:-webkit-fill-available;
 			height:400px;
 		    display:flex !important;
-		    justify-content: space-around !important;
+		    justify-content: center !important;
 		}
 		#myChart{
 			margin-top: 20px;
 			width:100%;
 		}
 		.month-btn-group{
-			width:1300px;
+			width:1250px;
 			margin-top: 20px;
 			display: flex;
 			justify-content: center;
@@ -83,7 +83,7 @@
                 	<span id="monthtext">2024년 6월</span>
                 	<button id="next-btn" class="btn btn-primary">&gt;</button>
                 </div>
-                <div>
+                <div class="tablearea">
 	                <table class="table">
 	                    <thead>
 	                    <tr>
@@ -92,6 +92,7 @@
 	                        <th scope="col">출근시간</th>
 	                        <th scope="col">퇴근시간</th>
 	                        <th scope="col">근무시간</th>
+	                        <th scope="col">특이사항</th>
 	                    </tr>
 	                    </thead>
 	                    <tbody>
@@ -112,6 +113,7 @@
 <script>
 let daycount = [];	
 let chartcount = [];
+let overcount = [];
 let chartInstance;	
 	
 document.addEventListener('DOMContentLoaded', function() {
@@ -151,6 +153,7 @@ document.addEventListener('DOMContentLoaded', function() {
       $('.table tbody').empty();
 	  daycount.length = 0;
 	  chartcount.length = 0;
+	  overcount.length = 0;
       // 6월의 날짜만 테이블에 추가
       const datetmp = {
           'Sat' : 0,
@@ -173,18 +176,19 @@ document.addEventListener('DOMContentLoaded', function() {
       let count = datetmp[currentDay];
 	  let daycounttmp = 1;
 	  
+	  const data = {
+	      month: (calendar.getDate().getMonth() + 1),
+	      empNo: empNo
+	  };
 	  $.ajax({
-	  	type:'GET',
-	  	url:'/crispy/getAttendList',
-	  	contentType: 'application/json',
-		data:'month=' + (calendar.getDate().getMonth() + 1),
-	  	dataType:'json'
+		type: 'GET',
+		url: '/crispy/getAttendList',
+		data: data,
+		dataType: 'json',
 	  })
 	  .done(function(data){
 		for (var date = moment(start); date.isBefore(end); date.add(1, 'days')) {
 		    let tablestr = '<tr>'; 
-		    
-
 		    switch (count) {
 		        case 0:
 		            tablestr += '<td style="color: blue;">' + date.format('YYYY-MM-DD') + ' (' + datetmp2[count] + ')' + '</td>';
@@ -201,33 +205,52 @@ document.addEventListener('DOMContentLoaded', function() {
 		        count = 0;
 
 		    daycount.push(daycounttmp++);
-
 		    let found = false;
 		    if (data.length != 0) {
 		        $(data).each(function() {
 		            if (date.format('YYYY-MM-DD') == this.createDt) {
-		                tablestr += '<td></td>';
-		                tablestr += '<td>' + this.attInTime + '</td>';
-		                tablestr += '<td>' + this.attOutTime + '</td>';
-		                tablestr += '<td>' + this.attWorkTime + '</td>';
+		            	if(this.annCtNo == 1 || this.annCtNo == 2){
+			                tablestr += '<td>정상</td>';
+			                tablestr += '<td>' + this.attInTime + '</td>';
+			                tablestr += '<td>' + this.attOutTime + '</td>';
+			                tablestr += '<td>' + this.attWorkTime + '</td>';
+			                tablestr += (this.annCtNo == 1) ? '<td>반차</td>' : '<td>반반차</td>';
+							fnCalWorkTimeByChart(this.attWorkTime);
+		            	}
+						else if(this.category == 0){
+							tablestr += '<td></td>';
+							tablestr += '<td></td>';
+							tablestr += '<td></td>';
+							tablestr += '<td></td>';
+							tablestr += '<td>연차</td>';							
+						}
+		            	else{
+			                tablestr += '<td>정상</td>';
+			                tablestr += '<td>' + this.attInTime + '</td>';
+			                tablestr += '<td>' + this.attOutTime + '</td>';
+			                tablestr += '<td>' + this.attWorkTime + '</td>';
+			                tablestr += '<td></td>';
+							fnCalWorkTimeByChart(this.attWorkTime);
+		            	}
 		                found = true;
-		                chartcount.push(parseFloat(this.attWorkTime.substring(0, 2)) + parseFloat(this.attWorkTime.substring(3, 5)) + parseFloat(this.attWorkTime.substring(6, 8)));
 		            }
 		        });
 		    }
 		    if (!found) {
+		        tablestr += '<td>미출근</td>';
 		        tablestr += '<td></td>';
 		        tablestr += '<td></td>';
 		        tablestr += '<td></td>';
 		        tablestr += '<td></td>';
 		        chartcount.push(0);
+				overcount.push(0);
 		    }
 		    tablestr += '</tr>';
 		    $('.table tbody').append(tablestr);
 		}
 		chartInstance.data.labels = daycount;
 		chartInstance.data.datasets[0].data = chartcount;
-		chartInstance.data.datasets[1].data = chartcount;
+		chartInstance.data.datasets[1].data = overcount;
 		chartInstance.update();
 	  })
 	  .fail(function(jqXHR){
@@ -237,6 +260,26 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 	createChart();	
   });
+  
+  function fnCalWorkTimeByChart(attWorkTime){
+	let workTime, overWorkTime;
+	workTime = parseFloat(attWorkTime.substring(0, 2));
+	overWorkTime = ((parseFloat(attWorkTime.substring(3, 5)) * 60) + parseFloat(attWorkTime.substring(6, 8))) / 3600;
+
+	if(workTime + overWorkTime >= 9.00){
+		if(workTime > 9){
+			chartcount.push(workTime - (workTime - 9));
+			overcount.push(overWorkTime + (workTime - 9));								
+		}else{
+	    	chartcount.push(workTime);
+			overcount.push(overWorkTime);							
+		}
+	}
+	else{
+		chartcount.push(workTime + overWorkTime);
+		overcount.push(0);
+	}	
+  }
   
   	// 차트 영역
 	function createChart(){
@@ -255,7 +298,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		          },
 		          {
 		              label: '추가 근무 시간',
-		              data: chartcount,
+		              data: overcount,
 		              borderWidth: 0.1,
 		              backgroundColor: 'rgba(54, 162, 235, 0.5)',
 		              stack: 'stack1'

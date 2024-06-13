@@ -2,6 +2,7 @@ package com.mcp.crispy.franchise.controller;
 
 import com.mcp.crispy.common.page.PageResponse;
 import com.mcp.crispy.common.utils.FranchiseUtil;
+import com.mcp.crispy.common.validator.ValidationService;
 import com.mcp.crispy.franchise.dto.*;
 import com.mcp.crispy.franchise.service.FranchiseService;
 import jakarta.validation.Valid;
@@ -22,6 +23,7 @@ import java.util.Map;
 public class FranchiseApiController {
 
     private final FranchiseService franchiseService;
+    private final ValidationService validationService;
     private final FranchiseUtil franchiseUtil;
 
     /**
@@ -33,6 +35,7 @@ public class FranchiseApiController {
     @PostMapping("/register/v1")
     public ResponseEntity<Map<String, String>> registerFranchise(@Valid @RequestBody FranchiseRegistrationRequest request) {
 
+        validationService.validateOwner(request.getOwner());
         franchiseService.registerFranchiseAndOwner(request.getFranchise(), request.getOwner());
         return ResponseEntity.ok(Map.of("message", "가맹점 등록이 성공적으로 되었습니다."));
     }
@@ -118,8 +121,9 @@ public class FranchiseApiController {
     }
 
     @GetMapping("/franchises/v1")
-    public ResponseEntity<PageResponse<FranchiseDto>> getFranchises(@RequestParam(value ="page", defaultValue = "1")int page) {
-        PageResponse<FranchiseDto> franchiseList = franchiseService.getFranchiseList(page, 10);
+    public ResponseEntity<PageResponse<FranchiseDto>> getFranchises(@RequestParam(value ="page", defaultValue = "1")int page,
+                                                                    @RequestParam(value = "search", required = false) String frnName) {
+        PageResponse<FranchiseDto> franchiseList = franchiseService.getFranchiseList(page, 10, frnName);
         return ResponseEntity.ok(franchiseList);
     }
 
@@ -135,7 +139,7 @@ public class FranchiseApiController {
     }
 
     @PostMapping("/form/v1")
-    public ResponseEntity<Map<String, String>> changeForm(@RequestBody FrnUpdateDto frnUpdateDto) {
+    public ResponseEntity<Map<String, String>> changeForm(@Valid @RequestBody FrnUpdateDto frnUpdateDto) {
         Integer modifier = franchiseUtil.getModifier();
         franchiseService.updateFormFrn(frnUpdateDto, modifier);
         return ResponseEntity.ok(Map.of("message","정보가 수정되었습니다."));

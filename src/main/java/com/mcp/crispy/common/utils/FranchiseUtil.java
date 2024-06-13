@@ -17,6 +17,7 @@ public class FranchiseUtil {
     private final FranchiseService franchiseService;
     private final AdminService adminService;
 
+    // 수정자가 관리자인지 점주인지 구분하는 메소드
     public Integer getModifier() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();

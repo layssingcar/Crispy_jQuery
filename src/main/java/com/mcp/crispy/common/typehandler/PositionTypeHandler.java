@@ -1,4 +1,4 @@
-package com.mcp.crispy.common.typehandler;
+package com.mcp.crispy.common.typeHandler;
 
 import com.mcp.crispy.employee.dto.Position;
 import org.apache.ibatis.type.JdbcType;

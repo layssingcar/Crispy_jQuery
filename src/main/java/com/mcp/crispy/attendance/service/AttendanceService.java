@@ -1,18 +1,16 @@
 package com.mcp.crispy.attendance.service;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.List;
-import java.util.Map;
-
+import com.mcp.crispy.attendance.dto.AttendanceDto;
+import com.mcp.crispy.attendance.mapper.AttendanceMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mcp.crispy.attendance.dto.AttendanceDto;
-import com.mcp.crispy.attendance.mapper.AttendanceMapper;
-
-import lombok.RequiredArgsConstructor;
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -23,21 +21,54 @@ public class AttendanceService {
 	@Transactional
 	public int insertAttendance(AttendanceDto attendanceDto)
 	{
-		return attendanceMapper.insertAttendance(attendanceDto);
+		List<AttendanceDto> attenList = attendanceMapper.getAttListByInsert();
+		AttendanceDto attend = null;
+		for(int i = 0; i < attenList.size(); i++) {
+			if(attenList.get(i).getCreateDt().equals(attendanceDto.getCreateDt())) {
+				attend = AttendanceDto.builder()
+										.attInTime(attendanceDto.getAttInTime())
+										.attOutTime(attendanceDto.getAttOutTime())
+										.attWorkTime(attendanceDto.getAttWorkTime())
+										.createDt(attendanceDto.getCreateDt())
+										.empNo(attendanceDto.getEmpNo())
+										.build();
+				break;
+			}
+		}
+		
+		if(attend == null)
+			return attendanceMapper.insertAttendance(attendanceDto);
+		else
+			return attendanceMapper.updateAttendance(attend);
+		
 	}
 	
 	@Transactional(readOnly = true)
-	public List<AttendanceDto> getAttList(int month) {
-		List<AttendanceDto> attenList = attendanceMapper.getAttList(month); 
-		String workingTimeForm;
-		for(int i = 0; i < attenList.size(); i++) {
-			workingTimeForm = attenList.get(i).getAttWorkTime().substring(0 ,2) + "h" +  
-								attenList.get(i).getAttWorkTime().substring(3 , 5)+ "m" +
-									attenList.get(i).getAttWorkTime().substring(6 , 8) + "s";
-			
-			attenList.get(i).setAttWorkTime(workingTimeForm);
-		}
-		
-		return attenList;
+	public List<AttendanceDto> getAttList(Map<String, Object> params) {
+	    List<AttendanceDto> attenList = attendanceMapper.getAttList(params);
+	    List<AttendanceDto> annList = attendanceMapper.getAnnList(params);
+	    List<AttendanceDto> totalList = new ArrayList<>();
+	    Map<Date, AttendanceDto> annualMap = new HashMap<>();
+	    
+	    for (AttendanceDto annual : annList) {
+	        annualMap.put(annual.getCreateDt(), annual);
+	    }
+	    
+	    for (AttendanceDto atten : attenList) {
+	        if (annualMap.containsKey(atten.getCreateDt())) {					
+	            AttendanceDto annual = annualMap.get(atten.getCreateDt());		
+	            if (annual.getAnnCtNo() == 1 || annual.getAnnCtNo() == 2) {
+	                annual.setAttInTime(atten.getAttInTime());
+	                annual.setAttOutTime(atten.getAttOutTime());
+	                annual.setAttWorkTime(atten.getAttWorkTime());
+	            }
+	            totalList.add(annual);
+	            annualMap.remove(atten.getCreateDt());
+	        } else {
+	            totalList.add(atten);
+	        }
+	    }
+	    totalList.addAll(annualMap.values());
+	    return totalList;
 	}
 }

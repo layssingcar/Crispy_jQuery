@@ -2,7 +2,6 @@ package com.mcp.crispy.common;
 
 import com.mcp.crispy.auth.service.AuthenticationService;
 import com.mcp.crispy.common.utils.CookieUtil;
-import com.mcp.crispy.employee.dto.EmployeeDto;
 import com.mcp.crispy.employee.service.EmployeeService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,8 +20,7 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
         if (authentication != null) {
-            EmployeeDto employee = employeeService.getEmployeeName(authentication.getName());
-            authenticationService.logout(employee.getEmpNo());
+            authenticationService.logout(authentication.getName());
 
             CookieUtil.deleteCookie(response, "accessToken");
             CookieUtil.deleteCookie(response, "refreshToken");

@@ -14,6 +14,7 @@ const owner = {
         const deleteSelectedButton = document.getElementById('btn-delete-selected');
         const searchRole = document.getElementById('search-role');
         const searchStatus = document.getElementById('search-status');
+        const searchInput = document.querySelector(".search-employee");
 
         if (myProfileElement) {
             myProfileElement.addEventListener('click', this.clearSelectedEmpNo.bind(this));
@@ -33,6 +34,9 @@ const owner = {
         if (searchStatus) {
             searchStatus.addEventListener("change", this.searchEmployees.bind(this));
         }
+        if (searchInput) {
+            searchInput.addEventListener("input", this.searchEmployees.bind(this));
+        }
     },
 
     resetSelectConditions: function() {
@@ -43,13 +47,20 @@ const owner = {
     searchEmployees: function () {
         const position = document.getElementById("search-role").value;
         const empStat = document.getElementById("search-status").value;
+        const empNameSearch = document.querySelector(".search-employee").value.trim();
         const frnNo = document.getElementById("employees-frnNo").value;
         console.log(frnNo);
 
-        fetch(`/api/owner/employees/${frnNo}/v1?position=${position}&empStat=${empStat}`)
+        const searchParams = new URLSearchParams({
+            position: position,
+            empStat: empStat,
+            empNameSearch: empNameSearch
+        });
+
+        fetch(`/api/owner/employees/${frnNo}/v1?${searchParams.toString()}`)
             .then(response => response.json())
             .then(data => this.renderEmployeeTable(data))
-            .catch(error => {});
+            .catch(error => console.error('Error:', error));
     },
 
 
@@ -101,7 +112,6 @@ const owner = {
         tr.appendChild(this.createCell('checkbox', employee.empNo));
         tr.appendChild(this.createCell('text', employee.empNo));
         tr.appendChild(this.createCell('text', employee.empName));
-        tr.appendChild(this.createCell('text', employee.empId));
         tr.appendChild(this.createCell('text', employee.frnName));
         tr.appendChild(this.createCell('text', employee.posName));
         tr.appendChild(this.createCell('text', employee.empPhone));
@@ -118,7 +128,6 @@ const owner = {
             checkbox.id = value;
             console.log(checkbox);
             checkbox.addEventListener('change', function() {
-                console.log(this.checked ? 'Checked' : 'Unchecked', 'Checkbox ID:', this.id);
             });
             td.appendChild(checkbox);
         } else {
@@ -240,7 +249,7 @@ const owner = {
     },
 
     searchAction: function() {
-        const searchInput = document.querySelector('.search-input');
+        const searchInput = document.querySelector('.search-employee');
         const searchIcon = document.querySelector('.search-icon');
         searchInput.addEventListener('input', function() {
             searchIcon.style.display = searchInput.value.trim() !== '' ? 'none' : 'inline';

@@ -5,7 +5,6 @@ import com.mcp.crispy.chat.dto.ChatMessageDto;
 import com.mcp.crispy.chat.dto.ChatRoomDto;
 import com.mcp.crispy.chat.dto.CrEmpDto;
 import com.mcp.crispy.chat.dto.UnreadMessageCountDto;
-import com.mcp.crispy.chat.mapper.ChatMapper;
 import com.mcp.crispy.chat.service.ChatService;
 import com.mcp.crispy.employee.dto.EmployeeDto;
 import com.mcp.crispy.employee.service.EmployeeService;
@@ -36,7 +35,6 @@ public class ChatApiController {
     private final ChatService chatService;
     private final EmployeeService employeeService;
     private final SimpMessagingTemplate messagingTemplate;
-    private final ChatMapper chatMapper;
 
 
     /**
@@ -373,6 +371,31 @@ public class ChatApiController {
         log.info("chatMessageDto: {}", chatMessageDto);
         chatService.removeMsgStat(chatMessageDto.getMsgStat(), chatMessageDto.getMsgNo(), employee.getEmpNo());
         return ResponseEntity.ok().body(Map.of("message", "메시지가 삭제되었습니다."));
+    }
+
+    /**
+     * 삭제 알림 보내기
+     * 배영욱 (24. 06. 13)
+     * WebSocket을 통해 다른 클라이언트에게 메시지 삭제 알림을 전송
+     * @param chatMessageDto 삭제된 채팅 메시지 정보가 담긴 DTO
+     */
+    @MessageMapping("/chat/delete")
+    public void deleteMessage(ChatMessageDto chatMessageDto) {
+        log.info("deleteMessage received: {}", chatMessageDto); // 로그 추가
+        messagingTemplate.convertAndSend("/topic/chatRoom/" + chatMessageDto.getChatRoomNo(), chatMessageDto);
+    }
+
+    /**
+     * 채팅 필터 메소드
+     * 채팅 메시지 내용에서 금지어를 검사하고, 금지어가 포함되어 있으면 예외를 발생시킴
+     * 배영욱 (24. 06. 13)
+     * @param chatMessageDto 검사할 채팅 메시지 정보가 담긴 DTO
+     * @return 금지어가 없는 경우, 200 OK 응답
+     */
+    @PostMapping("/checkBadWords")
+    public ResponseEntity<?> checkBadWords(@RequestBody ChatMessageDto chatMessageDto) {
+        chatService.checkBadWords(chatMessageDto.getMsgContent());
+        return ResponseEntity.ok().build();
     }
 
 }
