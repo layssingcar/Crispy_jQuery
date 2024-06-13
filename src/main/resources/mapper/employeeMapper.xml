@@ -67,7 +67,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             SELECT E.EMP_NO, E.EMP_PW, E.EMP_ID, E.EMP_NAME, E.EMP_PHONE
                  , E.EMP_ZIP, E.EMP_STREET, E.EMP_DETAIL, E.EMP_SIGN
                  , E.EMP_EMAIL, E.EMP_STAT, E.FRN_NO, E.EMP_PROFILE
-                 , F.FRN_NAME
+                 , F.FRN_NAME, F.FRN_OWNER
                  , P.POS_NAME, P.POS_NO
             FROM EMPLOYEE_T E
        LEFT JOIN FRANCHISE_T F
