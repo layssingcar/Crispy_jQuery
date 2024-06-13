@@ -36,8 +36,8 @@ public class AnnualController {
 	
 	@ResponseBody
 	@GetMapping(value="/getAnnList", produces="application/json")
-	public List<AnnualDto> getAnnList() {
-		return annualService.getAnnList();
+	public List<AnnualDto> getAnnList(@RequestParam("empNo") int empNo) {
+		return annualService.getAnnList(empNo);
 	}
 	
 	@ResponseBody

@@ -26,8 +26,8 @@ public class AnnualService {
 	}
 	
 	@Transactional(readOnly = true)
-	public List<AnnualDto> getAnnList() {
-		List<AnnualDto> annList = annualMapper.getAnnList(); 
+	public List<AnnualDto> getAnnList(int empNo) {
+		List<AnnualDto> annList = annualMapper.getAnnList(empNo); 
 		return annList;
 	}
 	

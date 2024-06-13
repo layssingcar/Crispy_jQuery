@@ -10,5 +10,9 @@ import java.util.Map;
 @Mapper
 public interface AttendanceMapper {
 	int insertAttendance(AttendanceDto attendanceDto);
-	List<AttendanceDto> getAttList(int month);
+	List<AttendanceDto> getAttList(Map<String, Object> params);
+	List<AttendanceDto> getAnnList(Map<String, Object> params);
+	
+	List<AttendanceDto> getAttListByInsert();
+	int updateAttendance(AttendanceDto attendanceDto);
 }
