@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Date;
-import java.sql.Timestamp;
 
 @Data
 @NoArgsConstructor
@@ -15,6 +14,7 @@ import java.sql.Timestamp;
 public class ScheduleDto {
 	private int scheNo;
 	private String scheId;
+	private int frnNo;
 	private int scheDiv;
 	private String scheTitle;
 	private String scheContent;

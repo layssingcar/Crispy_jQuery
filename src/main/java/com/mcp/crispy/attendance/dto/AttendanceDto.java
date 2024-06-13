@@ -1,12 +1,11 @@
 package com.mcp.crispy.attendance.dto;
 
-import java.sql.Date;
-import java.sql.Timestamp;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.sql.Date;
 
 @Data
 @NoArgsConstructor
@@ -22,5 +21,7 @@ public class AttendanceDto {
 	private Date modifyDt;
 	private int modifier;
 	private int empNo;
+	private int annCtNo;
+	private int category;
 }
 
