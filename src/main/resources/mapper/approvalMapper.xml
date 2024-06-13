@@ -225,11 +225,11 @@
 
     <!-- 결재 문서 상세 조회 (휴가/휴직 신청서) -->
     <select id="getTimeOffApprDetail" resultMap="apprDtoResultMap">
-            SELECT DISTINCT A.APPR_NO, A.APPR_DT
-                          , T.TIME_OFF_CT_NO
+            SELECT DISTINCT A.APPR_NO
+                          , TO_CHAR(A.APPR_DT, 'YYYY"년" MM"월" DD"일"') AS APPR_DT
                           , TO_CHAR(T.TIME_OFF_START_DT, 'YYYY"년" MM"월" DD"일"') AS TIME_OFF_START_DT
                           , TO_CHAR(T.TIME_OFF_END_DT, 'YYYY"년" MM"월" DD"일"') AS TIME_OFF_END_DT
-                          , T.TIME_OFF_PERIOD, T.TIME_OFF_CONTENT
+                          , T.TIME_OFF_CT_NO, T.TIME_OFF_PERIOD, T.TIME_OFF_CONTENT
                           , E.EMP_NO, E.EMP_NAME, E.EMP_STREET, E.EMP_DETAIL, E.EMP_SIGN
                           , P.POS_NAME
                        FROM APPROVAL_T A
