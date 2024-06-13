@@ -229,7 +229,4 @@ public class ApprovalController {
 		return "approval/approval-detail";
 
 	}
-
-	}
-
 }

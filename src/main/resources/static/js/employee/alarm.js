@@ -34,6 +34,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     eventSource.addEventListener('notification', function(event) {
         const data = event.data
+        console.log(data);
         alert(`새로운 알림: ${data}`);
         let currentCount = parseInt(notificationCountElement.textContent, 10);
         updateNotificationCount(currentCount + 1);
