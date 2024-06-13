@@ -10,10 +10,10 @@ import java.util.Map;
 
 @Mapper
 public interface BoardMapper {
-    //        int countBoardLike(Integer boardNo);
-//    int deleteBoardLike(Map<String, Integer> paramMap);
-//    int insertBoardLike(Map<String, Integer> paramMap);
-//    int boardLikeCheck(Map<String, Object> map);
+
+    int deleteLike(int boardNo, int empNo);
+    int insertLike(int boardNo, int empNo);
+    int likeCheck(int boardNo);
     // 자유게시판 LIST
     List<BoardDto> getFreeBoardList(Map<String, Object> map);
 
