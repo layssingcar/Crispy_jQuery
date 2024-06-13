@@ -2,6 +2,42 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.mcp.crispy.sales.mapper.SalesMapper">
+    <!-- include 검색  -->
+    <sql id="search">
+        <if test="search != null and search != ''">
+            AND (F.FRN_NAME LIKE '%' || #{search} || '%')
+        </if>
+    </sql>
+
+
+    <!-- 등록된 직원 가맹점의 매출 목록-->
+    <select id="getSalesList" parameterType="map" resultType="SalesDto">
+            SELECT *
+              FROM (
+                    SELECT ROW_NUMBER() OVER(ORDER BY F.FRN_NO DESC) AS RN
+                         , F.FRN_OWNER, F.FRN_NAME, F.FRN_NO
+                         , SUM(S.SAL_PRICE) AS SAL_PRICE, S.SAL_DT
+                      FROM FRANCHISE_T F
+                INNER JOIN SALES_T S ON F.FRN_NO = S.FRN_NO
+            <include refid="search"></include> <!-- 검색 조건 추가 -->
+                  GROUP BY F.FRN_OWNER, F.FRN_NAME, F.FRN_NO
+                         , S.SAL_DT
+                   ) a
+                     WHERE RN BETWEEN #{begin} AND #{end}
+    </select>
+
+    <!-- 매출 COUNT -->
+    <select id="getTotalCount" parameterType="map" resultType="int">
+            SELECT COUNT(*)
+              FROM (
+                    SELECT F.FRN_NO
+                      FROM FRANCHISE_T F
+                INNER JOIN SALES_T S ON F.FRN_NO = S.FRN_NO
+            <include refid="search"></include> <!-- 검색 조건 추가 -->
+                  GROUP BY F.FRN_NO
+                   ) b
+    </select>
+
     <!-- 매출 INSERT -->
     <insert id="insertSales" parameterType="SalesDto">
             INSERT INTO SALES_T(
@@ -77,15 +113,5 @@
     <!-- 이달의 매장 순위 -->
     <select id="findSalesRenk">
 
-    </select>
-
-    <!-- 등록된 직원 가맹점의 매출 목록-->
-    <select id="getSalesList">
-            SELECT F.FRN_IMG, F.FRN_OWNER, F.FRN_NAME, F.FRN_NO
-                 , SUM(S.SAL_PRICE) AS SAL_PRICE, S.SAL_DT
-              FROM FRANCHISE_T F
-        INNER JOIN SALES_T S
-                ON F.FRN_NO = S.FRN_NO
-          GROUP BY S.SAL_PRICE, S.SAL_DT, F.FRN_IMG, F.FRN_OWNER, F.FRN_NAME, F.FRN_NO
     </select>
 </mapper>
