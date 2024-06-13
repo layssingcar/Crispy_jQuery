@@ -17,32 +17,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="modifyDt" column="MODIFY_DT"/>
 		<result property="modifier" column="MODIFIER"/>
 		<result property="empNo" column="EMP_NO"/>
-<!-- 		<association property="employee" javaType="EmployeeDto"> -->
-<!-- 			<id property="empNo" column="EMP_NO" /> -->
-<!-- 			<result property="empName" column="EMP_NAME" /> -->
-<!-- 		</association> -->
+	  	<result property="annCtNo" column="ANN_CT_NO"/>
+	  	<result property="category" column="CATEGORY"/>
 	</resultMap>
 	
 <insert id="insertAttendance" parameterType="AttendanceDto">
-	MERGE INTO ATTENDANCE_T DEST
-	USING ( SELECT 
-	       	#{attInTime} AS ATT_IN_TIME,
-	        #{attOutTime} AS ATT_OUT_WORK,
-	        #{attWorkTime} AS ATT_WORK_TIME,
-	        #{createDt} AS CREATE_DT,
-	        #{creator} AS CREATOR,
-	        CURRENT_DATE AS MODIFY_DT,
-	        #{modifier} AS MODIFIER,
-	        #{empNo} AS EMP_NO 
-	        FROM DUAL ) SRC
-	ON (DEST.CREATE_DT = SRC.CREATE_DT )
-	WHEN MATCHED THEN
-		UPDATE SET 
-			ATT_IN_TIME = #{attInTime}, 
-			ATT_OUT_TIME = #{attOutTime}, 
-			ATT_WORK_TIME = #{attWorkTime}
-	WHEN NOT MATCHED THEN
-    	INSERT (
+		<selectKey keyProperty="attNo" resultType="int" order="BEFORE">
+			SELECT ATTENDANCE_SEQ.NEXTVAL
+			FROM DUAL
+		</selectKey>
+    	INSERT INTO ATTENDANCE_T (
 	        ATT_NO,
 	        ATT_IN_TIME,
 	        ATT_OUT_TIME,
@@ -53,7 +37,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	        MODIFIER,
 	        EMP_NO
 	    ) VALUES (
-	        ATTENDANCE_SEQ.NEXTVAL,
+	        #{attNo},
 	       	#{attInTime},
 	        #{attOutTime},
 	        #{attWorkTime},
@@ -65,12 +49,40 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	    )
 </insert>
 
-<select id="getAttList"
+<select id="getAttListByInsert"
 		resultMap="AttendanceMap">
-    SELECT ATT_NO, ATT_IN_TIME, ATT_OUT_TIME, ATT_WORK_TIME, CREATE_DT, EMP_NO 
-        FROM ATTENDANCE_T
-    WHERE EXTRACT(MONTH FROM CREATE_DT) = #{month}
-	ORDER BY CREATE_DT ASC, ATT_IN_TIME ASC 
+	SELECT ATT_IN_TIME, ATT_OUT_TIME, ATT_WORK_TIME, CREATE_DT
+	FROM ATTENDANCE_T
+</select>
+
+<update id="updateAttendance"
+		parameterType="AttendanceDto">
+	UPDATE ATTENDANCE_T
+		SET ATT_IN_TIME = #{attInTime},
+			ATT_OUT_TIME = #{attOutTime},
+			ATT_WORK_TIME = #{attWorkTime},
+			MODIFY_DT = CURRENT_DATE
+		WHERE CREATE_DT = #{createDt} AND EMP_NO = #{empNo}
+</update>
+
+<select id="getAttList"
+		resultMap="AttendanceMap"
+		parameterType="map">
+	SELECT ATT.ATT_IN_TIME, ATT.ATT_OUT_TIME, ATT.ATT_WORK_TIME, ATT.CREATE_DT, 3 AS CATEGORY
+	FROM EMPLOYEE_T E
+	JOIN ATTENDANCE_T ATT 
+	ON E.EMP_NO = ATT.EMP_NO
+	WHERE EXTRACT(MONTH FROM ATT.CREATE_DT) = #{month} AND E.EMP_NO = #{empNo}
+</select>
+
+<select id="getAnnList"
+		resultMap="AttendanceMap"
+		parameterType="map">
+	SELECT A.ANN_CT_NO, TO_DATE(SUBSTR(A.ANN_START_TIME, 1, 10), 'YYYY-MM-DD') AS CREATE_DT
+	FROM EMPLOYEE_T E
+	JOIN ANNUAL_T A 
+	ON E.EMP_NO = A.EMP_NO
+	WHERE EXTRACT(MONTH FROM A.CREATE_DT) = #{month} AND E.EMP_NO = #{empNo}
 </select>
 
 

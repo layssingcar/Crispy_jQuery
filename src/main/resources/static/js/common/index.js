@@ -118,10 +118,10 @@
 		        'attOutTime': endWorkTime,
 		        'attWorkTime': workingTime,
 		        'createDt': currentDate,
-		        'creator': 1,
+		        'creator': empNo,
 		        'modifyDt': currentDate,
-		        'modifier': 1,
-		        'empNo': 1
+		        'modifier': empNo,
+		        'empNo': empNo
 		    });
 
 		    $.ajax({

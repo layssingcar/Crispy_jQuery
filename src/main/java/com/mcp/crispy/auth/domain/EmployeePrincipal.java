@@ -15,13 +15,14 @@ public class EmployeePrincipal implements UserDetails {
     private final List<GrantedAuthority> authorities;
     private final int frnNo;
     private final int empNo;
+    private final String frnOwner;
 
     public EmployeePrincipal(EmployeeDto employee, List<GrantedAuthority> authorities) {
         this.employee = employee;
         this.authorities = authorities;
         this.frnNo = employee.getFrnNo();
         this.empNo = employee.getEmpNo();
-
+        this.frnOwner = employee.getFrnOwner();
     }
 
     @Override

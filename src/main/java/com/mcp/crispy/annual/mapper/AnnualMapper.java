@@ -10,7 +10,7 @@ import com.mcp.crispy.schedule.dto.ScheduleDto;
 @Mapper
 public interface AnnualMapper {
 	int insertAnnual(AnnualDto scheduleDto);
-	List<AnnualDto> getAnnList();
+	List<AnnualDto> getAnnList(int empNo);
 	AnnualDto getAnnById(String id);
 	int modifyAnnual(AnnualDto scheduleDto);
 	int deleteAnnual(AnnualDto scheduleDto);

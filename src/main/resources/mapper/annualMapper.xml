@@ -20,10 +20,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="modifyDt" column="MODIFY_DT"/>
 		<result property="modifier" column="MODIFIER"/>
 		<result property="empNo" column="EMP_NO"/>
-<!-- 		<association property="employee" javaType="EmployeeDto"> -->
-<!-- 			<id property="empNo" column="EMP_NO" /> -->
-<!-- 			<result property="empName" column="EMP_NAME" /> -->
-<!-- 		</association> -->
 	</resultMap>
 
 <insert id="insertAnnual" parameterType="AnnualDto">
@@ -69,7 +65,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	resultMap="AnnualMap">
 	SELECT *
 		FROM ANNUAL_T
-	WHERE ANN_CT_NO != 3
+	WHERE ANN_CT_NO != 3 AND EMP_NO = #{empNo}
 </select>
 
 

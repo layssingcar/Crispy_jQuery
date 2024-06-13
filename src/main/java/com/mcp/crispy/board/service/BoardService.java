@@ -150,9 +150,28 @@ public class BoardService {
 //
 //    }
 
-    // 자유게시판 LIST
-    public List<BoardDto> getFreeBoardList() {
-        return boardMapper.getFreeBoardList();
+//    // 자유게시판 LIST
+//    public List<BoardDto> getFreeBoardList() {
+//        return boardMapper.getFreeBoardList();
+//    }
+
+    @Transactional(readOnly = true)
+    public List<BoardDto> getFreeBoardList(Integer page,int cnt, String search) {
+        int totalCount = getTotalCount(search);
+        int total = totalCount/cnt + ((totalCount%cnt>0) ? 1:0);
+        int begin = (page - 1) * cnt + 1;
+        int end = begin + cnt - 1;
+        if (search == null) {
+            search = ""; // Set default value if null
+        }        Map<String,Object> map = Map.of("begin",begin, "end",end, "total", total, "search", search);
+
+        return boardMapper.getFreeBoardList(map);
+    }
+
+
+    @Transactional(readOnly = true)
+    public int getTotalCount(String search) {
+        return boardMapper.getTotalCount(search);
     }
 
 
@@ -322,49 +341,63 @@ public class BoardService {
     }
 
     public int removeBoard(int boardNo) {
-        // 파일 삭제
+        // Get the list of files associated with the board
         List<BoardFileDto> boardFileList = boardMapper.getBoardFileList(boardNo);
-        for (BoardFileDto boardFile : boardFileList) {
-            File file = new File(boardFile.getBoardPath(), boardFile.getBoardRename());
-            if (file.exists()) {
-                file.delete();
+
+        // Delete each file from the filesystem
+        if (boardFileList != null && !boardFileList.isEmpty()) {
+            for (BoardFileDto boardFile : boardFileList) {
+                File file = new File(boardFile.getBoardPath(), boardFile.getBoardRename());
+                if (file.exists()) {
+                    file.delete();
+                }
             }
         }
 
-        // DB에서 게시물 삭제
+        // Delete each file record from the database
+        if (boardFileList != null && !boardFileList.isEmpty()) {
+            for (BoardFileDto boardFile : boardFileList) {
+                boardMapper.deleteBoardFile(boardFile.getBoardFileNo());
+            }
+        }
+
+        // Delete the board from the database
         return boardMapper.deleteBoard(boardNo);
     }
+
+    @Transactional
+    public int updateHit(int boardNo) {
+        return boardMapper.updateHit(boardNo);
+    }
+
+
 //    // 좋아요 여부 확인 서비스
 //    public int boardLikeCheck(Map<String, Object> map) {
 //        return BoardMapper.boardLikeCheck(map);
 //    }
-//
+
 //    // 좋아요 처리 서비스
 //    @Transactional(rollbackFor = Exception.class)
 //
 //    public int like(Map<String, Integer> paramMap) {
-//
 //        int result = 0;
 //
 //        if(paramMap.get("check") == 0) { // 좋아요 상태 X
 //            // BOARD_LIKE 테이블 INSERT
-//            result = BoardMapper.insertBoardLike(paramMap);
-//
+//            result = boardMapper.insertBoardLike(paramMap);
 //        } else { // 좋아요 상태 O
 //            // BOARD_LIKE 테이블 DELETE
-//            result = BoardMapper.deleteBoardLike(paramMap);
+//            result = boardMapper.deleteBoardLike(paramMap);
 //        }
 //
 //        // SQL 수행 결과가 0 == DB 또는 파라미터에 문제가 있다.
 //        // 1) 에러를 나타내는 임의의 값을 반환 (-1)
-//
 //        if(result == 0) return -1;
 //
 //        // 현재 게시글의 좋아요 개수 조회
-//        int count = BoardMapper.countBoardLike(paramMap.get("boardNo"));
+//        int count = boardMapper.countBoardLike(paramMap.get("boardNo"));
 //
 //        return count;
-//
 //    }
 
 }

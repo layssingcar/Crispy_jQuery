@@ -1,17 +1,20 @@
 package com.mcp.crispy.board.controller;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.mcp.crispy.auth.domain.EmployeePrincipal;
 import com.mcp.crispy.board.dto.BoardDto;
 import com.mcp.crispy.board.dto.BoardFileDto;
+import com.mcp.crispy.board.dto.BoardLikeDto;
 import com.mcp.crispy.board.mapper.BoardMapper;
 import com.mcp.crispy.board.service.BoardService;
 import com.mcp.crispy.stock.dto.StockOrderDto;
 import jakarta.servlet.http.HttpServletRequest;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -48,9 +51,49 @@ public class BoardController {
 	 * @return forward (board/board-list.html)
 	 */
 	@GetMapping("/board-list")
-	public String boardList(Model model) {
-		List<BoardDto> freeList = boardService.getFreeBoardList();
+	public String freeList(@RequestParam(value = "page", required = false) Integer page, Model model
+			, @RequestParam(value = "search", required = false) String search) {
+
+		if(page == null) {
+			page = 1;
+		}
+
+		if (search == null) {
+			search = ""; // Set default value if null
+		}
+		// 전체 게시물 리스트
+		List<BoardDto> freeList = boardService.getFreeBoardList(page, 10, search);
 		model.addAttribute("freeList", freeList);
+
+		// 해당 게시물 전체 조회
+		for(BoardDto b : freeList)
+			System.out.println(b);
+
+		// 전체 게시물 수 조회
+		int totalCount = boardService.getTotalCount(search);
+		model.addAttribute("totalCount", totalCount);
+		// 전체 게시물 / 10
+		int maxPage = (int)Math.ceil((double)totalCount/10);
+
+		int pageShow = 10;
+		int startPage = ((page - 1) / pageShow) * pageShow + 1;
+		int endPage = startPage + pageShow - 1;
+
+		// 다음 페이지, 이전 페이지 계산
+		int nextPage = Math.min(page + 10, maxPage);
+		int prevPage = Math.max(page - 10, 1);
+		model.addAttribute("nextPage", nextPage);
+		model.addAttribute("prevPage", prevPage);
+
+		// 시작번호, 끝번호 계산 후 표출
+		endPage = Math.min(endPage, maxPage);
+		startPage = Math.max(startPage, 1);
+
+		model.addAttribute("currentPage", page);
+		model.addAttribute("maxPage", maxPage);
+		model.addAttribute("startPage",startPage);
+		model.addAttribute("endPage",endPage);
+
 		return "board/board-list";
 	}
 
@@ -143,21 +186,34 @@ public class BoardController {
 			return "redirect:/crispy/board-list";
 		}
 
-		// 게시물과 관련된 파일을 먼저 삭제합니다.
-		boardService.removeBoardFile(boardNo);
-
 		// 게시물을 삭제합니다.
 		int removeCount = boardService.removeBoard(boardNo);
 
 		// 삭제 결과에 따라 메시지를 설정합니다.
-		redirectAttributes.addFlashAttribute("removeResult", removeCount == 1 ? "게시물이 삭제되었습니다." : "게시물 삭제를 실패했습니다.");
+		redirectAttributes.addFlashAttribute("removeResult", removeCount > 0 ? "게시물이 삭제되었습니다." : "게시물 삭제를 실패했습니다.");
 
 		// 게시물 목록 페이지로 리다이렉트합니다.
 		return "redirect:/crispy/board-list";
 	}
 
+	@ResponseBody
+	@GetMapping("/putBoardHit")
+	public void updateHit(@RequestParam("boardNo") int boardNo, HttpServletResponse response) {
+		int updatedHits = boardService.updateHit(boardNo);
+		if (updatedHits > 0) {
+			response.setStatus(HttpServletResponse.SC_OK);
+		} else {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		}
+	}
 
 
+//	@PostMapping("/putBoardHit")
+//	public void putBoardHit(@RequestBody Map<String, Integer> request, HttpServletResponse response) {
+//		int boardNo = request.get("boardNo");
+//		boardService.updateHit(boardNo);
+//		response.setStatus(HttpServletResponse.SC_OK); // 성공 상태코드 설정
+//	}
 
 
 //	// 좋아요 처리

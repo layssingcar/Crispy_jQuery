@@ -20,16 +20,49 @@
         </association>
     </resultMap>
 
-    <!-- 자유게시판 LIST -->
-    <select id="getFreeBoardList">
-        SELECT BOARD_NO
-             , BOARD_TITLE
-             , BOARD_CONTENT
-             , BOARD_HIT
-             , CREATE_DT
-        FROM BOARD_T
+    <!--    &lt;!&ndash; 자유게시판 LIST &ndash;&gt;-->
+    <!--    <select id="getFreeBoardList">-->
+    <!--        SELECT BOARD_NO-->
+    <!--             , BOARD_TITLE-->
+    <!--             , BOARD_CONTENT-->
+    <!--             , BOARD_HIT-->
+    <!--             , CREATE_DT-->
+    <!--        FROM BOARD_T-->
+    <!--        WHERE BOARD_CT_NO = 1-->
+    <!--    </select>-->
+    <sql id="search">
+        <if test="search != null and search != ''">
+            AND (B.BOARD_TITLE LIKE '%' || #{search} || '%'
+            OR B.BOARD_CONTENT LIKE '%' || #{search} || '%')
+        </if>
+    </sql>
+
+    <select id="getTotalCount" resultType="int">
+        SELECT COUNT(*)
+        FROM BOARD_T B
+        INNER JOIN EMPLOYEE_T E
+        ON B.EMP_NO = E.EMP_NO
         WHERE BOARD_CT_NO = 1
+        <include refid="search"></include>
     </select>
+
+    <select id="getFreeBoardList" resultMap="BoardMap" parameterType="Map">
+        SELECT *
+        FROM (
+        SELECT ROW_NUMBER() OVER(ORDER BY B.BOARD_NO DESC) AS RN
+        , B.BOARD_NO
+        , B.BOARD_TITLE
+        , B.BOARD_CONTENT
+        , B.BOARD_HIT
+        , B.CREATE_DT
+        FROM BOARD_T B
+        INNER JOIN EMPLOYEE_T E ON B.EMP_NO = E.EMP_NO
+        WHERE BOARD_CT_NO = 1
+        <include refid="search"></include>
+        ) a
+        WHERE RN BETWEEN #{begin} AND #{end}
+    </select>
+
 
 
     <!-- INSERT 수행 이전에 파라미터 BoardDto의 boardNo 속성(필드)에 BOARD_SEQ.NEXTVAL 값을 저장한다. -->
@@ -97,8 +130,8 @@
     <select id="getBoardByNo" resultMap="BoardMap">
         SELECT B.BOARD_NO, B.BOARD_CT_NO, B.BOARD_TITLE, B.BOARD_CONTENT, B.BOARD_HIT, B.CREATE_DT, B.MODIFY_DT, E.EMP_NO, F.BOARD_ORIGIN
         FROM BOARD_T B
-                 INNER JOIN EMPLOYEE_T E ON E.EMP_NO = B.EMP_NO
-                 INNER JOIN BOARD_FILE_T F ON B.BOARD_NO = F.BOARD_NO
+                 left JOIN EMPLOYEE_T E ON E.EMP_NO = B.EMP_NO
+                 left JOIN BOARD_FILE_T F ON B.BOARD_NO = F.BOARD_NO
         WHERE B.BOARD_NO = #{boardNo}
     </select>
 
@@ -131,6 +164,13 @@
 
 
     </update>
+    <update id="updateBoardFile" parameterType="BoardFileDto">
+        UPDATE BOARD_FILE_T
+        SET BOARD_ORIGIN = #{boardOrigin}
+          , BOARD_RENAME = #{boardRename}
+          , BOARD_PATH = #{boardPath}
+        WHERE BOARD_NO = #{boardNo}
+    </update>
 
 
     <delete id="deleteBoardFile">
@@ -145,27 +185,31 @@
         WHERE BOARD_NO = #{boardNo}
     </delete>
 
-    <select id="boardLikeCheck" parameterType="map" resultType="_int">
-        SELECT COUNT(*) FROM BOARD_LIKE_T
+    <!--    <select id="boardLikeCheck" parameterType="map" resultType="int">-->
+    <!--        SELECT COUNT(*) FROM BOARD_BOARD_LIKE_T-->
+    <!--        WHERE BOARD_NO = #{boardNo}-->
+    <!--          AND EMP_NO = #{empNo}-->
+    <!--    </select>-->
+
+    <!--    <insert id="insertBoardLike" parameterType="map">-->
+    <!--        INSERT INTO BOARD_BOARD_LIKE_T (BOARD_NO, EMP_NO) VALUES (#{boardNo}, #{empNo})-->
+    <!--    </insert>-->
+
+    <!--    <delete id="deleteBoardLike" parameterType="map">-->
+    <!--        DELETE FROM BOARD_BOARD_LIKE_T-->
+    <!--        WHERE BOARD_NO = #{boardNo}-->
+    <!--          AND EMP_NO = #{empNo}-->
+    <!--    </delete>-->
+
+    <!--    <select id="countBoardLike" parameterType="int" resultType="int">-->
+    <!--        SELECT COUNT(*) FROM BOARD_BOARD_LIKE_T-->
+    <!--        WHERE BOARD_NO = #{boardNo}-->
+    <!--    </select>-->
+
+    <update id="updateHit">
+        UPDATE BOARD_T
+        SET BOARD_HIT = BOARD_HIT + 1
         WHERE BOARD_NO = #{boardNo}
-          AND EMP_NO = #{empNo}
-    </select>
-
-    <insert id="insertBoardLike" parameterType="map">
-        INSERT INTO BOARD_LIKE_T VALUES(#{boardNo}, #{empNo})
-    </insert>
-
-    <delete id="deleteBoardLike" parameterType="map">
-        DELETE FROM BOARD_LIKE_T
-        WHERE BOARD_NO = #{boardNo}
-          AND EMP_NO = #{empNo}
-    </delete>
-
-    <select id="countBoardLike" parameterType="map" resultType="_int">
-        SELECT COUNT(*) FROM BOARD_LIKE_T
-        WHERE BOARD_NO = #{boardNo}
-    </select>
-
-
+    </update>
 
 </mapper>
