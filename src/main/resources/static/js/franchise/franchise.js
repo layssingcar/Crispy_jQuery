@@ -93,6 +93,11 @@ const franchise = {
     },
 
     saveForm: function() {
+
+        const sigungu = document.querySelector(".frn-gu").value;
+        const gu = sigungu.split(' ');
+        const guName = gu[gu.length - 1]; // ex "분당구"
+
         const frnNo = document.querySelector('.frnNo').value;
         const frnName = document.querySelector('.frnName').value;
         const frnOwner = document.querySelector('.frnOwner').value;
@@ -111,6 +116,7 @@ const franchise = {
             frnZip: frnZip,
             frnStreet: frnStreet,
             frnDetail: frnDetail,
+            frnGu: guName,
             frnStartTime: frnStartTime,
             frnEndTime: frnEndTime,
         };
@@ -224,6 +230,11 @@ const franchise = {
     },
 
     updateFrnAddress: function() {
+
+        const sigungu = document.querySelector(".frn-gu").value;
+        const gu = sigungu.split(' ');
+        const guName = gu[gu.length - 1]; // ex "분당구"
+
         const frnNo = document.querySelector(".frnNo").value;
         const zipCode = document.querySelector('.zipcode').value;
         const street = document.querySelector('.street-address').value;
@@ -233,7 +244,8 @@ const franchise = {
             frnNo: frnNo,
             frnZip: zipCode,
             frnStreet: street,
-            frnDetail: detail
+            frnDetail: detail,
+            frnGu: guName,
         };
 
         fetch('/api/franchise/frnAddress/v1', {
