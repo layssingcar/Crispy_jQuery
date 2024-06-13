@@ -2,18 +2,18 @@ package com.mcp.crispy.sales.mapper;
 
 import com.mcp.crispy.sales.dto.SalesDto;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-import java.util.Map;
 
 @Mapper
 public interface SalesMapper {
 
 	/* 매장 매출 LIST */
-	List<SalesDto> getSalesList(Map<String, Object> map);
+	List<SalesDto> getSalesList(int frnNo);
 
 	/* 매출 COUNT*/
-	int getTotalCount(String search);
+	int getTotalCount(@Param("search")String search, @Param("frnNo")Integer frnNo);
 
 	/* 매출 INSERT */
 	int insertSales(SalesDto salesDto);
