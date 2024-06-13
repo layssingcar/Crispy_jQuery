@@ -12,22 +12,38 @@ import org.springframework.http.ResponseEntity;
 
 @Mapper
 public interface BoardMapper {
-    //    int countBoardLike(Integer boardNo);
+    //        int countBoardLike(Integer boardNo);
 //    int deleteBoardLike(Map<String, Integer> paramMap);
 //    int insertBoardLike(Map<String, Integer> paramMap);
 //    int boardLikeCheck(Map<String, Object> map);
     // 자유게시판 LIST
-    List<BoardDto> getFreeBoardList();
+    List<BoardDto> getFreeBoardList(Map<String, Object> map);
+
+    int getTotalCount(String search);
+
     int insertBoard(BoardDto board);
+
     int insertBoardFile(BoardFileDto BoardFile);
+
     int getBoardCount();
+
     List<BoardDto> getBoardList(Map<String, Object> map);
+
     BoardDto getBoardByNo(int BoardNo);
+
     List<BoardFileDto> getBoardFileList(int BoardNo);
+
     BoardFileDto getBoardFileByNo(int BoardFileNo);
+
     //    int updateDownloadCount(int BoardFileNo);
     int updateBoard(BoardDto Board);
+
     int deleteBoardFile(int BoardFileNo);
+
     int deleteBoard(int BoardNo);
+
+    int updateHit(int boardNo);
+
+
 
 }
