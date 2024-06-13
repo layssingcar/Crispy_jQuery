@@ -32,7 +32,7 @@ public class EmployeeUpdateDto {
     )
     private String empEmail;
 
-    @Pattern(regexp = "^010\\d{4}\\d{4}$|^$", message = "휴대폰 번호 형식을 확인해주세요.")
+    @Pattern(regexp = "^$|010\\d{4}\\d{4}$", message = "휴대폰 번호 형식을 확인해주세요.")
     private String empPhone;
     private String empSign;
 

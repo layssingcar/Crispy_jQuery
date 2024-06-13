@@ -1,9 +1,11 @@
 package com.mcp.crispy.approval.controller;
 
 import com.mcp.crispy.approval.dto.ApplicantDto;
+import com.mcp.crispy.approval.dto.ApprOptionDto;
 import com.mcp.crispy.approval.dto.ApprovalDto;
 import com.mcp.crispy.approval.service.ApprovalService;
 import com.mcp.crispy.auth.domain.EmployeePrincipal;
+import com.mcp.crispy.common.page.PageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -145,27 +147,89 @@ public class ApprovalController {
 		approvalDto.setEmpNo(userDetails.getEmpNo());
 
 		approvalService.insertTimeOffAppr(approvalDto);
-
-		return "redirect:/crispy/approval-list";
+		return "redirect:/crispy/approval-list/draft";
 
 	}
 
-	/** 휴가 및 휴직 신청 목록 조회
-	 * 
+	/**
+	 * 결재 문서 목록 조회 (휴가,휴직 신청서)
+	 * 우혜진 (24. 06. 11.)
+	 *
+	 * @param authentication
+	 * @param apprOptionDto
+	 * @param type
+	 * @param model
 	 * @return forward (approval-list.html)
 	 */
-	@GetMapping("approval-list")
-	public String apprList() {
+	@GetMapping("approval-list/{type:^(?:draft|sign)$}")
+	public String timeOffApprList(Authentication authentication,
+								  ApprOptionDto apprOptionDto,
+								  @PathVariable("type") String type,
+								  Model model) {
+
+		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
+		apprOptionDto.setEmpNo(userDetails.getEmpNo());
+
+		apprOptionDto.setType(type);
+		apprOptionDto.setTimeOffCtNo(-1);
+		apprOptionDto.setApprStat(-1);
+
+		PageResponse<ApprovalDto> approvalDtoList = approvalService.getTimeOffApprList(apprOptionDto, 10);
+		model.addAttribute("approvalDtoList", approvalDtoList);
+
 		return "approval/approval-list";
+
 	}
-	
-	/** 결재 문서 열람
-	 * 
+
+	/**
+	 * 결재 문서 항목 조회 (휴가,휴직 신청서)
+	 * 우혜진 (24. 06. 11.)
+	 *
+	 * @param authentication
+	 * @param apprOptionDto
+	 * @param type
+	 * @param model
+	 * @return result
+	 */
+	@GetMapping("approval-items/{type:^(?:draft|sign)$}")
+	public String timeOffApprItems(Authentication authentication,
+								   ApprOptionDto apprOptionDto,
+								   @PathVariable("type") String type,
+								   Model model) {
+
+		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
+		apprOptionDto.setEmpNo(userDetails.getEmpNo());
+
+		apprOptionDto.setType(type);
+		PageResponse<ApprovalDto> approvalDtoList = approvalService.getTimeOffApprList(apprOptionDto, 10);
+		model.addAttribute("approvalDtoList", approvalDtoList);
+
+		return "approval/approval-list :: appr-list-container";
+
+	}
+
+	/**
+	 * 결재 문서 상세 조회 (휴가,휴직 신청서)
+	 * 우혜진 (24. 06. 11.)
+	 *
+	 * @param authentication
+	 * @param apprNo
+	 * @param model
 	 * @return forward (approval-detail.html)
 	 */
-	@GetMapping("approval-detail")
-	public String apprDetail() {
+	@GetMapping("approval-detail/{apprNo}")
+	public String timeOffApprDetail(Authentication authentication,
+									@PathVariable("apprNo") int apprNo,
+									Model model) {
+
+		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
+		ApprovalDto approvalDto = approvalService.getTimeOffApprDetail(userDetails.getEmpNo(), apprNo);
+
+		model.addAttribute("approvalDto", approvalDto);
 		return "approval/approval-detail";
+
+	}
+
 	}
 
 }

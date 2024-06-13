@@ -44,7 +44,7 @@
                                             <label for="frn-frnName" class="form-label">가맹점 이름</label>
                                             <input type="text" id="frn-frnName" name="frnName" class="form-control frnName"
                                                    placeholder="가맹점 이름" autocomplete="on" th:value="${owner.frnName}">
-                                            <div class="error-message" id="frnName-error" style="display: none;"></div>
+                                            <div class="error-message frnName-error" id="frnName-error" style="display: none;"></div>
                                         </div>
                                         <!-- 관리자만 볼 수 있는 버튼 -->
                                         <div sec:authorize="hasRole('ROLE_ADMIN')">

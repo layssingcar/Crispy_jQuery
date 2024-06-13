@@ -8,7 +8,15 @@ const franchiseRegister = {
             _this.registerFranchiseAndOwner();
         });
 
-        // 입력 필드에 대한 실시간 검증 이벤트 리스너 추가
+        // 운영 시간 검증 이벤트 리스너 추가
+        document.getElementById("frnStartTime").addEventListener("change", function () {
+            _this.validateOperatingHours();
+        });
+        document.getElementById("frnEndTime").addEventListener("change", function () {
+            _this.validateOperatingHours();
+        });
+
+        // 기존 입력 필드에 대한 실시간 검증 이벤트 리스너 추가
         document.getElementById("frn-frnName").addEventListener("input", function () {
             _this.validateField("frn-frnName", "frnName-error", "가맹점 이름을 입력해주세요.");
         });
@@ -142,6 +150,7 @@ const franchiseRegister = {
                 alert('등록에 실패했습니다.');
             });
     },
+
     displayErrorMessages: function (errorResponse) {
         document.querySelectorAll('.error-message').forEach(errorContainer => {
             errorContainer.style.display = 'none';
@@ -149,7 +158,9 @@ const franchiseRegister = {
         });
 
         Object.keys(errorResponse).forEach(field => {
-            const errorContainer = document.getElementById(`${field}-error`);
+            // 점(.)을 하이픈으로 대체해서 사용
+            const sanitizedField = field.replace(/\./g, '-');
+            const errorContainer = document.querySelector(`.${sanitizedField}-error`);
             if (errorContainer) {
                 errorContainer.textContent = errorResponse[field];
                 errorContainer.style.display = 'block';
@@ -193,15 +204,47 @@ const franchiseRegister = {
             document.getElementById("frnTel-error").style.display = "none";
         }
 
+        // 운영 시간 유효성 검증
+        if (!this.validateOperatingHours()) {
+            isValid = false;
+        }
+
         return isValid;
+    },
+
+    // 운영 시간 유효성 검증 함수
+    validateOperatingHours: function () {
+        const startTime = document.querySelector(".frnStartTime").value;
+        const endTime = document.querySelector(".frnEndTime").value;
+
+        if (startTime && endTime && startTime > endTime) {
+            Swal.fire({
+                icon: "warning",
+                text: "종료 시간은 시작 시간보다 빠를 수 없습니다.",
+                width: "365px"
+            }).then(() => {
+                document.querySelector(".frnEndTime").focus();
+            });
+            endTime.value = "";
+            return;
+        }
+        return true;
     },
 
     updateStepIndicator: function (step) {
         const indicatorLine = document.querySelector('.indicator-line');
+        const steps = document.querySelectorAll('.step');
+
+        steps.forEach(step => {
+            step.classList.remove("active");
+        })
         if (step === 1) {
+            steps[0].classList.add('active');
             indicatorLine.style.background =
                 `linear-gradient(to right, var(--main-color) 50%, #c2c2c2 50%)`;
         } else if (step === 2) {
+            steps[0].classList.add('active');
+            steps[1].classList.add('active');
             indicatorLine.style.background =
                 `linear-gradient(to left, var(--main-color) 100%, #c2c2c2 0%)`;
         }

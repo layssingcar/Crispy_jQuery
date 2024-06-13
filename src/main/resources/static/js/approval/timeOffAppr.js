@@ -153,6 +153,7 @@ document.querySelector("#temp-content").addEventListener("click", async () => {
 
                     // 이벤트 재추가
                     getEmpInfoFn();
+                    getCurrentDateFn();
                     changeDateFn();
                 })
         }
@@ -171,6 +172,7 @@ document.querySelector("#time-off-ct").addEventListener("change", e => {
 
             // 이벤트 재추가
             getEmpInfoFn();
+            getCurrentDateFn();
             changeDateFn();
             changeUIFn();
         })
@@ -190,6 +192,16 @@ const getEmpInfoFn = async () => {
     document.querySelector("#emp-address").innerHTML = result.empStreet + ", " + result.empDetail;
 }
 
+// 오늘 날짜
+const getCurrentDateFn = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const date = String(today.getDate()).padStart(2, "0");
+    const formattedDate = `${year}년 ${month}월 ${date}일`;
+    document.querySelector("#appr-dt").innerHTML = formattedDate;
+}
+
 // 결재선 목록
 $('#tree').on('changed.jstree', function (e, data) {
     const selectTarget = data.instance.get_node(data.selected[0]);
@@ -203,8 +215,8 @@ $('#tree').on('changed.jstree', function (e, data) {
 }).jstree({
     'core' : {
         'data' : [
-            { "id" : "owner",   "parent" : "#",       "text" : "점주",   "icon" : "glyphicon glyphicon-home"},
-            { "id" : "manager", "parent" : "#",       "text" : "매니저", "icon" : "glyphicon glyphicon-home"},
+            { "id" : "owner",   "parent" : "#",       "text" : "점주",   "icon" : "glyphicon glyphicon-home",    "state"  : {"opened" : true}},
+            { "id" : "manager", "parent" : "#",       "text" : "매니저", "icon" : "glyphicon glyphicon-home",    "state"  : {"opened" : true}},
             { "id" : "o1",      "parent" : "owner",   "text" : "우혜진", "icon" : "glyphicon glyphicon-picture", "a_attr" : {"empNo" : 10}},
             { "id" : "m1",      "parent" : "manager", "text" : "박종구", "icon" : "glyphicon glyphicon-picture", "a_attr" : {"empNo" : 7}},
             { "id" : "m2",      "parent" : "manager", "text" : "배영욱", "icon" : "glyphicon glyphicon-picture", "a_attr" : {"empNo" : 8}},
@@ -241,8 +253,10 @@ const changeUIFn = () => {
 
     // 결재 신청 -> 결재선 선택
     document.querySelector("#next-btn").addEventListener("click", () => {
-        timeOffAppr.classList.add("d-none");
-        apprLine.classList.remove("d-none");
+        if (checkInputFn()) {
+            timeOffAppr.classList.add("d-none");
+            apprLine.classList.remove("d-none");
+        }
     })
 
     // 결재선 선택 -> 결재 신청
@@ -254,15 +268,8 @@ const changeUIFn = () => {
 
 // 초기화
 document.addEventListener("DOMContentLoaded", function () {
-    // 기안일 출력
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const date = String(today.getDate()).padStart(2, "0");
-    const formattedDate = `${year}년 ${month}월 ${date}일`;
-    document.querySelector("#appr-dt").innerHTML = formattedDate;
-
     getEmpInfoFn();
+    getCurrentDateFn();
     changeDateFn();
     changeUIFn();
 })

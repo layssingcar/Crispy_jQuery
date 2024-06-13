@@ -52,24 +52,19 @@
                                 <i class="fa-solid fa-bell me-3 notification"></i>
 
                                 <!-- 알림 개수 -->
-                                <span class="notification-badge">1</span>
+                                <span id="notification-count" class="notification-badge">1</span>
 
                                 <!-- 알림 드롭다운 -->
                                 <div class="menu-content notification-mc">
-                                    <ul class="my-menu-list">
-                                        <li class="my-menu-item">
-                                            <span>결재가 승인되었습니다.</span>
-                                        </li>
-                                        <li class="my-menu-item">
-                                            <span>발주 결재가 반려되었습니다.</span>
-                                        </li>
+                                    <ul id="notification-list" class="my-menu-list">
+                                        <!-- 알림 메시지 추가 -->
                                     </ul>
                                 </div>
                             </div>
                         </div>
 
                         <!--채팅-->
-                        <div class="nav-item">
+                        <div class="nav-item" sec:authorize="!hasRole('ROLE_ADMIN')">
                             <div class="nav-profile-ui chat-menu">
                                 <a href="/crispy/chat">
                                     <i class="fa-regular fa-comments me-5"></i>
@@ -117,10 +112,11 @@
                         </a>
                     </div>
                     <div class="collapse" id="menu-4-collapse">
-                    <ul class="">
-                        <li><a href="/crispy/time-off-approval" class="s-menu">휴가/휴직 신청</a></li>
-                        <li><a href="/crispy/approval-list" class="s-menu">신청 내역</a></li>
-                    </ul>
+                        <ul class="">
+                            <li><a href="/crispy/time-off-approval" class="s-menu">휴가/휴직 신청</a></li>
+                            <li><a href="/crispy/approval-list/draft" class="s-menu">기안함</a></li>
+                            <li><a href="/crispy/approval-list/sign" class="s-menu">결재함</a></li>
+                        </ul>
                     </div>
                 </li>
 
@@ -133,10 +129,10 @@
                         </a>
                     </div>
                     <div class="collapse" id="menu-5-collapse">
-                    <ul class="">
-                        <li><a href="#" class="s-menu">공지사항</a></li>
-                        <li><a href="#" class="s-menu">자유게시판</a></li>
-                    </ul>
+                        <ul class="">
+                            <li><a href="#" class="s-menu">공지사항</a></li>
+                            <li><a href="/crispy/board-list" class="s-menu">자유게시판</a></li>
+                        </ul>
                     </div>
                 </li>
 
@@ -152,10 +148,10 @@
                         </a>
                     </div>
                     <div class="collapse" id="menu-9-collapse">
-                    <ul class="">
-                        <li><a href="/crispy/owner/employee/register" class="s-menu">직원 등록</a></li>
-                        <li><a href="/crispy/owner/employees" class="s-menu">직원 관리</a></li>
-                    </ul>
+                        <ul class="">
+                            <li><a href="/crispy/owner/employee/register" class="s-menu">직원 등록</a></li>
+                            <li><a href="/crispy/owner/employees" class="s-menu">직원 관리</a></li>
+                        </ul>
                     </div>
                 </li>
 
@@ -171,6 +167,7 @@
                         <ul class="">
                             <li><a href="/crispy/stock-list" class="s-menu">재고 현황</a></li>
                             <li><a href="/crispy/stock-order" class="s-menu">발주 신청</a></li>
+                            <li><a href="/crispy/order-list/franchise" class="s-menu">신청 내역</a></li>
                         </ul>
                     </div>
                 </li>

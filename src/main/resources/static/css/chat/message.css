@@ -215,6 +215,12 @@
     overflow: auto;
 }
 
+.message .side-bar-img-wrap img {
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+}
+
 .message .side-bar-img-wrap span {
     margin-left: 10px;
 }
@@ -224,10 +230,7 @@
     align-items: center;
 }
 
-.message .side-bar-img-wrap img {
-    width: 40px;
-    height: 40px;
-}
+
 
 .message .side-bar-img-wrap>div {
     display: flex;
@@ -267,7 +270,6 @@
     bottom: 24px;
     width: 45px;
 }
-
 
 .message .mid-intro img {
     position: relative;

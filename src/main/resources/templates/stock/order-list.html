@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
+    <link rel="stylesheet" href="/css/stock/order-list.css" type="text/css">
+</head>
+<body>
+<div class="crispy-container">
+    <aside th:replace="~{layout/sidebar :: sidebar}"></aside>
+    <div>
+        <main>
+            <div class="order-list">
+                <h1>발주 신청 내역</h1>
+
+                <!-- 상단 영역 -->
+                <div class="top-area">
+
+                    <!-- 가맹점명, 대표자 검색 -->
+                    <div class="container-1" th:if="${type == 'admin'}">
+                        <span class="icon"><i class="fa fa-search"></i></span>
+                        <input type="text" name="frnName" id="search" class="form-control" placeholder="가맹점 또는 대표자를 입력하세요.">
+                    </div>
+
+                    <!-- 결재 상태 -->
+                    <select class="form-select form-select-lg mb-3 m-left" aria-label="Large select example" name="apprStat" id="appr-stat">
+                        <option value="-1">결재 상태</option>
+                        <option value="0">대기</option>
+                        <option value="1">진행중</option>
+                        <option value="2">승인</option>
+                        <option value="3">반려</option>
+                    </select>
+                </div>
+
+                <div class="order-list-container" th:fragment="order-list-container">
+                    <!-- 테이블 -->
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">
+                                <span>가맹점</span>
+                                <i class="fa-solid fa-sort" id="frn-name-sort"></i>
+                            </th>
+                            <th scope="col">대표자</th>
+                            <th scope="col" class="col-sort">
+                                <span>기안일</span>
+                                <i class="fa-solid fa-sort" id="appr-dt-sort"></i>
+                            </th>
+                            <th scope="col">결재 상태</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <!-- 리스트 -->
+                        <tr class="appr-row" th:each="appr : ${approvalDtoList.items}" th:data-appr-no="${appr.apprNo}">
+
+                            <!-- 가맹점명 -->
+                            <td th:text="${appr.frnName}">크리스피 1호점</td>
+
+                            <!-- 대표자 -->
+                            <td th:text="${appr.frnOwner}">우혜진</td>
+
+                            <!-- 기안일 -->
+                            <td th:text="${appr.apprDt}">2024-06-12</td>
+
+                            <!-- 문서상태 -->
+                            <td th:text="${appr.apprStatName}">대기</td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- 페이지네이션 -->
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination pagination-lg">
+                            <li class="page-item">
+                                <a class="page-link" href="#" aria-label="Previous" data-page-no="1">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+
+                            <!-- 페이지 이동 버튼 -->
+                            <th:block th:each="pageNo : ${#numbers.sequence(approvalDtoList.startPage, approvalDtoList.endPage)}">
+                                <li class="page-item">
+                                    <a class="page-link" href="#" th:text="${pageNo}" th:data-page-no="${pageNo}"></a>
+                                </li>
+                            </th:block>
+
+                            <li class="page-item">
+                                <a class="page-link" href="#" aria-label="Next" th:data-page-no="${approvalDtoList.totalPage}">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </main>
+        <footer th:replace="~{layout/footer :: footer}"></footer>
+    </div>
+</div>
+
+<script src="/js/stock/orderList.js"></script>
+</body>
+</html>

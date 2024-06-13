@@ -68,7 +68,7 @@
     </select>
 
     <!-- 발주 재고 목록 조회 -->
-    <select id="getSelectStock">
+    <select id="getSelectStock" parameterType="java.util.List">
             SELECT C.STOCK_CT_NO, C.STOCK_CT_NAME
                  , S.STOCK_NO, S.STOCK_NAME, S.STOCK_PRICE, S.STOCK_UNIT
               FROM STOCK_T S
@@ -98,7 +98,7 @@
     </delete>
 
     <!-- 발주 재고 임시저장 -->
-    <insert id="insertOrderTemp" parameterType="com.mcp.crispy.stock.dto.StockOrderDto">
+    <insert id="insertOrderTemp" parameterType="ApprovalDto">
             INSERT INTO STOCK_ORDER_TEMP_T (
                         ORDER_TEMP_NO
                       , STOCK_NO
@@ -131,4 +131,125 @@
              WHERE 1=1
                AND T.EMP_NO = #{empNo}
     </select>
+
+    <!-- 발주 신청 (전자결재 테이블) -->
+    <insert id="insertApproval" useGeneratedKeys="true">
+        <selectKey order="BEFORE" resultType="_int" keyProperty="apprNo">
+            SELECT APPROVAL_SEQ.NEXTVAL
+              FROM DUAL
+        </selectKey>
+            INSERT INTO APPROVAL_T (
+                        APPR_NO
+                      , EMP_NO
+                      , CREATOR
+               ) VALUES (
+                        #{apprNo}
+                      , #{empNo}
+                      , #{empNo})
+    </insert>
+
+    <!-- 발주 신청 (발주신청서 테이블) -->
+    <insert id="insertOrder">
+            INSERT INTO ORDER_T (
+                        APPR_NO
+                      , ORDER_COST
+               ) VALUES (
+                        #{apprNo}
+                      , #{orderCost})
+    </insert>
+
+    <!-- 발주 신청 (발주재고 테이블) -->
+    <insert id="insertStockOrder" parameterType="ApprovalDto">
+            INSERT INTO STOCK_ORDER_T (
+                        APPR_NO
+                      , STOCK_NO
+                      , STOCK_ORDER_COUNT
+                      , STOCK_ORDER_COST
+               ) SELECT #{apprNo} AS APPR_NO
+                      , TEMP_T.*
+                   FROM (
+                   <foreach collection="stockOrderList" item="stockDto" separator="UNION ALL">
+                        SELECT #{stockDto.stockNo} AS STOCK_NO
+                             , #{stockDto.stockOrderCount} AS STOCK_ORDER_COUNT
+                             , #{stockDto.stockOrderCost} AS STOCK_ORDER_COST
+                          FROM DUAL
+                   </foreach>
+               ) TEMP_T
+    </insert>
+
+    <!-- 발주 신청 (결재선 테이블) -->
+    <insert id="insertApprLine">
+        INSERT INTO APPR_LINE_T (
+                    APPR_LINE_NO
+                  , APPR_LINE_ORDER
+                  , APPR_NO
+                  , CREATOR
+           ) VALUES (
+                    APPR_LINE_SEQ.NEXTVAL
+                  , 0
+                  , #{apprNo}
+                  , #{creator})
+    </insert>
+
+    <!-- 발주 신청 목록 수 조회 -->
+    <select id="getOrderApprCount">
+            SELECT COUNT(*)
+              FROM APPROVAL_T A
+        INNER JOIN ORDER_T O
+                ON A.APPR_NO = O.APPR_NO
+        INNER JOIN EMPLOYEE_T E
+                ON A.EMP_NO = E.EMP_NO
+        INNER JOIN FRANCHISE_T F
+                ON E.FRN_NO = F.FRN_NO
+             WHERE 1=1
+             <if test="type == 'franchise'">
+                 AND F.FRN_NO = #{frnNo}
+             </if>
+             <if test="apprStat != -1">
+                 AND A.APPR_STAT = #{apprStat}
+             </if>
+             <if test="searchKeyword != null">
+                 AND (
+                     F.FRN_NAME LIKE '%' || #{searchKeyword} || '%'
+                     OR E.EMP_NAME LIKE '%' || #{searchKeyword} || '%'
+                 )
+             </if>
+    </select>
+
+    <!-- 발주 신청 목록 조회 -->
+    <select id="getOrderApprList">
+            SELECT TO_CHAR(A.APPR_DT, 'YYYY-MM-DD') AS APPR_DT
+                 , A.APPR_NO, A.APPR_STAT
+                 , F.FRN_NO, F.FRN_NAME, F.FRN_OWNER
+              FROM APPROVAL_T A
+        INNER JOIN ORDER_T O
+                ON A.APPR_NO = O.APPR_NO
+        INNER JOIN EMPLOYEE_T E
+                ON A.EMP_NO = E.EMP_NO
+        INNER JOIN FRANCHISE_T F
+                ON E.FRN_NO = F.FRN_NO
+             WHERE 1=1
+             <if test="type == 'franchise'">
+                 AND F.FRN_NO = #{frnNo}
+             </if>
+             <if test="apprStat != -1">
+                 AND A.APPR_STAT = #{apprStat}
+             </if>
+             <if test="searchKeyword != null">
+                 AND (
+                     F.FRN_NAME LIKE '%' || #{searchKeyword} || '%'
+                     OR E.EMP_NAME LIKE '%' || #{searchKeyword} || '%'
+                 )
+             </if>
+          ORDER BY
+          <choose>
+              <when test="sortKey == 'frnName'">F.FRN_NAME</when>
+              <otherwise>A.APPR_DT</otherwise>
+          </choose>
+          <choose>
+              <when test="sortOrder == 'ASC'">ASC</when>
+              <otherwise>DESC</otherwise>
+          </choose>
+    </select>
+
 </mapper>

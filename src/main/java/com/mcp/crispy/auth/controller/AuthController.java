@@ -130,8 +130,7 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse response) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        EmployeeDto employee = employeeService.getEmployeeName(auth.getName());
-        authenticationService.logout(employee.getEmpNo());
+        authenticationService.logout(auth.getName());
         // 쿠키에서 토큰 삭제
         CookieUtil.deleteCookie(response, "accessToken");
         CookieUtil.deleteCookie(response, "refreshToken");

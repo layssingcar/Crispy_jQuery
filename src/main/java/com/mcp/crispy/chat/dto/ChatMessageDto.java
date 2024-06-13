@@ -22,6 +22,6 @@ public class ChatMessageDto {
     private Integer modifier;
     private Integer chatRoomNo;
     private Integer empNo;
-    private String empProfile;
-    private String empName;
+    private String empProfile; // 직원 프로필 이미지
+    private String empName; // 직원 이름
 }
