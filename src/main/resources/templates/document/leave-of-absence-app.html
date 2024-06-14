@@ -44,7 +44,7 @@
                         <span>(</span>
 
                         <!-- 휴직 기간 출력 -->
-                        <span th:text="*{timeOffPeriod}"></span>
+                        <span th:text="*{timeOffPeriod < 10 ? '0' + timeOffPeriod : timeOffPeriod}"></span>
                         <span>일간 )</span>
                     </td>
                 </tr>
