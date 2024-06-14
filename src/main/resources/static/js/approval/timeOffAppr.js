@@ -1,5 +1,6 @@
 let empObj; // 선택된 결재선 객체
-const empNoSet = new Set(); // 선택된 결재선 목록
+const empNoSet = new Set();     // 선택된 결재선 목록
+const selectedFile = new Set(); // 선택된 파일 목록
 
 // 휴가, 휴직 기간 계산
 const getPeriodFn = () => {
@@ -34,6 +35,44 @@ const getPeriodFn = () => {
 const changeDateFn = () => {
     document.querySelector("#start-dt").addEventListener("change", getPeriodFn);
     document.querySelector("#end-dt").addEventListener("change", getPeriodFn);
+}
+
+// 파일 선택
+const selectFileFn = () => {
+    document.querySelector("#formFileMultiple").addEventListener("change", e => {
+        const fileList = document.querySelector(".file-list");  // 파일 리스트
+        const files = e.target.files;   // 선택된 파일 리스트
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const fileName = file.name;
+
+            if (!selectedFile.has(fileName)) {
+                selectedFile.add(fileName);
+
+                const div = document.createElement("div");
+                div.classList.add("file-item");
+
+                const a = document.createElement("a");
+                a.href = URL.createObjectURL(file);
+                a.download = fileName;
+                a.innerHTML = fileName;
+
+                const icon = document.createElement('i');
+                icon.classList.add('fa-regular', 'fa-circle-xmark');
+
+                // 파일 항목 삭제
+                icon.addEventListener("click", () => {
+                    selectedFile.delete(fileName);
+                    fileList.removeChild(div);
+                })
+
+                div.append(a);
+                div.append(icon);
+                fileList.append(div);
+            }
+        }
+    })
 }
 
 // 값 입력 여부 확인
@@ -155,6 +194,7 @@ document.querySelector("#temp-content").addEventListener("click", async () => {
                     getEmpInfoFn();
                     getCurrentDateFn();
                     changeDateFn();
+                    selectFileFn();
                 })
         }
     })
@@ -174,6 +214,7 @@ document.querySelector("#time-off-ct").addEventListener("change", e => {
             getEmpInfoFn();
             getCurrentDateFn();
             changeDateFn();
+            selectFileFn();
             changeUIFn();
         })
 })
@@ -271,5 +312,6 @@ document.addEventListener("DOMContentLoaded", function () {
     getEmpInfoFn();
     getCurrentDateFn();
     changeDateFn();
+    selectFileFn();
     changeUIFn();
 })
