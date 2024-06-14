@@ -4,7 +4,7 @@
     <th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
     <link href="/css/employee/employees.css" rel="stylesheet">
     <style>
-	#btn-delete{
+	#btn-delete, #btn-revert{
 	  background-color: var(--main-color) !important;
 	  font-size:1.8rem !important;
 	  border-color : var(--main-color) !important;
@@ -23,6 +23,7 @@
                     <h1>휴지통</h1>
                 </div>
                 <div>
+                	<button type="button" class="btn btn-primary float-right revertBtn" id="btn-revert" onclick="fnrevert();">복원</button>
                 	<button type="button" class="btn btn-primary float-right deleteBtn" id="btn-delete" onclick="fnCompleteDelete();">삭제</button>
                 </div>
                 <table class="table">
@@ -38,7 +39,7 @@
                     <tbody>
                     <tr th:each="trash : ${trashList}">
                     	<td ><input type="checkbox" class="form-check-input" id="singleChecked"  onclick="fnClickCheckSingle()" th:value="${trash.trashType}"></td>
-                    	<td th:text="${#strings.substring(trash.trashType, 0, 2)}"></td>
+                    	<td th:text="${#strings.substring(trash.trashType, 0, 2)}" ></td>
                     	<td th:text="${trash.trashTitle}"></td>
                     	<td th:text="${trash.trashContent}"></td>
                     	<td th:text="${trash.trashDt}"></td>
@@ -77,46 +78,64 @@
 	      function fnCompleteDelete(){
     		  $('input[id="singleChecked"]').each(function(){
     			  if($(this).prop('checked')){
-    				  if($(this).val().substring(0, 2) == '일정'){
-  					    const data = JSON.stringify({
-					        'scheId': $(this).val()
-					    });
-    			    	  $.ajax({
-    			    		  type:'DELETE',
-    			    		  url:'/crispy/completeDeleteSche',
-    			    		  contentType: 'application/json',
-    			    		  dataType:'json',
-    			    		  data: data
-    			    	  })
-    					  .done(function(data){
-    						alert("일정 삭제 성공");
-    					  })
-    					  .fail(function(jqXHR){
-    						alert("일정 삭제 실패");
-    						alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
-    					  })    					  
+    				  let url, data;
+    				  if($(this).val().substring(0, 2) == '가맹' || $(this).val().substring(0, 2) == '개인'){
+  					    data = JSON.stringify({ 'scheId': $(this).val() });
+  					  	url = '/crispy/completeDeleteSche';
     				  }
-    				  else if($(this).val().substring(0, 2) == '연차'){
-    					    const data = JSON.stringify({
-    					        'annId': $(this).val()
-    					    });
-    			    	  $.ajax({
-    			    		  type:'DELETE',
-    			    		  url:'/crispy/completeDeleteAnn',
-    			    		  contentType: 'application/json',
-    			    		  dataType:'json',
-    			    		  data: data
-    			    	  })
-    					  .done(function(data){
-    						alert("연차 삭제 성공");
-    					  })
-    					  .fail(function(jqXHR){
-    						alert("연차 삭제 실패");
-    						alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
-    					  })       					  
+    				  else{
+   					    data = JSON.stringify({ 'annId': $(this).val() });
+   					    url = '/crispy/completeDeleteAnn'; 					  
     				  }
+			    	  $.ajax({
+			    		  type:'DELETE',
+			    		  url: url,
+			    		  contentType: 'application/json',
+			    		  dataType:'json',
+			    		  data: data
+			    	  })
+					  .done(function(data){
+						alert("일정 삭제 성공");
+					  })
+					  .fail(function(jqXHR){
+						alert("일정 삭제 실패");
+						alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
+					  })     
     			  }
     		  })
+    		  location.reload();
+	      }
+	      
+	      function fnrevert(){
+    		  $('input[id="singleChecked"]').each(function(){
+    			  if($(this).prop('checked')){
+    				  let url, data;
+    				  if($(this).val().substring(0, 2) == '가맹' || $(this).val().substring(0, 2) == '개인'){
+  					    data = JSON.stringify({ 'scheId': $(this).val() });
+  					  	url = '/crispy/revertSche';
+    				  }
+    				  else {
+   					    data = JSON.stringify({ 'annId': $(this).val() });
+   					    url = '/crispy/revertAnn'; 					  
+    				  }
+    				  
+			    	  $.ajax({
+			    		  type:'POST',
+			    		  url: url,
+			    		  contentType: 'application/json',
+			    		  dataType:'json',
+			    		  data: data
+			    	  })
+					  .done(function(data){
+						alert("일정 복구 성공");
+					  })
+					  .fail(function(jqXHR){
+						alert("일정 복구 실패");
+						alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
+					  })     
+    			  }
+    		  })
+    		  location.reload();   	  
 	      }
 	</script>
 </div>
