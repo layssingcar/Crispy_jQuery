@@ -62,6 +62,12 @@ public class ScheduleController {
 		return ResponseEntity.ok(deleteCount);
 	}
 	
+	@PostMapping(value="/revertSche", produces = "application/json")
+	public ResponseEntity<Integer> revertSchedule(@RequestBody ScheduleDto scheduleDto, Principal principal){
+		int revertCount = scheduleService.revertSchedule(scheduleDto);
+		return ResponseEntity.ok(revertCount);
+	}
+	
 	@ResponseBody
 	@GetMapping(value="/getCountSche", produces = "application/json")
 	public int getCountSche() {

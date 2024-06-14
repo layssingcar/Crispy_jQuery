@@ -99,6 +99,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	WHERE ANN_ID = #{annId}
 </delete>
 
+<update id="revertAnnual"
+		parameterType="AnnualDto">
+	UPDATE ANNUAL_T
+	SET	ANN_CT_NO = #{annCtNo},
+	MODIFY_DT = CURRENT_DATE
+	WHERE EMP_NO = #{empNo} AND ANN_ID = #{annId}
+</update>
+
 <select id="getCountAnn"
 		resultType="int">
 	SELECT COUNT(*)

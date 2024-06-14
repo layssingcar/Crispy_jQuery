@@ -109,13 +109,14 @@
 	      function fnrevert(){
     		  $('input[id="singleChecked"]').each(function(){
     			  if($(this).prop('checked')){
-    				  let url, data;
+    				  let url, data, annCtNo;
     				  if($(this).val().substring(0, 2) == '가맹' || $(this).val().substring(0, 2) == '개인'){
-  					    data = JSON.stringify({ 'scheId': $(this).val() });
+  					    data = JSON.stringify({ 'scheId': $(this).val(), 'empNo': empNo });
   					  	url = '/crispy/revertSche';
     				  }
     				  else {
-   					    data = JSON.stringify({ 'annId': $(this).val() });
+    					annCtNo = ($(this).val().substring(0, 2) == '연차') ? 0 : (($(this).val().substring(0, 2) == '반차') ? 1 : 2);
+   					    data = JSON.stringify({ 'annCtNo': annCtNo, 'annId': $(this).val(), 'empNo': empNo });
    					    url = '/crispy/revertAnn'; 					  
     				  }
     				  

@@ -2,6 +2,9 @@ package com.mcp.crispy.annual.service;
 
 import com.mcp.crispy.annual.dto.AnnualDto;
 import com.mcp.crispy.annual.mapper.AnnualMapper;
+import com.mcp.crispy.employee.dto.EmployeeDto;
+import com.mcp.crispy.employee.service.EmployeeService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,9 +16,22 @@ import java.util.List;
 public class AnnualService {
 
 	private final AnnualMapper annualMapper;
+	private final EmployeeService employeeService;
 	
 	@Transactional
 	public int insertAnnual(AnnualDto annualDto){
+		EmployeeDto emp = employeeService.getEmployeeDetailsByEmpNo(annualDto.getEmpNo());
+		
+		if(annualDto.getAnnCtNo() == 0) {
+			emp.setEmpAnnual(emp.getEmpAnnual() - 1);
+		}
+		else if(annualDto.getAnnCtNo() == 1) {
+			emp.setEmpAnnual(emp.getEmpAnnual()- 0.5);
+		}
+		else if(annualDto.getAnnCtNo() == 2){
+			emp.setEmpAnnual(emp.getEmpAnnual() - 0.25);
+		}
+		
 		return annualMapper.insertAnnual(annualDto);
 	}
 	
@@ -41,6 +57,9 @@ public class AnnualService {
 	@Transactional
 	public int completeDeleteAnn(AnnualDto annualDto){
 		return annualMapper.completeDeleteAnn(annualDto);
+	}
+	public int revertAnnual(AnnualDto annualDto) {
+		return annualMapper.revertAnnual(annualDto);
 	}
 	
 	@Transactional(readOnly = true)

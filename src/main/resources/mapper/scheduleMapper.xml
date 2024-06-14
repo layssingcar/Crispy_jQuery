@@ -100,6 +100,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	WHERE SCHE_ID = #{scheId}
 </delete>
 
+<update id="revertSchedule"
+		parameterType="ScheduleDto">
+	UPDATE SCHEDULE_T
+	SET	SCHE_STAT = #{scheStat},
+		MODIFY_DT = CURRENT_DATE
+	WHERE EMP_NO = #{empNo} AND SCHE_ID = #{scheId}
+</update>
+
 <select id="getCountSche"
 		resultType="int">
 	SELECT COUNT(*)
