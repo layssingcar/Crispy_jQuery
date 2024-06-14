@@ -1,0 +1,79 @@
+/* 결재선 선택 페이지 */
+.appr-line {
+    width: -webkit-fill-available;
+    font-size: 1.7rem;
+}
+
+/* 페이지 제목 */
+.appr-line h1 {font-size: 2.5rem;}
+
+/* 메인 영역 */
+.appr-line .main-area {
+    display: flex;
+    justify-content: center;
+    margin-top: 25px;
+}
+
+.appr-line .main-area > div {padding: 20px;}
+
+/* 결재선 박스 */
+.appr-line .tree-box {
+    width: 250px;
+    border-radius: 7px;
+}
+
+/* 결재선 */
+.appr-line #tree {
+border: 1px solid var(--main-color);
+}
+
+/* 결재선 선택 */
+.appr-line #select {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+/* 선택 아이콘 */
+.appr-line svg {width: 12px;}
+
+/* 선택된 결재선 */
+.appr-line #select-tree {
+    background-color: rgba(200, 200, 200, 0.2);
+}
+
+.appr-line .bottom-area {
+    display: flex;
+    justify-content: center;
+}
+
+/* 하단 버튼 */
+.appr-line .bottom-btn {
+    display: flex;
+    justify-content: space-between;
+    width: 55%;
+    margin-top: 20px;
+}
+
+/* 버튼 공통 CSS */
+.appr-line button {
+    height: 40px;
+    font-size: 1.5rem;
+}
+
+/* 뒤로가기 */
+.appr-line #rollback {
+    width: 100px;
+    background-color: var(--sub-color) !important;
+    border-color: var(--sub-color) !important;
+}
+
+/* 취소 */
+.appr-line #cancel {
+    width: 70px;
+    background-color: var(--sub-color) !important;
+    border-color: var(--sub-color) !important;
+}
+
+/* 신청하기 */
+.appr-line #request {width: 100px;}

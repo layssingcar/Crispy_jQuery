@@ -12,7 +12,5 @@ public interface AnnualMapper {
 	AnnualDto getAnnById(String id);
 	int modifyAnnual(AnnualDto scheduleDto);
 	int deleteAnnual(AnnualDto scheduleDto);
-	int completeDeleteAnn(AnnualDto annualDto);
-	
-	int getCountAnn();
+	int completeDeleteAnnual(int scheduleId);
 }
