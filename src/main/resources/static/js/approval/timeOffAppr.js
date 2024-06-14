@@ -161,7 +161,7 @@ document.querySelector("#temp").addEventListener("click", () => {
 // 임시저장 내용 불러오기
 document.querySelector("#temp-content").addEventListener("click", async () => {
     Swal.fire({
-        title: "문서를 선택해 주세요.",
+        text: "문서 종류를 선택하세요.",
         input: "select",
         inputOptions: {
             0: "휴가신청서",
@@ -171,8 +171,10 @@ document.querySelector("#temp-content").addEventListener("click", async () => {
         showCancelButton: true,
         confirmButtonText: "선택 완료",
         cancelButtonText: "취소",
-        width: "450px",
+        width: "400px",
         inputValidator: async (value) => {
+            if (!value) return "문서 종류가 선택되지 않았습니다.";
+            
             const response = await fetch(`/crispy/check-time-off-temp?timeOffCtNo=${value}`);
             const result = await response.text();
 
