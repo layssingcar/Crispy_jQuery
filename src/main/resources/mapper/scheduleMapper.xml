@@ -65,10 +65,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 </select>
 
 <select id="getScheList"
-		resultMap="ScheduleMap">
+		resultMap="ScheduleMap"
+		parameterType="map">
 	SELECT * 
 		FROM SCHEDULE_T
-	WHERE SCHE_STAT != 1 AND FRN_NO = #{empNo}
+	WHERE SCHE_STAT != 1 AND FRN_NO = #{frnNo} AND EMP_NO = #{empNo}
 </select>
 
 <update id="modifySchedule"
