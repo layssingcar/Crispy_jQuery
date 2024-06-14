@@ -8,49 +8,62 @@
         <result property="boardTitle" column="BOARD_TITLE" />
         <result property="boardContent" column="BOARD_CONTENT" />
         <result property="boardHit" column="BOARD_HIT" />
-        <result property="empNo" column="EMP_NO"/>
-        <result property="empName" column="EMP_NAME"/>
-        <result property="boardLikeCount" column="BOARD_LIKE_COUNT"/>
         <result property="createDt" column="CREATE_DT" />
         <result property="creator" column="CREATOR" />
         <result property="modifyDt" column="MODIFY_DT" />
         <result property="modifier" column="MODIFIER" />
-        <collection property="files" ofType="BoardFileDto">
-            <id property="boardFileNo" column="BOARD_FILE_NO"/>
-            <result property="boardOrigin" column="BOARD_ORIGIN"/>
-            <result property="boardRename" column="BOARD_RENAME"/>
-            <result property="boardPath" column="BOARD_PATH"/>
-        </collection>
+        <association property="employee" javaType="EmployeeDto">
+            <id property="empNo" column="EMP_NO" />
+            <result property="empId" column="EMP_ID" />
+            <result property="empName" column="EMP_NAME" />
+            <result property="empProfile" column="EMP_PROFILE" />
+        </association>
     </resultMap>
 
-    <!-- 게시판 LIST -->
-    <select id="getFreeBoardList">
-        SELECT ROW_NUMBER() OVER(
-        ORDER BY
-        <choose>
-            <when test="sortKey == 'boardHit'">B.BOARD_HIT</when>
-            <otherwise>B.BOARD_NO</otherwise>
-        </choose>
-        <choose>
-            <when test="sortOrder == 'DESC'">DESC</when>
-            <otherwise>ASC</otherwise>
-        </choose>
-        ) RN
+    <!--    &lt;!&ndash; 자유게시판 LIST &ndash;&gt;-->
+    <!--    <select id="getFreeBoardList">-->
+    <!--        SELECT BOARD_NO-->
+    <!--             , BOARD_TITLE-->
+    <!--             , BOARD_CONTENT-->
+    <!--             , BOARD_HIT-->
+    <!--             , CREATE_DT-->
+    <!--        FROM BOARD_T-->
+    <!--        WHERE BOARD_CT_NO = 1-->
+    <!--    </select>-->
+    <sql id="search">
+        <if test="search != null and search != ''">
+            AND (B.BOARD_TITLE LIKE '%' || #{search} || '%'
+            OR B.BOARD_CONTENT LIKE '%' || #{search} || '%')
+        </if>
+    </sql>
+
+    <select id="getTotalCount" resultType="int">
+        SELECT COUNT(*)
+        FROM BOARD_T B
+        INNER JOIN EMPLOYEE_T E
+        ON B.EMP_NO = E.EMP_NO
+        WHERE BOARD_CT_NO = 1
+        <include refid="search"></include>
+    </select>
+
+    <select id="getFreeBoardList" resultMap="BoardMap" parameterType="Map">
+        SELECT *
+        FROM (
+        SELECT ROW_NUMBER() OVER(ORDER BY B.BOARD_NO DESC) AS RN
         , B.BOARD_NO
         , B.BOARD_TITLE
         , B.BOARD_CONTENT
         , B.BOARD_HIT
         , B.CREATE_DT
-        , E.EMP_NAME
         FROM BOARD_T B
-        LEFT JOIN EMPLOYEE_T E ON B.EMP_NO = E.EMP_NO
-        WHERE 1 = 1
-        AND B.BOARD_CT_NO = 1
-        AND B.BOARD_STAT = 0
-        <if test="boardTitleSearch != null and boardTitleSearch != ''">
-            AND B.BOARD_TITLE LIKE '%' || #{boardTitleSearch} || '%'
-        </if>
+        INNER JOIN EMPLOYEE_T E ON B.EMP_NO = E.EMP_NO
+        WHERE BOARD_CT_NO = 1
+        <include refid="search"></include>
+        ) a
+        WHERE RN BETWEEN #{begin} AND #{end}
     </select>
+
+
 
     <!-- INSERT 수행 이전에 파라미터 BoardDto의 boardNo 속성(필드)에 BOARD_SEQ.NEXTVAL 값을 저장한다. -->
     <insert id="insertBoard"
@@ -67,13 +80,13 @@
         , CREATE_DT
         , CREATOR
         ) VALUES (
-          #{boardNo}
+        #{boardNo}
         , #{boardCtNo}
         , #{boardTitle}
         , #{boardContent}
         , #{empNo}
         , CURRENT_TIMESTAMP
-        , #{empNo}
+        ,#{creator}
         )
     </insert>
 
@@ -96,18 +109,29 @@
 
     <select id="getBoardCount">
         SELECT COUNT(*)
-        FROM BOARD_T B
-        WHERE B.BOARD_CT_NO = 1
+        FROM BOARD_T
     </select>
 
-    <select id="getBoardByNo"  resultMap="BoardMap">
-        SELECT B.BOARD_NO, B.BOARD_CT_NO, B.BOARD_TITLE, B.BOARD_CONTENT, B.EMP_NO, B.CREATOR,
-               B.BOARD_HIT, B.CREATE_DT, B.MODIFY_DT, B.BOARD_LIKE_COUNT,
-               E.EMP_NO, E.EMP_NAME,
-               F.BOARD_ORIGIN
+    <!--    <select id="getBoardList"-->
+    <!--            parameterType="Map"-->
+    <!--            resultMap="BoardMap">-->
+    <!--        SELECT-->
+    <!--            BOARD_NO, BOARD_CT_NO, BOARD_TITLE, BOARD_CONTENT, BOARD_HIT, CREATE_DT, MODIFY_DT, EMP_NO, CREATOR, MODIFIER-->
+    <!--        FROM (-->
+    <!--                 SELECT-->
+    <!--                     ROW_NUMBER() OVER (ORDER BY BOARD_NO ${sort}) AS RN,-->
+    <!--                         BOARD_NO, BOARD_CT_NO, BOARD_TITLE, BOARD_CONTENT, BOARD_HIT, CREATE_DT, MODIFY_DT, EMP_NO, CREATOR, MODIFIER-->
+    <!--                 FROM-->
+    <!--                     BOARD_T-->
+    <!--             )-->
+    <!--        WHERE RN BETWEEN #{begin} AND #{end}-->
+    <!--    </select>-->
+
+    <select id="getBoardByNo" resultMap="BoardMap">
+        SELECT B.BOARD_NO, B.BOARD_CT_NO, B.BOARD_TITLE, B.BOARD_CONTENT, B.BOARD_HIT, B.CREATE_DT, B.MODIFY_DT, E.EMP_NO, F.BOARD_ORIGIN
         FROM BOARD_T B
-                 INNER JOIN EMPLOYEE_T E ON E.EMP_NO = B.EMP_NO
-                 LEFT JOIN BOARD_FILE_T F ON B.BOARD_NO = F.BOARD_NO
+                 left JOIN EMPLOYEE_T E ON E.EMP_NO = B.EMP_NO
+                 left JOIN BOARD_FILE_T F ON B.BOARD_NO = F.BOARD_NO
         WHERE B.BOARD_NO = #{boardNo}
     </select>
 
@@ -118,7 +142,6 @@
         WHERE BOARD_NO = #{boardNo}
     </select>
 
-    <!-- 파일 번호 가져오기 -->
     <select id="getBoardFileByNo"
             resultType="BoardFileDto">
         SELECT BOARD_FILE_NO, BOARD_PATH, BOARD_RENAME, BOARD_ORIGIN
@@ -126,66 +149,66 @@
         WHERE BOARD_FILE_NO = #{boardFileNo}
     </select>
 
-    <!-- 게시판 수정 -->
+    <!--    <update id="updateDownloadCount">-->
+    <!--        UPDATE BOARD_FILE_T-->
+    <!--        SET DOWNLOAD_COUNT = DOWNLOAD_COUNT + 1-->
+    <!--        WHERE BOARD_FILE_NO = #{boardFileNo}-->
+    <!--    </update>-->
+
     <update id="updateBoard"
             parameterType="BoardDto">
-        UPDATE BOARD_T B
-        SET B.BOARD_TITLE = #{boardTitle}
-          , B.BOARD_CONTENT = #{boardContent}
-          , B.BOARD_CT_NO = #{boardCtNo}
-          , B.MODIFY_DT = CURRENT_DATE
-          , B.MODIFIER = #{modifier}
-        WHERE B.BOARD_NO = #{boardNo}
+        UPDATE BOARD_T
+        SET BOARD_TITLE = #{boardTitle}
+          , BOARD_CONTENT = #{boardContent}
+        WHERE BOARD_NO = #{boardNo}
+
+
+    </update>
+    <update id="updateBoardFile" parameterType="BoardFileDto">
+        UPDATE BOARD_FILE_T
+        SET BOARD_ORIGIN = #{boardOrigin}
+          , BOARD_RENAME = #{boardRename}
+          , BOARD_PATH = #{boardPath}
+        WHERE BOARD_NO = #{boardNo}
     </update>
 
-    <!-- 게시판 삭제 -->
-    <update id="deleteBoard">
-        UPDATE BOARD_T B
-          SET B.BOARD_STAT = 1,
-              B.MODIFY_DT = CURRENT_DATE,
-              B.MODIFIER = #{modifier}
-         WHERE 1 = 1
-           AND B.BOARD_NO = #{boardNo}
-    </update>
 
-    <!-- 파일 삭제 -->
     <delete id="deleteBoardFile">
         DELETE
         FROM BOARD_FILE_T
         WHERE BOARD_FILE_NO = #{boardFileNo}
     </delete>
 
-    <!-- 좋아요 확인 -->
-    <select id="isLiked" resultType="int">
-        SELECT COUNT(1)
-          FROM BOARD_LIKE_T BL
-         WHERE 1 = 1
-           AND BL.BOARD_NO = #{boardNo}
-           AND BL.EMP_NO = #{empNo}
-    </select>
-
-    <!-- 좋아요 추가 -->
-    <insert id="addLike">
-        INSERT INTO BOARD_LIKE_T (BOARD_NO, EMP_NO)
-        VALUES (#{boardNo}, #{empNo})
-    </insert>
-
-    <!-- 좋아요 삭제 -->
-    <delete id="removeLike">
-        DELETE FROM BOARD_LIKE_T
-        WHERE BOARD_NO = #{boardNo} AND EMP_NO = #{empNo}
+    <delete id="deleteBoard">
+        DELETE
+        FROM BOARD_T
+        WHERE BOARD_NO = #{boardNo}
     </delete>
 
-    <update id="updateLikeCount">
-        UPDATE BOARD_T B
-           SET B.BOARD_LIKE_COUNT = #{boardLikeCount}
-         WHERE BOARD_NO = #{boardNo}
-    </update>
+    <!--    <select id="boardLikeCheck" parameterType="map" resultType="int">-->
+    <!--        SELECT COUNT(*) FROM BOARD_BOARD_LIKE_T-->
+    <!--        WHERE BOARD_NO = #{boardNo}-->
+    <!--          AND EMP_NO = #{empNo}-->
+    <!--    </select>-->
 
-    <!-- 조회수 증가 -->
-    <update id="increaseBoardHit">
-        UPDATE BOARD_T B
-        SET B.BOARD_HIT = B.BOARD_HIT + 1
+    <!--    <insert id="insertBoardLike" parameterType="map">-->
+    <!--        INSERT INTO BOARD_BOARD_LIKE_T (BOARD_NO, EMP_NO) VALUES (#{boardNo}, #{empNo})-->
+    <!--    </insert>-->
+
+    <!--    <delete id="deleteBoardLike" parameterType="map">-->
+    <!--        DELETE FROM BOARD_BOARD_LIKE_T-->
+    <!--        WHERE BOARD_NO = #{boardNo}-->
+    <!--          AND EMP_NO = #{empNo}-->
+    <!--    </delete>-->
+
+    <!--    <select id="countBoardLike" parameterType="int" resultType="int">-->
+    <!--        SELECT COUNT(*) FROM BOARD_BOARD_LIKE_T-->
+    <!--        WHERE BOARD_NO = #{boardNo}-->
+    <!--    </select>-->
+
+    <update id="updateHit">
+        UPDATE BOARD_T
+        SET BOARD_HIT = BOARD_HIT + 1
         WHERE BOARD_NO = #{boardNo}
     </update>
 

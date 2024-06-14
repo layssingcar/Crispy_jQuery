@@ -41,7 +41,7 @@ public class CrispyUserDetailsService implements UserDetailsService {
             return new AdminPrincipal(admin, authorities);
         } else {
             // 직원 검색
-            EmployeeDto employee = employeeMapper.findByUsername(username).orElseThrow(() ->
+            EmployeeDto employee = employeeMapper.loadByMiniEmpId(username).orElseThrow(() ->
                     new UsernameNotFoundException("사용자가 존재하지 않습니다."));
             log.info("FrnNo: {}", employee.getFrnNo());
             log.info("posNo: {}", employee.getPosNo());

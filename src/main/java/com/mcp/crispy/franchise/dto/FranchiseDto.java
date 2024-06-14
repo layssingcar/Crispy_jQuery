@@ -20,6 +20,7 @@ public class FranchiseDto {
     private String frnZip;
     private String frnStreet;
     private String frnDetail;
+    private String frnGu;
     private String frnX;
     private String frnY;
     private String frnStartTime;

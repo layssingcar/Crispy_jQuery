@@ -14,52 +14,48 @@
 	<div>
 		<main>
 			<div class="main">
-				<form id="frm-board-modify" method="POST" class="my-3" enctype="multipart/form-data">
-					<input type="hidden" id="boardNo" class="board-no" th:value="${board.boardNo}">
-					<!-- 제목 -->
+				<form id="frm-board-modify" action="/crispy/modify-form" method="POST"  enctype="multipart/form-data" class="my-3" onsubmit="return fnModifyBoard()">
+					<input type="hidden" name="boardNo" th:value="${board.boardNo}" />
 					<h1 class="border-bottom py-2">게시물 수정하기</h1>
+					<!-- 제목 -->
 					<div class="col-md-5">
-						<label for="cate" class="form-label">카테고리</label>
-						<select class="form-select board-ct-no" id="cate" required="" th:value="${board.boardCtNo}">
-							<option value="" th:selected="${board.boardCtNo == null}">카테고리</option>
-							<option value="0" th:selected="${board.boardCtNo == 0}">공지사항</option>
-							<option value="1" th:selected="${board.boardCtNo == 1}">자유게시판</option>
-						</select>
+						<label for="cate" class="form-label">카테고리</label> <select
+							class="form-select" id="cate" required="">
+						<option value="">카테고리</option>
+						<option value="0" th:selected="${board.boardCtNo == 0}">공지사항</option>
+						<option value="1" th:selected="${board.boardCtNo == 1}">자유게시판</option>
+
+					</select>
 					</div>
-					<label for="boardTitle" class="form-label">제목</label>
-					<input type="text" name="boardTitle" id="boardTitle"
-						class="form-control  board-title" th:value="${board.boardTitle}"/>
-					<div class="error-message boardTitle-error" style="display: none;"></div>
+					<label for="boardTitle" class="form-label">제목</label> <input
+						type="text" name="boardTitle" id="boardTitle"
+						class="form-control" style="white-space: pre-line;" th:value="${board.boardTitle}"
+						placeholder="제목은 15자 내외로 입력해주세요." maxlength="15" />
 					<!-- 내용 -->
 					<div class="mb-3">
-							<label for="summernote" class="form-label mt-2">내용</label>
-							<textarea id="summernote" name="editordata" class="board-content" th:text="${board.boardContent}"></textarea>
+						<label for="summernote" class="form-label mt-2">내용</label>
+						<textarea id="summernote" name="boardContent" class="boardContent"></textarea>
 					</div>
-					<div class="error-message boardContent-error" style="display: none;"></div>
 
-					<!-- 파일 선택 -->
-					<div class="file-attach">
-						<label for="formFileMultiple" class="form-label">첨부파일</label>
-						<input class="form-control" type="file" id="formFileMultiple" name="files" multiple>
+					<div id="hiddenBoardContent" th:text="${board.boardContent}" style="display:none;"></div>
+
+					<div>
+						<label for="files">첨부</label>
+						<input class="form-control" type="file" id="files" name="files" multiple>
+						<button type="button" id="btn-add-boardFile" class="btn btn-primary btn-lg ">첨부추가하기</button>
 					</div>
-					<div class="file-wrap">
-						<div class="existing-files-wrap">
-							<p>기존 파일</p>
-							<ul id="existing-files">
-								<li th:each="file : ${files}">
-									<a th:href="@{/uploads/{fileName}(fileName=${file.boardRename})}" th:text="${file.boardOrigin}"></a>
-									<button type="button" class="existing-file-delete" th:data-file-id="${file.boardFileNo}">삭제</button>
-								</li>
-							</ul>
-						</div>
-						<div class="new-files-wrap">
-							<p>추가 파일</p>
-							<div class="file-list"></div> <!-- 선택된 파일 이름을 표시할 요소 -->
-						</div>
-					</div>
+					<div id="new-boardFile-list"></div>
+					<hr>
+					<h3>현재 첨부 목록</h3>
+					<div id="boardFile-list"></div>
+
+
+
+
 					<div class="d-flex justify-content-end" id="btn">
+						<input type="hidden" name="empNo" th:value="${empNo}">
 						<a type="submit" id="cancelBtn" class="btn btn-primary btn-lg ">취소</a>
-						<button type="button" id="addBtn" class="btn btn-primary btn-lg btn-modify">등록</button>
+						<button type="submit" id="modifyBtn" class="btn btn-primary btn-lg ">수정</button>
 					</div>
 				</form>
 			</div>
@@ -72,28 +68,154 @@
 	<script src="/js/summernote/lang/summernote-ko-KR.js"></script>
 	<script>
 		$(document).ready(function() {
-		$('#summernote').summernote({
-			placeholder: '500자',
-			tabsize: 2,
-			height: 400,
-			toolbar: [
-				['style', ['style']],
-				['font', ['bold', 'underline', 'clear']],
-				['color', ['color']],
-				['para', ['ul', 'ol', 'paragraph']],
-				['table', ['table']],
-				['insert', ['link', 'picture', 'video']],
-				['view', ['fullscreen', 'codeview', 'help']]
-			],
-			callbacks: {
-				onInit: function() {
-					$('#summernote').next().find('.note-placeholder').css('font-size', '16px');
-				}
-			},   width: '100%'
+			// Initialize Summernote
+			$('#summernote').summernote({
+				placeholder: '500자',
+				tabsize: 2,
+				height: 400,
+				toolbar: [
+					['style', ['style']],
+					['font', ['bold', 'underline', 'clear']],
+					['color', ['color']],
+					['para', ['ul', 'ol', 'paragraph']],
+					['table', ['table']],
+					['insert', ['link', 'picture', 'video']],
+					['view', ['fullscreen', 'codeview', 'help']]
+				],
+				callbacks: {
+					onInit: function() {
+						$('#summernote').next().find('.note-placeholder').css('font-size', '16px');
+						// Set the content from hidden div
+						const boardContent = $('#hiddenBoardContent').text();
+						$('#summernote').summernote('code', boardContent);
+					}
+				},
+			});
 		});
-	});
+
+
 	</script>
-	<script src="/js/board/board.js"></script>
+	<script>
+
+
+		$('#cancelBtn').on('click', () => {
+			window.location.href="/board/board-detail";
+		})
+		$('#addBtn').on('click', () => {
+			window.location.href="/board/board-detail";
+		})
+
+		function getBoardNoFromURL() {
+			var urlParams = new URLSearchParams(window.location.search);
+			return urlParams.get('boardNo');	// 요청 파라미터에서 boardNo 를 찾아서 값을 리턴해줌
+		}
+		var boardNo = getBoardNoFromURL();	// 이전 페이지에서 보드 넘버 받아온거
+
+		// 첨부 목록 가져와서 <div id="boardFile-list"></div> 에 표시하기
+		function fnBoardFileList() {
+			fetch('/crispy/boardFileList?boardNo=' + boardNo, {
+				method: 'GET'
+			})
+					.then(response => response.json())
+					.then(resData => {
+						let divBoardFileList = document.getElementById('boardFile-list');
+						divBoardFileList.innerHTML = '';
+						const boardFileList = resData.boardFileList;
+						for (let i = 0; i < boardFileList.length; i++) {
+							const boardFile = boardFileList[i];
+							let str = '<div class="boardFile">';
+							str += '<span>' + boardFile.boardOrigin + '</span>';
+							if ('${empNo}' === '${board.empNo}') {
+								str += '<a style="margin-left: 10px;" class="remove-boardFile" data-boardFile-no="' + boardFile.boardFileNo + '">x</a>';
+							}
+							str += '</div>';
+							divBoardFileList.innerHTML += str;
+						}
+					});
+		}
+		// 첨부 추가
+		const fnAddBoardFile = () => {
+			$('#btn-add-boardFile').on('click', () => {
+				// 폼을 FormData 객체로 생성한다.
+				let formData = new FormData();
+				// 첨부된 파일들을 FormData에 추가한다.
+				let files = $('#files').prop('files');
+				$.each(files, (i, file) => {
+					formData.append('files', file);  // 폼에 포함된 파라미터명은 files이다. files는 여러 개의 파일을 가지고 있다.
+				})
+				// 현재 게시글 번호(uploadNo)를 FormData에 추가한다.
+				formData.append('boardNo', '${board.boardNo}');
+				// FormData 객체를 보내서 저장한다.
+				$.ajax({
+					// 요청
+					type: 'post',
+					url: '/crispy/addBoardFile',
+					data: formData,
+					contentType: false,
+					processData: false,
+					// 응답
+					dataType: 'json',
+					success: (resData) => {  // resData = {"boardFileResult": true}
+						if(resData.boardFileResult){
+							alert('첨부 파일이 추가되었습니다.');
+							fnBoardFileList();
+							document.getElementById('files').value = '';
+							document.getElementById('new-boardFile-list').innerHTML = '';
+						} else {
+							alert('첨부 파일이 추가되지 않았습니다.');
+						}
+						$('#files').val('');
+					}
+				})
+			})
+		}
+
+		// 첨부 삭제
+		const fnRemoveBoardFile = () => {
+			$(document).on('click', '.remove-boardFile', (evt) => {
+				if(!confirm('해당 첨부 파일을 삭제할까요?')) {
+					return;
+				}
+				fetch('/crispy/removeBoardFile', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						'boardFileNo': evt.target.dataset.boardFileNo
+					})
+				})
+						.then(response => response.json())
+						.then(resData => {  // resData = {"deleteCount": 1}
+							if(resData.deleteCount === 1) {
+								alert('첨부 파일이 삭제되었습니다.');
+								fnBoardFileList();
+							} else {
+								alert('첨부 파일이 삭제되지 않았습니다.');
+							}
+						})
+			})
+		}
+
+		const fnModifyBoard = () => {
+			document.getElementById('frm-board-modify').addEventListener('submit', (evt) => {
+				if (document.getElementById('boardTitle').value === '') { // 수정이 필요한 부분
+					alert('제목은 필수입니다.');
+					evt.preventDefault();
+					return;
+				}
+			})
+		}
+		fnBoardFileList();
+		fnAddBoardFile();
+		fnRemoveBoardFile();
+		fnModifyBoard();
+
+
+
+
+
+	</script>
 </div>
 </body>
 </html>

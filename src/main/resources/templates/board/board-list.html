@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 	<th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
-	<link rel="stylesheet" href="/css/board2/byu-board-list.css" type="text/css">
+	<link rel="stylesheet" href="/css/board/board-list.css" type="text/css">
 </head>
 <body>
 <div class="crispy-container">
@@ -16,72 +16,172 @@
 				<div class="top-area">
 					<button type="submit" id="addBtn" class="btn btn-primary btn-lg">등록</button>
 					<div class="container-1">
-						<span class="icon"><i class="fa fa-search"></i></span><input
-							type="text" name="" id="board-search" class="form-control search"
-							placeholder="검색어를 입력하세요.">
+						<span class="icon"><i class="fa fa-search"></i></span>
+						<form action="/crispy/board-list?search=${param.search}" method="GET" name="searchform"
+							  onsubmit="return searchformaction(this,1)">
+							<input type="hidden" name="page" value="1"/>
+							<input type="text" name="search" id="search" class="form-control" placeholder="검색어를 입력하세요."
+								   th:value="${param.search}">
+							<button type="submit" class="search-btn"></button>
+						</form>
 					</div>
 				</div>
-				<div class="board-list-container" th:fragment="board-list-container">
-					<!-- 테이블 -->
-					<table class="table">
-						<thead>
+
+				<!-- 테이블 -->
+				<table class="table">
+					<thead>
+					<tr>
+						<th scope="col">제목</th>
+						<th scope="col">내용</th>
+						<th scope="col">조회수</th>
+						<th scope="col">작성일</th>
+					</tr>
+					</thead>
+
+					<!-- 리스트 -->
+					<tbody>
+					<th:block th:if="${#lists.size(freeList) > 0}">
+						<th:block th:each="free : ${freeList}">
+							<tr>
+								<td class="tab align-middle">
+									<!-- Thymeleaf의 th:attr 디렉티브를 사용하여 데이터 속성에 boardNo 설정 -->
+									<a th:href="@{/crispy/board-detail(boardNo=${free.boardNo})}"
+									   th:text="${free.boardTitle}"
+									   th:attr="data-boardNo=${free.boardNo}"
+									   class="board-title"></a>
+								</td>
+								<td class="tab align-middle"><a
+										th:href="@{/crispy/board-detail(boardNo=${free.boardNo})}"
+										th:text="${free.boardContent}"></a></td>
+								<td class="tab align-middle"><a
+										th:href="@{/crispy/board-detail(boardNo=${free.boardNo})}"
+										th:text="${free.boardHit}"></a></td>
+								<td class="tab align-middle"><a
+										th:href="@{/crispy/board-detail(boardNo=${free.boardNo})}"
+										th:text="${free.createDt}"></a></td>
+							</tr>
+						</th:block>
+					</th:block>
+					<th:block th:if="${#lists.size(freeList) == 0}">
 						<tr>
-							<th scope="col" class="col-sort board-no">
-								<span>게시물번호</span>
-								<i class="fa-solid fa-sort" id="board-no-sort"></i>
-							</th>
-							<th scope="col" class="board-title">제목</th>
-							<th scope="col" class="board-creator">작성자</th>
-							<th scope="col" class="board-create">작성일</th>
-							<th scope="col" class="col-sort board-hit">
-								<span>조회수</span>
-								<i class="fa-solid fa-sort" id="board-hit-sort"></i>
-							</th>
+							<td colspan="6">게시물이 없습니다</td>
 						</tr>
-						</thead>
+					</th:block>
 
-						<!-- 리스트 -->
-						<tbody>
-						<tr th:each="free : ${freeList.items}" th:data-boardNo="${free.boardNo}">
-							<td th:text="${free.boardNo}">자유게시판 번호</td>
-							<td>
-							<a th:href="@{/crispy/board-detail(boardNo=${free.boardNo})}" th:text="${free.boardTitle}" class="board-title">제목</a></td>
-							<td th:text="${free.empName}">작성자</td>
-							<td th:text="${free.createDt}">작성일</td>
-							<td th:text="${free.boardHit}">조회수</td>
-						</tr>
-						</tbody>
-					</table>
+					</tbody>
+				</table>
 
-					<!-- 페이지네이션 -->
-					<nav aria-label="Page navigation example">
-						<ul class="pagination pagination-lg">
+				<nav aria-label="Page navigation example">
+					<ul class="pagination pagination-lg">
+						<li class="page-item"><a class="page-link" th:classappend="${currentPage == 1} ? 'disabled'"
+												 th:href="|javascript:searchformaction(document.searchform, ${prevPage})|"
+												 aria-label="Previous">
+							<span aria-hidden="true">&laquo;</span>
+						</a>
+						</li>
+						<th:block th:each="p : ${#numbers.sequence(startPage, endPage)}">
 							<li class="page-item">
-								<a class="page-link" href="#" aria-label="Previous" data-page-no="1">
-									<span aria-hidden="true">&laquo;</span>
-								</a>
+								<a class="page-link" th:classappend="${currentPage == p} ? 'active'"
+								   th:href="|javascript:searchformaction(document.searchform, ${p})|"
+								   th:text="${p}"></a>
 							</li>
-
-							<!-- 페이지 이동 버튼 -->
-							<th:block th:each="pageNo : ${#numbers.sequence(freeList.startPage, freeList.endPage)}">
-								<li class="page-item">
-									<a class="page-link" href="#" th:text="${pageNo}" th:data-page-no="${pageNo}"></a>
-								</li>
-							</th:block>
-
-							<li class="page-item">
-								<a class="page-link" href="#" aria-label="Next" th:data-page-no="${freeList.totalPage}">
-									<span aria-hidden="true">&raquo;</span>
-								</a>
-							</li>
-						</ul>
-					</nav>
-				</div>
+						</th:block>
+						<li class="page-item">
+							<a class="page-link" th:classappend="${currentPage == maxPage} ? 'disabled'"
+							   th:href="|javascript:searchformaction(document.searchform, ${nextPage})|"
+							   aria-label="Next">
+								<span aria-hidden="true">&raquo;</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
 			</div>
 		</main>
 		<footer th:replace="~{layout/footer :: footer}"></footer>
 	</div>
-	<script src="/js/board/boardList.js"></script>
+	<script>
+		document.getElementById('addBtn').addEventListener('click',
+				function () {
+					window.location.href = '/crispy/board-add';
+				});
+
+		// document.querySelectorAll('tbody tr').forEach(row => {
+		// 	row.addEventListener('click', function() {
+		// 		const boardNo = this.getAttribute('data-boardNo');
+		// 		window.location.href = `/crispy/board-detail?boardNo=${boardNo}`;
+		// 	});
+		// });
+
+		// 전역 변수
+		var boardListSize = [[${freeList.size()}]];
+
+		// 글자수 제한 및 ... 표시 함수
+		function limitText(text, limit) {
+			return text.length > limit ? text.substring(0, limit) + '...' : text;
+		}
+
+		// 게시물 제목과 내용의 길이 제한 적용
+		$(document).ready(function () {
+			$('.table tbody tr').each(function () {
+				var contentCell = $(this).find('td:eq(2)'); // 내용 열
+				var maxLength = 20; // 최대 길이 설정
+
+				var contentText = contentCell.text();
+
+				contentCell.text(limitText(contentText, maxLength));
+			});
+		});
+
+		// 페이징 검색 게시물 없을 시 hide 처리
+		if (boardListSize != 0) {
+			let page = $('.pagination').show();
+		} else {
+			let page = $('.pagination').hide();
+		}
+
+		// 검색 기능 처리
+		function searchformaction(f, p) {
+			if (f.search == '') {
+				alert("검색어를 입력하세요");
+				f.search.focus();
+				return false;
+			}
+			f.page.value = p;
+			f.submit();
+		}
+
+		// $(document).ready(function () {
+		//     $('.board-link').click(function (event) {
+		//         event.preventDefault(); // 기본 링크 동작 방지
+		//         var boardNo = $(this).attr('href').match(/\d+$/)[0]; // href 속성에서 boardNo 추출
+		//         updateBoardHit(boardNo); // boardHit 업데이트 함수 호출
+		//     });
+		// });
+		// $(document).ready(function() {
+		//     $('.board-title').on('click', function(event) {
+		//         event.preventDefault();
+		//         var boardNo = $(this).attr('data-boardNo');
+		//         var url = $(this).attr('href'); // 클릭된 링크의 URL을 가져옴
+		//         updateBoardHit(boardNo, url); // updateBoardHit 함수 호출 시 URL 전달
+		//     });
+		// });
+
+		// function updateBoardHit(boardNo, url) {
+		//     $.ajax({
+		//         url: '/crispy/putBoardHit',
+		//         type: 'POST',
+		//         contentType: 'application/json',
+		//         data: JSON.stringify({ 'boardNo': boardNo }),
+		//         success: function(response) {
+		//             // 조회수가 업데이트된 후에 URL로 이동하도록 변경
+		//             window.location.href = url;
+		//         },
+		//         error: function(xhr, status, error) {
+		//             console.error("게시물 조회수 업데이트 중 오류가 발생했습니다.");
+		//             console.error(xhr.responseText);
+		//         }
+		//     });
+		// }
+	</script>
 </div>
 </body>
-</html>

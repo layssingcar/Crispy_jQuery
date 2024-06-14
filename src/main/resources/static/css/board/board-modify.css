@@ -24,7 +24,16 @@
 		background-color: #808080 !important;
 	border-color: #808080 !important;
 }
-
+#modifyBtn {
+	margin-right: 5px;
+	box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+	width: 60px;
+	height: 40px;
+	align-items: center;
+	/* justify-content: center; */
+	display: flex;
+	font-size: 1.7rem;
+}
 .border-bottom {
 	font-size: 2rem;
 	margin-top: 5rem;
@@ -39,7 +48,7 @@
 	height: 3rem;
 }
 
-/* ¹®¼­ ÀÛ¼º form */
+/* ï¿½ï¿½ï¿½ï¿½ ï¿½Û¼ï¿½ form */
 #content-form {
 	display: flex;
 	flex-direction: column;
@@ -52,7 +61,7 @@
 	width: 1070px;
 }
 
-/* ¿¡µðÅÍ »ó´Ü ¹öÆ° */
+/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½Æ° */
 .note-toolbar button {
 	color: initial !important;
 	background-color: #fff !important;
@@ -63,7 +72,7 @@
 	height: 500px !important;
 }
 
-/* ÆÄÀÏ ¼±ÅÃ */
+/* ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ */
 .file-attach {
 	display: flex;
 	width: 1000px;

@@ -38,6 +38,8 @@ public class FranchiseRegisterDto {
 
     private String frnDetail;
 
+    private String frnGu;
+
     private String frnStartTime;
     private String frnEndTime;
     private Date frnJoinDt;

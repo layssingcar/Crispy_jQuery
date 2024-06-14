@@ -25,8 +25,14 @@ function execPostCode() {
 
             // 우편번호와 주소 정보를 해당 필드에 넣는다.
             document.querySelector('.zipcode').value = data.zonecode; // 우편번호 입력 필드
-            document.querySelector(".street-address").value = roadAddr + extraRoadAddr; // 도로명 주소 입력 필드
+            document.querySelector(".street-address").value = roadAddr + extraRoadAddr; //// 도로명 주소 입력 필드
 
+            const frnGuElement = document.querySelector(".frn-gu");
+            if (frnGuElement) {
+                frnGuElement.value = data.sigungu;
+            }
+
+            console.log(data.sigungu);
         }
     }).open();
 

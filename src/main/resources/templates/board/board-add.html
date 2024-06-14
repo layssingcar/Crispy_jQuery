@@ -11,34 +11,33 @@
 	<div>
 		<main>
 			<div class="main">
-				<form id="frm-board-add" method="POST" class="my-3" enctype="multipart/form-data">
+				<form id="frm-board-add" action="/crispy/add-form" method="POST" enctype="multipart/form-data" class="my-3">
 					<h1 class="border-bottom py-2">게시물 작성하기</h1>
 					<div class="col-md-5">
 						<label for="cate" class="form-label">카테고리</label>
-						<select class="form-select board-ct-no" id="cate" name="boardCtNo" required>
+						<select class="form-select" id="cate" name="boardCtNo" required>
 							<option value="">카테고리</option>
 							<option value="0">공지사항</option>
 							<option value="1">자유게시판</option>
 						</select>
 					</div>
 					<label for="boardTitle" class="form-label">제목</label>
-					<input type="text" name="boardTitle" id="boardTitle" class="form-control board-title" style="white-space: pre-line;" placeholder="제목은 100자 내외로 입력해주세요."required />
-					<div class="error-message boardTitle-error" style="display: none;"></div>
+					<input type="text" name="boardTitle" id="boardTitle" class="form-control" style="white-space: pre-line;" placeholder="제목은 15자 내외로 입력해주세요." maxlength="15" required />
 					<div class="mb-3">
 						<label for="summernote" class="form-label mt-2">내용</label>
-						<textarea id="summernote" name="boardContent" class="boardContent board-content"></textarea>
-						<div class="error-message boardContent-error" style="display: none;"></div>
+						<textarea th:utext="${boardContent}" id="summernote" name="boardContent" class="boardContent"></textarea>
 					</div>
 					<div class="file-attach">
+						<input type="hidden" name="empNo" th:value="${empNo}"/>
 						<div class="mb-3">
 							<input class="form-control" type="file" id="formFileMultiple" name="files" multiple>
 						</div>
 					</div>
-					<div class="file-list"></div> <!-- 선택된 파일 이름을 표시할 요소 -->
 					<div class="d-flex justify-content-end" id="btn">
 						<a id="cancelBtn" class="btn btn-primary btn-lg">취소</a>
-						<button type="button" id="addBtn" class="btn btn-primary btn-lg">등록</button>
+						<button type="submit" id="addBtn" class="btn btn-primary btn-lg">등록</button>
 					</div>
+
 				</form>
 			</div>
 		</main>
@@ -46,7 +45,6 @@
 	</div>
 	<script src="/js/summernote/summernote-lite.js"></script>
 	<script src="/js/summernote/lang/summernote-ko-KR.js"></script>
-	<script src="/js/board/board.js"></script>
 	<script>
 
 		$(document).ready(function() {
@@ -74,6 +72,44 @@
 		$('#cancelBtn').on('click', () => {
 			window.location.href="/board/board-list";
 		});
+
+		$('#frm-board-add').on('submit', function(evt) {
+			var content = $('#summernote').summernote('code').trim();
+
+			if ($('#boardTitle').val().trim() === '') {
+				alert('제목 입력은 필수입니다.');
+				evt.preventDefault();
+			} else if (content === '') {
+				alert('내용 입력은 필수입니다.');
+				evt.preventDefault();
+			} else {
+				// Remove <p> tags and keep text content
+				var cleanContent = content.replace(/<\/?p>/g, '');
+				$('#summernote').summernote('code', cleanContent);
+
+				alert("게시물이 등록되었습니다.");
+				// Prevent the default form submission to avoid navigation before saving
+				evt.preventDefault();
+				window.history.back();
+
+
+				// Submit the form using AJAX to stay on the page for the alert
+				$.ajax({
+					type: 'POST',
+					url: $('#frm-board-add').attr('action'),
+					data: new FormData($('#frm-board-add')[0]),
+					processData: false,
+					contentType: false,
+					success: function(response) {
+						window.location.href = '/crispy/board-detail';
+					},
+					error: function(xhr, status, error) {
+						alert('오류가 발생했습니다. 다시 시도해 주세요.');
+					}
+				});
+			}
+		});
+
 	</script>
 </div>
 </body>
