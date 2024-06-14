@@ -16,38 +16,30 @@ public class SalesService {
 
 	private final SalesMapper salesMapper;
 
-	
-
 	/* 매출 INSERT */
 	@Transactional
 	public int insertSales(SalesDto salesDto){
-		log.info("insertSales: {}", salesDto.getFrnNo());
 		return salesMapper.insertSales(salesDto);
 	}
 
 	/* 일별 매출 */
-	public void findDailySales(){
-		return;
-	}
-
-	/* 주간 매출 조회*/
-	public void findWeeklySales(){
-		return;
+	public List<SalesDto> findDailySales(int frnNo){
+		return salesMapper.findDailySales(frnNo);
 	}
 
 	/* 달별 매출 조회*/
-	public void findMonthlySales(){
-		return;
+	public List<SalesDto> findMonthlySales(int frnNo){
+		return salesMapper.findMonthlySales(frnNo);
 	}
 
 	/* 년별 매출 */
-	public void findYearlySales(){
-		return;
+	public List<SalesDto> findYearlySales(int frnNo){
+		return salesMapper.findYearlySales(frnNo);
 	}
 
 	/* 기간별 평균 매출 */
-	public void findAvgSales(){
-		return;
+	public String findAvgSales(){
+		return salesMapper.findAvgSales();
 	}
 
 	/* 구별 매출 조회 : 카테고리, 가맹점 테이블 */

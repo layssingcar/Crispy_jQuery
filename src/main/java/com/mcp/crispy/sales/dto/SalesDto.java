@@ -15,13 +15,18 @@ public class SalesDto {
 
     /* SALES_T 매출 테이블 */
     private int salNo;
-    private Date salDt;
     private Double salPrice;
     private Date createDt;
     private int creator;
     private Date modifyDt;
     private int modifier;
     private int frnNo;
+    
+    /* 매출 날짜 정리 */
+    private Date salDt;     // 전체 
+    private String salDd;   // 일별
+    private String salMn;   // 달별
+    private String salYr;   // 년도별
 
     /* FRANCHISE_T 매장 테이블 */
     private String frnName;

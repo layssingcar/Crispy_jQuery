@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 
@@ -22,7 +23,7 @@ public class SalesController {
 
 	private final SalesService salesService;
 	
-	/* 매장 매출 목록 */
+	/* 매장 매출 전체목록 */
 	@GetMapping("/sales")
 	public String sales(Model model, Authentication authentication) {
 		// 로그인한 정보
@@ -56,25 +57,55 @@ public class SalesController {
 		}
 	}
 
-	/* 일별 매출 */
-	public void findDailySales(final Model model) {
+	/*	일별 매출 */
+	@GetMapping("/daily")
+	public String findDailySales(Model model, Authentication authentication) {
+		EmployeePrincipal principal = (EmployeePrincipal) authentication.getPrincipal();
+		model.addAttribute("emp", principal.getEmployee());
+		model.addAttribute("frnNo", principal.getFrnNo());
+
+		List<SalesDto> salesDailyList = salesService.findDailySales(principal.getFrnNo());
+		model.addAttribute("salesDailyList", salesDailyList);
+
+		return "sales/daily";
+	}
+	
+	/* 달별 조회*/
+	@GetMapping("/monthly")
+	public String findMonthlySales(Model model, Authentication authentication) {
+		EmployeePrincipal principal = (EmployeePrincipal) authentication.getPrincipal();
+		model.addAttribute("emp", principal.getEmployee());
+		model.addAttribute("frnNo", principal.getFrnNo());
+
+		List<SalesDto> salesMonthlyList = salesService.findMonthlySales(principal.getFrnNo());
+		model.addAttribute("salesMonthlyList", salesMonthlyList);
+
+		return "sales/monthly";
 	}
 
-	/* 주간 매출 조회*/
-	public void findWeeklySales(final Model model) {
-	}
+	/* 달별 조회*/
+	@GetMapping("/yearly")
+	public String findYearlySales(Model model, Authentication authentication) {
+		EmployeePrincipal principal = (EmployeePrincipal) authentication.getPrincipal();
+		model.addAttribute("emp", principal.getEmployee());
+		model.addAttribute("frnNo", principal.getFrnNo());
 
-	/* 달별 매출 조회*/
-	public void findMonthlySales(final Model model) {
-	}
+		List<SalesDto> yearlySalesList = salesService.findYearlySales(principal.getFrnNo());
+		model.addAttribute("yearlySalesList", yearlySalesList);
 
-	/* 년별 매출 */
-	public void findYearlySales(final Model model) {
-
+		return "sales/yearly";
 	}
 
 	/* 기간별 평균 매출 */
-	public void findAvgSales(final Model model) {
+	@GetMapping
+	public void findAvgSales(Model model) {
+		String avgSalse = salesService.findAvgSales();
+		model.addAttribute("avgSalse", avgSalse);
+
+		String avgSalseDate = avgSalse.toString();
+
+
+		System.out.println("@@@@@@@@@@@@@@@@ : avgSalse" + avgSalseDate);
 	}
 
 	/* 구별 매출 조회 : 카테고리, 가맹점 테이블 */

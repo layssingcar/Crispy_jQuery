@@ -24,19 +24,12 @@
                             </div>
                         </form>
 
-                        <!-- 카테고리 선택 -->
-<!--                        <select class="form-select form-select-lg mb-3 m-left" id="sales-ct" aria-label="Large select example" name="salesCt">
-                            <option value="0">카테고리 선택</option>
-                            <option value="1">일별 매출</option>
-                            <option value="2">주간 매출</option>
-                            <option value="3">달별 매출</option>
-                            <option value="4">년별 매출</option>
-                             카테고리 옵션
-                            <th:block th:each="salesCt : ${salesCtList}">
-                                <option th:value="${salesCt.salesCtNo}" th:text="${salesCt.salesCtName}"></option>
-                            </th:block>
-
-                        </select>-->
+                        <select class="form-select form-select-lg mb-3 m-left" onchange="salesDate(this)" id="sales-ct" aria-label="Large select example" name="salesCt">
+                            <option value="0" th:selected="${param.salesCt == '0'}">전체 매출</option>
+                            <option value="1" th:selected="${param.salesCt == '1'}">일별 매출</option>
+                            <option value="2" th:selected="${param.salesCt == '2'}">달별 매출</option>
+                            <option value="3" th:selected="${param.salesCt == '3'}">년별 매출</option>
+                        </select>
 
                         <!-- 매출 등록 버튼 -->
 						<button type="button" class="btn m-left" id="salesAdd">매출 등록</button>
@@ -61,7 +54,7 @@
                                 </tr>
                             </thead>
 
-                            <tbody>
+                            <tbody id="salesList">
                                 <!-- 리스트 -->
                                 <tr class="sales-row" th:each="sales : ${salesList}">
 
@@ -72,10 +65,10 @@
                                     <td th:text="${emp.empName}"></td>
 
                                     <!-- 매출 등록일 -->
-                                    <td th:text="${#dates.format(sales.salDt, 'yyyy-MM-dd')}"></td>
+                                    <td th:text="${#dates.format(sales.salDt, 'yyyy년 MM월 dd일')}"></td>
 
                                     <!-- 가맹점 매출액 -->
-                                    <td th:text="${sales.salPrice}"></td>
+                                    <td th:text="${#numbers.formatDecimal(sales.salPrice, 1, 0)}"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -160,16 +153,26 @@
 	</div>
     <script>
         $(document).ready(function () {
+
+            /* 매출 등록 버튼 클릭 시 Modal 호출 */
             $('#salesAdd').on('click', function () {
                 $('.modal').modal('show');
             });
 
             $('#modal-add').on('click', function () {
+
+                alert("매출이 등록 되었습니다.")
+                $('.modal').modal('hide');
+                location.reload();
+
                 var formData = {
                     salDt: $('#salDt').val(),
                     salPrice: $('#salPrice').val(),
                     frnNo: $('#frnNo').val()
                 };
+
+                const salPrice = Math.ceil(formData.salPrice);
+                console.log(salPrice);
 
                 $.ajax({
                     type: 'POST',
@@ -181,6 +184,7 @@
                         // 입력 성공 시 모달 닫기 등 추가 작업 수행
                         $('.modal').modal('hide');
                         location.reload(); // 페이지 새로고침 예시
+
                     },
                     error: function (xhr, status, error) {
                         console.error(xhr.responseText);
@@ -189,16 +193,40 @@
             });
         });
 
-        // 검색 기능 처리
-        function searchformaction(f, p) {
-            if (f.search == '') {
-                alert("검색어를 입력하세요");
-                f.search.focus();
-                return false;
+        /* 선택 카테고리 고정*/
+        document.addEventListener("DOMContentLoaded", function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const salesCt = urlParams.get('salesCt');
+
+            if (salesCt !== null) {
+                document.getElementById('sales-ct').value = salesCt;
             }
-            f.page.value = p;
-            f.submit();
+        });
+
+        function salesDate(sel) {
+            let targetUrl = "";
+            switch (Number(sel.value)) {
+                case 0:
+                    targetUrl = "/crispy/sales";
+                    break;
+                case 1:
+                    targetUrl = "/crispy/daily";
+                    break;
+                case 2:
+                    targetUrl = "/crispy/monthly";  // 달별 매출 페이지 경로
+                    break;
+                case 3:
+                    targetUrl = "/crispy/yearly";   // 년별 매출 페이지 경로
+                    break;
+                default:
+                    targetUrl = "/crispy/sales";    // 기본값 설정
+                    break;
+            }
+
+            // 현재 선택된 옵션 값을 쿼리 파라미터로 함께 전달
+            location.href = targetUrl + "?salesCt=" + sel.value;
         }
+
     </script>
 </body>
 </html>
