@@ -250,8 +250,8 @@ public class EmployeeService {
     
     // 직원 연차 차감
     @Transactional
-    public void updateAnnual(double ann) {
-    	employeeMapper.updateAnnual(ann);
+    public void updateAnnual(EmployeeDto empDto) {
+    	employeeMapper.updateAnnual(empDto);
     }
 
 }

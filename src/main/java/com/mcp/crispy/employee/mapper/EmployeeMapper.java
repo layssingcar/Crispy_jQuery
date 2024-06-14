@@ -85,5 +85,6 @@ public interface EmployeeMapper {
 	// 리프레시 토큰 삭제
 	void removeRefreshToken(@Param("empNo") Integer empNo);
 	
-	void updateAnnual(@Param("annual") double ann);
+	// 연차 차감
+	void updateAnnual(EmployeeDto empDto);
 }

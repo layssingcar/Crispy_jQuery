@@ -26,11 +26,12 @@ public class AnnualService {
 			emp.setEmpAnnual(emp.getEmpAnnual() - 1);
 		}
 		else if(annualDto.getAnnCtNo() == 1) {
-			emp.setEmpAnnual(emp.getEmpAnnual()- 0.5);
+			emp.setEmpAnnual(emp.getEmpAnnual() - 0.5);
 		}
 		else if(annualDto.getAnnCtNo() == 2){
 			emp.setEmpAnnual(emp.getEmpAnnual() - 0.25);
 		}
+		employeeService.updateAnnual(emp);
 		
 		return annualMapper.insertAnnual(annualDto);
 	}
