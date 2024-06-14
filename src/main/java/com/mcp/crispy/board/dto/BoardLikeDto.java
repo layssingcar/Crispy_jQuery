@@ -5,14 +5,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BoardFileDto {
-    private int boardFileNo;
-    private String boardOrigin;
-    private String boardRename;
-    private String boardPath;
+@Builder
+public class BoardLikeDto {
     private int boardNo;
+    private int empNo;
 }

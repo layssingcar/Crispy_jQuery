@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
+	<link rel="stylesheet" href="/css/board2/byu-board-list.css" type="text/css">
+</head>
+<body>
+<div class="crispy-container">
+	<aside th:replace="~{layout/sidebar :: sidebar}"></aside>
+	<div>
+		<main>
+			<div class="board-list">
+				<h1>자유게시판</h1>
+
+				<!-- 상단 영역 -->
+				<div class="top-area">
+					<button type="submit" id="addBtn" class="btn btn-primary btn-lg">등록</button>
+					<div class="container-1">
+						<span class="icon"><i class="fa fa-search"></i></span><input
+							type="text" name="" id="board-search" class="form-control search"
+							placeholder="검색어를 입력하세요.">
+					</div>
+				</div>
+				<div class="board-list-container" th:fragment="board-list-container">
+					<!-- 테이블 -->
+					<table class="table">
+						<thead>
+						<tr>
+							<th scope="col" class="col-sort board-no">
+								<span>게시물번호</span>
+								<i class="fa-solid fa-sort" id="board-no-sort"></i>
+							</th>
+							<th scope="col" class="board-title">제목</th>
+							<th scope="col" class="board-creator">작성자</th>
+							<th scope="col" class="board-create">작성일</th>
+							<th scope="col" class="col-sort board-hit">
+								<span>조회수</span>
+								<i class="fa-solid fa-sort" id="board-hit-sort"></i>
+							</th>
+						</tr>
+						</thead>
+
+						<!-- 리스트 -->
+						<tbody>
+						<tr th:each="free : ${freeList.items}" th:data-boardNo="${free.boardNo}">
+							<td th:text="${free.boardNo}">자유게시판 번호</td>
+							<td>
+							<a th:href="@{/crispy/freeBoardDetail(boardNo=${free.boardNo})}" th:text="${free.boardTitle}" class="board-title">제목</a></td>
+							<td th:text="${free.empName}">작성자</td>
+							<td th:text="${free.createDt}">작성일</td>
+							<td th:text="${free.boardHit}">조회수</td>
+						</tr>
+						</tbody>
+					</table>
+
+					<!-- 페이지네이션 -->
+					<nav aria-label="Page navigation example">
+						<ul class="pagination pagination-lg">
+							<li class="page-item">
+								<a class="page-link" href="#" aria-label="Previous" data-page-no="1">
+									<span aria-hidden="true">&laquo;</span>
+								</a>
+							</li>
+
+							<!-- 페이지 이동 버튼 -->
+							<th:block th:each="pageNo : ${#numbers.sequence(freeList.startPage, freeList.endPage)}">
+								<li class="page-item">
+									<a class="page-link" href="#" th:text="${pageNo}" th:data-page-no="${pageNo}"></a>
+								</li>
+							</th:block>
+
+							<li class="page-item">
+								<a class="page-link" href="#" aria-label="Next" th:data-page-no="${freeList.totalPage}">
+									<span aria-hidden="true">&raquo;</span>
+								</a>
+							</li>
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</main>
+		<footer th:replace="~{layout/footer :: footer}"></footer>
+	</div>
+	<script src="/js/board/boardList.js"></script>
+</div>
+</body>
+</html>

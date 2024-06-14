@@ -3,162 +3,80 @@ package com.mcp.crispy.board.service;
 import com.mcp.crispy.board.dto.BoardDto;
 import com.mcp.crispy.board.dto.BoardFileDto;
 import com.mcp.crispy.board.mapper.BoardMapper;
-import com.mcp.crispy.common.page.PageResponse;
-import com.mcp.crispy.common.utils.MyFileUtils;
-import com.vane.badwordfiltering.BadWordFiltering;
-import jakarta.servlet.http.Cookie;
+import com.mcp.crispy.board.utils.MyFileUtils;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.session.RowBounds;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneOffset;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.net.URLEncoder;
+import java.nio.file.Files;
 import java.util.List;
+import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
-
-@Slf4j
-@Service
+@Transactional
 @RequiredArgsConstructor
+@Service
 public class BoardService {
 
     private final BoardMapper boardMapper;
     private final MyFileUtils myFileUtils;
-    private final BadWordFiltering badWordFiltering;
 
-    // 게시판 생성
     @Transactional
-    public int insertBoard(BoardDto boardDto, Integer empNo, List<MultipartFile> files) {
-
+    public int registerBoard(String title, String content, int empNo, int boardCtNo) {
+        // Create BoardDto instance
         BoardDto board = BoardDto.builder()
+                .boardCtNo(boardCtNo) // Assuming 자유게시판 카테고리가 1로 정의되어 있음
+                .boardTitle(title)
+                .boardContent(content)
                 .empNo(empNo)
-                .boardTitle(boardDto.getBoardTitle())
-                .boardContent(boardDto.getBoardContent())
-                .boardCtNo(boardDto.getBoardCtNo())
                 .build();
-        boardMapper.insertBoard(board);
 
-        log.info("insertBoard: {}", board.getBoardCtNo());
+        // Insert board and retrieve generated boardNo
+        int insertBoardCount = boardMapper.insertBoard(board);
 
-        if (files != null && !files.isEmpty()) {
-            registerBoardFile(files, board.getBoardNo());
+        // Check if board was successfully inserted
+        if (insertBoardCount == 1) {
+            // Retrieve and return generated boardNo
+            return board.getBoardNo();
         }
-        return board.getBoardNo();
+
+        // Return -1 if board insertion fails
+        return -1;
     }
-
-    // 게시판 수정
-    @Transactional
-    public int updateBoard(BoardDto boardDto, Integer empNo, List<Integer> deletedFileNo, List<MultipartFile> newFiles) {
-
-        BoardDto board = BoardDto.builder()
-                .boardNo(boardDto.getBoardNo())
-                .boardTitle(boardDto.getBoardTitle())
-                .boardContent(boardDto.getBoardContent())
-                .boardCtNo(boardDto.getBoardCtNo())
-                .modifier(empNo)
-                .build();
-        boardMapper.updateBoard(board);
-
-        if (deletedFileNo != null && !deletedFileNo.isEmpty()) {
-            for (Integer fileNo : deletedFileNo) {
-                BoardFileDto file = boardMapper.getBoardFileByNo(fileNo);
-                if (file != null) {
-                    File fileToDelete = new File(file.getBoardPath(), file.getBoardRename());
-                    if (fileToDelete.exists()) {
-                        fileToDelete.delete();
-                    }
-                    boardMapper.deleteBoardFile(fileNo);
-                }
-            }
-        }
-        // 새로운 파일 추가
-        if (newFiles != null && !newFiles.isEmpty()) {
-            registerBoardFile(newFiles, board.getBoardNo());
-        }
-        return board.getBoardNo();
-    }
-
-    // 게시판 삭제
-    public void deleteBoard(Integer boardNo, Integer modifier) {
-        log.info("Delete Board : {} {}", boardNo, modifier);
-        boardMapper.deleteBoard(boardNo, modifier);
-    }
-
-    // 자유게시판 LIST
-    public PageResponse<BoardDto> getFreeBoardList(BoardDto boardDto, int limit) {
-        // 현재 페이지 번호
-        int page = Math.max(boardDto.getPageNo(), 1);
-
-        // 전체 재고 항목 수
-        int totalCount = boardMapper.getBoardCount();
-
-        // 전체 페이지 수
-        int totalPage = totalCount / limit + ((totalCount % limit > 0) ? 1 : 0);
-
-        // 페이지 내비게이션 범위
-        int startPage = ((page - 1) / limit) * limit + 1;
-        int endPage = Math.min(startPage + limit - 1, totalPage);
-
-        /*
-         * 조회 범위
-         *  - offset: 조회를 시작할 행의 인덱스
-         *  - limit: 조회할 행의 개수
-         */
-        RowBounds rowBounds = new RowBounds(limit * (page - 1), limit);
-
-        // 게시판 리스트
-        List<BoardDto> items = boardMapper.getFreeBoardList(boardDto, rowBounds);
-        items.forEach(item -> {
-            String boardTitle = item.getBoardTitle();
-            String boardContent = item.getBoardContent();
-            item.setBoardTitle(boardTitle);
-            item.setBoardContent(boardContent);
-        });
-
-        // PageResponse 객체
-        return new PageResponse<>(items, totalPage, startPage, endPage, page);
-    }
-
-    @Transactional(readOnly=true)
-    public BoardDto loadBoardByNo(int boardNo, int empNo) {
-        log.info("Load board by no: {}", boardNo);
-        BoardDto boardDto = boardMapper.getBoardByNo(boardNo);
-        log.info("Load Board : {}", boardDto);
-        List<BoardFileDto> files = boardMapper.getBoardFileList(boardNo);
-
-        // 게시판 제목과 내용을 필터링
-        boardDto.setBoardTitle(badWordFiltering.change(boardDto.getBoardTitle()));
-        boardDto.setBoardContent(badWordFiltering.change(boardDto.getBoardContent()));
-
-        boardDto.setFiles(files);
-
-        boolean isLiked = boardMapper.isLiked(boardNo, empNo) > 0;
-        boardDto.setLiked(isLiked);
-
-        return boardDto;
-    }
-
-
 
     // BoardService 클래스에 registerBoardFile 메서드 수정
     @Transactional
-    public boolean registerBoardFile(List<MultipartFile> files, int boardNo) {
+    public boolean registerBoardFile(MultipartHttpServletRequest multipartRequest, int boardNo) {
+        // Retrieve boardFileed files
+        List<MultipartFile> files = multipartRequest.getFiles("files");
+
+        // Count of successfully inserted board files
         int insertBoardFileCount = 0;
-        for (MultipartFile multipartFile: files) {
+
+        // Iterate over boardFileed files and process them
+        for (MultipartFile multipartFile : files) {
             if (multipartFile != null && !multipartFile.isEmpty()) {
                 try {
+                    // Save the file to disk
                     String boardPath = myFileUtils.getBoardPath();
                     File dir = new File(boardPath);
                     if (!dir.exists()) {
-                        dir.mkdirs();
+                        dir.mkdirs();  // Create directories if they do not exist
                     }
 
                     String boardOrigin = multipartFile.getOriginalFilename();
@@ -166,98 +84,319 @@ public class BoardService {
                     File file = new File(boardPath, boardRename);
                     multipartFile.transferTo(file);
 
+                    // Create BoardFileDto instance
                     BoardFileDto boardFile = BoardFileDto.builder()
                             .boardRename(boardRename)
                             .boardOrigin(boardOrigin)
                             .boardPath(boardPath)
-                            .boardNo(boardNo)
+                            .boardNo(boardNo) // Use the generated boardNo
                             .build();
 
+                    // Insert board file
                     int inserted = boardMapper.insertBoardFile(boardFile);
                     if (inserted == 1) {
                         insertBoardFileCount++;
                     }
-
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }
 
+        // Ensure all files were successfully inserted
         return insertBoardFileCount == files.size();
     }
+//    @Transactional(readOnly=true)
+//    public void loadBoardList(Model model) {
+//
+//
+//        Map<String, Object> modelMap = model.asMap();
+//        HttpServletRequest request = (HttpServletRequest) modelMap.get("request");
+//
+//        int total = boardMapper.getBoardCount();
+//
+//        Optional<String> optDisplay = Optional.ofNullable(request.getParameter("display"));
+//        int display = Integer.parseInt(optDisplay.orElse("20"));
+//
+//        Optional<String> optPage = Optional.ofNullable(request.getParameter("page"));
+//        int page = Integer.parseInt(optPage.orElse("1"));
+//
+//        myPageUtils.setPaging(total, display, page);
+//
+//        Optional<String> optSort = Optional.ofNullable(request.getParameter("sort"));
+//        String sort = optSort.orElse("DESC");
+//
+//        Map<String, Object> map = Map.of("begin", myPageUtils.getBegin()
+//                , "end", myPageUtils.getEnd()
+//                , "sort", sort);
+//
+//        /*
+//         * total = 100, display = 20
+//         *
+//         * page  beginNo
+//         * 1     100
+//         * 2     80
+//         * 3     60
+//         * 4     40
+//         * 5     20
+//         */
+//        model.addAttribute("beginNo", total - (page - 1) * display);
+//        model.addAttribute("boardList", boardMapper.getBoardList(map));
+//        model.addAttribute("paging", myPageUtils.getPaging(request.getContextPath() + "/board/list.do", sort, display));
+//        model.addAttribute("display", display);
+//        model.addAttribute("sort", sort);
+//        model.addAttribute("page", page);
+//
+//    }
 
-    @Transactional
-    public void toggleBoardLike(int boardNo, int empNo) {
-        BoardDto boardDto = boardMapper.getBoardByNo(boardNo);
-        if (boardDto == null) {
-            throw new IllegalArgumentException("존재하지 않는 게시판입니다.");
-        }
+//    // 자유게시판 LIST
+//    public List<BoardDto> getFreeBoardList() {
+//        return boardMapper.getFreeBoardList();
+//    }
 
-        int likeStatus = boardMapper.isLiked(boardNo, empNo);
-        if (likeStatus == 0) {
-            boardDto.addLike();
-            boardMapper.addLike(boardNo, empNo);
-        } else {
-            boardDto.removeLike();
-            boardMapper.removeLike(boardNo, empNo);
-        }
+    @Transactional(readOnly = true)
+    public List<BoardDto> getFreeBoardList(Integer page,int cnt, String search) {
+        int totalCount = getTotalCount(search);
+        int total = totalCount/cnt + ((totalCount%cnt>0) ? 1:0);
+        int begin = (page - 1) * cnt + 1;
+        int end = begin + cnt - 1;
+        if (search == null) {
+            search = ""; // Set default value if null
+        }        Map<String,Object> map = Map.of("begin",begin, "end",end, "total", total, "search", search);
 
-        boardMapper.updateLikeCount(boardDto.getBoardLikeCount(), boardNo);
+        return boardMapper.getFreeBoardList(map);
     }
 
-    // 조회수 증가
-    @Transactional
-    public void increaseBoardHit(int boardNo, HttpServletRequest request, HttpServletResponse response) {
-        BoardDto board = boardMapper.getBoardByNo(boardNo);
+
+    @Transactional(readOnly = true)
+    public int getTotalCount(String search) {
+        return boardMapper.getTotalCount(search);
+    }
 
 
-        Cookie[] cookies = request.getCookies();
-        Cookie hitCookie = null;
-        boolean isCookieUpdated = false;
 
-        // 쿠키가 존재하는 경우
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("boardHit")) {
-                    hitCookie = cookie;
-                    // 쿠키의 값에 현재 게시물 번호가 포함이 안 되어 있으면 진입, 있으면 바로 break
-                    if (!cookie.getValue().contains("[" + boardNo + "]")) {
-                        boardMapper.increaseBoardHit(boardNo); // DB 업데이트
-                        board.addBoardHit();
-                        cookie.setValue(cookie.getValue() + "[" + boardNo + "]");
-                        isCookieUpdated = true;
-                    }
-                    break;
+
+    public ResponseEntity<Resource> download(int boardFileNo, HttpServletRequest request) {
+        BoardFileDto boardFile = boardMapper.getBoardFileByNo(boardFileNo);
+        File file = new File(boardFile.getBoardPath(), boardFile.getBoardRename());
+        Resource resource = new FileSystemResource(file);
+
+        if (!resource.exists()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        String boardOrigin = boardFile.getBoardOrigin();
+        String userAgent = request.getHeader("User-Agent");
+        try {
+            if (userAgent.contains("Trident")) {
+                boardOrigin = URLEncoder.encode(boardOrigin, "UTF-8").replace("+", " ");
+            } else if (userAgent.contains("Edg")) {
+                boardOrigin = URLEncoder.encode(boardOrigin, "UTF-8");
+            } else {
+                boardOrigin = new String(boardOrigin.getBytes("UTF-8"), "ISO-8859-1");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        HttpHeaders responseHeader = new HttpHeaders();
+        responseHeader.add("Content-Disposition", "boardFilement; filename=" + boardOrigin);
+        responseHeader.add("Content-Length", String.valueOf(file.length()));
+
+        return new ResponseEntity<>(resource, responseHeader, HttpStatus.OK);
+    }
+
+    public ResponseEntity<Resource> downloadAll(int boardNo, HttpServletRequest request) {
+        List<BoardFileDto> boardFileList = boardMapper.getBoardFileList(boardNo);
+        if (boardFileList.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        File tempDir = new File(System.getProperty("java.io.tmpdir"));
+        if (!tempDir.exists()) {
+            tempDir.mkdirs();
+        }
+
+        String tempFilename = "boardFiles_" + boardNo + ".zip";
+        File tempFile = new File(tempDir, tempFilename);
+
+        try (ZipOutputStream zout = new ZipOutputStream(new FileOutputStream(tempFile))) {
+            for (BoardFileDto boardFile : boardFileList) {
+                ZipEntry zipEntry = new ZipEntry(boardFile.getBoardOrigin());
+                zout.putNextEntry(zipEntry);
+
+                try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(new File(boardFile.getBoardPath(), boardFile.getBoardRename())))) {
+                    zout.write(in.readAllBytes());
+                }
+
+                zout.closeEntry();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Resource resource = new FileSystemResource(tempFile);
+        HttpHeaders responseHeader = new HttpHeaders();
+        responseHeader.add("Content-Disposition", "boardFilement; filename=" + tempFilename);
+        responseHeader.add("Content-Length", String.valueOf(tempFile.length()));
+
+        return new ResponseEntity<>(resource, responseHeader, HttpStatus.OK);
+    }
+
+
+    public void removeTempFiles() {
+        File tempDir = new File(myFileUtils.getTempPath());
+        File[] tempFiles = tempDir.listFiles();
+        if(tempFiles != null) {
+            for(File tempFile : tempFiles) {
+                tempFile.delete();
+            }
+        }
+    }
+
+    @Transactional(readOnly=true)
+
+    public BoardDto getBoardByNo(int boardNo) {
+        return boardMapper.getBoardByNo(boardNo);
+    }
+    @Transactional(readOnly=true)
+    public void loadBoardByNo(int boardNo, Model model) {
+        model.addAttribute("board", boardMapper.getBoardByNo(boardNo));
+        model.addAttribute("boardFileList", boardMapper.getBoardFileList(boardNo));
+    }
+
+
+
+    public int modifyBoard(BoardDto board) {
+        return boardMapper.updateBoard(board);
+    }
+
+    @Transactional(readOnly=true)
+
+    public ResponseEntity<Map<String, Object>> getBoardFileList(int boardNo) {
+        return ResponseEntity.ok(Map.of("boardFileList", boardMapper.getBoardFileList(boardNo)));
+    }
+
+    public ResponseEntity<Map<String, Object>> addBoardFile(MultipartHttpServletRequest multipartRequest) throws Exception {
+
+        List<MultipartFile> files =  multipartRequest.getFiles("files");
+
+        int boardFileCount;
+        if(files.get(0).getSize() == 0) {
+            boardFileCount = 1;
+        } else {
+            boardFileCount = 0;
+        }
+
+        for(MultipartFile multipartFile : files) {
+
+            if(multipartFile != null && !multipartFile.isEmpty()) {
+
+                String boardPath = myFileUtils.getBoardPath();
+                File dir = new File(boardPath);
+                if(!dir.exists()) {
+                    dir.mkdirs();
+                }
+
+                String boardOrigin = multipartFile.getOriginalFilename();
+                String boardRename = myFileUtils.getBoardRename(boardOrigin);
+                File file = new File(dir, boardRename);
+
+                multipartFile.transferTo(file);
+
+                String contentType = Files.probeContentType(file.toPath());  // 이미지의 Content-Type은 image/jpeg, image/png 등 image로 시작한다.
+
+                BoardFileDto boardFile = BoardFileDto.builder()
+                        .boardOrigin(boardOrigin)
+                        .boardRename(boardRename)
+                        .boardNo(Integer.parseInt(multipartRequest.getParameter("boardNo")))
+                        .boardPath(boardPath)
+                        .build();
+
+                boardFileCount += boardMapper.insertBoardFile(boardFile);
+
+            }  // if
+
+        }  // for
+
+        return ResponseEntity.ok(Map.of("boardFileResult", files.size() == boardFileCount));
+
+    }
+
+    public ResponseEntity<Map<String, Object>> removeBoardFile(int boardFileNo) {
+        // 삭제할 첨부 파일 정보를 DB에서 가져오기
+        BoardFileDto boardFile = boardMapper.getBoardFileByNo(boardFileNo);
+
+        // 파일 삭제
+        File file = new File(boardFile.getBoardPath(), boardFile.getBoardRename());
+        if (file.exists()) {
+            file.delete();
+        }
+
+        // DB에서 첨부 파일 삭제
+        int deleteCount = boardMapper.deleteBoardFile(boardFileNo);
+
+        return ResponseEntity.ok(Map.of("deleteCount", deleteCount));
+    }
+
+    public int removeBoard(int boardNo) {
+        // Get the list of files associated with the board
+        List<BoardFileDto> boardFileList = boardMapper.getBoardFileList(boardNo);
+
+        // Delete each file from the filesystem
+        if (boardFileList != null && !boardFileList.isEmpty()) {
+            for (BoardFileDto boardFile : boardFileList) {
+                File file = new File(boardFile.getBoardPath(), boardFile.getBoardRename());
+                if (file.exists()) {
+                    file.delete();
                 }
             }
         }
 
-        // boardHit 쿠키가 존재하지 않는 경우
-        if (hitCookie == null) {
-            boardMapper.increaseBoardHit(boardNo); // DB 업데이트
-            board.addBoardHit();
-            hitCookie = new Cookie("boardHit", "[" + boardNo + "]");
-            isCookieUpdated = true;
+        // Delete each file record from the database
+        if (boardFileList != null && !boardFileList.isEmpty()) {
+            for (BoardFileDto boardFile : boardFileList) {
+                boardMapper.deleteBoardFile(boardFile.getBoardFileNo());
+            }
         }
 
-        // 쿠키가 갱신된 경우
-        if (isCookieUpdated) {
-            int maxAge = getEndOfDay(); // 자정을 기준으로 조회수 쿠키 초기화
-            hitCookie.setPath("/");
-            hitCookie.setMaxAge(maxAge);
-            response.addCookie(hitCookie);
-        }
-
-        log.info("Increased board hit for boardNo: {} {}", boardNo, board.getBoardHit());
+        // Delete the board from the database
+        return boardMapper.deleteBoard(boardNo);
     }
 
-    // 현재 시간부터 자정까지 남은 초 계산
-    private int getEndOfDay() {
-        long todayEndSecond = LocalDate.now().atTime(LocalTime.MAX).toEpochSecond(ZoneOffset.UTC);
-        long currentSecond = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
-
-        return (int) (todayEndSecond - currentSecond);
+    @Transactional
+    public int updateHit(int boardNo) {
+        return boardMapper.updateHit(boardNo);
     }
+
+
+//    // 좋아요 여부 확인 서비스
+//    public int boardLikeCheck(Map<String, Object> map) {
+//        return BoardMapper.boardLikeCheck(map);
+//    }
+
+//    // 좋아요 처리 서비스
+//    @Transactional(rollbackFor = Exception.class)
+//
+//    public int like(Map<String, Integer> paramMap) {
+//        int result = 0;
+//
+//        if(paramMap.get("check") == 0) { // 좋아요 상태 X
+//            // BOARD_LIKE 테이블 INSERT
+//            result = boardMapper.insertBoardLike(paramMap);
+//        } else { // 좋아요 상태 O
+//            // BOARD_LIKE 테이블 DELETE
+//            result = boardMapper.deleteBoardLike(paramMap);
+//        }
+//
+//        // SQL 수행 결과가 0 == DB 또는 파라미터에 문제가 있다.
+//        // 1) 에러를 나타내는 임의의 값을 반환 (-1)
+//        if(result == 0) return -1;
+//
+//        // 현재 게시글의 좋아요 개수 조회
+//        int count = boardMapper.countBoardLike(paramMap.get("boardNo"));
+//
+//        return count;
+//    }
 
 }

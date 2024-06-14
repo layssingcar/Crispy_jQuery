@@ -1,8 +1,8 @@
-package com.mcp.crispy.board.service;
+package com.mcp.crispy.freeboard.service;
 
-import com.mcp.crispy.board.dto.BoardFileDto;
-import com.mcp.crispy.board.mapper.BoardMapper;
 import com.mcp.crispy.common.utils.MyFileUtils;
+import com.mcp.crispy.freeboard.dto.FreeBoardFileDto;
+import com.mcp.crispy.freeboard.mapper.FreeBoardMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,13 +19,13 @@ import java.util.zip.ZipOutputStream;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class BoardFileService {
+public class FreeBoardFileService {
 
-    private final BoardMapper boardMapper;
+    private final FreeBoardMapper freeBoardMapper;
     private final MyFileUtils myFileUtils;
 
-    public BoardFileDto getFileDownloadInfo(int boardFileNo, HttpServletRequest request) throws IOException {
-        BoardFileDto boardFile = boardMapper.getBoardFileByNo(boardFileNo);
+    public FreeBoardFileDto getFileDownloadInfo(int boardFileNo, HttpServletRequest request) throws IOException {
+        FreeBoardFileDto boardFile = freeBoardMapper.getFreeBoardFileByNo(boardFileNo);
 
         if (boardFile == null) {
             return null;
@@ -51,11 +51,11 @@ public class BoardFileService {
             }
         }
 
-        return new BoardFileDto(resource, boardOrigin, file.length());
+        return new FreeBoardFileDto(resource, boardOrigin, file.length());
     }
 
-    public BoardFileDto getAllFilesDownloadInfo(int boardNo) throws IOException {
-        List<BoardFileDto> boardFileList = boardMapper.getBoardFileList(boardNo);
+    public FreeBoardFileDto getAllFilesDownloadInfo(int boardNo) throws IOException {
+        List<FreeBoardFileDto> boardFileList = freeBoardMapper.getFreeBoardFileList(boardNo);
 
         if (boardFileList.isEmpty()) {
             return null;
@@ -70,7 +70,7 @@ public class BoardFileService {
         File tempFile = new File(tempDir, tempFilename);
 
         try (ZipOutputStream zout = new ZipOutputStream(new FileOutputStream(tempFile))) {
-            for (BoardFileDto boardFile : boardFileList) {
+            for (FreeBoardFileDto boardFile : boardFileList) {
                 ZipEntry zipEntry = new ZipEntry(boardFile.getBoardOrigin());
                 zout.putNextEntry(zipEntry);
 
@@ -83,6 +83,6 @@ public class BoardFileService {
         }
 
         Resource resource = new FileSystemResource(tempFile);
-        return new BoardFileDto(resource, tempFilename, tempFile.length());
+        return new FreeBoardFileDto(resource, tempFilename, tempFile.length());
     }
 }

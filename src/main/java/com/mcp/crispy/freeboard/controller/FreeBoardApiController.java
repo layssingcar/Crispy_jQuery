@@ -1,10 +1,10 @@
-package com.mcp.crispy.board.controller;
+package com.mcp.crispy.freeboard.controller;
 
 import com.mcp.crispy.auth.domain.EmployeePrincipal;
-import com.mcp.crispy.board.dto.BoardDto;
-import com.mcp.crispy.board.dto.BoardFileDto;
-import com.mcp.crispy.board.service.BoardFileService;
-import com.mcp.crispy.board.service.BoardService;
+import com.mcp.crispy.freeboard.dto.FreeBoardDto;
+import com.mcp.crispy.freeboard.dto.FreeBoardFileDto;
+import com.mcp.crispy.freeboard.service.FreeBoardFileService;
+import com.mcp.crispy.freeboard.service.FreeBoardService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,29 +25,29 @@ import java.util.Map;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/api/board")
-public class BoardApiController {
-    private final BoardService boardService;
-    private final BoardFileService boardFileService;
+@RequestMapping("/api/freeBoard")
+public class FreeBoardApiController {
+    private final FreeBoardService freeBoardService;
+    private final FreeBoardFileService boardFileService;
 
     @PostMapping("/v1")
-    public ResponseEntity<?> insertBoard(@Valid @RequestPart BoardDto boardDto,
+    public ResponseEntity<?> insertBoard(@Valid @RequestPart FreeBoardDto freeBoardDto,
                                          @RequestPart(required = false) List<MultipartFile> files,
                                          Authentication authentication) {
         EmployeePrincipal employee = (EmployeePrincipal) authentication.getPrincipal();
-        int boardNo = boardService.insertBoard(boardDto, employee.getEmpNo(), files);
+        int boardNo = freeBoardService.insertFreeBoard(freeBoardDto, employee.getEmpNo(), files);
         return ResponseEntity.ok(Map.of("message", "게시글이 등록되었습니다.", "boardNo", boardNo));
     }
 
 
     @PutMapping("/v1")
-    public ResponseEntity<?> modifyBoard(@Valid @RequestPart BoardDto boardDto,
+    public ResponseEntity<?> modifyBoard(@Valid @RequestPart FreeBoardDto freeBoardDto,
                                          @RequestPart(required = false) List<MultipartFile> files,
                                          @RequestPart(required = false) List<Integer> deletedFileNo,
                                          Authentication authentication) {
         EmployeePrincipal employee = (EmployeePrincipal) authentication.getPrincipal();
-        log.info("boardDto : {}",boardDto.toString());
-        int boardNo = boardService.updateBoard(boardDto, employee.getEmpNo(), deletedFileNo, files);
+        log.info("boardDto : {}", freeBoardDto.toString());
+        int boardNo = freeBoardService.updateFreeBoard(freeBoardDto, employee.getEmpNo(), deletedFileNo, files);
         return ResponseEntity.ok(Map.of("message", "게시글이 수정되었습니다.", "boardNo", boardNo));
     }
 
@@ -57,7 +57,7 @@ public class BoardApiController {
                                          Authentication authentication) {
         log.info("deleteBoard boardNo : {}",boardNo);
         EmployeePrincipal employee = (EmployeePrincipal) authentication.getPrincipal();
-        boardService.deleteBoard(boardNo, employee.getEmpNo());
+        freeBoardService.deleteFreeBoard(boardNo, employee.getEmpNo());
         return ResponseEntity.ok(Map.of("message", "게시판이 삭제되었습니다."));
     }
 
@@ -66,24 +66,24 @@ public class BoardApiController {
     public ResponseEntity<?> toggleLike(@PathVariable Integer boardNo,
                                         Authentication authentication) {
         EmployeePrincipal employee = (EmployeePrincipal) authentication.getPrincipal();
-        boardService.toggleBoardLike(boardNo, employee.getEmpNo());
+        freeBoardService.toggleFreeBoardLike(boardNo, employee.getEmpNo());
         return ResponseEntity.ok(Map.of("message", "좋아요 상태가 변경되었습니다."));
     }
 
     @GetMapping("/file/download")
     public ResponseEntity<Resource> downloadFile(@RequestParam("boardFileNo") int boardFileNo, HttpServletRequest request) {
         try {
-            BoardFileDto boardFileDto = boardFileService.getFileDownloadInfo(boardFileNo, request);
+            FreeBoardFileDto freeBoardFileDto = boardFileService.getFileDownloadInfo(boardFileNo, request);
 
-            if (boardFileDto == null) {
+            if (freeBoardFileDto == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
 
             HttpHeaders headers = new HttpHeaders();
-            headers.add("Content-Disposition", "attachment; filename=" + boardFileDto.getBoardRename());
-            headers.add("Content-Length", String.valueOf(boardFileDto.getContentLength()));
+            headers.add("Content-Disposition", "attachment; filename=" + freeBoardFileDto.getBoardRename());
+            headers.add("Content-Length", String.valueOf(freeBoardFileDto.getContentLength()));
 
-            return new ResponseEntity<>(boardFileDto.getResource(), headers, HttpStatus.OK);
+            return new ResponseEntity<>(freeBoardFileDto.getResource(), headers, HttpStatus.OK);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -92,17 +92,17 @@ public class BoardApiController {
     @GetMapping("/file/downloadAll")
     public ResponseEntity<Resource> downloadAllFiles(@RequestParam("boardNo") int boardNo) {
         try {
-            BoardFileDto boardFileDto = boardFileService.getAllFilesDownloadInfo(boardNo);
+            FreeBoardFileDto freeBoardFileDto = boardFileService.getAllFilesDownloadInfo(boardNo);
 
-            if (boardFileDto == null) {
+            if (freeBoardFileDto == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
 
             HttpHeaders headers = new HttpHeaders();
-            headers.add("Content-Disposition", "attachment; filename=" + boardFileDto.getBoardRename());
-            headers.add("Content-Length", String.valueOf(boardFileDto.getContentLength()));
+            headers.add("Content-Disposition", "attachment; filename=" + freeBoardFileDto.getBoardRename());
+            headers.add("Content-Length", String.valueOf(freeBoardFileDto.getContentLength()));
 
-            return new ResponseEntity<>(boardFileDto.getResource(), headers, HttpStatus.OK);
+            return new ResponseEntity<>(freeBoardFileDto.getResource(), headers, HttpStatus.OK);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
