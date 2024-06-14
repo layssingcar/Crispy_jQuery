@@ -47,6 +47,12 @@ public class ScheduleService {
 	}
 	@Transactional
 	public int completeDeleteSchedule(ScheduleDto scheduleDto) {
+
 		return scheduleMapper.completeDeleteSchedule(scheduleDto);
+	}
+	
+	@Transactional(readOnly = true)
+	public int getCountSche() {
+		return scheduleMapper.getCountSche();
 	}
 }

@@ -31,7 +31,7 @@
 }
 
 /* 검색 창 */
-.board-list .search {
+.board-list #search {
     width: 240px;
     height: 40px;
     padding-left: 35px;
@@ -60,7 +60,7 @@
 .board-list .fa-sort {
     position: absolute;
     top: 7px;
-    right: 25px;
+    right: 163px;
 }
 
 /* 데이터 셀 */
@@ -93,6 +93,13 @@
     outline: 0;
     opacity: 0.65;
 }
+.active>.page-link, .page-link.active {
+    z-index: 3;
+    color: var(--bs-pagination-active-color);
+    background-color:var(--main-color);
+    border-color: var(--main-color);
+}
+
 
 .board-list .active > .page-link {
     color: var(--bs-pagination-active-color);
@@ -109,8 +116,8 @@
     margin-right: 5px; /* input과 button 사이의 간격 조정 */
 }
 #addBtn{
-	margin-right:100rem;
-	width: 70px;
+    margin-right:100rem;
+    width: 70px;
     height: 40px;
     pont-size:1.7rem;
     margin-top:20px;
