@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -51,15 +52,9 @@ public class AnnualController {
 	
 	
 	@ResponseBody
-	@DeleteMapping(value="/completeDeleteAnn", produces = "application/json")
-	public ResponseEntity<Integer> completeDeleteAnn(@RequestBody AnnualDto annualDto, Principal principal){
-		int deleteCount = annualService.completeDeleteAnn(annualDto);
+	@DeleteMapping(value="/completeDeleteAnn/{annId}", produces = "application/json")
+	public ResponseEntity<Integer> completeDeleteAnnual(@PathVariable(value="annId") Optional<String> opt){
+		int deleteCount = annualService.completeDeleteAnnual(Integer.parseInt(opt.orElse("0")));
 		return ResponseEntity.ok(deleteCount);
-	}
-	
-	@ResponseBody
-	@GetMapping(value="/getCountAnn", produces = "application/json")
-	public int getCountAnn() {
-		return annualService.getCountAnn();
 	}
 }

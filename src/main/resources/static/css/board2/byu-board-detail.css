@@ -1,0 +1,147 @@
+.board-detail span,
+.board-detail button,
+.board-detail a,
+.board-detail p,
+.board-detail textarea{
+	font-size: 1.7rem;
+}
+
+
+.board-detail {
+	width: 60%;
+	padding-left: 16%;
+}
+
+.board-detail .detail-header > div:nth-child(1) {
+	display: flex;
+	flex-direction: column;
+}
+
+/* 작성자 */
+.board-detail .board-info {
+	display: flex;
+	justify-content: flex-end;
+}
+
+/* 게시물 내용 */
+.board-detail .board-content {
+	height: 300px;
+}
+
+/* 좋아요 */
+.board-detail .board-like {
+	display: flex;
+	justify-content: flex-end;
+}
+
+/* 첨부파일 */
+.board-detail .board-files {
+	margin-bottom: 15px;
+}
+
+/* 수정, 삭제, 목록으로 */
+.board-detail .board-buttons {
+	display: flex;
+	justify-content: space-between;
+}
+
+/* a 태그 스타일 */
+.board-detail .board-buttons a {
+	width: 100px;
+	font-size: 1.5rem;
+	line-height: 35px;
+	border-radius: 15px;
+	background-color: var(--main-color);
+	color: #fff;
+}
+.board-detail #downloadAllBtn{
+	width: 170px;
+}
+.board-detail button {
+	width: 100px;
+	line-height: 35px;
+	border-radius: 15px;
+}
+
+.board-detail .board-buttons .board-delete {
+	background-color: var(--sub-color) !important;
+	border-color: var(--sub-color) !important;
+}
+
+.board-detail .cmt-container > div {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+
+}
+
+/* 댓글 wrap */
+.board-detail .cmt-wrap {
+	display: flex;
+	justify-content: space-between;
+}
+
+/* 댓글 프로필 */
+.board-detail .comment-profile {
+	width: 56px;
+	height: 56px;
+	border: 3px solid #fff;
+	border-radius: 100%;
+}
+
+/* 댓글 단 직원 */
+.board-detail .comment-emp {
+	display: flex;
+}
+
+.board-detail .cmt-content {
+	font-size: 3rem;
+}
+
+.board-detail .reply-container {
+	margin-left: 45px;
+}
+
+.board-detail #reply-button {
+	width: 51px;
+	background-color: #fff !important;
+	border: none;
+	color: #000 !important;
+}
+
+.board-detail .cmt-container label {
+	font-size: 2rem;
+}
+
+/* 댓글 */
+.board-detail .comment-emp p {
+	margin-bottom: 0;
+}
+
+.board-detail .comment-emp img {
+	margin-top: 13px;
+}
+
+/* 댓글 버튼 */
+.board-detail .cmt-wrap .comment-delete {
+	background-color: var(--sub-color) !important;
+	border-color: var(--sub-color) !important;
+}
+
+/* 댓글 버튼 스타일 */
+.board-detail .cmt-wrap button {
+	width: 50px;
+	line-height: 20px;
+	border-radius: 0;
+}
+
+
+.comment-level-1 {
+	margin-left: 0;
+	margin-top: 20px;
+}
+
+.comment-level-2 {
+	margin-left: 30px;
+	margin-top: 20px;
+}

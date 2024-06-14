@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.mcp.crispy.board.mapper.BoardMapper">
-    <resultMap type="BoardDto" id="BoardMap">
+<mapper namespace="com.mcp.crispy.freeboard.mapper.FreeBoardMapper">
+    <resultMap type="FreeBoardDto" id="FreeBoardMap">
         <id property="boardNo" column="BOARD_NO" />
         <result property="boardCtNo" column="BOARD_CT_NO" />
         <result property="boardTitle" column="BOARD_TITLE" />
@@ -53,8 +53,8 @@
     </select>
 
     <!-- INSERT 수행 이전에 파라미터 BoardDto의 boardNo 속성(필드)에 BOARD_SEQ.NEXTVAL 값을 저장한다. -->
-    <insert id="insertBoard"
-            parameterType="BoardDto">
+    <insert id="insertFreeBoard"
+            parameterType="FreeBoardDto">
         <selectKey keyProperty="boardNo" order="BEFORE" resultType="int">
             SELECT BOARD_SEQ.NEXTVAL FROM DUAL
         </selectKey>
@@ -78,7 +78,7 @@
     </insert>
 
     <!-- 파일업로드 INSERT -->
-    <insert id="insertBoardFile" parameterType="BoardFileDto">
+    <insert id="insertFreeBoardFile" parameterType="FreeBoardFileDto">
         INSERT INTO BOARD_FILE_T (
             BOARD_FILE_NO,
             BOARD_PATH,
@@ -94,13 +94,13 @@
                  )
     </insert>
 
-    <select id="getBoardCount">
+    <select id="getFreeBoardCount">
         SELECT COUNT(*)
         FROM BOARD_T B
         WHERE B.BOARD_CT_NO = 1
     </select>
 
-    <select id="getBoardByNo"  resultMap="BoardMap">
+    <select id="getFreeBoardByNo"  resultMap="FreeBoardMap">
         SELECT B.BOARD_NO, B.BOARD_CT_NO, B.BOARD_TITLE, B.BOARD_CONTENT, B.EMP_NO, B.CREATOR,
                B.BOARD_HIT, B.CREATE_DT, B.MODIFY_DT, B.BOARD_LIKE_COUNT,
                E.EMP_NO, E.EMP_NAME,
@@ -111,7 +111,7 @@
         WHERE B.BOARD_NO = #{boardNo}
     </select>
 
-    <select id="getBoardFileList"
+    <select id="getFreeBoardFileList"
             resultType="BoardFileDto">
         SELECT BOARD_FILE_NO, BOARD_PATH, BOARD_RENAME, BOARD_ORIGIN
         FROM BOARD_FILE_T
@@ -119,7 +119,7 @@
     </select>
 
     <!-- 파일 번호 가져오기 -->
-    <select id="getBoardFileByNo"
+    <select id="getFreeBoardFileByNo"
             resultType="BoardFileDto">
         SELECT BOARD_FILE_NO, BOARD_PATH, BOARD_RENAME, BOARD_ORIGIN
         FROM BOARD_FILE_T
@@ -127,7 +127,7 @@
     </select>
 
     <!-- 게시판 수정 -->
-    <update id="updateBoard"
+    <update id="updateFreeBoard"
             parameterType="BoardDto">
         UPDATE BOARD_T B
         SET B.BOARD_TITLE = #{boardTitle}
@@ -139,7 +139,7 @@
     </update>
 
     <!-- 게시판 삭제 -->
-    <update id="deleteBoard">
+    <update id="deleteFreeBoard">
         UPDATE BOARD_T B
           SET B.BOARD_STAT = 1,
               B.MODIFY_DT = CURRENT_DATE,
@@ -149,7 +149,7 @@
     </update>
 
     <!-- 파일 삭제 -->
-    <delete id="deleteBoardFile">
+    <delete id="deleteFreeBoardFile">
         DELETE
         FROM BOARD_FILE_T
         WHERE BOARD_FILE_NO = #{boardFileNo}

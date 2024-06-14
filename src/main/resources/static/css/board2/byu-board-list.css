@@ -54,6 +54,20 @@
     text-align: center;
 }
 
+.board-list .board-no {
+    width: 160px;
+}
+
+.board-list .board-title {
+    width: 400px;
+}
+
+.board-list .board-creator,
+.board-list .board-create,
+.board-list .board-hit {
+    width: 200px;
+}
+
 /* 기안일 정렬 */
 .board-list .col-sort {position: relative;}
 
@@ -109,8 +123,8 @@
     margin-right: 5px; /* input과 button 사이의 간격 조정 */
 }
 #addBtn{
-	margin-right:100rem;
-	width: 70px;
+    margin-right:100rem;
+    width: 70px;
     height: 40px;
     pont-size:1.7rem;
     margin-top:20px;

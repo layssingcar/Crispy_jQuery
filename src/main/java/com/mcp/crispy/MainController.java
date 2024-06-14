@@ -45,8 +45,4 @@ public class MainController {
 		return "calendar/calendar";
 	}
 	
-	@GetMapping("/attend")
-	public String attendTest() {
-		return "attendance/attendance";
-	}
 }

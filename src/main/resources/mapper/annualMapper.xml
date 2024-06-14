@@ -92,18 +92,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 </update>
 
 
-<delete id="completeDeleteAnn"
-		parameterType="AnnualDto">
+<delete id="completeDeleteAnnual">
 	DELETE 
 		FROM ANNUAL_T 
 	WHERE ANN_ID = #{annId}
 </delete>
 
-<select id="getCountAnn"
-		resultType="int">
-	SELECT COUNT(*)
-		FROM ANNUAL_T
-</select>
+
 
 
 </mapper>

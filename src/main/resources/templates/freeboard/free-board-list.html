@@ -45,7 +45,7 @@
 						<tr th:each="free : ${freeList.items}" th:data-boardNo="${free.boardNo}">
 							<td th:text="${free.boardNo}">자유게시판 번호</td>
 							<td>
-							<a th:href="@{/crispy/board-detail(boardNo=${free.boardNo})}" th:text="${free.boardTitle}" class="board-title">제목</a></td>
+							<a th:href="@{/crispy/freeBoardDetail(boardNo=${free.boardNo})}" th:text="${free.boardTitle}" class="board-title">제목</a></td>
 							<td th:text="${free.empName}">작성자</td>
 							<td th:text="${free.createDt}">작성일</td>
 							<td th:text="${free.boardHit}">조회수</td>

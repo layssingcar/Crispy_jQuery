@@ -13,6 +13,4 @@ public interface ScheduleMapper {
 	int modifySchedule(ScheduleDto scheduleDto);
 	int deleteSchedule(ScheduleDto scheduleDto);
 	int completeDeleteSchedule(ScheduleDto scheduleDto);
-	
-	int getCountSche();
 }

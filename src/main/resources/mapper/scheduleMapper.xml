@@ -99,10 +99,4 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	WHERE SCHE_ID = #{scheId}
 </delete>
 
-<select id="getCountSche"
-		resultType="int">
-	SELECT COUNT(*)
-		FROM SCHEDULE_T
-</select>
-
 </mapper>
