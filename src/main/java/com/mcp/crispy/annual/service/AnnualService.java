@@ -67,4 +67,10 @@ public class AnnualService {
 	public int getCountAnn() {
 		return annualMapper.getCountAnn();
 	}
+	
+	@Transactional(readOnly = true)
+	public List<AnnualDto> getAllAnnList() {
+		List<AnnualDto> annList = annualMapper.getAllAnnList(); 
+		return annList;
+	}
 }

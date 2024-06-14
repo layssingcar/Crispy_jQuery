@@ -64,4 +64,11 @@ public class ScheduleService {
 	public int getCountSche() {
 		return scheduleMapper.getCountSche();
 	}
+	
+	
+	@Transactional(readOnly = true)
+	public List<ScheduleDto> getAllScheList() {
+		List<ScheduleDto> attenList = scheduleMapper.getAllScheList(); 
+		return attenList;
+	}
 }

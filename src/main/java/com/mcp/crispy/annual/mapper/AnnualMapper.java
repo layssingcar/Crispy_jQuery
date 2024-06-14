@@ -16,4 +16,5 @@ public interface AnnualMapper {
 	int revertAnnual(AnnualDto annualDto);
 	
 	int getCountAnn();
+	List<AnnualDto> getAllAnnList();
 }

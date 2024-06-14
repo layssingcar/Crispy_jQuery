@@ -113,5 +113,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		FROM ANNUAL_T
 </select>
 
+<select id="getAllAnnList"
+	resultMap="AnnualMap">
+	SELECT *
+		FROM ANNUAL_T
+	WHERE ANN_CT_NO != 3
+</select>
 
 </mapper>

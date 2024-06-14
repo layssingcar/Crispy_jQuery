@@ -69,8 +69,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		parameterType="map">
 	SELECT * 
 		FROM SCHEDULE_T
-	WHERE SCHE_STAT != 1 AND FRN_NO = #{frnNo} AND SCHE_DIV = 0
-	   OR EMP_NO = #{empNo}
+	WHERE (SCHE_STAT != 1 AND FRN_NO = #{frnNo} AND SCHE_DIV = 0)
+	   OR (SCHE_STAT != 1 AND EMP_NO = #{empNo})
 </select>
 
 <update id="modifySchedule"
@@ -113,6 +113,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		resultType="int">
 	SELECT COUNT(*)
 		FROM SCHEDULE_T
+</select>
+
+<select id="getAllScheList"
+		resultMap="ScheduleMap">
+	SELECT * 
+		FROM SCHEDULE_T
+	WHERE SCHE_STAT != 1
 </select>
 
 </mapper>

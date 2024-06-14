@@ -2,6 +2,7 @@ package com.mcp.crispy.schedule.mapper;
 
 import com.mcp.crispy.schedule.dto.ScheduleDto;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -16,4 +17,6 @@ public interface ScheduleMapper {
 	int completeDeleteSchedule(ScheduleDto scheduleDto);
 	int revertSchedule(ScheduleDto scheduleDto);
 	int getCountSche();
+	
+	List<ScheduleDto> getAllScheList();
 }
