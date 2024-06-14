@@ -1,25 +1,16 @@
 package com.mcp.crispy.annual.controller;
 
-import java.security.Principal;
-import java.util.List;
-import java.util.Optional;
-
+import com.mcp.crispy.annual.dto.AnnualDto;
+import com.mcp.crispy.annual.service.AnnualService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-import com.mcp.crispy.annual.dto.AnnualDto;
-import com.mcp.crispy.annual.service.AnnualService;
-
-import lombok.RequiredArgsConstructor;
+import java.security.Principal;
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -36,8 +27,8 @@ public class AnnualController {
 	
 	@ResponseBody
 	@GetMapping(value="/getAnnList", produces="application/json")
-	public List<AnnualDto> getAnnList() {
-		return annualService.getAnnList();
+	public List<AnnualDto> getAnnList(@RequestParam("empNo") int empNo) {
+		return annualService.getAnnList(empNo);
 	}
 	
 	@ResponseBody

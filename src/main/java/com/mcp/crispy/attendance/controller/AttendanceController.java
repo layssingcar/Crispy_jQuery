@@ -5,15 +5,12 @@ import com.mcp.crispy.attendance.service.AttendanceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import java.util.Map;
 
 
 @Controller
@@ -29,10 +26,13 @@ public class AttendanceController {
 		return ResponseEntity.ok(insertCount);
 	}
 	
-	@GetMapping("/attend")
-	public String getAttList(Model model) {
-		model.addAttribute("attenList", attendanceService.getAttList());
-		return "attendance/attendance";
+	@ResponseBody
+	@GetMapping(value="/getAttendList", produces="application/json")
+	public List<AttendanceDto> getAttList(@RequestParam("month") int month, @RequestParam("empNo") int empNo) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("month", month);
+		params.put("empNo", empNo);
+	    return attendanceService.getAttList(params);
 	}
 	
 }

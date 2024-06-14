@@ -34,11 +34,14 @@ public class NotificationService {
         sseService.sendNotification((long)empNo, notifyDto.getNotifyContent());
     }
 
+    @Transactional
     public int countUnreadNotificationsByEmpNo(int empNo) {
         return notificationMapper.countUnreadNotify(empNo);
     }
 
     public List<NotifyDto> getUnreadNotify(int empNo) {
+        log.info("getUnreadNotify: {}", empNo);
+
         return notificationMapper.selectUnreadNotify(empNo);
     }
 }

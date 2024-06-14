@@ -131,7 +131,23 @@ const franchise = {
                     window.location.href = '/login';
                 } else if (response.status === 400) {
                     return response.json().then(errors => {
-                        this.displayValidationErrors(errors);
+                        if (errors.error) {
+                            Swal.fire({
+                                icon: "warning",
+                                text: errors.error,
+                                width: "365px"
+                            }).then(() => {
+                                const frnEndTime = document.querySelector(".frnEndTime");
+                                if (frnEndTime) {
+                                    frnEndTime.value = "08:00";
+                                    setTimeout(() => {
+                                        frnEndTime.focus();
+                                    }, 400);
+                                }
+                            });
+                        } else if (errors) {
+                            this.displayValidationErrors(errors);
+                        }
                         throw new Error("Validation errors");
                     });
                 } else {
@@ -148,6 +164,8 @@ const franchise = {
             .catch(error => {
                 if (error.message === "Validation errors") {
                     console.error('Validation errors:', error);
+                } else {
+                    alert(error)
                 }
             });
     },

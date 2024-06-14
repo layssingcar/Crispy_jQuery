@@ -30,6 +30,7 @@ const sumOrderCostFn = () => {
     stockOrderCost.forEach(cost => {
         orderCost += parseInt(cost.value === "" ? 0 : parseInt(cost.value));
         document.querySelector("#order-cost").innerText = orderCost.toLocaleString();
+        document.querySelector("#order-cost").nextElementSibling.value = orderCost;
     })
 }
 

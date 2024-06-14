@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(data => {
             updateNotificationCount(data.count);
         })
-        .catch(error => console.error('Error fetching unread notification count:', error));
+        .catch(error => {})
 
     fetch(`/api/notifications/unread/${currentEmpNo}`)
         .then(response => response.json())
@@ -29,11 +29,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 addNotificationMessage(notification.notifyContent);
             });
         })
-        .catch(error => console.error('Error fetching unread notifications:', error));
+        .catch(error => {});
 
 
     eventSource.addEventListener('notification', function(event) {
         const data = event.data
+        console.log(data);
         alert(`새로운 알림: ${data}`);
         let currentCount = parseInt(notificationCountElement.textContent, 10);
         updateNotificationCount(currentCount + 1);
@@ -41,7 +42,6 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     eventSource.onerror = function(event) {
-        console.error("SSE connection error:", event);
         eventSource.close();
     };
 });

@@ -44,4 +44,5 @@ public class EmployeeDto {
     private EntryStat entryStat;
     private String accessToken;
     private String refreshToken;
+    private String frnOwner;
 }

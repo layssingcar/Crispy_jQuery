@@ -146,7 +146,12 @@ const message = {
                 this.stompClient.subscribe('/topic/messages', (messageOutput) => {
                     const message = JSON.parse(messageOutput.body);
                     if (message.chatRoomNo === this.currentChatRoomNo) {
-                        this.showMessage(message);
+                        if (message.msgStat === 'DELETED' || message.msgStat === 1) {
+                            this.handleDeletedMessage(message.msgNo);
+                            this.fetchChatRooms();
+                        } else {
+                            this.showMessage(message);
+                        }
                     }
                     this.updateChatRoomLatestMessage(message.chatRoomNo, message.msgContent);
                     this.fetchUnreadCount();
@@ -155,7 +160,12 @@ const message = {
                 this.stompClient.subscribe('/user/' + username + '/queue/messages', (messageOutput) => {
                     const message = JSON.parse(messageOutput.body);
                     if (message.chatRoomNo === this.currentChatRoomNo) {
-                        this.showMessage(message);
+                        if (message.msgStat === 'DELETED' || message.msgStat === 1) {
+                            this.handleDeletedMessage(message.msgNo);
+                            this.fetchChatRooms();
+                        } else {
+                            this.showMessage(message);
+                        }
                     }
                     this.updateChatRoomLatestMessage(message.chatRoomNo, message.msgContent);
                     this.fetchUnreadCount();
@@ -172,6 +182,8 @@ const message = {
                 this.stompClient.subscribe('/user/' + username + '/queue/roomUpdate', (roomUpdateOutput) => {
                     this.updateChatRooms(JSON.parse(roomUpdateOutput.body));
                 });
+
+
                 this.isSubscribed = true;
             }
             if (callback) callback();
@@ -317,7 +329,11 @@ const message = {
             .then(message => {
                 if (message) {
                     const latestMessageDiv = chatRoomElement.querySelector('.latest-message');
-                    latestMessageDiv.innerHTML = message.msgContent.replace(/\n/g, "<br>");
+                    if(message.msgStat === 1 || message.msgStat === "DELETED") {
+                        latestMessageDiv.innerHTML = "삭제된 메시지입니다.";
+                    } else {
+                        latestMessageDiv.innerHTML = message.msgContent.replace(/\n/g, "<br>");
+                    }
                 }
                 this.updateUnreadMessageCounts();
             })
@@ -573,7 +589,7 @@ const message = {
                 profileMenu.querySelector('.chat-delete').addEventListener('click', () => {
                     const confirmed = confirm("정말 삭제 하시겠습니까?");
                     if(confirmed) {
-                        this.deleteMessage(msg.msgNo);
+                        this.deleteMessage(msg.msgNo, msg.chatRoomNo);
                     }
                 });
 
@@ -602,10 +618,13 @@ const message = {
 
         return messageElement;
     },
-    deleteMessage: function (msgNo) {
+    deleteMessage: function (msgNo, chatRoomNo) {
+
         const msgStat = 1;
         const data = {
-            msgStat: 1,
+            msgNo: msgNo,
+            chatRoomNo: chatRoomNo,
+            msgStat: msgStat,
         }
 
         fetch('/api/chat/v1', {
@@ -613,7 +632,7 @@ const message = {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({msgNo: msgNo, msgStat: msgStat})
+            body: JSON.stringify(data)
         })
             .then(response => response.json())
             .then(data => {
@@ -622,32 +641,75 @@ const message = {
                 const chatDropdown = document.querySelector(`.output[data-msg-no="${msgNo}"] .chat-dropdown`);
                 if (messageElement) {
                     messageElement.classList.remove('chat');
-                    messageElement.classList.add('deleted-chat')
+                    messageElement.classList.add('deleted-chat');
                     messageElement.textContent = '삭제된 메시지입니다';
                 }
                 chatDropdown.style.display = 'none';
+
+                if (this.stompClient && this.stompClient.connected) {
+                    this.stompClient.send("/app/chat/delete", {}, JSON.stringify({ chatRoomNo: chatRoomNo, msgNo: msgNo, msgStat: 'DELETED' }));
+                }
             })
             .catch(error => {
                 console.error('Error:', error);
             });
     },
 
+    handleDeletedMessage: function (msgNo) {
+        const messageElement = document.querySelector(`.output[data-msg-no="${msgNo}"] .chat`);
+        const chatDropdown = document.querySelector(`.output[data-msg-no="${msgNo}"] .chat-dropdown`);
+        if (messageElement) {
+            messageElement.classList.remove('chat');
+            messageElement.classList.add('deleted-chat');
+            messageElement.textContent = '삭제된 메시지입니다';
+        }
+        if (chatDropdown) {
+            chatDropdown.style.display = 'none';
+        }
+    },
+
     sendMessage: function () {
         const chatInput = document.getElementById("chatInput");
         const messageContent = chatInput.value;
+
         if (messageContent && this.currentChatRoomNo) {
             const chatMessage = {
                 msgContent: messageContent,
                 chatRoomNo: this.currentChatRoomNo,
                 empNo: currentEmpNo
             };
-            this.stompClient.send("/app/chat", {}, JSON.stringify(chatMessage));
-            chatInput.value = '';
+            // 금지어 검사
+            fetch('/api/chat/checkBadWords', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ msgContent: messageContent })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => { throw new Error(err.error); });
+                    }
+                    return response.text();
+                })
+                .then(() => {
+                    // 금지어가 없는 경우에만 메시지를 보냄
+                    this.stompClient.send("/app/chat", {}, JSON.stringify(chatMessage));
+                    chatInput.value = '';
 
-            const chatRoomElement = document.querySelector(`.msg-room[data-chat-id="${this.currentChatRoomNo}"]`);
-            if (chatRoomElement) {
-                this.updateChatRoomLatestMessage(this.currentChatRoomNo, messageContent);
-            }
+                    const chatRoomElement = document.querySelector(`.msg-room[data-chat-id="${this.currentChatRoomNo}"]`);
+                    if (chatRoomElement) {
+                        this.updateChatRoomLatestMessage(this.currentChatRoomNo, messageContent);
+                    }
+                })
+                .catch(error => {
+                    // 금지어가 포함된 경우 alert 띄움
+                    Swal.fire({
+                        icon: "warning",
+                        text: error.message,
+                        width: "365px"
+                    })
+                });
         } else {
             alert("채팅방을 선택하고 메시지를 입력하세요.");
         }

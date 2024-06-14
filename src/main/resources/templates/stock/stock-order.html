@@ -62,7 +62,7 @@
 					</div>
 
 					<!-- 발주재고 form -->
-					<form method="POST" action="/crispy/order-req" id="form-container">
+					<form method="POST" action="/crispy/insert-order-appr" id="form-container">
 						<div class="order-list">
 
 							<!-- 카테고리 -->
@@ -161,6 +161,7 @@
 								<div class="order-cost">
 									<span>합계&nbsp;</span>
 									<span class="strong" id="order-cost">0</span>
+									<input type="hidden" name="orderCost">
 									<span>원</span>
 								</div>
 

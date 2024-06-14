@@ -1,5 +1,6 @@
 package com.mcp.crispy.stock.controller;
 
+import com.mcp.crispy.approval.dto.ApprOptionDto;
 import com.mcp.crispy.approval.dto.ApprovalDto;
 import com.mcp.crispy.auth.domain.EmployeePrincipal;
 import com.mcp.crispy.common.page.PageResponse;
@@ -185,6 +186,62 @@ public class StockController {
 
 		stockService.insertOrderAppr(approvalDto);
 		return "redirect:/crispy/stock-list";
+
+	}
+
+	/**
+	 * 발주 신청 목록 조회
+	 * 우혜진 (24. 06. 12.)
+	 *
+	 * @param authentication
+	 * @param apprOptionDto
+	 * @param type
+	 * @param model
+	 * @return forward (order-list.html)
+	 */
+	@GetMapping("order-list/{type:^(?:franchise|admin)$}")
+	public String orderApprList(Authentication authentication,
+							ApprOptionDto apprOptionDto,
+							@PathVariable("type") String type,
+							Model model) {
+
+		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
+		apprOptionDto.setFrnNo(userDetails.getFrnNo());
+
+		apprOptionDto.setType(type);
+		apprOptionDto.setApprStat(-1);
+
+		PageResponse<ApprovalDto> approvalDtoList = stockService.getOrderApprList(apprOptionDto, 10);
+		model.addAttribute("approvalDtoList", approvalDtoList);
+
+		return "stock/order-list";
+
+	}
+
+	/**
+	 * 발주 신청 항목 조회
+	 * 우혜진 (24. 06. 12.)
+	 *
+	 * @param authentication
+	 * @param apprOptionDto
+	 * @param type
+	 * @param model
+	 * @return result
+	 */
+	@GetMapping("order-items/{type:^(?:franchise|admin)$}")
+	public String orderApprItems(Authentication authentication,
+								 ApprOptionDto apprOptionDto,
+								 @PathVariable("type") String type,
+								 Model model) {
+
+		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
+		apprOptionDto.setFrnNo(userDetails.getFrnNo());
+
+		apprOptionDto.setType(type);
+		PageResponse<ApprovalDto> approvalDtoList = stockService.getOrderApprList(apprOptionDto, 10);
+		model.addAttribute("approvalDtoList", approvalDtoList);
+
+		return "stock/order-list :: order-list-container";
 
 	}
 }

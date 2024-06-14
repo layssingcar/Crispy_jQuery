@@ -86,9 +86,7 @@ dependencies {
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.5'
 
-	// 욕설 필터링
-	implementation 'io.github.vaneproject:badwordfiltering:1.0.0'
-
+	implementation 'io.github.vaneproject:badwordfiltering:1.0.0';
 
 }
 
