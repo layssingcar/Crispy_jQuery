@@ -3,13 +3,24 @@
 
 <mapper namespace="com.mcp.crispy.approval.mapper.ApprovalMapper">
 
-    <resultMap id="apprDtoResultMap" type="ApprovalDto">
+    <!-- 휴가/휴직 신청서 상세 -->
+    <resultMap id="apprLineResultMap" type="ApprovalDto">
         <id property="apprNo" column="APPR_NO"/>
         <collection property="apprLineDtoList"
-                    select="getApprLine"
+                    select="getDetailApprLine"
                     column="APPR_NO"
                     javaType="java.util.ArrayList"
                     ofType="ApprLineDTO"/>
+    </resultMap>
+
+    <!-- 발주 신청서 상세 -->
+    <resultMap id="stockOrderResultMap" type="ApprovalDto">
+        <id property="apprNo" column="APPR_NO"/>
+        <collection property="stockOrderList"
+                    select="getStockOrderList"
+                    column="APPR_NO"
+                    javaType="java.util.ArrayList"
+                    ofType="StockDto"/>
     </resultMap>
 
     <!-- 직원 정보 조회 -->
@@ -246,7 +257,7 @@
     </select>
 
     <!-- 결재 문서 상세 조회 (휴가/휴직 신청서) -->
-    <select id="getTimeOffApprDetail" resultMap="apprDtoResultMap">
+    <select id="getTimeOffApprDetail" resultMap="apprLineResultMap">
             SELECT DISTINCT A.APPR_NO
                           , TO_CHAR(A.APPR_DT, 'YYYY"년" MM"월" DD"일"') AS APPR_DT
                           , TO_CHAR(T.TIME_OFF_START_DT, 'YYYY"년" MM"월" DD"일"') AS TIME_OFF_START_DT
@@ -277,7 +288,7 @@
     </select>
 
     <!-- 결재선 조회 (결재 문서 상세 조회) -->
-    <select id="getApprLine" resultType="ApprLineDto">
+    <select id="getDetailApprLine" resultType="ApprLineDto">
             SELECT L.APPR_LINE_STAT
                  , E.EMP_NAME, E.EMP_SIGN
                  , P.POS_NAME
@@ -289,6 +300,39 @@
              WHERE 1=1
                AND L.APPR_NO = #{apprNo}
           ORDER BY L.APPR_LINE_ORDER ASC
+    </select>
+
+    <!-- 결재 문서 상세 조회 (발주 신청서) -->
+    <select id="getStockOrderApprDetail" resultMap="stockOrderResultMap">
+            SELECT A.APPR_NO, A.APPR_STAT
+                 , TO_CHAR(A.APPR_DT, 'YYYY"년" MM"월" DD"일"') AS APPR_DT
+                 , O.ORDER_COST
+                 , F.FRN_NO, F.FRN_NAME, F.FRN_OWNER, F.FRN_TEL, F.FRN_STREET, F.FRN_DETAIL
+                 , E.EMP_SIGN
+              FROM APPROVAL_T A
+        INNER JOIN ORDER_T O
+                ON A.APPR_NO = O.APPR_NO
+        INNER JOIN EMPLOYEE_T E
+                ON A.EMP_NO = E.EMP_NO
+        INNER JOIN FRANCHISE_T F
+                ON E.FRN_NO = F.FRN_NO
+             WHERE 1=1
+               AND A.APPR_NO = #{apprNo}
+    </select>
+
+    <!-- 결재 문서 상세 조회 (발주 신청 재고 목록) -->
+    <select id="getStockOrderList" parameterType="_int" resultType="StockDto">
+            SELECT SO.STOCK_ORDER_COUNT, SO.STOCK_ORDER_COST
+                 , S.STOCK_NAME, S.STOCK_UNIT, S.STOCK_PRICE
+                 , SC.STOCK_CT_NAME
+              FROM STOCK_ORDER_T SO
+        INNER JOIN STOCK_T S
+                ON SO.STOCK_NO = S.STOCK_NO
+        INNER JOIN STOCK_CATEGORY_T SC
+                ON S.STOCK_CT_NO = SC.STOCK_CT_NO
+             WHERE 1=1
+               AND SO.APPR_NO = #{apprNo}
+          ORDER BY S.STOCK_NAME ASC
     </select>
 
 </mapper>

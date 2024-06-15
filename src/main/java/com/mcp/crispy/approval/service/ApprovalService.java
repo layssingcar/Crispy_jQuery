@@ -138,4 +138,9 @@ public class ApprovalService {
         return approvalMapper.getTimeOffApprDetail(empNo, apprNo);
     }
 
+    // 결재 문서 상세 조회 (발주 신청서)
+    public ApprovalDto getStockOrderApprDetail(int apprNo) {
+        return approvalMapper.getStockOrderApprDetail(apprNo);
+    }
+
 }

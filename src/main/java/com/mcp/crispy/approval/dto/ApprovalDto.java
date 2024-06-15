@@ -44,6 +44,7 @@ public class ApprovalDto {
     /* 직원 */
     private String empStreet;   // 도로명주소
     private String empDetail;   // 상세주소
+    private String empSign;     // 결재서명
     private int posNo;          // 직책번호
     private String posName;     // 직책명
 
@@ -51,4 +52,7 @@ public class ApprovalDto {
     private int frnNo;          // 가맹점번호
     private String frnName;     // 가맹점명
     private String frnOwner;    // 대표자
+    private String frnTel;      // 전화번호
+    private String frnStreet;   // 도로명주소
+    private String frnDetail;   // 상세주소
 }
