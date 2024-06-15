@@ -20,8 +20,9 @@ public class ApprLineDto {
     private int empNo;              // 직원번호
     private String empName;         // 직원명
     private String empSign;         // 서명이미지
-    private int adminNo;            // 관리자번호
+    private int posNo;              // 직책번호
     private String posName;         // 직책명
-    
+    private int adminNo;            // 관리자번호
+
     private int creator;            // 생성자
 }

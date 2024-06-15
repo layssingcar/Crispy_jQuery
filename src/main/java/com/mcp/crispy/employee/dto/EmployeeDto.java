@@ -27,7 +27,7 @@ public class EmployeeDto {
     // 결재 서명
     private String empSign;
     // 연차
-    private int empAnnual;
+    private double empAnnual;
     // 재직 상태
     private EmpStatus empStat;
     private Date empInDt;

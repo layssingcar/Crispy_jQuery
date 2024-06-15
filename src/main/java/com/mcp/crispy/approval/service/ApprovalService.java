@@ -45,6 +45,11 @@ public class ApprovalService {
         return approvalMapper.getTimeOffTemp(empNo, timeOffCtNo);
     }
 
+    // 결재선 불러오기
+    public List<ApprLineDto> getApprLine(int frnNo, int empNo) {
+        return approvalMapper.getApprLine(frnNo, empNo);
+    }
+
     // 휴가, 휴직 신청
     @Transactional
     public int insertTimeOffAppr(ApprovalDto approvalDto) {
@@ -131,6 +136,11 @@ public class ApprovalService {
     // 결재 문서 상세 조회 (휴가,휴직 신청서)
     public ApprovalDto getTimeOffApprDetail(int empNo, int apprNo) {
         return approvalMapper.getTimeOffApprDetail(empNo, apprNo);
+    }
+
+    // 결재 문서 상세 조회 (발주 신청서)
+    public ApprovalDto getStockOrderApprDetail(int apprNo) {
+        return approvalMapper.getStockOrderApprDetail(apprNo);
     }
 
 }

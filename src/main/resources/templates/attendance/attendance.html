@@ -215,7 +215,8 @@ document.addEventListener('DOMContentLoaded', function() {
 			                tablestr += '<td>' + this.attOutTime + '</td>';
 			                tablestr += '<td>' + this.attWorkTime + '</td>';
 			                tablestr += (this.annCtNo == 1) ? '<td>반차</td>' : '<td>반반차</td>';
-							fnCalWorkTimeByChart(this.attWorkTime);
+			                if(this.attWorkTime != null)
+								fnCalWorkTimeByChart(this.attWorkTime);
 		            	}
 						else if(this.category == 0){
 							tablestr += '<td></td>';

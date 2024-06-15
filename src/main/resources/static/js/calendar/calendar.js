@@ -22,6 +22,10 @@
       
 	 ////////////////////////		캘린더 기능
      function fnLoadCalendarData(){
+	  const data = {
+	      frnNo: empNo,
+	      empNo: empNo
+	  };
 		$.ajax({
 			type:'GET',
 			url:'/crispy/getAnnList',
@@ -33,7 +37,7 @@
 			$.ajax({
 				type:'GET',
 				url:'/crispy/getScheList',
-				data: 'empNo=' + empNo,
+				data: data,
 				contentType: 'application/json',
 				dataType:'json'
 			})
@@ -115,7 +119,7 @@
 					alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
 				})    
 			}
-			else if(info.event.id.substring(0, 2) == "연차"){
+			else {
 		    	$.ajax({
 					type:'GET',
 					url: '/crispy/getAnnById',
@@ -168,6 +172,4 @@
         startDt = info.startStr;
         endDt = info.endStr;
       });
-
-      
 	  
