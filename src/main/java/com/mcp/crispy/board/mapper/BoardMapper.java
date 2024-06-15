@@ -1,13 +1,11 @@
 package com.mcp.crispy.board.mapper;
 
-import java.util.List;
-import java.util.Map;
-
 import com.mcp.crispy.board.dto.BoardDto;
 import com.mcp.crispy.board.dto.BoardFileDto;
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.core.io.Resource;
-import org.springframework.http.ResponseEntity;
+
+import java.util.List;
+import java.util.Map;
 
 
 @Mapper

@@ -1,11 +1,9 @@
 package com.mcp.crispy.annual.mapper;
 
-import java.util.List;
-
+import com.mcp.crispy.annual.dto.AnnualDto;
 import org.apache.ibatis.annotations.Mapper;
 
-import com.mcp.crispy.annual.dto.AnnualDto;
-import com.mcp.crispy.schedule.dto.ScheduleDto;
+import java.util.List;
 
 @Mapper
 public interface AnnualMapper {

@@ -49,7 +49,7 @@ const franchise = {
         this.setupFrnEditBtn("btn-edit-frnName", "frn-frnName", "btn-change-frnName");
         this.setupFrnEditBtn("btn-edit-frnOwner", "frn-frnOwner", "btn-change-frnOwner");
         this.setupFrnEditBtn("btn-edit-frnTel", "frn-frnTel", "btn-change-frnTel");
-        this.setupFrnEditBtn("btn-edit-operating-time", "frnStartTime", "btn-change-operating-time");
+        this.setupFrnEditBtn("btn-edit-operating-time", "frn-start-time", "btn-change-operating-time");
     },
 
     setupFormButtons: function () {
@@ -93,6 +93,11 @@ const franchise = {
     },
 
     saveForm: function() {
+
+        const sigungu = document.querySelector(".frn-gu").value;
+        const gu = sigungu.split(' ');
+        const guName = gu[gu.length - 1]; // ex "분당구"
+
         const frnNo = document.querySelector('.frnNo').value;
         const frnName = document.querySelector('.frnName').value;
         const frnOwner = document.querySelector('.frnOwner').value;
@@ -111,6 +116,7 @@ const franchise = {
             frnZip: frnZip,
             frnStreet: frnStreet,
             frnDetail: frnDetail,
+            frnGu: guName,
             frnStartTime: frnStartTime,
             frnEndTime: frnEndTime,
         };
@@ -131,7 +137,23 @@ const franchise = {
                     window.location.href = '/login';
                 } else if (response.status === 400) {
                     return response.json().then(errors => {
-                        this.displayValidationErrors(errors);
+                        if (errors.error) {
+                            Swal.fire({
+                                icon: "warning",
+                                text: errors.error,
+                                width: "365px"
+                            }).then(() => {
+                                const frnEndTime = document.querySelector(".frnEndTime");
+                                if (frnEndTime) {
+                                    frnEndTime.value = "08:00";
+                                    setTimeout(() => {
+                                        frnEndTime.focus();
+                                    }, 400);
+                                }
+                            });
+                        } else if (errors) {
+                            this.displayValidationErrors(errors);
+                        }
                         throw new Error("Validation errors");
                     });
                 } else {
@@ -148,6 +170,8 @@ const franchise = {
             .catch(error => {
                 if (error.message === "Validation errors") {
                     console.error('Validation errors:', error);
+                } else {
+                    alert(error)
                 }
             });
     },
@@ -164,6 +188,7 @@ const franchise = {
         select.className = inputElement.className;
         select.id = inputElement.id;
         select.name = inputElement.name;
+        console.log(select)
 
         for (let hour = 8; hour < 24; hour++) {
             for (let minute = 0; minute < 60; minute += 30) { // 30분 간격으로 옵션 추가
@@ -177,10 +202,10 @@ const franchise = {
             }
         }
 
-        // 기존 input을 select로 교체
         inputElement.parentNode.replaceChild(select, inputElement);
-
+        console.log(inputElement)
         if (focusAfterReplace) { select.focus(); }
+        return select;
     },
 
     setupFrnEditBtn: function(editButtonId, inputId, changeButtonId) {
@@ -191,21 +216,32 @@ const franchise = {
         let originalValue = inputElement?.value;
 
         editButton?.addEventListener("click", () => {
-            inputElement.readOnly = false;
+            if (inputElement.tagName.toLowerCase() === 'input' || inputElement.tagName.toLowerCase() === 'select') {
+                inputElement.readOnly = false;
+                changeButton.disabled = false;
+            }
             inputElement.focus();
             changeButton.style.display = 'inline';
             editButton.style.display = 'none';
-            changeButton.disabled = true;
 
             originalValue = inputElement.value;
         });
 
-        inputElement?.addEventListener("input", () => {
-            changeButton.disabled = inputElement.value.trim() === originalValue.trim();
-        });
+        if (inputElement.tagName.toLowerCase() === 'input' || inputElement.tagName.toLowerCase() === 'select') {
+            inputElement?.addEventListener("change", () => {
+                console.log("둘중에 어떤 게? change")
+                changeButton.disabled = inputElement.value.trim() === originalValue.trim();
+                console.log(changeButton.disabled)
+            });
+        }
     },
 
     updateFrnAddress: function() {
+
+        const sigungu = document.querySelector(".frn-gu").value;
+        const gu = sigungu.split(' ');
+        const guName = gu[gu.length - 1]; // ex "분당구"
+
         const frnNo = document.querySelector(".frnNo").value;
         const zipCode = document.querySelector('.zipcode').value;
         const street = document.querySelector('.street-address').value;
@@ -215,7 +251,8 @@ const franchise = {
             frnNo: frnNo,
             frnZip: zipCode,
             frnStreet: street,
-            frnDetail: detail
+            frnDetail: detail,
+            frnGu: guName,
         };
 
         fetch('/api/franchise/frnAddress/v1', {

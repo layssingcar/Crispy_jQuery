@@ -1,7 +1,10 @@
 package com.mcp.crispy.stock.service;
 
 
-import com.mcp.crispy.approval.dto.*;
+import com.mcp.crispy.approval.dto.ApprLineDto;
+import com.mcp.crispy.approval.dto.ApprOptionDto;
+import com.mcp.crispy.approval.dto.ApprStat;
+import com.mcp.crispy.approval.dto.ApprovalDto;
 import com.mcp.crispy.common.page.PageResponse;
 import com.mcp.crispy.franchise.dto.FranchiseDto;
 import com.mcp.crispy.franchise.service.FranchiseService;
@@ -123,9 +126,6 @@ public class StockService {
 
         // 알림 전송
         notificationService.sendApprovalNotification(notifyDto, ADMIN_NO);
-
-        stockMapper.insertStockOrder(approvalDto);
-        stockMapper.insertApprLine(approvalDto);
 
         return 1;
 

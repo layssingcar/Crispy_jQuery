@@ -6,8 +6,8 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum AlarmStat {
-    ACTIVE(0), //입장 활성화 상태
-    INACTIVE(1); //입장 비활성화 상태
+    ACTIVE(0), // 알림 활성화 상태
+    INACTIVE(1); // 알림 비활성화 상태
 
     private final int status;
 

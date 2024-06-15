@@ -5,6 +5,7 @@ import com.mcp.crispy.chat.dto.*;
 import com.mcp.crispy.chat.mapper.ChatMapper;
 import com.mcp.crispy.employee.dto.EmployeeDto;
 import com.mcp.crispy.employee.service.EmployeeService;
+import com.vane.badwordfiltering.BadWordFiltering;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -155,6 +156,12 @@ public class ChatService {
 
     @Transactional
     public ChatMessageDto saveMessage(ChatMessageDto message) {
+        BadWordFiltering badWordFiltering = new BadWordFiltering();
+        boolean filterMsg = badWordFiltering.blankCheck(message.getMsgContent());
+        if (filterMsg) {
+            throw new IllegalArgumentException("금지어가 포함되어있습니다.");
+        }
+
         chatMapper.saveMessage(message);
         EmployeeDto employee = employeeService.getEmployeeDetailsByEmpNo(message.getEmpNo());
         message.setEmpName(employee.getEmpName());
@@ -292,5 +299,23 @@ public class ChatService {
     // 채팅 삭제
     public void removeMsgStat(MsgStat msgStat, Integer msgNo, Integer modifier) {
         chatMapper.removeMsgStat(msgStat, modifier, msgNo);
+        log.info("removeMsgStat: {}", msgStat);
+        Integer chatRoomNoByMsgNo = chatMapper.getChatRoomNoByMsgNo(msgNo);
+        ChatMessageDto chatMessage = ChatMessageDto.builder()
+                .msgStat(msgStat)
+                .msgNo(msgNo)
+                .modifier(modifier)
+                .chatRoomNo(chatRoomNoByMsgNo)
+                .build();
+        log.info("removeChatMessage: {}", chatMessage);
+        messagingTemplate.convertAndSend("/topic/messages", chatMessage);
+    }
+
+    // 채팅 필터 금지어 포함시 예외 반환
+    public void checkBadWords(String msgContent) {
+        BadWordFiltering badWordFiltering = new BadWordFiltering();
+        if (badWordFiltering.blankCheck(msgContent)) {
+            throw new IllegalArgumentException("금지어가 포함되어있습니다.");
+        }
     }
 }

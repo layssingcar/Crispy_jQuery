@@ -16,6 +16,7 @@
             , FRN_ZIP
             , FRN_STREET
             , FRN_DETAIL
+            , FRN_GU
             , FRN_START_TIME
             , FRN_END_TIME
             , CREATOR
@@ -29,6 +30,7 @@
           , #{frnZip}
           , #{frnStreet}
           , #{frnDetail}
+          , #{frnGu}
           , #{frnStartTime}
           , #{frnEndTime}
           , 1
@@ -100,6 +102,7 @@
             SET F.FRN_ZIP = #{updateDto.frnZip},
                 F.FRN_STREET = #{updateDto.frnStreet},
                 F.FRN_DETAIL = #{updateDto.frnDetail},
+                F.FRN_GU = #{updateDto.frnGu},
                 F.MODIFIER = #{modifier},
                 F.MODIFY_DT = CURRENT_DATE
             WHERE F.FRN_NO = #{updateDto.frnNo}
@@ -134,6 +137,7 @@
              , F.FRN_ZIP
              , F.FRN_STREET
              , F.FRN_DETAIL
+             , F.FRN_GU
              , F.FRN_X
              , F.FRN_Y
              , F.FRN_START_TIME
@@ -156,7 +160,7 @@
     <!-- 직원번호로 가맹점 정보 가져오기 ( 대표 이름 수정 용 ) -->
     <select id="getFrnByEmpNo" parameterType="int"
             resultType="FranchiseDto">
-            SELECT F.FRN_NO, F.FRN_OWNER
+            SELECT F.FRN_NO, F.FRN_OWNER, F.FRN_NAME
                  , E.EMP_NO
             FROM FRANCHISE_T F
             JOIN EMPLOYEE_T E
@@ -190,6 +194,9 @@
             </if>
             <if test="updateDto.frnDetail != null">
                 F.FRN_DETAIL = #{updateDto.frnDetail},
+            </if>
+            <if test="updateDto.frnGu != null">
+                F.FRN_GU = #{updateDto.frnGu},
             </if>
             <if test="updateDto.frnName != null">
                 F.FRN_NAME = #{updateDto.frnName},

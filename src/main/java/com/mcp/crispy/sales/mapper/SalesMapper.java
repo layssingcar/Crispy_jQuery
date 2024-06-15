@@ -1,10 +1,10 @@
 package com.mcp.crispy.sales.mapper;
 
-import java.util.List;
-import java.util.Map;
-
 import com.mcp.crispy.sales.dto.SalesDto;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface SalesMapper {

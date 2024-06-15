@@ -50,6 +50,9 @@
         <if test="empStat != null">
             AND E.EMP_STAT = #{empStat}
         </if>
+        <if test="empNameSearch != null">
+            AND E.EMP_NAME LIKE '%' || #{empNameSearch} || '%'
+        </if>
         ORDER BY E.EMP_NO
     </select>
 

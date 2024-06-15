@@ -1,15 +1,16 @@
 package com.mcp.crispy.sales.service;
 
-import java.util.List;
-import java.util.Map;
-
 import com.mcp.crispy.sales.dto.SalesDto;
 import com.mcp.crispy.sales.mapper.SalesMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SalesService {
@@ -51,6 +52,7 @@ public class SalesService {
 	/* 매출 INSERT */
 	@Transactional
 	public int insertSales(SalesDto salesDto){
+		log.info("insertSales: {}", salesDto.getFrnNo());
 		return salesMapper.insertSales(salesDto);
 	}
 

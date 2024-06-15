@@ -1,23 +1,14 @@
 package com.mcp.crispy.board.controller;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.mcp.crispy.auth.domain.EmployeePrincipal;
 import com.mcp.crispy.board.dto.BoardDto;
 import com.mcp.crispy.board.dto.BoardFileDto;
-import com.mcp.crispy.board.dto.BoardLikeDto;
 import com.mcp.crispy.board.mapper.BoardMapper;
 import com.mcp.crispy.board.service.BoardService;
-import com.mcp.crispy.stock.dto.StockOrderDto;
 import jakarta.servlet.http.HttpServletRequest;
-
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -26,8 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+import java.util.Map;
 
 @RequestMapping("/crispy")
 @RequiredArgsConstructor
@@ -185,6 +176,9 @@ public class BoardController {
 			redirectAttributes.addFlashAttribute("removeResult", "삭제할 게시물을 선택해주세요.");
 			return "redirect:/crispy/board-list";
 		}
+
+		// 게시물과 관련된 파일을 먼저 삭제합니다.
+		boardService.removeBoardFile(boardNo);
 
 		// 게시물을 삭제합니다.
 		int removeCount = boardService.removeBoard(boardNo);

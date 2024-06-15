@@ -18,7 +18,7 @@
     </insert>
 
     <select id="selectAdmin" resultType="AdminDto">
-            SELECT A.ADMIN_NO, A.ADMIN_ID, A.ADMIN_PW
+            SELECT A.ADMIN_NO, A.ADMIN_ID, A.ADMIN_PW, A.REFRESH_TOKEN
               FROM ADMIN_T A
              WHERE 1 = 1
                AND A.ADMIN_ID = #{adminId}

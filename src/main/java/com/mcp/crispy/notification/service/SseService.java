@@ -44,6 +44,7 @@ public class SseService {
 
     private SseEmitter createAdminEmitter() {
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
+        emitters.put((long) ADMIN_NO, emitter);
         emitter.onCompletion(() -> log.info("관리자 Emitter 완료"));
         emitter.onTimeout(() -> log.info("관리자 Emitter 시간 초과"));
         emitter.onError((e) -> log.info("관리자 Emitter 에러 발생: {}", e.getMessage()));
@@ -65,6 +66,7 @@ public class SseService {
 
     public void sendNotification(Long empNo, String message) {
         SseEmitter emitter = emitters.get(empNo);
+        log.info("sendNotification: {}", emitter);
         if (emitter != null) {
             try {
                 emitter.send(SseEmitter.event().name("notification").data(message));

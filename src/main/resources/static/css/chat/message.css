@@ -722,6 +722,7 @@
 .message .modal-profile-image {
     display: flex;
     width: 30px;
+    height: 30px;
     border-radius: 15px;
     align-items: center;
     margin-bottom: 10px;

@@ -25,5 +25,5 @@ public interface OwnerMapper {
     int countByEmpNo(Integer empNo);
 
     List<EmployeeDto> findEmployeeByFranchise(@Param("frnNo") int frnNo, @Param("empStat") EmpStatus empStatus,
-                                              @Param("posNo") Position position);
+                                              @Param("posNo") Position position, @Param("empNameSearch") String empNameSearch);
 }
