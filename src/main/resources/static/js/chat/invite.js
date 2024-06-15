@@ -77,29 +77,51 @@ const invite = {
 
     displayUserList: function (users) {
         this.resultsContainer.innerHTML = '';
+
+        let currentBranch = '';
+        let branchDiv;
+
         users.forEach(user => {
+            if (user.frnName !== currentBranch) {
+                currentBranch = user.frnName;
+                branchDiv = document.createElement('div');
+                branchDiv.className = "branch-group";
+
+                const branchHeader = document.createElement('h3');
+                branchHeader.className = "branch-header";
+                branchHeader.textContent = currentBranch;
+                branchDiv.appendChild(branchHeader);
+
+                this.resultsContainer.appendChild(branchDiv);
+            }
+
             const listDiv = document.createElement('div');
             listDiv.className = "invite-info";
+
             const listImg = document.createElement("img");
             listImg.className = 'modal-profile-image';
             listImg.src = user.empProfile;
+
             const userDiv = document.createElement("div");
             userDiv.className = 'modal-user-div';
+
             const listItem = document.createElement('span');
             listItem.className = 'ms-3';
             listItem.textContent = `${user.empName} (${user.posName}) - ${user.frnName}`;
             listItem.dataset.userId = user.empNo;
+
             const listCheckbox = document.createElement("input");
             listCheckbox.type = "checkbox";
             listCheckbox.value = user.empNo;
             listCheckbox.checked = this.selectedUserIds.has(user.empNo.toString());
             listCheckbox.addEventListener('change', () => this.handleUserSelection(user, listCheckbox));
+
             userDiv.appendChild(listItem);
             userDiv.appendChild(listCheckbox);
 
             listDiv.appendChild(listImg);
             listDiv.appendChild(userDiv);
-            this.resultsContainer.appendChild(listDiv);
+            branchDiv.appendChild(listDiv);
         });
     },
 

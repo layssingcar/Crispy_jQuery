@@ -6,6 +6,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function updateNotificationCount(count) {
         notificationCountElement.textContent = count;
+        if (count === 0 ) {
+            notificationCountElement.style.display = 'none';
+        } else {
+            notificationCountElement.style.display = 'inline';
+        }
     }
 
     function addNotificationMessage(message) {
