@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mcp.crispy.freeboard.mapper.FreeBoardMapper">
+    <resultMap type="FreeBoardDto" id="FreeBoardMap">
+        <id property="boardNo" column="BOARD_NO" />
+        <result property="boardCtNo" column="BOARD_CT_NO" />
+        <result property="boardTitle" column="BOARD_TITLE" />
+        <result property="boardContent" column="BOARD_CONTENT" />
+        <result property="boardHit" column="BOARD_HIT" />
+        <result property="empNo" column="EMP_NO"/>
+        <result property="empName" column="EMP_NAME"/>
+        <result property="boardLikeCount" column="BOARD_LIKE_COUNT"/>
+        <result property="createDt" column="CREATE_DT" />
+        <result property="creator" column="CREATOR" />
+        <result property="modifyDt" column="MODIFY_DT" />
+        <result property="modifier" column="MODIFIER" />
+        <result property="hasAttachment" column="HAS_ATTACHMENT"/>
+        <collection property="files" ofType="BoardFileDto">
+            <id property="boardFileNo" column="BOARD_FILE_NO"/>
+            <result property="boardOrigin" column="BOARD_ORIGIN"/>
+            <result property="boardRename" column="BOARD_RENAME"/>
+            <result property="boardPath" column="BOARD_PATH"/>
+        </collection>
+    </resultMap>
+
+    <!-- 게시판 LIST -->
+    <select id="getFreeBoardList">
+            SELECT ROW_NUMBER() OVER(
+            ORDER BY
+            <choose>
+                <when test="sortKey == 'boardHit'">B.BOARD_HIT</when>
+                <otherwise>B.BOARD_NO</otherwise>
+            </choose>
+            <choose>
+                <when test="sortOrder != null and sortOrder != ''"> ${sortOrder}</when>
+                <otherwise>DESC</otherwise>
+            </choose>
+            ) RN
+            , B.BOARD_NO
+            , B.BOARD_TITLE
+            , B.BOARD_CONTENT
+            , B.BOARD_HIT
+            , B.CREATE_DT
+            , E.EMP_NAME
+            , B.BOARD_LIKE_COUNT
+             FROM BOARD_T B
+        LEFT JOIN EMPLOYEE_T E ON B.EMP_NO = E.EMP_NO
+            WHERE 1 = 1
+              AND B.BOARD_CT_NO = 1
+              AND B.BOARD_STAT = 0
+            <if test="searchKeyword != null and searchKeyword != ''">
+                AND (
+                    B.BOARD_TITLE LIKE '%' || #{searchKeyword} || '%'
+                    OR B.BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%'
+                    OR E.EMP_NAME LIKE '%'|| #{searchKeyword} || '%')
+            </if>
+    </select>
+
+    <!-- INSERT 수행 이전에 파라미터 BoardDto의 boardNo 속성(필드)에 BOARD_SEQ.NEXTVAL 값을 저장한다. -->
+    <insert id="insertFreeBoard"
+            parameterType="FreeBoardDto">
+        <selectKey keyProperty="boardNo" order="BEFORE" resultType="int">
+            SELECT BOARD_SEQ.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO BOARD_T (
+        BOARD_NO
+        , BOARD_CT_NO
+        , BOARD_TITLE
+        , BOARD_CONTENT
+        , EMP_NO
+        , CREATE_DT
+        , CREATOR
+        ) VALUES (
+          #{boardNo}
+        , #{boardCtNo}
+        , #{boardTitle}
+        , #{boardContent}
+        , #{empNo}
+        , CURRENT_TIMESTAMP
+        , #{empNo}
+        )
+    </insert>
+
+    <!-- 파일업로드 INSERT -->
+    <insert id="insertFreeBoardFile" parameterType="FreeBoardFileDto">
+        INSERT INTO BOARD_FILE_T (
+            BOARD_FILE_NO,
+            BOARD_PATH,
+            BOARD_RENAME,
+            BOARD_ORIGIN,
+            BOARD_NO
+        ) VALUES (
+                     BOARD_FILE_SEQ.NEXTVAL,
+                     #{boardPath},
+                     #{boardRename},
+                     #{boardOrigin},
+                     #{boardNo}
+                 )
+    </insert>
+
+    <select id="getFreeBoardCount">
+        SELECT COUNT(*)
+        FROM BOARD_T B
+        WHERE B.BOARD_CT_NO = 1
+    </select>
+
+    <select id="getFreeBoardByNo"  resultMap="FreeBoardMap">
+        SELECT B.BOARD_NO, B.BOARD_CT_NO, B.BOARD_TITLE, B.BOARD_CONTENT, B.EMP_NO, B.CREATOR,
+               B.BOARD_HIT, B.CREATE_DT, B.MODIFY_DT, B.BOARD_LIKE_COUNT,
+               E.EMP_NO, E.EMP_NAME, F.BOARD_ORIGIN,
+               CASE WHEN F.BOARD_FILE_NO IS NOT NULL THEN 1 ELSE 0 END AS HAS_ATTACHMENT
+          FROM BOARD_T B
+    INNER JOIN EMPLOYEE_T E ON E.EMP_NO = B.EMP_NO
+     LEFT JOIN BOARD_FILE_T F ON B.BOARD_NO = F.BOARD_NO
+         WHERE B.BOARD_NO = #{boardNo}
+    </select>
+
+    <select id="getFreeBoardFileList"
+            resultType="FreeBoardFileDto">
+        SELECT BOARD_FILE_NO, BOARD_PATH, BOARD_RENAME, BOARD_ORIGIN
+        FROM BOARD_FILE_T
+        WHERE BOARD_NO = #{boardNo}
+    </select>
+
+    <!-- 파일 번호 가져오기 -->
+    <select id="getFreeBoardFileByNo"
+            resultType="FreeBoardFileDto">
+        SELECT BOARD_FILE_NO, BOARD_PATH, BOARD_RENAME, BOARD_ORIGIN
+        FROM BOARD_FILE_T
+        WHERE BOARD_FILE_NO = #{boardFileNo}
+    </select>
+
+    <!-- 게시판 수정 -->
+    <update id="updateFreeBoard"
+            parameterType="FreeBoardDto">
+        UPDATE BOARD_T B
+        SET B.BOARD_TITLE = #{boardTitle}
+          , B.BOARD_CONTENT = #{boardContent}
+          , B.BOARD_CT_NO = #{boardCtNo}
+          , B.MODIFY_DT = CURRENT_DATE
+          , B.MODIFIER = #{modifier}
+        WHERE B.BOARD_NO = #{boardNo}
+    </update>
+
+    <!-- 게시판 삭제 -->
+    <update id="deleteFreeBoard">
+        UPDATE BOARD_T B
+          SET B.BOARD_STAT = 1,
+              B.MODIFY_DT = CURRENT_DATE,
+              B.MODIFIER = #{modifier}
+         WHERE 1 = 1
+           AND B.BOARD_NO = #{boardNo}
+    </update>
+
+    <!-- 파일 삭제 -->
+    <delete id="deleteFreeBoardFile">
+        DELETE
+        FROM BOARD_FILE_T
+        WHERE BOARD_FILE_NO = #{boardFileNo}
+    </delete>
+
+    <!-- 좋아요 확인 -->
+    <select id="isLiked" resultType="int">
+        SELECT COUNT(1)
+          FROM BOARD_LIKE_T BL
+         WHERE 1 = 1
+           AND BL.BOARD_NO = #{boardNo}
+           AND BL.EMP_NO = #{empNo}
+    </select>
+
+    <!-- 좋아요 추가 -->
+    <insert id="addLike">
+        INSERT INTO BOARD_LIKE_T (BOARD_NO, EMP_NO)
+        VALUES (#{boardNo}, #{empNo})
+    </insert>
+
+    <!-- 좋아요 삭제 -->
+    <delete id="removeLike">
+        DELETE FROM BOARD_LIKE_T
+        WHERE BOARD_NO = #{boardNo} AND EMP_NO = #{empNo}
+    </delete>
+
+    <update id="updateLikeCount">
+        UPDATE BOARD_T B
+           SET B.BOARD_LIKE_COUNT = #{boardLikeCount}
+         WHERE BOARD_NO = #{boardNo}
+    </update>
+
+    <!-- 조회수 증가 -->
+    <update id="increaseBoardHit">
+        UPDATE BOARD_T B
+        SET B.BOARD_HIT = B.BOARD_HIT + 1
+        WHERE BOARD_NO = #{boardNo}
+    </update>
+
+</mapper>

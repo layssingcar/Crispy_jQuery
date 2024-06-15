@@ -1,0 +1,122 @@
+ @charset "EUC-KR";
+
+ .free-board-modify p,
+ .free-board-modify li {
+	 font-size: 1.7rem;
+ }
+
+#boardTitle {
+	height: 4rem;
+	font-size: 1.5rem;
+	margin-bottom: 10px;
+}
+
+#boardContent {
+	margin-top: 20px;
+	height: 20rem;
+	font-size: 1.5rem;
+	resize: none;
+}
+
+.form-control {
+	width: 1070px;
+}
+
+#cancelBtn {
+	margin-right: 5px;
+	box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+		background-color: #808080 !important;
+	border-color: #808080 !important;
+}
+.btn-modify {
+	width: 60px;
+	height: 40px;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	font-size: 1.7rem;
+}
+.border-bottom {
+	font-size: 2rem;
+	margin-top: 5rem;
+}
+
+.form-label {
+	font-size: 2rem;
+	margin-top: 15px;
+}
+
+#cate {
+	height: 3rem;
+}
+
+/* ���� �ۼ� form */
+#content-form {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin-top: 25px;
+}
+
+.note-editor {
+	width: 1070px;
+}
+
+/* ������ ��� ��ư */
+.note-toolbar button {
+	color: initial !important;
+	background-color: #fff !important;
+	border-color: #ddd !important;
+}
+
+.note-editable {
+	height: 500px !important;
+}
+
+/* 파일첨부 */
+ .free-board-modify .file-attach {
+	display: flex;
+	flex-direction: column;
+	width: 1000px;
+	margin: 20px 0;
+}
+
+/* 가존파일 / 추가파일 */
+ .free-board-modify .file-wrap {
+	display: flex;
+}
+/* 추가파일*/
+ .free-board-modify .file-item span{
+	 font-size: 1.7rem;
+ }
+
+ .free-board-modify .file-wrap ul {
+	 padding-left: 0;
+ }
+
+ .free-board-modify .new-files-wrap {
+	 margin-left: 30px;
+ }
+
+.border-bottom {
+	font-size: 3rem;
+	margin-top: 5rem;
+}
+
+.form-select {
+	font-size: 1.5rem;
+}
+
+.form-control {
+	font-size: 1.7rem;
+}
+
+#cancelBtn, #addBtn {
+	width: 60px;
+	height: 40px;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	font-size: 1.7rem;
+}

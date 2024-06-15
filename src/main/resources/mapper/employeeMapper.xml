@@ -78,6 +78,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              AND E.EMP_ID = #{empId}
     </select>
 
+    <!-- 로그인시에 필요한 정보만 -->
+    <select id="loadByMiniEmpId" resultType="EmployeeDto">
+        SELECT E.EMP_NO, E.REFRESH_TOKEN, E.EMP_PW, E.EMP_ID, E.EMP_NAME, E.REFRESH_TOKEN
+             , F.FRN_NO, F.FRN_OWNER
+             , P.POS_NAME, P.POS_NO
+          FROM EMPLOYEE_T E
+     LEFT JOIN FRANCHISE_T F
+            ON E.FRN_NO = F.FRN_NO
+    INNER JOIN POSITION_T P
+            ON E.POS_NO = P.POS_NO
+         WHERE 1 = 1
+           AND E.EMP_ID = #{empId}
+    </select>
+
     <!-- 현재 로그인한 유저 빼고 검색-->
     <select id="findAllExceptCurrentUser" parameterType="int" resultType="EmployeeDto">
             SELECT E.EMP_NO, E.EMP_NAME, E.EMP_PHONE, E.EMP_EMAIL

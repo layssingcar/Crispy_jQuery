@@ -10,7 +10,6 @@ import com.mcp.crispy.common.exception.InvalidLoginRequestException;
 import com.mcp.crispy.common.utils.CookieUtil;
 import com.mcp.crispy.common.utils.JwtUtil;
 import com.mcp.crispy.employee.dto.EmployeeDto;
-import com.mcp.crispy.employee.service.EmployeeService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +29,6 @@ public class AuthController {
     private final AuthenticationService authenticationService;
     private final CrispyUserDetailsService crispyUserDetailsService;
     private final JwtUtil jwtUtil;
-    private final EmployeeService employeeService;
 
     /**
      * 로그인 요청 처리
@@ -109,8 +107,10 @@ public class AuthController {
 
         if (userDetails instanceof EmployeePrincipal employeePrincipal) {
             String newAccessToken = jwtUtil.createAccessToken(employeePrincipal);
+            log.info("newAccessToken: {}", newAccessToken);
+            log.info("RefreshToken: {}", refreshToken);
             employeePrincipal.getEmployee().setAccessToken(newAccessToken);
-            employeePrincipal.getEmployee().setRefreshToken(refreshToken);
+
             return ResponseEntity.ok(employeePrincipal.getEmployee());
         } else if (userDetails instanceof AdminPrincipal adminPrincipal) {
             String newAccessToken = jwtUtil.createAccessToken(adminPrincipal);
@@ -120,6 +120,7 @@ public class AuthController {
 
         return ResponseEntity.status(401).body("Invalid user type");
     }
+
 
     /**
      * 로그아웃 처리

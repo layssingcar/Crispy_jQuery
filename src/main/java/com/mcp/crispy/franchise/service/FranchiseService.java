@@ -51,6 +51,7 @@ public class FranchiseService {
                 .frnZip(franchiseRegisterDto.getFrnZip())
                 .frnStreet(franchiseRegisterDto.getFrnStreet())
                 .frnDetail(franchiseRegisterDto.getFrnDetail())
+                .frnGu(franchiseRegisterDto.getFrnGu())
                 .frnStartTime(franchiseRegisterDto.getFrnStartTime())
                 .frnEndTime(franchiseRegisterDto.getFrnEndTime())
                 .build();
