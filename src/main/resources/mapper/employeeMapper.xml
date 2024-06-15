@@ -78,6 +78,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              AND E.EMP_ID = #{empId}
     </select>
 
+    <!-- 로그인시에 필요한 정보만 -->
+    <select id="loadByMiniEmpId" resultType="EmployeeDto">
+        SELECT E.EMP_NO, E.REFRESH_TOKEN, E.EMP_PW, E.EMP_ID, E.EMP_NAME, E.REFRESH_TOKEN
+             , F.FRN_NO, F.FRN_OWNER
+             , P.POS_NAME, P.POS_NO
+          FROM EMPLOYEE_T E
+     LEFT JOIN FRANCHISE_T F
+            ON E.FRN_NO = F.FRN_NO
+    INNER JOIN POSITION_T P
+            ON E.POS_NO = P.POS_NO
+         WHERE 1 = 1
+           AND E.EMP_ID = #{empId}
+    </select>
+
     <!-- 현재 로그인한 유저 빼고 검색-->
     <select id="findAllExceptCurrentUser" parameterType="int" resultType="EmployeeDto">
             SELECT E.EMP_NO, E.EMP_NAME, E.EMP_PHONE, E.EMP_EMAIL
@@ -95,7 +109,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <!-- empNo로 해당 사원의 정보 찾기 -->
     <select id="findByEmployeeDetailsByEmpNo" parameterType="EmployeeDto">
             SELECT E.EMP_NO, E.EMP_ID, E.EMP_NAME, E.EMP_PHONE, E.EMP_ZIP, E.EMP_STREET
-                 , E.EMP_DETAIL, E.EMP_PROFILE, E.EMP_EMAIL, E.EMP_STAT
+                 , E.EMP_DETAIL, E.EMP_PROFILE, E.EMP_EMAIL, E.EMP_STAT, E.EMP_ANNUAL
                  , F.FRN_NO, F.FRN_NAME
                  , P.POS_NAME, P.POS_NO
             FROM EMPLOYEE_T E
@@ -373,4 +387,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          WHERE 1 = 1
            AND E.EMP_NO = #{empNo}
     </update>
+    
+    <update id="updateAnnual"
+    		parameterType="EmployeeDto">
+    	UPDATE EMPLOYEE_T E
+          SET E.EMP_ANNUAL = #{empAnnual}
+         WHERE 1 = 1
+           AND E.EMP_NO = #{empNo}
+	</update>
 </mapper>

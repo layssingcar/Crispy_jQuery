@@ -1,6 +1,7 @@
 package com.mcp.crispy.approval.controller;
 
 import com.mcp.crispy.approval.dto.ApplicantDto;
+import com.mcp.crispy.approval.dto.ApprLineDto;
 import com.mcp.crispy.approval.dto.ApprOptionDto;
 import com.mcp.crispy.approval.dto.ApprovalDto;
 import com.mcp.crispy.approval.service.ApprovalService;
@@ -27,8 +28,18 @@ public class ApprovalController {
 	 * @return forward (time-off-approval.html)
 	 */
 	@GetMapping("time-off-approval")
-	public String timeOffAppr() {
+	public String timeOffAppr(Authentication authentication,
+							  Model model) {
+
+		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
+		int frnNo = userDetails.getFrnNo();
+		int empNo = userDetails.getEmpNo();
+
+		List<ApprLineDto> apprLineDtoList = approvalService.getApprLine(frnNo, empNo);
+		model.addAttribute("apprLineDtoList", apprLineDtoList);
+
 		return "approval/time-off-approval";
+
 	}
 
 	/**
@@ -209,24 +220,31 @@ public class ApprovalController {
 	}
 
 	/**
-	 * 결재 문서 상세 조회 (휴가,휴직 신청서)
+	 * 결재 문서 상세 조회
 	 * 우혜진 (24. 06. 11.)
 	 *
 	 * @param authentication
+	 * @param apprType
 	 * @param apprNo
 	 * @param model
 	 * @return forward (approval-detail.html)
 	 */
-	@GetMapping("approval-detail/{apprNo}")
+	@GetMapping("approval-detail/{apprType:^(?:time-off|stock-order)$}/{apprNo}")
 	public String timeOffApprDetail(Authentication authentication,
+									@PathVariable("apprType") String apprType,
 									@PathVariable("apprNo") int apprNo,
 									Model model) {
 
 		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
-		ApprovalDto approvalDto = approvalService.getTimeOffApprDetail(userDetails.getEmpNo(), apprNo);
+
+		ApprovalDto approvalDto;
+
+		if (apprType.equals("stock-order")) approvalDto = approvalService.getStockOrderApprDetail(apprNo); // 발주 신청서
+		else approvalDto = approvalService.getTimeOffApprDetail(userDetails.getEmpNo(), apprNo);		   // 휴가,휴직 신청서
 
 		model.addAttribute("approvalDto", approvalDto);
 		return "approval/approval-detail";
 
 	}
+
 }

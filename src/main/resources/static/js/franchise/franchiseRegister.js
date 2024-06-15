@@ -102,6 +102,10 @@ const franchiseRegister = {
             return; // 검증 실패 시 반환
         }
 
+        const sigungu = document.querySelector(".frn-gu").value;
+        const gu = sigungu.split(' ');
+        const guName = gu[gu.length - 1]; // ex "분당구"
+        console.log(guName)
         const franchiseData = {
             frnName: document.getElementById("frn-frnName").value,
             frnOwner: document.getElementById("frn-frnOwner").value,
@@ -109,6 +113,7 @@ const franchiseRegister = {
             frnZip: document.getElementById("frn-frnZip").value,
             frnStreet: document.getElementById("frn-frnStreet").value,
             frnDetail: document.getElementById("frn-frnDetail").value,
+            frnGu: guName,
             frnStartTime: document.querySelector(".frnStartTime").value,
             frnEndTime: document.querySelector(".frnEndTime").value
         };

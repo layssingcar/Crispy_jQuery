@@ -2,6 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.mcp.crispy.sales.mapper.SalesMapper">
+	
+	<!-- 구 별 평균 매출 조회 결과-->
+	<resultMap type="SalesDto" id="SalesMapByGuAvg">
+		<id property="salNo" column="SAL_NO" />
+		<result property="frnGu" column="FRN_GU"/>
+		<result property="totalAvgSales" column="TOTAL_AVG_SALES"/>
+	</resultMap>
 
     <!-- 매출 INSERT -->
     <insert id="insertSales" parameterType="SalesDto">
@@ -81,7 +88,15 @@
 
     <!-- 구별 매출 조회 : 카테고리, 가맹점 테이블 -->
     <select id="findGuAvgSales">
-
+		SELECT
+		       F.FRN_GU,
+      		   SUM(S.SAL_PRICE) / COUNT(DISTINCT F.FRN_NO) AS TOTAL_AVG_SALES
+	    	FROM SALES_T S
+		    INNER JOIN FRANCHISE_T F 
+		    ON S.FRN_NO = F.FRN_NO
+		    WHERE EXTRACT(MONTH FROM S.SAL_DT) = #{month}
+		    GROUP BY F.FRN_GU
+		    ORDER BY F.FRN_GU ASC		
     </select>
 
     <!-- 이달의 매장 순위 -->

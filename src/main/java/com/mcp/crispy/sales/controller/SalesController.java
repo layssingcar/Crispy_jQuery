@@ -3,6 +3,8 @@ package com.mcp.crispy.sales.controller;
 import com.mcp.crispy.auth.domain.EmployeePrincipal;
 import com.mcp.crispy.sales.dto.SalesDto;
 import com.mcp.crispy.sales.service.SalesService;
+import com.mcp.crispy.schedule.dto.ScheduleDto;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -109,7 +111,10 @@ public class SalesController {
 	}
 
 	/* 구별 매출 조회 : 카테고리, 가맹점 테이블 */
-	public void findGuAvgSales(final Model model) {
+	@ResponseBody
+	@GetMapping(value = "/getGuAvgSales", produces = "application/json")
+	public List<SalesDto> findGuAvgSales(@RequestParam("month") int month) {
+		return salesService.findGuAvgSales(month);
 	}
 
 	/* 이달의 매장 순위 */

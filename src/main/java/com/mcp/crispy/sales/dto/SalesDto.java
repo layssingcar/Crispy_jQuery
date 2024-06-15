@@ -37,4 +37,7 @@ public class SalesDto {
     /* EMPLOYEE_T 사용자 정보 */
     private String empId;
     private String empName;
+    
+    /* 매출 총합 정보 */
+    private Double totalAvgSales;
 }

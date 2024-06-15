@@ -28,7 +28,7 @@ public interface SalesMapper {
 	String findAvgSales();
 
 	/* 구별 매출 조회 : 카테고리, 가맹점 테이블 */
-	void findGuAvgSales();
+	List<SalesDto> findGuAvgSales(int month);
 
 	/* 이달의 매장 순위 */
 	void findSalesRenk();

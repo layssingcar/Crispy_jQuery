@@ -15,9 +15,18 @@ const notification = {
             this.stompClient.subscribe('/user/' + username + '/queue/unreadCount', (unreadCount) => {
                     this.updateUnreadCount(JSON.parse(unreadCount.body));
                 });
-
+            this.stompClient.subscribe('/topic/messages', (message) => {
+                this.fetchUnreadCount();
+            });
+            this.fetchUnreadCount();
         });
     },
+    fetchUnreadCount: function () {
+        if (this.stompClient) {
+            this.stompClient.send("/app/fetchUnreadCount", {}, JSON.stringify({}));
+        }
+    },
+
 
     updateUnreadCount: function (unreadCount) {
         const unreadCountBadge = document.getElementById('unreadMessageCountBadge');
