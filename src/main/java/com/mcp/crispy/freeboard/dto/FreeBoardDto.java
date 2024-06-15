@@ -32,6 +32,8 @@ public class FreeBoardDto {
     private int modifier;
     private int empNo;
     private int boardLikeCount; // 게시물 좋아요 개수
+    private int commentCount;// 댓글 개수
+    private boolean hasAttachment; // 파일 존재 여부
     private String empName;
     private EmployeeDto employee;
     /* 파일 이름*/
@@ -41,7 +43,7 @@ public class FreeBoardDto {
     private int pageNo; // 페이지번호
     private String sortKey;         // 정렬기준
     private String sortOrder;       // 정렬순서
-    private String boardTitleSearch; // 게시물명
+    private String searchKeyword; // 게시물명
 
     // 좋아요 증가
     public void addLike() {
