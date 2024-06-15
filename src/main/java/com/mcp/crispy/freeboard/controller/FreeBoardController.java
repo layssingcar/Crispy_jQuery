@@ -31,34 +31,41 @@ public class FreeBoardController {
     private final CommentService commentService;
 
     /**
-     * 오정은 - 자유게시판 LIST
+     * 자유게시판 LIST
+     * 배영욱 (24. 06. 08)
      * @param model
-     * @return forward (board/free-board-list.html)
+     * @return forward (freeboard/free-board-list.html)
      */
     @GetMapping("/board-list/free")
     public String boardList(Model model, FreeBoardDto freeBoardDto) {
         PageResponse<FreeBoardDto> freeList = freeBoardService.getFree2BoardList(freeBoardDto,10);
+        freeList.getItems().forEach(board -> {
+            int countComment = commentService.getCountComment(board.getBoardNo());
+            board.setCommentCount(countComment);
+            log.info("countCommentCount: {}", countComment);
+        });
+        log.info("freeList: {}", freeList.getItems());
         model.addAttribute("freeList", freeList);
-
         return "freeboard/free-board-list";
     }
 
     @GetMapping("freeBoardItems")
     public String boardItems(Model model, FreeBoardDto freeBoardDto) {
         PageResponse<FreeBoardDto> freeList = freeBoardService.getFree2BoardList(freeBoardDto, 10);
+        freeList.getItems().forEach(board -> {
+            int countComment = commentService.getCountComment(board.getBoardNo());
+            board.setCommentCount(countComment);
+        });
         model.addAttribute("freeList", freeList);
 
         return "freeboard/free-board-list :: board-list-container";
     }
-
 
     @GetMapping("/freeBoard/save")
     public String insertBoard(Model model) {
         model.addAttribute("board", new FreeBoardDto());
         return "freeboard/free-board-add";
     }
-
-
 
     @GetMapping("/freeBoardDetail")
     public String detail(@RequestParam(value = "boardNo", required = false, defaultValue = "0") int boardNo,
@@ -68,6 +75,7 @@ public class FreeBoardController {
         EmployeePrincipal employee = (EmployeePrincipal) authentication.getPrincipal();
         freeBoardService.increaseFreeBoardHit(boardNo,request, response);
         FreeBoardDto freeBoardDto = freeBoardService.loadFreeBoardByNo(boardNo, employee.getEmpNo());
+        log.info("freeBoardDto: {}", freeBoardDto.isHasAttachment());
         model.addAttribute("board", freeBoardDto);
         log.info("boardDto: {}", freeBoardDto.getBoardHit());
         model.addAttribute("files", freeBoardDto.getFiles());

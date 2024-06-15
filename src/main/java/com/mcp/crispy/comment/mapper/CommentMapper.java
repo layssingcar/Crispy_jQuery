@@ -31,7 +31,7 @@ public interface CommentMapper {
 
     // 대댓글 수정
 
-    // 댓글 총 개수
-
+    // 특정 게시글에 달린 댓글 개수
+    int getCountComment(int boardNo);
 
 }

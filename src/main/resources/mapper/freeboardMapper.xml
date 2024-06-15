@@ -15,6 +15,7 @@
         <result property="creator" column="CREATOR" />
         <result property="modifyDt" column="MODIFY_DT" />
         <result property="modifier" column="MODIFIER" />
+        <result property="hasAttachment" column="HAS_ATTACHMENT"/>
         <collection property="files" ofType="BoardFileDto">
             <id property="boardFileNo" column="BOARD_FILE_NO"/>
             <result property="boardOrigin" column="BOARD_ORIGIN"/>
@@ -25,31 +26,35 @@
 
     <!-- 게시판 LIST -->
     <select id="getFreeBoardList">
-        SELECT ROW_NUMBER() OVER(
-        ORDER BY
-        <choose>
-            <when test="sortKey == 'boardHit'">B.BOARD_HIT</when>
-            <otherwise>B.BOARD_NO</otherwise>
-        </choose>
-        <choose>
-            <when test="sortOrder == 'DESC'">DESC</when>
-            <otherwise>ASC</otherwise>
-        </choose>
-        ) RN
-        , B.BOARD_NO
-        , B.BOARD_TITLE
-        , B.BOARD_CONTENT
-        , B.BOARD_HIT
-        , B.CREATE_DT
-        , E.EMP_NAME
-        FROM BOARD_T B
+            SELECT ROW_NUMBER() OVER(
+            ORDER BY
+            <choose>
+                <when test="sortKey == 'boardHit'">B.BOARD_HIT</when>
+                <otherwise>B.BOARD_NO</otherwise>
+            </choose>
+            <choose>
+                <when test="sortOrder != null and sortOrder != ''"> ${sortOrder}</when>
+                <otherwise>DESC</otherwise>
+            </choose>
+            ) RN
+            , B.BOARD_NO
+            , B.BOARD_TITLE
+            , B.BOARD_CONTENT
+            , B.BOARD_HIT
+            , B.CREATE_DT
+            , E.EMP_NAME
+            , B.BOARD_LIKE_COUNT
+             FROM BOARD_T B
         LEFT JOIN EMPLOYEE_T E ON B.EMP_NO = E.EMP_NO
-        WHERE 1 = 1
-        AND B.BOARD_CT_NO = 1
-        AND B.BOARD_STAT = 0
-        <if test="boardTitleSearch != null and boardTitleSearch != ''">
-            AND B.BOARD_TITLE LIKE '%' || #{boardTitleSearch} || '%'
-        </if>
+            WHERE 1 = 1
+              AND B.BOARD_CT_NO = 1
+              AND B.BOARD_STAT = 0
+            <if test="searchKeyword != null and searchKeyword != ''">
+                AND (
+                    B.BOARD_TITLE LIKE '%' || #{searchKeyword} || '%'
+                    OR B.BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%'
+                    OR E.EMP_NAME LIKE '%'|| #{searchKeyword} || '%')
+            </if>
     </select>
 
     <!-- INSERT 수행 이전에 파라미터 BoardDto의 boardNo 속성(필드)에 BOARD_SEQ.NEXTVAL 값을 저장한다. -->
@@ -103,16 +108,16 @@
     <select id="getFreeBoardByNo"  resultMap="FreeBoardMap">
         SELECT B.BOARD_NO, B.BOARD_CT_NO, B.BOARD_TITLE, B.BOARD_CONTENT, B.EMP_NO, B.CREATOR,
                B.BOARD_HIT, B.CREATE_DT, B.MODIFY_DT, B.BOARD_LIKE_COUNT,
-               E.EMP_NO, E.EMP_NAME,
-               F.BOARD_ORIGIN
-        FROM BOARD_T B
-                 INNER JOIN EMPLOYEE_T E ON E.EMP_NO = B.EMP_NO
-                 LEFT JOIN BOARD_FILE_T F ON B.BOARD_NO = F.BOARD_NO
-        WHERE B.BOARD_NO = #{boardNo}
+               E.EMP_NO, E.EMP_NAME, F.BOARD_ORIGIN,
+               CASE WHEN F.BOARD_FILE_NO IS NOT NULL THEN 1 ELSE 0 END AS HAS_ATTACHMENT
+          FROM BOARD_T B
+    INNER JOIN EMPLOYEE_T E ON E.EMP_NO = B.EMP_NO
+     LEFT JOIN BOARD_FILE_T F ON B.BOARD_NO = F.BOARD_NO
+         WHERE B.BOARD_NO = #{boardNo}
     </select>
 
     <select id="getFreeBoardFileList"
-            resultType="BoardFileDto">
+            resultType="FreeBoardFileDto">
         SELECT BOARD_FILE_NO, BOARD_PATH, BOARD_RENAME, BOARD_ORIGIN
         FROM BOARD_FILE_T
         WHERE BOARD_NO = #{boardNo}
@@ -120,7 +125,7 @@
 
     <!-- 파일 번호 가져오기 -->
     <select id="getFreeBoardFileByNo"
-            resultType="BoardFileDto">
+            resultType="FreeBoardFileDto">
         SELECT BOARD_FILE_NO, BOARD_PATH, BOARD_RENAME, BOARD_ORIGIN
         FROM BOARD_FILE_T
         WHERE BOARD_FILE_NO = #{boardFileNo}
@@ -128,7 +133,7 @@
 
     <!-- 게시판 수정 -->
     <update id="updateFreeBoard"
-            parameterType="BoardDto">
+            parameterType="FreeBoardDto">
         UPDATE BOARD_T B
         SET B.BOARD_TITLE = #{boardTitle}
           , B.BOARD_CONTENT = #{boardContent}

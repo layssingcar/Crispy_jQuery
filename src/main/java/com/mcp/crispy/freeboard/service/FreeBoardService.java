@@ -117,8 +117,8 @@ public class FreeBoardService {
         // 게시판 리스트
         List<FreeBoardDto> items = freeBoardMapper.getFreeBoardList(freeBoardDto, rowBounds);
         items.forEach(item -> {
-            String boardTitle = item.getBoardTitle();
-            String boardContent = item.getBoardContent();
+            String boardTitle = badWordFiltering.change(item.getBoardTitle());
+            String boardContent = badWordFiltering.change(item.getBoardContent());
             item.setBoardTitle(boardTitle);
             item.setBoardContent(boardContent);
         });
@@ -132,13 +132,15 @@ public class FreeBoardService {
         log.info("Load board by no: {}", boardNo);
         FreeBoardDto freeBoardDto = freeBoardMapper.getFreeBoardByNo(boardNo);
         log.info("Load Board : {}", freeBoardDto);
-        List<FreeBoardFileDto> files = freeBoardMapper.getFreeBoardFileList(boardNo);
+        if (freeBoardDto.isHasAttachment()) {
+            log.info("Load Board attachment");
+            List<FreeBoardFileDto> files = freeBoardMapper.getFreeBoardFileList(boardNo);
+            freeBoardDto.setFiles(files);
+        }
 
         // 게시판 제목과 내용을 필터링
         freeBoardDto.setBoardTitle(badWordFiltering.change(freeBoardDto.getBoardTitle()));
         freeBoardDto.setBoardContent(badWordFiltering.change(freeBoardDto.getBoardContent()));
-
-        freeBoardDto.setFiles(files);
 
         boolean isLiked = freeBoardMapper.isLiked(boardNo, empNo) > 0;
         freeBoardDto.setLiked(isLiked);

@@ -10,7 +10,7 @@
 	<aside th:replace="~{layout/sidebar :: sidebar}"></aside>
 	<div>
 		<main>
-			<div class="main">
+			<div class="free-board-add">
 				<form id="frm-board-add" method="POST" class="my-3" enctype="multipart/form-data">
 					<h1 class="border-bottom py-2">게시물 작성하기</h1>
 					<div class="col-md-5">
@@ -22,7 +22,7 @@
 						</select>
 					</div>
 					<label for="boardTitle" class="form-label">제목</label>
-					<input type="text" name="boardTitle" id="boardTitle" class="form-control board-title" style="white-space: pre-line;" placeholder="제목은 100자 내외로 입력해주세요."required />
+					<input type="text" name="boardTitle" id="boardTitle" class="form-control board-title" style="white-space: pre-line;" placeholder="제목은 100자 내외로 입력해주세요." required />
 					<div class="error-message boardTitle-error" style="display: none;"></div>
 					<div class="mb-3">
 						<label for="summernote" class="form-label mt-2">내용</label>
@@ -66,6 +66,7 @@
 				callbacks: {
 					onInit: function() {
 						$('#summernote').next().find('.note-placeholder').css('font-size', '16px');
+						$('#summernote').next().find('.note-editable').css('font-size', '20px');
 					}
 				},
 			});

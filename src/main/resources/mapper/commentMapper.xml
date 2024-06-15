@@ -76,4 +76,11 @@
         WHERE C.CMT_NO = #{cmtNo}
     </update>
 
+    <!-- 특정 게시글에 달린 댓글 개수 -->
+    <select id="getCountComment" parameterType="int">
+        SELECT COUNT(*)
+        FROM COMMENT_T C
+        WHERE C.BOARD_NO = #{boardNo}
+    </select>
+
 </mapper>

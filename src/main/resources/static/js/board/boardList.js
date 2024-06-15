@@ -2,8 +2,8 @@ const boardList = {
     optionObj: {
         "pageNo": 1,            // 페이지번호
         "sortKey": "boardNo", // 정렬기준
-        "sortOrder": "ASC",     // 정렬순서
-        "boardTitleSearch": ""   // 재고명검색
+        "sortOrder": "DESC",    // 정렬순서
+        "searchKeyword": ""   // 재고명검색
     },
 
     init: function() {
@@ -21,7 +21,7 @@ const boardList = {
             params.append(key, optionObj[key]);
         }
 
-        const response = await fetch(`/crispy/board-items?${params.toString()}`);
+        const response = await fetch(`/crispy/freeBoardItems?${params.toString()}`);
         const html = await response.text();
         document.querySelector(".board-list-container").outerHTML = html;
 
@@ -75,7 +75,7 @@ const boardList = {
     },
     searchBoardTitle: function() {
         document.querySelector(".search").addEventListener("input", e => {
-            this.optionObj.boardTitleSearch = e.target.value;
+            this.optionObj.searchKeyword = e.target.value;
             this.optionObj.pageNo = 1;
             this.getBoardItemsFn(this.optionObj);
         })
@@ -83,7 +83,7 @@ const boardList = {
 
     bindAddBoardEvent: function() {
         document.getElementById('addBtn').addEventListener('click', function() {
-            window.location.href = '/crispy/board/save';
+            window.location.href = '/crispy/freeBoard/save';
         });
     },
 

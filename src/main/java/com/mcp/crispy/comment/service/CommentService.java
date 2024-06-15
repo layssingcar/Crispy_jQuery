@@ -68,4 +68,8 @@ public class CommentService {
                 .build();
         commentMapper.updateComment(comment);
     }
+
+    public int getCountComment(int boardNo) {
+        return commentMapper.getCountComment(boardNo);
+    }
 }

@@ -49,7 +49,7 @@ const franchise = {
         this.setupFrnEditBtn("btn-edit-frnName", "frn-frnName", "btn-change-frnName");
         this.setupFrnEditBtn("btn-edit-frnOwner", "frn-frnOwner", "btn-change-frnOwner");
         this.setupFrnEditBtn("btn-edit-frnTel", "frn-frnTel", "btn-change-frnTel");
-        this.setupFrnEditBtn("btn-edit-operating-time", "frnStartTime", "btn-change-operating-time");
+        this.setupFrnEditBtn("btn-edit-operating-time", "frn-start-time", "btn-change-operating-time");
     },
 
     setupFormButtons: function () {
@@ -188,6 +188,7 @@ const franchise = {
         select.className = inputElement.className;
         select.id = inputElement.id;
         select.name = inputElement.name;
+        console.log(select)
 
         for (let hour = 8; hour < 24; hour++) {
             for (let minute = 0; minute < 60; minute += 30) { // 30분 간격으로 옵션 추가
@@ -201,10 +202,10 @@ const franchise = {
             }
         }
 
-        // 기존 input을 select로 교체
         inputElement.parentNode.replaceChild(select, inputElement);
-
+        console.log(inputElement)
         if (focusAfterReplace) { select.focus(); }
+        return select;
     },
 
     setupFrnEditBtn: function(editButtonId, inputId, changeButtonId) {
@@ -215,18 +216,24 @@ const franchise = {
         let originalValue = inputElement?.value;
 
         editButton?.addEventListener("click", () => {
-            inputElement.readOnly = false;
+            if (inputElement.tagName.toLowerCase() === 'input' || inputElement.tagName.toLowerCase() === 'select') {
+                inputElement.readOnly = false;
+                changeButton.disabled = false;
+            }
             inputElement.focus();
             changeButton.style.display = 'inline';
             editButton.style.display = 'none';
-            changeButton.disabled = true;
 
             originalValue = inputElement.value;
         });
 
-        inputElement?.addEventListener("input", () => {
-            changeButton.disabled = inputElement.value.trim() === originalValue.trim();
-        });
+        if (inputElement.tagName.toLowerCase() === 'input' || inputElement.tagName.toLowerCase() === 'select') {
+            inputElement?.addEventListener("change", () => {
+                console.log("둘중에 어떤 게? change")
+                changeButton.disabled = inputElement.value.trim() === originalValue.trim();
+                console.log(changeButton.disabled)
+            });
+        }
     },
 
     updateFrnAddress: function() {

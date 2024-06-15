@@ -7,7 +7,7 @@ const board = {
 
     bindEvents: function() {
         document.getElementById('modifyBtn')?.addEventListener('click', () => {
-            window.location.href = '/board/board-modify';
+            window.location.href = '/crispy/freeBoard/freeBoardModify/';
         });
 
         const addBoard = document.getElementById("addBtn");
@@ -28,6 +28,25 @@ const board = {
         this.bindCommentEvents();
         this.bindFileDownloadEvents();
         this.bindExistingFileDeleteEvents();
+        this.handleLine()
+    },
+
+    handleLine: function () {
+        const boardContentElement = document.querySelector(".board-content");
+        let boardContent = boardContentElement.textContent || boardContentElement.innerText;
+
+        boardContent = boardContent.replace(/\n/g, "<br>");
+
+        boardContent = boardContent.replace(/^(<br\s*\/?>)+/, '');
+
+        boardContentElement.innerHTML = boardContent;
+
+        const comments = document.querySelectorAll('.cmt-content');
+        comments.forEach(comment => {
+            const content = comment.textContent || comment.innerText;
+            comment.innerHTML = content.replace(/\n/g, "<br>");
+        });
+
     },
 
     handleFileSelect: function(event) {
@@ -46,7 +65,9 @@ const board = {
             fileItem.classList.add('file-item');
             fileItem.innerHTML = `
                 <span>${file.name}</span>
-                <button type="button" class="delete-file" data-index="${index}">X</button>
+                <a class="delete-file" data-index="${index}" >
+                <i class="fa-regular fa-circle-xmark" style="font-size: 1.7rem"></i>
+                </a>
             `;
             fileList.appendChild(fileItem);
         });
@@ -89,15 +110,24 @@ const board = {
     addBoard: function() {
         const form = document.getElementById('frm-board-add');
         const formData = new FormData(form);
-        const boardDto = {
+
+        let summernoteContent = $('#summernote').summernote('code');
+
+        summernoteContent = summernoteContent.replace(/<br\s*\/?>/gi, "\n");
+
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = summernoteContent;
+        const boardContent = tempDiv.innerHTML.replace(/<br\s*\/?>/gi, "\n");
+
+        const data = {
             boardCtNo: form.boardCtNo.value,
             boardTitle: form.boardTitle.value,
-            boardContent: $('<div>').html($('#summernote').summernote('code')).text()
+            boardContent: boardContent
         };
 
-        formData.append('boardDto', new Blob([JSON.stringify(boardDto)], { type: 'application/json' }));
+        formData.append('freeBoardDto', new Blob([JSON.stringify(data)], { type: 'application/json' }));
 
-        fetch('/api/board/v1', {
+        fetch('/api/freeBoard/v1', {
             method: "POST",
             body: formData
         }).then(response => {
@@ -111,7 +141,7 @@ const board = {
         }).then(data => {
             alert(data.message);
             const boardNo = data.boardNo;
-            location.href = `/crispy/board-detail?boardNo=${boardNo}`;
+            location.href = `/crispy/freeBoardDetail?boardNo=${boardNo}`;
         }).catch(error => {
             console.error('Error:', error);
         });
@@ -131,19 +161,25 @@ const board = {
         const form = document.getElementById('frm-board-modify');
         const formData = new FormData(form);
 
+        let summernoteContent = $('#summernote').summernote('code');
+
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = summernoteContent;
+        const boardContent = tempDiv.innerText || tempDiv.textContent || "";
+
         const data = {
             boardNo: parseInt(document.querySelector(".board-no").value),
             boardCtNo: parseInt(document.querySelector(".board-ct-no").value),
             boardTitle: document.querySelector(".board-title").value,
-            boardContent: $('<div>').html($('#summernote').summernote('code')).text()
+            boardContent: summernoteContent
         };
 
-        formData.append('boardDto', new Blob([JSON.stringify(data)], { type: 'application/json' }));
+        formData.append('freeBoardDto', new Blob([JSON.stringify(data)], { type: 'application/json' }));
 
 
         formData.append('deletedFileNo', new Blob([JSON.stringify(this.deletedFiles)], { type: 'application/json' }));
 
-        fetch('/api/board/v1', {
+        fetch('/api/freeBoard/v1', {
             method: "PUT",
             body: formData
         }).then(response => {
@@ -157,7 +193,7 @@ const board = {
         }).then(data => {
             alert(data.message);
             const boardNo = data.boardNo;
-            location.href = `/crispy/board-detail?boardNo=${boardNo}`;
+            location.href = `/crispy/freeBoardDetail?boardNo=${boardNo}`;
         }).catch(error => {
             console.error('Error:', error);
         });
@@ -167,7 +203,7 @@ const board = {
         const boardNo = document.querySelector(".board-no").value;
         const empNo = document.querySelector(".emp-no")?.value;
 
-        fetch(`/api/board/${boardNo}/v1`, {
+        fetch(`/api/freeBoard/${boardNo}/v1`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json"
@@ -185,7 +221,7 @@ const board = {
     toggleLike: function() {
         const boardNo = document.querySelector(".board-no").value;
 
-        fetch(`/api/board/${boardNo}/like/v1`, {
+        fetch(`/api/freeBoard/${boardNo}/like/v1`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -239,7 +275,7 @@ const board = {
                 const cmtNo = this.getAttribute("data-comment-no");
                 const commentDiv = this.closest(".comment-level-0, .comment-level-1"); // 댓글 블록 선택
                 console.log(commentDiv);
-                const originalContent = commentDiv.querySelector("p").innerText;
+                const originalContent = commentDiv.querySelector("p").innerHTML.replace(/<br\s*\/?>/gi, '\n');
                 const textarea = document.createElement("textarea");
                 textarea.classList.add("form-control");
                 textarea.value = originalContent;
@@ -249,7 +285,7 @@ const board = {
                 saveButton.classList.add("btn", "btn-primary");
                 saveButton.innerText = "저장";
                 saveButton.addEventListener("click", function() {
-                    const updatedContent = textarea.value;
+                    const updatedContent = textarea.value.replace(/\n/g, '<br>');
                     const data = {
                         boardNo: parseInt(document.querySelector(".board-no").value),
                         cmtNo: parseInt(cmtNo),
@@ -301,6 +337,9 @@ const board = {
             button.addEventListener("click", function() {
                 const replyContainer = this.closest('.reply-container');
                 if (!replyContainer.querySelector('.reply-input')) {
+                    const replyWrapper = document.createElement('div');
+                    replyWrapper.classList.add('reply-wrapper');
+
                     const input = document.createElement('textarea');
                     input.classList.add('form-control', 'reply-input');
                     input.placeholder = '답글을 입력하세요';
@@ -341,8 +380,9 @@ const board = {
                         });
                     });
 
-                    replyContainer.appendChild(input);
-                    replyContainer.appendChild(submitButton);
+                    replyWrapper.appendChild(input);
+                    replyWrapper.appendChild(submitButton);
+                    replyContainer.appendChild(replyWrapper);
                 }
             });
         });
@@ -354,7 +394,7 @@ const board = {
         fileDownload?.forEach(function(element) {
             element.addEventListener("click", function() {
                 const boardFileNo = this.dataset.fileNo;
-                window.location.href = `/api/board/file/download?boardFileNo=${boardFileNo}`;
+                window.location.href = `/api/freeBoard/file/download?boardFileNo=${boardFileNo}`;
             });
         });
 
@@ -362,7 +402,7 @@ const board = {
         const downloadAll = document.getElementById("downloadAllBtn");
         downloadAll?.addEventListener("click", function() {
             const boardNo = document.querySelector(".board-no").value;
-            window.location.href = `/api/board/file/downloadAll?boardNo=${boardNo}`;
+            window.location.href = `/api/freeBoard/file/downloadAll?boardNo=${boardNo}`;
         });
     }
 };
