@@ -75,6 +75,28 @@
                AND TIME_OFF_CT_NO = #{timeOffCtNo}
     </select>
 
+    <!-- 결재선 불러오기 -->
+    <select id="getApprLine">
+            SELECT E.EMP_NO, E.EMP_NAME
+                 , P.POS_NO, P.POS_NAME
+              FROM EMPLOYEE_T E
+        INNER JOIN FRANCHISE_T F
+                ON E.FRN_NO = F.FRN_NO
+   LEFT OUTER JOIN POSITION_T P
+                ON E.POS_NO = P.POS_NO
+             WHERE 1=1
+               AND F.FRN_NO = #{frnNo}
+               AND DECODE (
+                          (SELECT POS_NO
+                             FROM EMPLOYEE_T
+                            WHERE EMP_NO = #{empNo})
+                                , 2, 2
+                                , 1
+                          ) > P.POS_NO
+          ORDER BY P.POS_NO ASC
+                 , E.EMP_NAME ASC
+    </select>
+
     <!-- 휴가/휴직 신청 (전자결재 테이블) -->
     <insert id="insertApproval" useGeneratedKeys="true">
         <selectKey order="BEFORE" resultType="_int" keyProperty="apprNo">

@@ -1,6 +1,7 @@
 package com.mcp.crispy.approval.controller;
 
 import com.mcp.crispy.approval.dto.ApplicantDto;
+import com.mcp.crispy.approval.dto.ApprLineDto;
 import com.mcp.crispy.approval.dto.ApprOptionDto;
 import com.mcp.crispy.approval.dto.ApprovalDto;
 import com.mcp.crispy.approval.service.ApprovalService;
@@ -27,8 +28,18 @@ public class ApprovalController {
 	 * @return forward (time-off-approval.html)
 	 */
 	@GetMapping("time-off-approval")
-	public String timeOffAppr() {
+	public String timeOffAppr(Authentication authentication,
+							  Model model) {
+
+		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
+		int frnNo = userDetails.getFrnNo();
+		int empNo = userDetails.getEmpNo();
+
+		List<ApprLineDto> apprLineDtoList = approvalService.getApprLine(frnNo, empNo);
+		model.addAttribute("apprLineDtoList", apprLineDtoList);
+
 		return "approval/time-off-approval";
+
 	}
 
 	/**

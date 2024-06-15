@@ -245,6 +245,43 @@ const getCurrentDateFn = () => {
     document.querySelector("#appr-dt").innerHTML = formattedDate;
 }
 
+// 결재선 불러오기
+const getApprLineFn = () => {
+    const tempList = [];        // 직책 기록을 위한 임시 리스트
+    const parentList =  [];     // 직책명 리스트
+    const childList = []        // 직원명 리스트
+    let managerOrder = 1;     // 매니저 id 번호 부여를 위한 변수
+
+    apprLineDtoList.forEach((item) => {
+        // 직책명
+        if (!tempList.includes(item.posNo)) {
+            const parentObj = {
+                "id": item.posNo === 1 ? "manager" : "owner",
+                "parent": "#",
+                "text": item.posName,
+                "icon": "glyphicon glyphicon-home",
+                "state": {"opened" : true}
+            };
+
+            parentList.push(parentObj);
+            tempList.push(item.posNo);
+        }
+
+        // 직원명
+        const childObj = {
+            "id": item.posNo === 1 ? "m" + managerOrder++ : "o1",
+            "parent": item.posNo === 1 ? "manager" : "owner",
+            "text": item.empName,
+            "icon": "glyphicon glyphicon-picture",
+            "a_attr": {"empNo" : item.empNo}
+        }
+
+        childList.push(childObj);
+    })
+
+    return [...parentList, ...childList];
+}
+
 // 결재선 목록
 $('#tree').on('changed.jstree', function (e, data) {
     const selectTarget = data.instance.get_node(data.selected[0]);
@@ -257,14 +294,7 @@ $('#tree').on('changed.jstree', function (e, data) {
 
 }).jstree({
     'core' : {
-        'data' : [
-            { "id" : "owner",   "parent" : "#",       "text" : "점주",   "icon" : "glyphicon glyphicon-home",    "state"  : {"opened" : true}},
-            { "id" : "manager", "parent" : "#",       "text" : "매니저", "icon" : "glyphicon glyphicon-home",    "state"  : {"opened" : true}},
-            { "id" : "o1",      "parent" : "owner",   "text" : "우혜진", "icon" : "glyphicon glyphicon-picture", "a_attr" : {"empNo" : 10}},
-            { "id" : "m1",      "parent" : "manager", "text" : "박종구", "icon" : "glyphicon glyphicon-picture", "a_attr" : {"empNo" : 7}},
-            { "id" : "m2",      "parent" : "manager", "text" : "배영욱", "icon" : "glyphicon glyphicon-picture", "a_attr" : {"empNo" : 8}},
-            { "id" : "m3",      "parent" : "manager", "text" : "최동환", "icon" : "glyphicon glyphicon-picture", "a_attr" : {"empNo" : 11}}
-        ]
+        'data' : getApprLineFn()
     }
 })
 
@@ -316,4 +346,5 @@ document.addEventListener("DOMContentLoaded", function () {
     changeDateFn();
     selectFileFn();
     changeUIFn();
+    getApprLineFn();
 })
