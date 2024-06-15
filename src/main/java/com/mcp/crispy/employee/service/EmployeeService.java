@@ -213,6 +213,7 @@ public class EmployeeService {
         return employeeMapper.searchEmployees(employeeDto.getEmpName(), empNo);
     }
 
+    // 사용자 초대 메소드
     public List<EmployeeDto> getInviteEmployees(Integer chatRoomNo) {
         return employeeMapper.inviteEmployees(chatRoomNo);
     }
