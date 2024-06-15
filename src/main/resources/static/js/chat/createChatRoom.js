@@ -56,43 +56,72 @@ const createChatRoom = {
     displayUserList: function(users) {
         const userListDiv = document.getElementById('userList');
         userListDiv.innerHTML = '';
-        const list = document.createElement('ul');
-        list.classList.add('list-group');
 
+        const branchGroups = {};
+
+        // 사용자 목록을 지점별로 그룹화
         users.forEach(user => {
-            const listDiv = document.createElement('div');
-            listDiv.className = "invite-info";
-            const listImg = document.createElement("img");
-            listImg.className = 'modal-profile-image';
-            listImg.src = user.empProfile;
-            const userDiv = document.createElement("div");
-            userDiv.className = 'modal-user-div';
-            const listItem = document.createElement('span');
-            listItem.className = 'ms-3';
-            listItem.textContent = `${user.empName} (${user.posName}) - ${user.frnName}`;
-            listItem.dataset.userId = user.empNo;
-            const listCheckbox = document.createElement("input");
-            listCheckbox.type = "checkbox";
-            listCheckbox.value = user.empNo;
-            listCheckbox.checked = this.selectedUserIds.has(user.empNo.toString());
-            listCheckbox.addEventListener('change', () => this.handleCheckboxChange(user, listCheckbox));
-
-            userDiv.appendChild(listItem);
-            userDiv.appendChild(listCheckbox);
-
-            listDiv.appendChild(listImg);
-            listDiv.appendChild(userDiv);
-            list.appendChild(listDiv);
+            if (!branchGroups[user.frnName]) {
+                branchGroups[user.frnName] = [];
+            }
+            branchGroups[user.frnName].push(user);
         });
+
+        // 그룹화된 사용자 목록을 지점별로 표시
+        for (const [branchName, branchUsers] of Object.entries(branchGroups)) {
+            const branchDiv = document.createElement('div');
+            branchDiv.className = "branch-group";
+
+            const branchHeader = document.createElement('h3');
+            branchHeader.className = "branch-header";
+            branchHeader.textContent = branchName;
+            branchDiv.appendChild(branchHeader);
+
+            const list = document.createElement('ul');
+            list.classList.add('list-group');
+            branchDiv.appendChild(list);
+
+            branchUsers.forEach(user => {
+
+                const listDiv = document.createElement('div');
+                listDiv.className = "invite-info";
+
+                const listImg = document.createElement("img");
+                listImg.className = 'modal-profile-image';
+                listImg.src = user.empProfile || '/img/anonymous.png';
+
+                const userDiv = document.createElement("div");
+                userDiv.className = 'modal-user-div';
+
+                const userNameSpan = document.createElement('span');
+                userNameSpan.className = 'ms-3';
+                userNameSpan.textContent = `${user.empName} (${user.posName}) - ${user.frnName}`;
+                userNameSpan.dataset.userId = user.empNo;
+
+                const listCheckbox = document.createElement("input");
+                listCheckbox.type = "checkbox";
+                listCheckbox.value = user.empNo;
+                listCheckbox.checked = this.selectedUserIds.has(user.empNo.toString());
+                listCheckbox.addEventListener('change', () => this.handleCheckboxChange(user, listCheckbox));
+
+                userDiv.appendChild(userNameSpan);
+                userDiv.appendChild(listCheckbox);
+
+                listDiv.appendChild(listImg);
+                listDiv.appendChild(userDiv);
+                list.appendChild(listDiv);
+            });
+
+            userListDiv.appendChild(branchDiv);
+        }
 
         if (users.length === 0) {
             userListDiv.textContent = '검색 결과가 없습니다.';
-        } else {
-            userListDiv.appendChild(list);
         }
 
         this.updateSelectedUserList();
     },
+
 
     handleCheckboxChange: function(user, checkbox) {
         if (checkbox.checked) {
