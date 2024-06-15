@@ -157,7 +157,7 @@
 			guList.push(this.frnGu);
 			avgSalesList.push(this.totalAvgSales);				
 		})
-		alert("매출 성공");
+		// alert("매출 성공");
 		      new Chart(ctx, {
 	          type: 'bar',  // bar, line, pie, doughnut, radar 등등...
 	          data: {

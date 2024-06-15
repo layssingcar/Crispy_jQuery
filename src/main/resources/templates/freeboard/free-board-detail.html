@@ -35,7 +35,7 @@
                     <div id="board-like" class="board-like">
                         <div>
                             <img th:src="${board.isLiked ? '/img/heart2.png' : '/img/heart1.png'}" width="20px" id="like-button">
-                            좋아요 수 : <span id="like-count" th:text="${board.boardLikeCount}"></span>
+                            <span id="like-count" th:text="${board.boardLikeCount}"></span>
                         </div>
                     </div>
                     <hr>
