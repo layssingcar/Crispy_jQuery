@@ -374,7 +374,7 @@ const message = {
                     profileImgContainer.className = 'profile-img';
                     const profileImg = document.createElement("div");
                     const profileImgTag = document.createElement("img");
-                    profileImgTag.src = participant.empProfile;
+                    profileImgTag.src = participant.empProfile || '/img/anonymous.png';
                     profileImgTag.alt = participant.empName
                     profileImg.appendChild(profileImgTag)
                     profileImgContainer.appendChild(profileImg)
