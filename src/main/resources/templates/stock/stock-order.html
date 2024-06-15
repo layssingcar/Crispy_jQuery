@@ -133,7 +133,7 @@
 									<span> | 수량: </span>
 									<input type="text" class="test-count"
 										   th:name="|stockOrderList[${stat.index}].stockOrderCount|"
-										   th:value="${stockDto.stockOrderCount}">
+										   th:value="${stockDto.stockOrderCount != 0 ? stockDto.stockOrderCount : ''}">
 									<input type="hidden" class="stock-order-cost"
 										   th:name="|stockOrderList[${stat.index}].stockOrderCost|"
 										   th:value="${stockDto.stockOrderCost}">
