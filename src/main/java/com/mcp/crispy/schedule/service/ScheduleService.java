@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+
+import javax.crypto.spec.DHParameterSpec;
 
 @Service
 @RequiredArgsConstructor
@@ -26,9 +29,10 @@ public class ScheduleService {
 	}
 	
 	@Transactional(readOnly = true)
-	public List<ScheduleDto> getScheList(int empNo) {
-		EmployeeDto emp = employeeService.getEmployeeDetailsByEmpNo(empNo);
-		List<ScheduleDto> attenList = scheduleMapper.getScheList(emp.getFrnNo()); 
+	public List<ScheduleDto> getScheList(Map<String, Object> params) {
+		EmployeeDto emp = employeeService.getEmployeeDetailsByEmpNo((int)params.get("frnNo"));
+		params.put("frnNo", emp.getFrnNo());
+		List<ScheduleDto> attenList = scheduleMapper.getScheList(params); 
 		return attenList;
 	}
 	
@@ -51,8 +55,20 @@ public class ScheduleService {
 		return scheduleMapper.completeDeleteSchedule(scheduleDto);
 	}
 	
+	@Transactional
+	public int revertSchedule(ScheduleDto scheduleDto) {
+		return scheduleMapper.revertSchedule(scheduleDto);
+	}
+	
 	@Transactional(readOnly = true)
 	public int getCountSche() {
 		return scheduleMapper.getCountSche();
+	}
+	
+	
+	@Transactional(readOnly = true)
+	public List<ScheduleDto> getAllScheList() {
+		List<ScheduleDto> attenList = scheduleMapper.getAllScheList(); 
+		return attenList;
 	}
 }

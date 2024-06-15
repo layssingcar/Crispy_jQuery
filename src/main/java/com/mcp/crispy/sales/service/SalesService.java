@@ -82,8 +82,8 @@ public class SalesService {
 	}
 
 	/* 구별 매출 조회 : 카테고리, 가맹점 테이블 */
-	public void findGuAvgSales(){
-		return;
+	public List<SalesDto> findGuAvgSales(int month){
+		return salesMapper.findGuAvgSales(month);
 	}
 
 	/* 이달의 매장 순위 */

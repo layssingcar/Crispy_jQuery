@@ -105,7 +105,7 @@
 		}
 		else if(selectScheType == 'vac') {
 	         schedule = {
-				  id: "연차" + crypto.randomUUID(),
+				  id: (selectVacType == 'all') ? "연차" + crypto.randomUUID() : ((selectVacType == 'half') ? "반차" + crypto.randomUUID() : "반반" + crypto.randomUUID()),
 	              title: $("#sch-title").val(),
 	              start: (selectVacType == 'all') ? startDt : startDt + "T" + $("#start option:selected").val(),
 	              end : (selectVacType == 'all') ? endDt : startDt + "T" + $("#end option:selected").val(),
@@ -197,6 +197,7 @@
 			.done(function(data){
 				alert("연차 삭제 성공");
 				myModal.modal('hide');
+				calendar.getEventById(selectScheduleId).remove();
 				calendar.refetchEvents();
 			})
 			.fail(function(jqXHR){
@@ -226,12 +227,13 @@
 			.done(function(data){
 				alert("연차 수정 성공");
 				myModal.modal('hide');
-				calendar.refetchEvents();
+				location.reload();
 			})
 			.fail(function(jqXHR){
 				alert("연차 수정 실패");
 				alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
-			})  		
+			})  
+			calendar.render();		
 	  }
       
       
@@ -354,6 +356,7 @@
 				.done(function(data){
 					alert("일정 삭제 성공");
 					myModal.modal('hide');
+					calendar.getEventById(selectScheduleId).remove();
 					calendar.refetchEvents();
 				})
 				.fail(function(jqXHR){
@@ -402,13 +405,13 @@
 				.done(function(data){
 					alert("일정 수정 성공");
 					myModal.modal('hide');
-					calendar.refetchEvents();
+					location.reload();
 				})
 				.fail(function(jqXHR){
 					alert("일정 수정 실패");
 					alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
 				})     			
-			}		
+			}
 	  }
 	  
   	  // 일정 업데이트 취소
