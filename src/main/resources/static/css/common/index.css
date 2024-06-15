@@ -80,43 +80,43 @@
 .mainbottom>div {
 	margin: 10px auto;
 }
-
+/*    box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.15) */
 .area1 {
 	width: 500px;
 	height: 320px;
 	display: flex;
 	flex-wrap: wrap;
 	flex-direction: column;
-	border: 2px var(--main-color) solid;
 	border-radius: 7px;
+	box-shadow: 0 0 8px 1px rgba(0, 0, 0, 0.15)
 }
 
 .area2 {
 	width: 550px;
 	height: 320px;
-	border: 2px var(--main-color) solid;
 	border-radius: 7px;
+	box-shadow: 0 0 8px 1px rgba(0, 0, 0, 0.15)
 }
 
 .area3 {
 	width: 500px;
 	height: 320px;
-	border: 2px var(--main-color) solid;
 	border-radius: 7px;
+	box-shadow: 0 0 8px 1px rgba(0, 0, 0, 0.15)
 }
 
 .area4 {
 	width: 800px;
 	height: 440px;
-	border: 2px var(--main-color) solid;
 	border-radius: 7px;
+	box-shadow: 0 0 8px 1px rgba(0, 0, 0, 0.15)
 }
 
 .area5 {
 	width: 800px;
 	height: 440px;
-	border: 2px var(--main-color) solid;
 	border-radius: 7px;
+	box-shadow: 0 0 8px 1px rgba(0, 0, 0, 0.15)
 }
 
 .area1>div {
