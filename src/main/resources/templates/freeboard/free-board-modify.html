@@ -5,7 +5,7 @@
 	<link rel="stylesheet" href="/css/summernote/summernote-lite.css">
 
 	<!-- 특정 페이지 css -->
-	<link href="/css/board/board-modify.css" rel="stylesheet">
+	<link href="/css/freeboard/free-board-modify.css" rel="stylesheet">
 </head>
 <body>
 
@@ -13,7 +13,7 @@
 	<aside th:replace="~{layout/sidebar :: sidebar}"></aside>
 	<div>
 		<main>
-			<div class="main">
+			<div class="free-board-modify">
 				<form id="frm-board-modify" method="POST" class="my-3" enctype="multipart/form-data">
 					<input type="hidden" id="boardNo" class="board-no" th:value="${board.boardNo}">
 					<!-- 제목 -->
@@ -47,8 +47,10 @@
 							<p>기존 파일</p>
 							<ul id="existing-files">
 								<li th:each="file : ${files}">
-									<a th:href="@{/uploads/{fileName}(fileName=${file.boardRename})}" th:text="${file.boardOrigin}"></a>
-									<button type="button" class="existing-file-delete" th:data-file-id="${file.boardFileNo}">삭제</button>
+									<span th:href="@{/uploads/{fileName}(fileName=${file.boardRename})}" th:text="${file.boardOrigin}"></span>
+									<a class="existing-file-delete" th:data-file-id="${file.boardFileNo}">
+										<i class="fa-regular fa-circle-xmark" style="font-size: 1.7rem"></i>
+									</a>
 								</li>
 							</ul>
 						</div>
@@ -59,7 +61,7 @@
 					</div>
 					<div class="d-flex justify-content-end" id="btn">
 						<a type="submit" id="cancelBtn" class="btn btn-primary btn-lg ">취소</a>
-						<button type="button" id="addBtn" class="btn btn-primary btn-lg btn-modify">등록</button>
+						<button type="button" class="btn btn-primary btn-lg btn-modify">등록</button>
 					</div>
 				</form>
 			</div>
@@ -76,6 +78,7 @@
 			placeholder: '500자',
 			tabsize: 2,
 			height: 400,
+			fontSizes: ['8','9','10','11','12','13','14','15','16','17','18','19','20','24','30','36','48','64','82','150'],
 			toolbar: [
 				['style', ['style']],
 				['font', ['bold', 'underline', 'clear']],
@@ -88,8 +91,10 @@
 			callbacks: {
 				onInit: function() {
 					$('#summernote').next().find('.note-placeholder').css('font-size', '16px');
+					$('#summernote').next().find('.note-editable').css('font-size', '20px');
+
 				}
-			},   width: '100%'
+			},   width: '100%',
 		});
 	});
 	</script>

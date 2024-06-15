@@ -1,5 +1,9 @@
  @charset "EUC-KR";
 
+ .free-board-modify p,
+ .free-board-modify li {
+	 font-size: 1.7rem;
+ }
 
 #boardTitle {
 	height: 4rem;
@@ -24,13 +28,11 @@
 		background-color: #808080 !important;
 	border-color: #808080 !important;
 }
-#modifyBtn {
-	margin-right: 5px;
-	box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+.btn-modify {
 	width: 60px;
 	height: 40px;
 	align-items: center;
-	/* justify-content: center; */
+	justify-content: center;
 	display: flex;
 	font-size: 1.7rem;
 }
@@ -72,12 +74,30 @@
 	height: 500px !important;
 }
 
-/* ���� ���� */
-.file-attach {
+/* 파일첨부 */
+ .free-board-modify .file-attach {
 	display: flex;
+	flex-direction: column;
 	width: 1000px;
-	margin-top: 20px;
+	margin: 20px 0;
 }
+
+/* 가존파일 / 추가파일 */
+ .free-board-modify .file-wrap {
+	display: flex;
+}
+/* 추가파일*/
+ .free-board-modify .file-item span{
+	 font-size: 1.7rem;
+ }
+
+ .free-board-modify .file-wrap ul {
+	 padding-left: 0;
+ }
+
+ .free-board-modify .new-files-wrap {
+	 margin-left: 30px;
+ }
 
 .border-bottom {
 	font-size: 3rem;

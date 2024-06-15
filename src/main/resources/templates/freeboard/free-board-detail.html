@@ -3,7 +3,7 @@
 <head>
     <th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
     <!-- 특정 페이지 css -->
-    <link href="/css/board2/byu-board-detail.css" rel="stylesheet">
+    <link href="/css/freeboard/free-board-detail.css" rel="stylesheet">
 </head>
 <body>
 <div>
@@ -40,20 +40,20 @@
                     </div>
                     <hr>
                     <div class="board-files">
-                        <div class="board-file" id="boardfile"><span>* 첨부파일</span></div>
+                        <div class="board-file" id="boardfile" th:if="${board.hasAttachment}"><span>* 첨부파일</span></div>
                         <ul>
                             <li th:each="file : ${files}">
                                 <a href="javascript:void(0);" th:data-file-no="${file.boardFileNo}" class="file-download" th:text="${file.boardOrigin}"></a>
                             </li>
                         </ul>
-                        <button type="button" id="downloadAllBtn" class="btn">모든 파일 다운로드</button>
+                        <button type="button" id="downloadAllBtn" class="btn" th:if="${board.hasAttachment}">모든 파일 다운로드</button>
                     </div>
                     <div class="board-buttons">
                         <div>
-                            <a href="/crispy/board-list" role="button" class="btn board-list">목록으로</a>
+                            <a href="/crispy/board-list/free" role="button" class="btn board-list">목록으로</a>
                         </div>
                         <div>
-                            <a th:href="@{|/crispy/board-modify/${board.boardNo}|}" role="button" class="btn" id="btn-modify-board">수정</a>
+                            <a th:href="@{|/crispy/freeBoardModify/${board.boardNo}|}" role="button" class="btn" id="btn-modify-board">수정</a>
                             <button type="button" id="btn-delete-board" class="board-delete">삭제</button>
                         </div>
                     </div>

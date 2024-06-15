@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 	<th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
-	<link rel="stylesheet" href="/css/board2/byu-board-list.css" type="text/css">
+	<link rel="stylesheet" href="/css/freeboard/free-byu-board-list.css" type="text/css">
 </head>
 <body>
 <div class="crispy-container">
@@ -45,10 +45,13 @@
 						<tr th:each="free : ${freeList.items}" th:data-boardNo="${free.boardNo}">
 							<td th:text="${free.boardNo}">자유게시판 번호</td>
 							<td>
-							<a th:href="@{/crispy/freeBoardDetail(boardNo=${free.boardNo})}" th:text="${free.boardTitle}" class="board-title">제목</a></td>
-							<td th:text="${free.empName}">작성자</td>
+							<a th:href="@{/crispy/freeBoardDetail(boardNo=${free.boardNo})}" th:text="${free.boardTitle}" class="board-title">제목</a>
+							</td>
+							<td><span th:text="${free.empName}"></span></td>
 							<td th:text="${free.createDt}">작성일</td>
-							<td th:text="${free.boardHit}">조회수</td>
+							<td >
+								<span th:text="${free.boardHit}"></span>
+							</td>
 						</tr>
 						</tbody>
 					</table>
