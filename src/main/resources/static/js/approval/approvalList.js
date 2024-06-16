@@ -90,7 +90,7 @@ const addApprRowsEventFn = () => {
     apprRows.forEach(apprRow => {
         apprRow.addEventListener("click", () => {
             const apprNo = apprRow.dataset.apprNo;
-            location.href = `/crispy/approval-detail/${apprNo}`;
+            location.href = `/crispy/approval-detail/time-off/${apprNo}`;
         })
     })
 }
