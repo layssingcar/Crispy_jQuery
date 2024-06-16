@@ -3,8 +3,6 @@ package com.mcp.crispy.sales.controller;
 import com.mcp.crispy.auth.domain.EmployeePrincipal;
 import com.mcp.crispy.sales.dto.SalesDto;
 import com.mcp.crispy.sales.service.SalesService;
-import com.mcp.crispy.schedule.dto.ScheduleDto;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
-
 
 @Slf4j
 @Controller
@@ -24,100 +20,80 @@ import java.util.List;
 public class SalesController {
 
 	private final SalesService salesService;
-	
+
 	/* 매장 매출 전체목록 */
 	@GetMapping("/sales")
 	public String sales(Model model, Authentication authentication) {
-		// 로그인한 정보
 		EmployeePrincipal principal = (EmployeePrincipal) authentication.getPrincipal();
 		model.addAttribute("emp", principal.getEmployee());
 		model.addAttribute("frnNo", principal.getFrnNo());
-
-		// 가맹점 매출 목록
-		List<SalesDto> salesList = salesService.getSalesList(principal.getFrnNo());
-		log.info("salesList {}", salesList);
-		model.addAttribute("salesList", salesList);
-
 		return "sales/sales";
 	}
 
-	/* 매출입력 */
-	@PostMapping("/salesInsert")
-	public String insertSales(@RequestBody SalesDto salesDto
-			                             , Authentication authentication
-								         , Model model) {
-		int salesInsert = salesService.insertSales(salesDto);
-
-		/* 로그인 정보 */
+	@ResponseBody
+	@GetMapping("/salesList")
+	public List<SalesDto> getSalesList(Authentication authentication, Model model) {
 		EmployeePrincipal principal = (EmployeePrincipal) authentication.getPrincipal();
-		model.addAttribute("emp", principal.getEmployee());
+		return salesService.getSalesList(principal.getFrnNo());
+	}
 
+	@ResponseBody
+	@GetMapping("/dailySalesList")
+	public List<SalesDto> getDailySalesList(Authentication authentication) {
+		EmployeePrincipal principal = (EmployeePrincipal) authentication.getPrincipal();
+		return salesService.findDailySales(principal.getFrnNo());
+	}
+
+	/* 매출 입력 */
+	@PostMapping("/salesInsert")
+	@ResponseBody
+	public ResponseEntity<String> insertSales(@RequestBody SalesDto salesDto, Authentication authentication) {
+		EmployeePrincipal principal = (EmployeePrincipal) authentication.getPrincipal();
+		int salesInsert = salesService.insertSales(salesDto);
 		if (salesInsert > 0) {
-			return "redirect:/crispy/salesCalender";
+			return ResponseEntity.ok("매출이 성공적으로 등록되었습니다.");
 		} else {
-			return "Error";
+			return ResponseEntity.badRequest().body("매출 등록에 실패하였습니다.");
 		}
 	}
 
-	/*	일별 매출 */
-	@GetMapping("/daily")
-	public String findDailySales(Model model, Authentication authentication) {
+	/* 월별 조회 */
+	@ResponseBody
+	@GetMapping("/monthlySalesList")
+	public List<SalesDto> getMonthlySalesList(Authentication authentication) {
 		EmployeePrincipal principal = (EmployeePrincipal) authentication.getPrincipal();
-		model.addAttribute("emp", principal.getEmployee());
-		model.addAttribute("frnNo", principal.getFrnNo());
-
-		List<SalesDto> salesDailyList = salesService.findDailySales(principal.getFrnNo());
-		model.addAttribute("salesDailyList", salesDailyList);
-
-		return "sales/daily";
-	}
-	
-	/* 달별 조회*/
-	@GetMapping("/monthly")
-	public String findMonthlySales(Model model, Authentication authentication) {
-		EmployeePrincipal principal = (EmployeePrincipal) authentication.getPrincipal();
-		model.addAttribute("emp", principal.getEmployee());
-		model.addAttribute("frnNo", principal.getFrnNo());
-
-		List<SalesDto> salesMonthlyList = salesService.findMonthlySales(principal.getFrnNo());
-		model.addAttribute("salesMonthlyList", salesMonthlyList);
-
-		return "sales/monthly";
+		return salesService.findMonthlySales(principal.getFrnNo());
 	}
 
-	/* 달별 조회*/
-	@GetMapping("/yearly")
-	public String findYearlySales(Model model, Authentication authentication) {
+	/* 연별 조회 */
+	@ResponseBody
+	@GetMapping("/yearlySalesList")
+	public List<SalesDto> getYearlySalesList(Authentication authentication) {
 		EmployeePrincipal principal = (EmployeePrincipal) authentication.getPrincipal();
-		model.addAttribute("emp", principal.getEmployee());
-		model.addAttribute("frnNo", principal.getFrnNo());
-
-		List<SalesDto> yearlySalesList = salesService.findYearlySales(principal.getFrnNo());
-		model.addAttribute("yearlySalesList", yearlySalesList);
-
-		return "sales/yearly";
-	}
-
-	/* 기간별 평균 매출 */
-	@GetMapping
-	public void findAvgSales(Model model) {
-		String avgSalse = salesService.findAvgSales();
-		model.addAttribute("avgSalse", avgSalse);
-
-		String avgSalseDate = avgSalse.toString();
-
-
-		System.out.println("@@@@@@@@@@@@@@@@ : avgSalse" + avgSalseDate);
+		return salesService.findYearlySales(principal.getFrnNo());
 	}
 
 	/* 구별 매출 조회 : 카테고리, 가맹점 테이블 */
 	@ResponseBody
-	@GetMapping(value = "/getGuAvgSales", produces = "application/json")
+	@GetMapping(value = "/guAvgSales", produces = "application/json")
 	public List<SalesDto> findGuAvgSales(@RequestParam("month") int month) {
 		return salesService.findGuAvgSales(month);
 	}
 
 	/* 이달의 매장 순위 */
-	public void findSalesRenk(){
+	@ResponseBody
+	@GetMapping("/salesRank")
+	public String findSalesRank() {
+		return "Not Implemented";
+	}
+
+	@GetMapping("/crispy/salesDetail")
+	public ResponseEntity<SalesDto> getSalesDetail(@RequestParam("frnNo") int frnNo) {
+		SalesDto salesDetail = salesService.salesDetail(frnNo);
+		if (salesDetail != null) {
+			return ResponseEntity.ok(salesDetail);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
 	}
 }

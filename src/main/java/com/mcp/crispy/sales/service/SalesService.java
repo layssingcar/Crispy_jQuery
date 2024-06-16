@@ -16,7 +16,7 @@ public class SalesService {
 
 	private final SalesMapper salesMapper;
 
-	/* 매출 INSERT */
+	/* 매출 Insert */
 	@Transactional
 	public int insertSales(SalesDto salesDto){
 		return salesMapper.insertSales(salesDto);
@@ -37,7 +37,7 @@ public class SalesService {
 		return salesMapper.findYearlySales(frnNo);
 	}
 
-	/* 기간별 평균 매출 */
+	/* 기간별 Avg 매출 */
 	public String findAvgSales(){
 		return salesMapper.findAvgSales();
 	}
@@ -56,4 +56,9 @@ public class SalesService {
 	public List<SalesDto> getSalesList(int frnNo) {
 		return salesMapper.getSalesList(frnNo);
 	}
+
+	/* 가맹점 Detail*/
+    public SalesDto salesDetail(int frnNo) {
+        return salesMapper.salesDetail(frnNo);
+    }
 }

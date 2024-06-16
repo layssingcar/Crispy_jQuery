@@ -17,7 +17,6 @@ public interface SalesMapper {
 	/* 일별 매출 */
 	List<SalesDto> findDailySales(int frnNo);
 
-
 	/* 달별 매출 조회*/
 	List<SalesDto> findMonthlySales(int frnNo);
 
@@ -33,4 +32,5 @@ public interface SalesMapper {
 	/* 이달의 매장 순위 */
 	void findSalesRenk();
 
+	SalesDto salesDetail(int frnNo);
 }
