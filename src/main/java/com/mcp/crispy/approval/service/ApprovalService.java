@@ -150,7 +150,9 @@ public class ApprovalService {
     // 문서 결재
     public int changeApprLineStat(Map<String, Object> map) throws IOException {
 
-        if (Integer.parseInt(map.get("apprLineStat").toString()) == 1) {
+
+        if (map.get("apprType").toString().equals("time-off")
+            && Integer.parseInt(map.get("apprLineStat").toString()) == 1) {
 
             String signData = map.get("data").toString();
             int empNo = Integer.parseInt(map.get("empNo").toString());
