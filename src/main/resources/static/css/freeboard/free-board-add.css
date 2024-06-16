@@ -70,6 +70,10 @@
 	margin-top: 20px;
 }
 
+.free-board-add .file-list {
+	font-size: 1.7rem;
+}
+
 .border-bottom {
 	font-size: 3rem;
 	margin-top: 5rem;
