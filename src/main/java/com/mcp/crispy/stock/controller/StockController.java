@@ -205,8 +205,10 @@ public class StockController {
 							@PathVariable("type") String type,
 							Model model) {
 
-		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
-		apprOptionDto.setFrnNo(userDetails.getFrnNo());
+		if ("franchise".equals(type)) {
+			EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
+			apprOptionDto.setFrnNo(userDetails.getFrnNo());
+		}
 
 		apprOptionDto.setType(type);
 		apprOptionDto.setApprStat(-1);
@@ -234,9 +236,10 @@ public class StockController {
 								 @PathVariable("type") String type,
 								 Model model) {
 
-		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
-		apprOptionDto.setFrnNo(userDetails.getFrnNo());
-
+		if ("franchise".equals(type)) {
+			EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
+			apprOptionDto.setFrnNo(userDetails.getFrnNo());
+		}
 		apprOptionDto.setType(type);
 		PageResponse<ApprovalDto> approvalDtoList = stockService.getOrderApprList(apprOptionDto, 10);
 		model.addAttribute("approvalDtoList", approvalDtoList);

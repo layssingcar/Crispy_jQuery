@@ -104,7 +104,7 @@
                 </li>
 
                 <!-- 휴가 관리 -->
-                <li class="mb-1">
+                <li class="mb-1" sec:authorize="!hasRole('ROLE_ADMIN')">
                     <div class="menu" data-bs-toggle="collapse" data-bs-target="#menu-4-collapse">
                         <a href="#">
                             <span>휴가 관리</span>
@@ -165,9 +165,10 @@
                     </div>
                     <div class="collapse" id="menu-10-collapse">
                         <ul class="">
-                            <li><a href="/crispy/stock-list" class="s-menu">재고 현황</a></li>
-                            <li><a href="/crispy/stock-order" class="s-menu">발주 신청</a></li>
-                            <li><a href="/crispy/order-list/franchise" class="s-menu">신청 내역</a></li>
+                            <li sec:authorize="!hasRole('ROLE_ADMIN')"><a href="/crispy/stock-list" class="s-menu">재고 현황</a></li>
+                            <li sec:authorize="!hasRole('ROLE_ADMIN')"><a href="/crispy/stock-order" class="s-menu">발주 신청</a></li>
+                            <li sec:authorize="!hasRole('ROLE_ADMIN')"><a href="/crispy/order-list/franchise" class="s-menu">신청 내역</a></li>
+                            <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="/crispy/order-list/admin" class="s-menu">신청 내역</a></li>
                         </ul>
                     </div>
                 </li>
