@@ -50,11 +50,11 @@
                     </div>
                     <div class="board-buttons">
                         <div>
-                            <a href="/crispy/board-list/free" role="button" class="btn board-list">목록으로</a>
+                            <button class="btn board-list">목록으로</button>
                         </div>
-                        <div>
-                            <a th:href="@{|/crispy/freeBoardModify/${board.boardNo}|}" role="button" class="btn" id="btn-modify-board">수정</a>
-                            <button type="button" id="btn-delete-board" class="board-delete">삭제</button>
+                        <div class="edit-button">
+                            <button type="button" id="btn-modify-board" class="btn">수정</button>
+                            <button type="button" id="btn-delete-board" class="btn board-delete">삭제</button>
                         </div>
                     </div>
                     <!-- 댓글 작성 부분 -->
@@ -63,7 +63,7 @@
                         <div>
                             <textarea type="text" name="cmtContent" id="cmt-comment"
                                       class="form-control" placeholder="내용은 300자 내외로 입력해주세요."
-                                      maxlength="500" wrap="hard" rows="5" cols="1"></textarea>
+                                      maxlength="300" wrap="hard" rows="3" cols="1"></textarea>
                             <div class="error-message cmtContent-error" style="display: none;"></div>
                             <button type="button" class="btn btn-primary" id="comment-add">등록</button>
                         </div>
