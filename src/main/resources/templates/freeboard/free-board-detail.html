@@ -77,7 +77,8 @@
                                         <input type="hidden" th:value="${comment.cmtNo}" class="cmt-no">
                                         <div>
                                             <div class="comment-emp">
-                                                <img class="comment-profile" th:src="${comment.empProfile}" alt="프로필 이미지">
+                                                <img class="comment-profile" th:src="${comment.empProfile}" th:if="${comment.empProfile != null}" alt="프로필 이미지">
+                                                <img class="comment-profile" th:src="@{/img/anonymous.png}" th:unless="${comment.empProfile != null}" alt="프로필 이미지">
                                                 <div>
                                                     <span th:text="${comment.empName}"></span>
                                                     <small><span class="date ms-4" th:text="${#temporals.format(comment.cmtCreateDt.toLocalDate(), 'yyyy-MM-dd')}">작성일</span></small>
@@ -99,7 +100,8 @@
                             </div>
                             <div th:class="'comment comment-level-' + ${comment.lvl} + ' deleted-comment'" th:if="${comment.cmtStat == 1}">
                                 <div class="comment-emp">
-                                    <img class="comment-profile" th:src="${comment.empProfile}" alt="프로필 이미지">
+                                    <img class="comment-profile" th:src="${comment.empProfile}" th:if="${comment.empProfile != null}" alt="프로필 이미지">
+                                    <img class="comment-profile" th:src="@{/img/anonymous.png}" th:unless="${comment.empProfile != null}" alt="프로필 이미지">
                                     <div>
                                         <small><span th:text="${comment.empName}"></span></small>
                                         <p class="cmt-content">삭제된 메시지입니다.</p>

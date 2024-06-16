@@ -56,4 +56,7 @@ public interface ApprovalMapper {
     // 문서 결재
     int changeApprLineStat(Map<String, Object> map);
 
+    // 결재선 조회 (결재 문서 상세 조회)
+    List<ApprLineDto> getDetailApprLine(Integer apprNo);
+
 }

@@ -289,13 +289,13 @@
 
     <!-- 결재선 조회 (결재 문서 상세 조회) -->
     <select id="getDetailApprLine" resultType="ApprLineDto">
-            SELECT L.APPR_LINE_STAT, L.APPR_SIGN
+            SELECT L.APPR_LINE_STAT, L.APPR_SIGN, L.CREATOR
                  , E.EMP_NO, E.EMP_NAME, E.EMP_SIGN
                  , P.POS_NAME
               FROM APPR_LINE_T L
-        INNER JOIN EMPLOYEE_T E
+        LEFT OUTER JOIN EMPLOYEE_T E
                 ON L.EMP_NO = E.EMP_NO
-        INNER JOIN POSITION_T P
+        LEFT OUTER JOIN POSITION_T P
                 ON E.POS_NO = P.POS_NO
              WHERE 1=1
                AND L.APPR_NO = #{apprNo}
@@ -304,7 +304,7 @@
 
     <!-- 결재 문서 상세 조회 (발주 신청서) -->
     <select id="getStockOrderApprDetail" resultMap="stockOrderResultMap">
-            SELECT A.APPR_NO, A.APPR_STAT
+            SELECT A.APPR_NO, A.APPR_STAT, A.CREATOR
                  , TO_CHAR(A.APPR_DT, 'YYYY"년" MM"월" DD"일"') AS APPR_DT
                  , L.APPR_LINE_STAT, L.APPR_SIGN
                  , O.ORDER_COST

@@ -16,7 +16,12 @@ document.addEventListener("DOMContentLoaded", function() {
     function addNotificationMessage(message) {
         const li = document.createElement("li");
         li.className = 'my-menu-item';
-        li.innerHTML = `<span>${message.replace(' ', '<br>')}</span>`;
+
+        const a = document.createElement("a");
+        a.href = "/crispy/approval-list/sign";
+        a.innerHTML = message.replace(' ', '<br>');
+
+        li.appendChild(a)
         notificationListElement.prepend(li); // 새 알림을 목록 상단에 추가
     }
 
