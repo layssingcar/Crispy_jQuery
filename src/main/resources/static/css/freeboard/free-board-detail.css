@@ -12,6 +12,10 @@
 	padding-left: 16%;
 }
 
+.board-detail textarea {
+	resize: none;
+}
+
 .board-detail .detail-header > div:nth-child(1) {
 	display: flex;
 	flex-direction: column;
@@ -58,19 +62,30 @@
 
 .board-detail .board-buttons button {
 	width: 100px;
+	height: 40px;
 	font-size: 1.5rem;
 	line-height: 35px;
-	border-radius: 15px;
+	border-radius: 5px;
 	padding: 3.75px;
 	border: none;
 }
 .board-detail #downloadAllBtn{
 	width: 170px;
+	height: 40px;
+	font-size: 1.5rem;
+	line-height: 35px;
+	border-radius: 5px;
+	padding: 3.75px;
+	border: none;
 }
 
 .board-detail .board-buttons .board-delete {
 	background-color: var(--sub-color) !important;
 	border-color: var(--sub-color) !important;
+}
+
+.board-detail .edit-button button{
+	width: 70px;
 }
 
 .board-detail .cmt-container > div {
@@ -156,18 +171,30 @@
 
 /* 댓글 버튼 스타일 */
 .board-detail .cmt-wrap button {
-	width: 50px;
-	line-height: 20px;
-	border-radius: 0;
+	width: 70px;
+	height: 40px;
+	font-size: 1.5rem;
+	line-height: 35px;
+	border-radius: 5px;
+	padding: 3.75px;
+	border: none;
 }
 
 
 .comment-level-1 {
+	display: flex;
+	flex-direction: column;
 	margin-left: 0;
 	margin-top: 20px;
 }
 
 .comment-level-2 {
+	display: flex;
+	flex-direction: column;
 	margin-left: 30px;
 	margin-top: 20px;
+}
+
+.board-detail .cmt-modify-wrapper {
+	display: flex;
 }

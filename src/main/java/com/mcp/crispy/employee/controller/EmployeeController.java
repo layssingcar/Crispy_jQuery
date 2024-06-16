@@ -3,6 +3,7 @@ package com.mcp.crispy.employee.controller;
 import com.mcp.crispy.common.config.CrispyUserDetailsService;
 import com.mcp.crispy.common.utils.JwtUtil;
 import com.mcp.crispy.employee.dto.EmployeeDto;
+import com.mcp.crispy.employee.dto.FindEmpId;
 import com.mcp.crispy.employee.dto.FindEmployeeDto;
 import com.mcp.crispy.employee.service.EmployeeService;
 import jakarta.servlet.http.Cookie;
@@ -38,15 +39,15 @@ public class EmployeeController {
 	}
 
 	@PostMapping("/findEmpId")
-	public String findUsernamePost(@Valid @ModelAttribute FindEmployeeDto findEmployeeDto, BindingResult result,
+	public String findUsernamePost(@Valid @ModelAttribute FindEmpId findEmpId, BindingResult result,
 								   Model model, RedirectAttributes ra) {
 		if (result.hasErrors()) {
 			log.info("Validation errors: {}", result.getAllErrors());
-			model.addAttribute("findEmployeeDto", findEmployeeDto);
+			model.addAttribute("findEmployeeDto", findEmpId);
 			return "employee/find-emp-id";
 		}
 
-		FindEmployeeDto findEmp = employeeService.getEmpEmail(findEmployeeDto.getEmpEmail(), findEmployeeDto.getEmpName());
+		FindEmployeeDto findEmp = employeeService.getEmpEmail(findEmpId.getEmpEmail(), findEmpId.getEmpName());
 		if (findEmp != null) {
 			ra.addFlashAttribute("findEmp", findEmp);
 			log.info("empName: {}", findEmp.getEmpId());

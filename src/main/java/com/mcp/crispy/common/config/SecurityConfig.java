@@ -50,7 +50,6 @@ public class SecurityConfig {
 						.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
 				.authorizeHttpRequests(config -> config
 						.requestMatchers("/api/auth/**").permitAll()
-						.requestMatchers("/api//**").permitAll()
 						.requestMatchers("/crispy/sales/**").permitAll()
 						.requestMatchers("/app/**").permitAll()
 						.requestMatchers("/user/**").permitAll()

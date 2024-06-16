@@ -6,9 +6,13 @@ const board = {
     },
 
     bindEvents: function() {
-        document.getElementById('modifyBtn')?.addEventListener('click', () => {
-            window.location.href = '/crispy/freeBoard/freeBoardModify/';
+        document.getElementById('btn-modify-board')?.addEventListener('click', () => {
+            const boardNo = document.querySelector(".board-no").value;
+            window.location.href = `/crispy/freeBoard/freeBoardModify/${boardNo}`;
         });
+        document.querySelector(".board-list")?.addEventListener("click", () => {
+            location.href = "/crispy/board-list/free";
+        })
 
         const addBoard = document.getElementById("addBtn");
         addBoard?.addEventListener("click", this.addBoard.bind(this));
@@ -271,11 +275,11 @@ const board = {
         const cmtModify = document.querySelectorAll('.comment-modify');
         cmtModify.forEach(button => {
             button.addEventListener("click", function() {
-                console.log(button)
                 const cmtNo = this.getAttribute("data-comment-no");
-                const commentDiv = this.closest(".comment-level-0, .comment-level-1"); // 댓글 블록 선택
-                console.log(commentDiv);
+                const commentDiv = this.closest(".comment-level-1, .comment-level-2"); // 댓글 블록 선택
                 const originalContent = commentDiv.querySelector("p").innerHTML.replace(/<br\s*\/?>/gi, '\n');
+                const cmtModifyWrapper = document.createElement("div");
+                cmtModifyWrapper.className = "cmt-modify-wrapper"
                 const textarea = document.createElement("textarea");
                 textarea.classList.add("form-control");
                 textarea.value = originalContent;
@@ -311,9 +315,10 @@ const board = {
                     });
                 });
 
+                cmtModifyWrapper.appendChild(textarea)
+                cmtModifyWrapper.appendChild(saveButton)
                 commentDiv.innerHTML = '';
-                commentDiv.appendChild(textarea);
-                commentDiv.appendChild(saveButton);
+                commentDiv.appendChild(cmtModifyWrapper);
             });
         });
         const cmtDelete = document.querySelectorAll('.comment-delete');
