@@ -2,6 +2,7 @@ package com.mcp.crispy.approval.service;
 
 import com.mcp.crispy.approval.dto.*;
 import com.mcp.crispy.approval.mapper.ApprovalMapper;
+import com.mcp.crispy.common.ImageService;
 import com.mcp.crispy.common.page.PageResponse;
 import com.mcp.crispy.employee.dto.EmployeeDto;
 import com.mcp.crispy.employee.service.EmployeeService;
@@ -13,7 +14,9 @@ import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +25,7 @@ public class ApprovalService {
     private final ApprovalMapper approvalMapper;
     private final EmployeeService employeeService;
     private final NotificationService notificationService;
+    private final ImageService imageService;
 
     // 직원 정보 조회
     public ApplicantDto getEmpInfo(int empNo) {
@@ -141,6 +145,24 @@ public class ApprovalService {
     // 결재 문서 상세 조회 (발주 신청서)
     public ApprovalDto getStockOrderApprDetail(int apprNo) {
         return approvalMapper.getStockOrderApprDetail(apprNo);
+    }
+
+    // 문서 결재
+    public int changeApprLineStat(Map<String, Object> map) throws IOException {
+
+        if (Integer.parseInt(map.get("apprLineStat").toString()) == 1) {
+
+            String signData = map.get("data").toString();
+            int empNo = Integer.parseInt(map.get("empNo").toString());
+            String fileName = imageService.storeSignatureImage(signData, empNo);
+
+            String path = "/emp_sign/";
+            map.put("data", path + fileName);
+
+        }
+
+        return approvalMapper.changeApprLineStat(map);
+
     }
 
 }

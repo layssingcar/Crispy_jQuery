@@ -335,4 +335,19 @@
           ORDER BY S.STOCK_NAME ASC
     </select>
 
+    <!-- 문서 결재 -->
+    <update id="changeApprLineStat">
+            UPDATE APPR_LINE_T
+               SET APPR_LINE_STAT = #{apprLineStat}
+                 , <if test="apprLineStat == 1">
+                       APPR_SIGN = #{data}
+                   </if>
+                   <if test="apprLineStat == 2">
+                       APPR_LINE_REASON = #{data}
+                   </if>
+             WHERE 1=1
+               AND APPR_NO = #{apprNo}
+               AND EMP_NO = #{empNo}
+    </update>
+
 </mapper>

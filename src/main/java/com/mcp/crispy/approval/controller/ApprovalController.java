@@ -8,14 +8,18 @@ import com.mcp.crispy.approval.service.ApprovalService;
 import com.mcp.crispy.auth.domain.EmployeePrincipal;
 import com.mcp.crispy.common.page.PageResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
+@Slf4j
 @Controller
 @RequestMapping("crispy")
 @RequiredArgsConstructor
@@ -246,6 +250,25 @@ public class ApprovalController {
 
 		model.addAttribute("approvalDto", approvalDto);
 		return "approval/approval-detail";
+
+	}
+
+	/**
+	 * 문서 결재
+	 * 우혜진 (24. 06. 15.)
+	 *
+	 * @param authentication
+	 * @param map
+	 * @return result
+	 * @throws IOException
+	 */
+	@PutMapping("change-appr-line-stat")
+	public ResponseEntity<?> changeApprLineStat(Authentication authentication,
+												@RequestBody Map<String, Object> map) throws IOException {
+
+		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
+		map.put("empNo", userDetails.getEmpNo());
+		return ResponseEntity.ok(approvalService.changeApprLineStat(map));
 
 	}
 

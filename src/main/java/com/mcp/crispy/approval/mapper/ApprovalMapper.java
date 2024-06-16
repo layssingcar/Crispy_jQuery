@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface ApprovalMapper {
@@ -51,5 +52,8 @@ public interface ApprovalMapper {
 
     // 결재 문서 상세 조회 (발주 신청서)
     ApprovalDto getStockOrderApprDetail(int apprNo);
+
+    // 문서 결재
+    int changeApprLineStat(Map<String, Object> map);
 
 }
