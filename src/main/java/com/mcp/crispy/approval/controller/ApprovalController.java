@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.util.List;
@@ -154,17 +155,27 @@ public class ApprovalController {
 	 *
 	 * @param authentication
 	 * @param approvalDto
-	 * @return redirect (apprList())
+	 * @param ra
+	 * @return redirect (timeOffApprList()) or redirect (timeOffAppr())
 	 */
 	@PostMapping("insert-time-off-appr")
 	public String insertTimeOffAppr(Authentication authentication,
-									@ModelAttribute ApprovalDto approvalDto) {
+									@ModelAttribute ApprovalDto approvalDto,
+									RedirectAttributes ra) {
 
 		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
 		approvalDto.setEmpNo(userDetails.getEmpNo());
 
-		approvalService.insertTimeOffAppr(approvalDto);
-		return "redirect:/crispy/approval-list/draft";
+		int result = approvalService.insertTimeOffAppr(approvalDto);
+
+		if (result == 1) {
+			ra.addFlashAttribute("resultMsg", "결재 신청이 완료되었습니다.");
+			return "redirect:/crispy/approval-list/draft";
+
+		} else {
+			ra.addFlashAttribute("resultMsg", "결재 신청이 완료되지 않았습니다.");
+			return "redirect:/crispy/time-off-approval";
+		}
 
 	}
 
