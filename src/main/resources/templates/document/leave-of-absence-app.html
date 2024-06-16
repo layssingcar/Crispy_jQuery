@@ -81,10 +81,14 @@
     
         <div class="attach-file">
             <div>첨부파일</div>
-            <!-- 첨부파일 목록 -->
             <div>
-                <a href="" download=""></a><!-- <span>,&nbsp;</span> -->
-                <a href="" download=""></a>
+                <!-- 첨부파일 목록 -->
+                <th:block th:each="af:${approvalDto.apprFileDtoList}">
+                    <a th:href="|${af.apprPath}${af.apprRename}|"
+                       th:download="${af.apprOrigin}"
+                       th:text="${af.apprOrigin}"></a>
+                    <br>
+                </th:block>
                 <!-- <a th:href="${변경명}" th:dowload="${원본명}" th:text="${원본명}"></a> -->
             </div>
         </div>

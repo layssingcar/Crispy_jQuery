@@ -1,9 +1,6 @@
 package com.mcp.crispy.approval.mapper;
 
-import com.mcp.crispy.approval.dto.ApplicantDto;
-import com.mcp.crispy.approval.dto.ApprLineDto;
-import com.mcp.crispy.approval.dto.ApprOptionDto;
-import com.mcp.crispy.approval.dto.ApprovalDto;
+import com.mcp.crispy.approval.dto.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
@@ -40,6 +37,9 @@ public interface ApprovalMapper {
 
     // 휴가,휴직 신청 (결재선 테이블)
     int insertApprLine(List<ApprLineDto> apprLineDtoList);
+
+    // 휴가,휴직 신청 (첨부파일 테이블)
+    int insertApprFile(List<ApprFileDto> fileDtoList);
 
     // 결재 문서 목록 수 조회 (휴가,휴직 신청서)
     int getTimeOffApprCount(ApprOptionDto apprOptionDto);

@@ -6,11 +6,21 @@
     <!-- 휴가/휴직 신청서 상세 -->
     <resultMap id="apprLineResultMap" type="ApprovalDto">
         <id property="apprNo" column="APPR_NO"/>
+
+        <!-- 결재선 조회-->
         <collection property="apprLineDtoList"
                     select="getDetailApprLine"
                     column="APPR_NO"
                     javaType="java.util.ArrayList"
                     ofType="ApprLineDTO"/>
+
+        <!-- 첨부 파일 조회 -->
+        <collection property="apprFileDtoList"
+                    select="getApprFileDtoList"
+                    column="APPR_NO"
+                    javaType="java.util.ArrayList"
+                    ofType="ApprFileDto"
+                    />
     </resultMap>
 
     <!-- 발주 신청서 상세 -->
@@ -163,6 +173,27 @@
                ) TEMP_T
     </insert>
 
+    <!-- 휴가,휴직 신청 (첨부파일 테이블) -->
+    <insert id="insertApprFile" parameterType="java.util.List">
+            INSERT INTO APPR_FILE_T (
+                        APPR_FILE_NO
+                      , APPR_ORIGIN
+                      , APPR_RENAME
+                      , APPR_PATH
+                      , APPR_NO
+               ) SELECT APPR_FILE_SEQ.NEXTVAL AS APPR_FILE_NO
+                      , TEMP_T.*
+                   FROM (
+                   <foreach collection="list" item="apprFileDto" separator="UNION ALL">
+                        SELECT #{apprFileDto.apprOrigin} AS APPR_ORIGIN
+                             , #{apprFileDto.apprRename} AS APPR_RENAME
+                             , #{apprFileDto.apprPath} AS APPR_PATH
+                             , #{apprFileDto.apprNo} AS APPR_NO
+                        FROM DUAL
+                   </foreach>
+               ) TEMP_T
+    </insert>
+
     <!-- 결재 문서 목록 수 조회 (휴가/휴직 신청서) -->
     <select id="getTimeOffApprCount">
             SELECT COUNT(*)
@@ -300,6 +331,19 @@
              WHERE 1=1
                AND L.APPR_NO = #{apprNo}
           ORDER BY L.APPR_LINE_ORDER ASC
+    </select>
+
+    <!-- 첨부 파일 조회 (결재 문서 상세 조회) -->
+    <select id="getApprFileDtoList" resultType="ApprFileDto">
+            SELECT APPR_FILE_NO
+                 , APPR_ORIGIN
+                 , APPR_RENAME
+                 , APPR_PATH
+                 , APPR_NO
+              FROM APPR_FILE_T
+             WHERE 1=1
+               AND APPR_NO = #{apprNo}
+          ORDER BY APPR_FILE_NO ASC
     </select>
 
     <!-- 결재 문서 상세 조회 (발주 신청서) -->
