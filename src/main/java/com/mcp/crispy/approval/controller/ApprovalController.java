@@ -240,34 +240,44 @@ public class ApprovalController {
 	 * 결재 문서 상세 조회
 	 * 우혜진 (24. 06. 11.)
 	 *
-	 * @param authentication
 	 * @param apprType
 	 * @param apprNo
+	 * @param authentication
 	 * @param model
 	 * @return forward (approval-detail.html)
 	 */
 	@GetMapping("approval-detail/{apprType:^(?:time-off|stock-order)$}/{apprNo}")
-	public String timeOffApprDetail(Authentication authentication,
-									@PathVariable("apprType") String apprType,
+	public String timeOffApprDetail(@PathVariable("apprType") String apprType,
 									@PathVariable("apprNo") int apprNo,
+									Authentication authentication,
 									Model model) {
 
-		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
-
 		ApprovalDto approvalDto;
+		
+		// 발주 신청서
+		if (apprType.equals("stock-order")) {
+			approvalDto = approvalService.getStockOrderApprDetail(apprNo);
+			model.addAttribute("approvalDto", approvalDto);
+			return "approval/approval-detail";
+		}
 
-		if (apprType.equals("stock-order")) approvalDto = approvalService.getStockOrderApprDetail(apprNo); // 발주 신청서
-		else approvalDto = approvalService.getTimeOffApprDetail(userDetails.getEmpNo(), apprNo);		   // 휴가,휴직 신청서
+		// 휴가,휴직 신청서
+		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
+		approvalDto = approvalService.getTimeOffApprDetail(userDetails.getEmpNo(), apprNo);
 
-		// 기안함에서 결재하기 버튼 숨기기
-		if (approvalDto.getEmpNo() == userDetails.getEmpNo())
-			model.addAttribute("apprBtn", "none");
+		if (apprType.equals("time-off")) {
 
-		// 결재함에서 결재 완료 상태일 때 결재하기 버튼 숨기기
-		approvalDto.getApprLineDtoList().forEach(apprLineDto -> {
-			if (apprLineDto.getEmpNo() == userDetails.getEmpNo() && apprLineDto.getApprLineStat() != 0)
+			// 기안함에서 결재하기 버튼 숨기기
+			if (approvalDto.getEmpNo() == userDetails.getEmpNo())
 				model.addAttribute("apprBtn", "none");
-		});
+
+			// 결재함에서 결재 완료 상태일 때 결재하기 버튼 숨기기
+			approvalDto.getApprLineDtoList().forEach(apprLineDto -> {
+				if (apprLineDto.getEmpNo() == userDetails.getEmpNo() && apprLineDto.getApprLineStat() != 0)
+					model.addAttribute("apprBtn", "none");
+			});
+
+		}
 
 		model.addAttribute("approvalDto", approvalDto);
 		return "approval/approval-detail";
@@ -278,14 +288,17 @@ public class ApprovalController {
 	 * 문서 결재
 	 * 우혜진 (24. 06. 15.)
 	 *
-	 * @param authentication
 	 * @param map
+	 * @param authentication
 	 * @return result
 	 * @throws IOException
 	 */
 	@PutMapping("change-appr-line-stat")
-	public ResponseEntity<?> changeApprLineStat(Authentication authentication,
-												@RequestBody Map<String, Object> map) throws IOException {
+	public ResponseEntity<?> changeApprLineStat(@RequestBody Map<String, Object> map,
+												Authentication authentication) throws IOException {
+
+		if (map.get("apprType").toString().equals("stock-order"))
+			return ResponseEntity.ok(approvalService.changeApprLineStat(map));
 
 		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
 		map.put("empNo", userDetails.getEmpNo());

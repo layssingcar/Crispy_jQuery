@@ -306,10 +306,13 @@
     <select id="getStockOrderApprDetail" resultMap="stockOrderResultMap">
             SELECT A.APPR_NO, A.APPR_STAT, A.CREATOR
                  , TO_CHAR(A.APPR_DT, 'YYYY"년" MM"월" DD"일"') AS APPR_DT
+                 , L.APPR_LINE_STAT, L.APPR_SIGN
                  , O.ORDER_COST
                  , F.FRN_NO, F.FRN_NAME, F.FRN_OWNER, F.FRN_TEL, F.FRN_STREET, F.FRN_DETAIL
                  , E.EMP_SIGN
               FROM APPROVAL_T A
+        INNER JOIN APPR_LINE_T L
+                ON A.APPR_NO = L.APPR_NO
         INNER JOIN ORDER_T O
                 ON A.APPR_NO = O.APPR_NO
         INNER JOIN EMPLOYEE_T E
@@ -347,7 +350,9 @@
                    </if>
              WHERE 1=1
                AND APPR_NO = #{apprNo}
-               AND EMP_NO = #{empNo}
+                   <if test="apprType == 'time-off'">
+                        AND EMP_NO = #{empNo}
+                   </if>
     </update>
 
 </mapper>

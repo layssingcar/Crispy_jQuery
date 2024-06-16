@@ -52,6 +52,12 @@
     align-items: center;
 }
 
+.stock-order .order-list > div:nth-child(1) {width: 200px;}
+.stock-order .order-list > div:nth-child(2) {width: 330px;}
+.stock-order .order-list > div:nth-child(3) {width: 250px;}
+.stock-order .order-list > div:nth-child(4) {width: 180px;}
+.stock-order .order-list > div:nth-child(5) {width: 200px;}
+
 /* 리스트 아이템명 */
 .stock-order .order-list .m-right {
     margin-right: 10px;
@@ -59,7 +65,7 @@
 }
 
 /* 카테고리명 */
-.stock-order .order-list #stock-ct {width: 130px;}
+.stock-order .order-list #stock-ct {width: 100px;}
 
 /* 재고명 */
 .stock-order .order-list #stock-name {width: 100px;}
@@ -91,6 +97,17 @@
     justify-content: flex-end;
     width: 145px;
 }
+
+/* 삭제 버튼 */
+.stock-order .delete-item {
+    display: flex;
+    justify-content: flex-end;
+    width: 55px;
+    color: #696765;
+    cursor: pointer;
+}
+
+.stock-order .delete-item > i {margin: 0 3px 5px 0;}
 
 /* 합계금액 강조 */
 .stock-order .strong {
@@ -136,32 +153,68 @@
     border-color: var(--sub-color) !important;
 }
 
+/* 모달 스타일 */
+.stock-order .modal-content {
+    width: 650px;
+    margin: auto;
+    margin-top: 65px;
+    padding: 5px 0;
+}
+
+/* 모달 헤더 */
+.stock-order .modal-header {
+    height: 70px;
+    padding: 0 20px;
+}
+
+/* 모달 타이틀 */
+.stock-order .modal-title {font-size: 2rem;}
+
+/* 닫기 아이콘 */
+.stock-order .modal-header button {
+    background-color: #fff !important;
+}
+
+/* 카테고리 버튼 */
+.stock-order .mb-3 {margin: 5px 0 25px 0 !important;}
+
+.stock-order #category-buttons > button {
+    width: 125px;
+    margin: 0 2px !important;
+    border-color: var(--sub-color) !important;
+    background-color: var(--sub-color) !important;
+}
+
+/* 선택된 카테고리 버튼 */
+.stock-order #category-buttons > .selected {
+    border-color: var(--main-color) !important;
+    background-color: var(--main-color) !important;
+}
+
+/* 테이블 행 */
+.stock-order .stock-list-container tr {text-align: center;}
+.stock-order .stock-list-container thead th:nth-child(1) {width: 50px;}
+.stock-order .stock-list-container thead th:nth-child(2) {width: 150px;}
+.stock-order .stock-list-container thead th:nth-child(3) {width: 250px;}
+.stock-order .stock-list-container thead th:nth-child(4) {width: 120px;}
+
+/* 정렬 아이콘 */
+.stock-order .fa-sort {
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+/* 재고 리스트 행 */
+.stock-order .stock-list-container tbody tr {line-height: 100px;}
+
+/* 체크박스 */
+input[type=checkbox] {zoom: 1.3;}
+
 /* 모달 내부 이미지 */
 .stock-order .stock-img {
     width: 100px;
     height: 100px;
     object-fit: cover;
-}
-
-/* 모달 스타일 */
-.stock-order .modal-content {
-    width: 600px;
-    left: 30%;
-}
-
-/* 닫기 버튼 */
-.stock-order .modal-header button {
-    background-color: #fff !important;
-}
-
-/* 체크박스 */
-input[type=checkbox] {zoom: 1.3;}
-
-
-/* 재고명 검색 */
-.stock-order .container-1 {
-    width: 240px;
-    position: relative;
 }
 
 /* 모달 내부 정보 나오는 칸 스크롤링 */
@@ -170,17 +223,14 @@ input[type=checkbox] {zoom: 1.3;}
     overflow: auto;
 }
 
-/* 테이블 스타일 */
-.stock-order .stock-list-container thead tr {
-    text-align: center;
-}
+/* 모달 푸터 */
+.stock-order .modal-footer {border-top: none;}
 
-.stock-order .stock-list-container tbody tr {
-    height: 100px;
-    line-height: 100px;
-    text-align: center;
+/* 재고명 검색 */
+.stock-order .container-1 {
+    width: 240px;
+    position: relative;
 }
-
 
 /* 검색 아이콘 */
 .stock-order .container-1 .icon {
@@ -200,7 +250,12 @@ input[type=checkbox] {zoom: 1.3;}
     font-size: 1.5rem;
 }
 
-/* modal footer 설정 */
-.stock-order .modal-footer {
-    border-top: none;
+/* 추가하기 버튼 */
+.stock-order .modal-footer > button:first-child {width: 100px;}
+
+/* 닫기 버튼 */
+.stock-order .modal-footer > button:last-child {
+    width: 70px;
+    border-color: var(--sub-color) !important;
+    background-color: var(--sub-color) !important;
 }

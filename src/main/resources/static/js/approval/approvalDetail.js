@@ -13,6 +13,7 @@ document.querySelector("#approval").addEventListener("click", ()=> {
         inputValidator: async (value) => {
             if (!value) return "결재 승인 여부가 선택되지 않았습니다.";
 
+            const apprType = location.pathname.split("/")[3];   // 문서타입
             const apprNo = location.pathname.split("/")[4];     // 문서번호
 
             // 결재선 객체
@@ -22,8 +23,12 @@ document.querySelector("#approval").addEventListener("click", ()=> {
                 "apprType": location.pathname.split("/")[3] // apprType 추가
             };
 
-            // 승인: 결재서명 입력
-            if (value == 1) {
+            // 발주 신청 승인: 결재서명 입력 X
+            if (apprType === 'stock-order' && value == 1)
+                apprLineobj.data = '/emp_sign/admin-sign.png';
+
+            // 휴가,휴직 신청 승인: 결재서명 입력
+            else if (value == 1) {
                 await Swal.fire({
                     text: "결재 서명을 입력하세요.",
                     html: "<div style='margin-bottom: 20px;'>결재 서명을 입력하세요.</div>" +
@@ -46,8 +51,8 @@ document.querySelector("#approval").addEventListener("click", ()=> {
                     })
             }
 
-            // 반려: 반려사유 입력
-            if (value == 2) {
+            // 휴가,휴직 신청 반려: 반려사유 입력
+            else if (value == 2) {
                 await Swal.fire({
                     text: "반려 사유를 입력하세요.",
                     input: "textarea",
@@ -65,7 +70,9 @@ document.querySelector("#approval").addEventListener("click", ()=> {
             // 취소
             if(!apprLineobj.data) return;
 
-            await fetch("/crispy/change-appr-line-stat", {
+            apprLineobj.apprType = apprType;    // 문서타입 추가
+
+            await fetch(`/crispy/change-appr-line-stat`, {
                 method : "PUT",
                 headers : {"Content-Type" : "application/json"},
                 body : JSON.stringify(apprLineobj)
