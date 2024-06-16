@@ -1,22 +1,22 @@
 // 금액 계산
 const sumCostFn = () => {
-    const selectStockList = document.querySelectorAll(".select-stock"); // 발주 재고 항목
+    const orderList = document.querySelectorAll(".order-list"); // 발주 재고 항목
 
-    selectStockList.forEach(stock => {
-        const stockCount = stock.querySelector(".test-count");  // 수량 입력
+    orderList.forEach(orderItem => {
+        const inpCount = orderItem.querySelector(".inp-count");  // 수량 입력
 
-        stockCount.addEventListener("input", e => {
+        inpCount.addEventListener("input", e => {
             // 숫자만 입력 가능
-            const inpValue = stockCount.value;
+            const inpValue = inpCount.value;
             const regExp = /^[0-9]+$/;
-            if (!regExp.test(inpValue)) stockCount.value = inpValue.slice(0, -1);
+            if (!regExp.test(inpValue)) inpCount.value = inpValue.slice(0, -1);
 
-            const price = stock.querySelector(".test-price").innerText.replace(/,/g, "");
-            const count = stockCount.value;
+            const price = orderItem.querySelector(".stock-price > span:first-child").innerText.replace(/,/g, "");
+            const count = inpCount.value;
             const cost = price * count;
 
-            stock.querySelector(".test-cost").innerText = cost.toLocaleString();
-            stockCount.nextElementSibling.value = cost;
+            orderItem.querySelector(".total-cost > .strong").innerText = cost.toLocaleString();
+            inpCount.nextElementSibling.value = cost;
             sumOrderCostFn();
         })
     })
