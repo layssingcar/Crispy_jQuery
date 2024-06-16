@@ -13,7 +13,7 @@
                     <td th:each="apprLineDto : *{apprLineDtoList}">
                         <th:block th:switch="${apprLineDto.apprLineStat}">
                             <span th:case="0" th:text="${apprLineDto.empName}"></span>
-                            <img th:case="1" th:src="${apprLineDto.empSign}" class="sign-img" alt="서명 이미지">
+                            <img th:case="1" th:src="${apprLineDto.apprSign}" class="sign-img" alt="서명 이미지">
                             <th:block th:case="2">반려</th:block>
                         </th:block>
                     </td>
@@ -44,7 +44,7 @@
                         <span>(</span>
 
                         <!-- 휴가 기간 출력 -->
-                        <span th:text="*{timeOffPeriod}"></span>
+                        <span th:text="*{timeOffPeriod < 10 ? '0' + timeOffPeriod : timeOffPeriod}"></span>
                         <span>일간 )</span>
                     </td>
                 </tr>

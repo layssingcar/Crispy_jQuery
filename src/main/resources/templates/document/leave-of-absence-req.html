@@ -39,7 +39,9 @@
                     <span>(</span>
 
                     <!-- 휴직 기간 출력 -->
-                    <span id="time-off-period" th:text="${approvalDto?.timeOffPeriod}">00</span>
+                    <span id="time-off-period"
+                          th:text="${(approvalDto?.timeOffPeriod != null ? (approvalDto.timeOffPeriod < 10 ? '0' + approvalDto.timeOffPeriod : approvalDto.timeOffPeriod) : '00')}">
+                    </span>
                     <input type="hidden" name="timeOffPeriod"
                            th:value="${approvalDto?.timeOffPeriod}">
                     <span>일간 )</span>
@@ -83,5 +85,8 @@
             <input class="form-control" type="file" id="formFileMultiple" multiple
                    style="font-size: 1.5rem;">
         </div>
+
+        <!-- 파일 리스트 -->
+        <div class="file-list"></div>
     </div>
 </div>

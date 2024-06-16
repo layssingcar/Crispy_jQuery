@@ -9,7 +9,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Controller
@@ -27,8 +29,11 @@ public class ScheduleController {
 	
 	@ResponseBody
 	@GetMapping(value="/getScheList", produces="application/json")
-	public List<ScheduleDto> getScheList(@RequestParam("empNo") int empNo) {
-		return scheduleService.getScheList(empNo);
+	public List<ScheduleDto> getScheList(@RequestParam("frnNo") int frnNo, @RequestParam("empNo") int empNo) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("frnNo", frnNo);
+		params.put("empNo", empNo);
+		return scheduleService.getScheList(params);
 	}
 	
 	@ResponseBody
@@ -55,6 +60,12 @@ public class ScheduleController {
 	public ResponseEntity<Integer> completeDeleteSchedule(@RequestBody ScheduleDto scheduleDto){
 		int deleteCount = scheduleService.completeDeleteSchedule(scheduleDto);
 		return ResponseEntity.ok(deleteCount);
+	}
+	
+	@PostMapping(value="/revertSche", produces = "application/json")
+	public ResponseEntity<Integer> revertSchedule(@RequestBody ScheduleDto scheduleDto, Principal principal){
+		int revertCount = scheduleService.revertSchedule(scheduleDto);
+		return ResponseEntity.ok(revertCount);
 	}
 	
 	@ResponseBody

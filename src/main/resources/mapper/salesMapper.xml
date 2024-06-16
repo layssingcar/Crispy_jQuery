@@ -2,97 +2,78 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.mcp.crispy.sales.mapper.SalesMapper">
-    <!-- include 검색  -->
-    <sql id="search">
-        <if test="search != null and search != ''">
-            AND (F.FRN_NAME LIKE '%' || #{search} || '%')
-        </if>
-    </sql>
-
-
-    <!-- 등록된 직원 가맹점의 매출 목록-->
-    <select id="getSalesList" parameterType="map" resultType="SalesDto">
-            SELECT *
-              FROM (
-                    SELECT ROW_NUMBER() OVER(ORDER BY F.FRN_NO DESC) AS RN
-                         , F.FRN_OWNER, F.FRN_NAME, F.FRN_NO
-                         , SUM(S.SAL_PRICE) AS SAL_PRICE, S.SAL_DT
-                      FROM FRANCHISE_T F
-                INNER JOIN SALES_T S ON F.FRN_NO = S.FRN_NO
-            <include refid="search"></include> <!-- 검색 조건 추가 -->
-                  GROUP BY F.FRN_OWNER, F.FRN_NAME, F.FRN_NO
-                         , S.SAL_DT
-                   ) a
-                     WHERE RN BETWEEN #{begin} AND #{end}
-    </select>
-
-    <!-- 매출 COUNT -->
-    <select id="getTotalCount" parameterType="map" resultType="int">
-            SELECT COUNT(*)
-              FROM (
-                    SELECT F.FRN_NO
-                      FROM FRANCHISE_T F
-                INNER JOIN SALES_T S ON F.FRN_NO = S.FRN_NO
-            <include refid="search"></include> <!-- 검색 조건 추가 -->
-                  GROUP BY F.FRN_NO
-                   ) b
-    </select>
+	
+	<!-- 구 별 평균 매출 조회 결과-->
+	<resultMap type="SalesDto" id="SalesMapByGuAvg">
+		<id property="salNo" column="SAL_NO" />
+		<result property="frnGu" column="FRN_GU"/>
+		<result property="totalAvgSales" column="TOTAL_AVG_SALES"/>
+	</resultMap>
 
     <!-- 매출 INSERT -->
     <insert id="insertSales" parameterType="SalesDto">
-            INSERT INTO SALES_T(
-                        SAL_NO
-                      , SAL_DT
-                      , SAL_PRICE
-                      , CREATE_DT
-                      , CREATOR
-                      , MODIFY_DT
-                      , MODIFIER
-                      , FRN_NO
-            ) VALUES (
-                        SALES_SEQ.NEXTVAL
-                      , #{salDt}
-                      , #{salPrice}
-                      , CURRENT_TIMESTAMP
-                      , #{creator}
-                      , CURRENT_TIMESTAMP
-                      , #{modifier}
-                      , #{frnNo})
+        INSERT INTO SALES_T(
+                    SAL_NO
+                  , SAL_DT
+                  , SAL_PRICE
+                  , CREATE_DT
+                  , CREATOR
+                  , MODIFY_DT
+                  , MODIFIER
+                  , FRN_NO
+        ) VALUES (
+                   SALES_SEQ.NEXTVAL
+                 , #{salDt}
+                 , #{salPrice}
+                 , CURRENT_TIMESTAMP
+                 , #{creator}
+                 , CURRENT_TIMESTAMP
+                 , #{modifier}
+                 , #{frnNo})
     </insert>
 
-    <!-- 일별 매출 SELECT-->
-    <select id="findDailySales">
-            SELECT TO_CHAR(TRUNC(TO_DATE(SAL_DT, 'yyyy-mm-dd')), 'dd') AS SAL_DT
-                 , SUM(SAL_PRICE) AS SAL_PRICE
-              FROM SALES_T
-          GROUP BY TO_CHAR(TRUNC(TO_DATE(SAL_DT, 'yyyy-mm-dd')), 'dd')
-          ORDER BY SAL_DT
+    <!-- 등록된 직원 가맹점의 매출 목록-->
+    <select id="getSalesList" parameterType="map" resultType="SalesDto">
+            SELECT S.SAL_DT
+                 , SUM(S.SAL_PRICE) AS SAL_PRICE
+              FROM SALES_T S
+        INNER JOIN FRANCHISE_T F
+                ON S.FRN_NO = F.FRN_NO
+             WHERE F.FRN_NO = #{frnNo}
+          GROUP BY S.SAL_DT
     </select>
 
-    <!-- 주간 매출 SELECT -->
-    <select id="findWeeklySales">
-            SELECT TO_CHAR(TRUNC(TO_DATE(SAL_DT,'yyyy-mm-dd'), 'IW'), 'yyyy-mm-dd') AS SAL_DT
-                 , SUM(SAL_PRICE) AS SAL_PRICE
-              FROM SALES_T
-          GROUP BY TO_CHAR(TRUNC(TO_DATE(SAL_DT,'yyyy-mm-dd'), 'IW'), 'yyyy-mm-dd')
-          ORDER BY SAL_DT
+    <!-- 일별 매출 SELECT-->
+    <select id="findDailySales" parameterType="map" resultType="SalesDto">
+            SELECT TO_CHAR(TRUNC(TO_DATE(SAL_DT, 'yyyy-mm-dd')), 'dd') AS SAL_DD
+                 , SUM(S.SAL_PRICE) AS SAL_PRICE
+              FROM SALES_T S
+        INNER JOIN FRANCHISE_T F
+                ON S.FRN_NO = F.FRN_NO
+             WHERE F.FRN_NO = #{frnNo}
+            GROUP BY TO_CHAR(TRUNC(TO_DATE(SAL_DT, 'yyyy-mm-dd')), 'dd')
     </select>
 
     <!-- 달별 매출 SELECT -->
-    <select id="findMonthlySales">
-            SELECT TO_CHAR(TRUNC(TO_DATE(SAL_DT, 'yyyy-mm-dd'), 'mm'), 'mm') AS SAL_DT
-                 , SUM(SAL_PRICE) AS SAL_PRICE
-              FROM SALES_T
-          GROUP BY TO_CHAR(TRUNC(TO_DATE(SAL_DT, 'yyyy-mm-dd'), 'mm'), 'mm')
-          ORDER BY SAL_DT
+    <select id="findMonthlySales" parameterType="map" resultType="SalesDto">
+            SELECT TO_CHAR(TRUNC(TO_DATE(SAL_DT, 'yyyy-mm-dd')), 'mm') AS SAL_MN
+                 , SUM(S.SAL_PRICE) AS SAL_PRICE
+              FROM SALES_T S
+        INNER JOIN FRANCHISE_T F
+                ON S.FRN_NO = F.FRN_NO
+             WHERE F.FRN_NO = #{frnNo}
+          GROUP BY TO_CHAR(TRUNC(TO_DATE(SAL_DT, 'yyyy-mm-dd')), 'mm')
     </select>
 
     <!-- 년별 매출 SELECT-->
-    <select id="findYearlySales">
-            SELECT TO_CHAR(TO_DATE(SAL_DT,'yyyy-mm-dd'),'yyyy')
-                 , SUM(SAL_PRICE)
-              FROM SALES_T
-          GROUP BY TO_CHAR(TO_DATE(SAL_DT,'yyyy-mm-dd'),'yyyy')
+    <select id="findYearlySales" parameterType="map" resultType="SalesDto">
+            SELECT TO_CHAR(TRUNC(TO_DATE(SAL_DT, 'yyyy-mm-dd')), 'yyyy') AS SAL_YR
+                 , SUM(S.SAL_PRICE) AS SAL_PRICE
+              FROM SALES_T S
+        INNER JOIN FRANCHISE_T F ON S.FRN_NO = F.FRN_NO
+             WHERE F.FRN_NO = #{frnNo}
+          GROUP BY TO_CHAR(TRUNC(TO_DATE(SAL_DT, 'yyyy-mm-dd')), 'yyyy')
+
     </select>
 
     <!-- 기간별 평균 매출 -->
@@ -107,7 +88,15 @@
 
     <!-- 구별 매출 조회 : 카테고리, 가맹점 테이블 -->
     <select id="findGuAvgSales">
-
+		SELECT
+		       F.FRN_GU,
+      		   SUM(S.SAL_PRICE) / COUNT(DISTINCT F.FRN_NO) AS TOTAL_AVG_SALES
+	    	FROM SALES_T S
+		    INNER JOIN FRANCHISE_T F 
+		    ON S.FRN_NO = F.FRN_NO
+		    WHERE EXTRACT(MONTH FROM S.SAL_DT) = #{month}
+		    GROUP BY F.FRN_GU
+		    ORDER BY F.FRN_GU ASC		
     </select>
 
     <!-- 이달의 매장 순위 -->

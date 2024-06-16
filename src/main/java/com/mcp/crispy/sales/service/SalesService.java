@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Service
@@ -17,73 +16,35 @@ public class SalesService {
 
 	private final SalesMapper salesMapper;
 
-	/* 매출 COUNT */
-	@Transactional(readOnly = true)
-	public int getTotalCount(String search) {
-		return salesMapper.getTotalCount(search);
-	}
-
-	/* 매장 매출 LIST */
-	@Transactional(readOnly = true)
-	public List<SalesDto> getSalesList(Integer page, int cnt, String search) {
-		if (page == null || page < 1) {
-			page = 1;
-		}
-
-		if (search == null) {
-			search = ""; // Set default value if null
-		}
-
-		int totalCount = getTotalCount(search);
-
-		int totalPage = (int) Math.ceil((double) totalCount / cnt); // 총 페이지 수 계산
-
-		// 현재 페이지를 벗어나지 않도록 보정
-		page = Math.min(page, totalPage);
-
-		int begin = (page - 1) * cnt + 1; // 현재 페이지에 해당하는 게시물의 시작 인덱스
-		int end = Math.min(begin + cnt - 1, totalCount); // 현재 페이지에 해당하는 게시물의 끝 인덱스
-
-		Map<String,Object> map = Map.of("begin", begin, "end", end, "search", search);
-
-		return salesMapper.getSalesList(map);
-	}
-
 	/* 매출 INSERT */
 	@Transactional
 	public int insertSales(SalesDto salesDto){
-		log.info("insertSales: {}", salesDto.getFrnNo());
 		return salesMapper.insertSales(salesDto);
 	}
 
 	/* 일별 매출 */
-	public void findDailySales(){
-		return;
-	}
-
-	/* 주간 매출 조회*/
-	public void findWeeklySales(){
-		return;
+	public List<SalesDto> findDailySales(int frnNo){
+		return salesMapper.findDailySales(frnNo);
 	}
 
 	/* 달별 매출 조회*/
-	public void findMonthlySales(){
-		return;
+	public List<SalesDto> findMonthlySales(int frnNo){
+		return salesMapper.findMonthlySales(frnNo);
 	}
 
 	/* 년별 매출 */
-	public void findYearlySales(){
-		return;
+	public List<SalesDto> findYearlySales(int frnNo){
+		return salesMapper.findYearlySales(frnNo);
 	}
 
 	/* 기간별 평균 매출 */
-	public void findAvgSales(){
-		return;
+	public String findAvgSales(){
+		return salesMapper.findAvgSales();
 	}
 
 	/* 구별 매출 조회 : 카테고리, 가맹점 테이블 */
-	public void findGuAvgSales(){
-		return;
+	public List<SalesDto> findGuAvgSales(int month){
+		return salesMapper.findGuAvgSales(month);
 	}
 
 	/* 이달의 매장 순위 */
@@ -91,4 +52,8 @@ public class SalesService {
 		return;
 	}
 
+	/* 가맹점별 매출 */
+	public List<SalesDto> getSalesList(int frnNo) {
+		return salesMapper.getSalesList(frnNo);
+	}
 }

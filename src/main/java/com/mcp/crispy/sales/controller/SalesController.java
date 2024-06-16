@@ -3,15 +3,21 @@ package com.mcp.crispy.sales.controller;
 import com.mcp.crispy.auth.domain.EmployeePrincipal;
 import com.mcp.crispy.sales.dto.SalesDto;
 import com.mcp.crispy.sales.service.SalesService;
+import com.mcp.crispy.schedule.dto.ScheduleDto;
+
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/crispy")
@@ -19,51 +25,18 @@ public class SalesController {
 
 	private final SalesService salesService;
 	
-	/* 매장 매출 목록 */
-	@GetMapping("/salesCalender")
-	public String sales(Model model, @RequestParam(value = "page", required = false) Integer page
-			                       , @RequestParam(value = "search", required = false) String search
-	 							   , Authentication authentication) {
+	/* 매장 매출 전체목록 */
+	@GetMapping("/sales")
+	public String sales(Model model, Authentication authentication) {
 		// 로그인한 정보
 		EmployeePrincipal principal = (EmployeePrincipal) authentication.getPrincipal();
 		model.addAttribute("emp", principal.getEmployee());
+		model.addAttribute("frnNo", principal.getFrnNo());
 
-		if(page == null) {
-			page = 1;
-		}
 		// 가맹점 매출 목록
-		List<SalesDto> salesList = salesService.getSalesList(page, 10, search);
+		List<SalesDto> salesList = salesService.getSalesList(principal.getFrnNo());
+		log.info("salesList {}", salesList);
 		model.addAttribute("salesList", salesList);
-
-		// 매출 전체 목록 조회
-		for(SalesDto b : salesList)
-			System.out.println(b);
-
-		// 전체 게시물 수 조회
-		int totalCount = salesService.getTotalCount(search);
-		model.addAttribute("totalCount", totalCount);
-
-		// 전체 게시물 / 10
-		int maxPage = (int)Math.ceil((double)totalCount/10);
-		int pageShow = 10;
-		int startPage = ((page - 1) / pageShow) * pageShow + 1;
-		int endPage = startPage + pageShow - 1;
-
-		// 다음 페이지, 이전 페이지 계산
-		int nextPage = Math.min(page + 10, maxPage);
-		int prevPage = Math.max(page - 10, 1);
-
-		model.addAttribute("nextPage", nextPage);
-		model.addAttribute("prevPage", prevPage);
-
-		// 시작번호, 끝번호 계산 후 표출
-		endPage = Math.min(endPage, maxPage);
-		startPage = Math.max(startPage, 1);
-
-		model.addAttribute("currentPage", page);
-		model.addAttribute("maxPage", maxPage);
-		model.addAttribute("startPage",startPage);
-		model.addAttribute("endPage",endPage);
 
 		return "sales/sales";
 	}
@@ -77,7 +50,7 @@ public class SalesController {
 
 		/* 로그인 정보 */
 		EmployeePrincipal principal = (EmployeePrincipal) authentication.getPrincipal();
-		model.addAttribute("frnNo", principal.getFrnNo());
+		model.addAttribute("emp", principal.getEmployee());
 
 		if (salesInsert > 0) {
 			return "redirect:/crispy/salesCalender";
@@ -86,29 +59,62 @@ public class SalesController {
 		}
 	}
 
-	/* 일별 매출 */
-	public void findDailySales(final Model model) {
+	/*	일별 매출 */
+	@GetMapping("/daily")
+	public String findDailySales(Model model, Authentication authentication) {
+		EmployeePrincipal principal = (EmployeePrincipal) authentication.getPrincipal();
+		model.addAttribute("emp", principal.getEmployee());
+		model.addAttribute("frnNo", principal.getFrnNo());
+
+		List<SalesDto> salesDailyList = salesService.findDailySales(principal.getFrnNo());
+		model.addAttribute("salesDailyList", salesDailyList);
+
+		return "sales/daily";
+	}
+	
+	/* 달별 조회*/
+	@GetMapping("/monthly")
+	public String findMonthlySales(Model model, Authentication authentication) {
+		EmployeePrincipal principal = (EmployeePrincipal) authentication.getPrincipal();
+		model.addAttribute("emp", principal.getEmployee());
+		model.addAttribute("frnNo", principal.getFrnNo());
+
+		List<SalesDto> salesMonthlyList = salesService.findMonthlySales(principal.getFrnNo());
+		model.addAttribute("salesMonthlyList", salesMonthlyList);
+
+		return "sales/monthly";
 	}
 
-	/* 주간 매출 조회*/
-	public void findWeeklySales(final Model model) {
-	}
+	/* 달별 조회*/
+	@GetMapping("/yearly")
+	public String findYearlySales(Model model, Authentication authentication) {
+		EmployeePrincipal principal = (EmployeePrincipal) authentication.getPrincipal();
+		model.addAttribute("emp", principal.getEmployee());
+		model.addAttribute("frnNo", principal.getFrnNo());
 
-	/* 달별 매출 조회*/
-	public void findMonthlySales(final Model model) {
-	}
+		List<SalesDto> yearlySalesList = salesService.findYearlySales(principal.getFrnNo());
+		model.addAttribute("yearlySalesList", yearlySalesList);
 
-	/* 년별 매출 */
-	public void findYearlySales(final Model model) {
-
+		return "sales/yearly";
 	}
 
 	/* 기간별 평균 매출 */
-	public void findAvgSales(final Model model) {
+	@GetMapping
+	public void findAvgSales(Model model) {
+		String avgSalse = salesService.findAvgSales();
+		model.addAttribute("avgSalse", avgSalse);
+
+		String avgSalseDate = avgSalse.toString();
+
+
+		System.out.println("@@@@@@@@@@@@@@@@ : avgSalse" + avgSalseDate);
 	}
 
 	/* 구별 매출 조회 : 카테고리, 가맹점 테이블 */
-	public void findGuAvgSales(final Model model) {
+	@ResponseBody
+	@GetMapping(value = "/getGuAvgSales", produces = "application/json")
+	public List<SalesDto> findGuAvgSales(@RequestParam("month") int month) {
+		return salesService.findGuAvgSales(month);
 	}
 
 	/* 이달의 매장 순위 */

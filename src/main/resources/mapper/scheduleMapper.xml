@@ -65,10 +65,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 </select>
 
 <select id="getScheList"
-		resultMap="ScheduleMap">
+		resultMap="ScheduleMap"
+		parameterType="map">
 	SELECT * 
 		FROM SCHEDULE_T
-	WHERE SCHE_STAT != 1 AND FRN_NO = #{empNo}
+	WHERE (SCHE_STAT != 1 AND FRN_NO = #{frnNo} AND SCHE_DIV = 0)
+	   OR (SCHE_STAT != 1 AND EMP_NO = #{empNo})
 </select>
 
 <update id="modifySchedule"
@@ -99,10 +101,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	WHERE SCHE_ID = #{scheId}
 </delete>
 
+<update id="revertSchedule"
+		parameterType="ScheduleDto">
+	UPDATE SCHEDULE_T
+	SET	SCHE_STAT = #{scheStat},
+		MODIFY_DT = CURRENT_DATE
+	WHERE EMP_NO = #{empNo} AND SCHE_ID = #{scheId}
+</update>
+
 <select id="getCountSche"
 		resultType="int">
 	SELECT COUNT(*)
 		FROM SCHEDULE_T
+</select>
+
+<select id="getAllScheList"
+		resultMap="ScheduleMap">
+	SELECT * 
+		FROM SCHEDULE_T
+	WHERE SCHE_STAT != 1
 </select>
 
 </mapper>

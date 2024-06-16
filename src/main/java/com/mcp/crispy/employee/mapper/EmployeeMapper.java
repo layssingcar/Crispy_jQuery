@@ -85,6 +85,9 @@ public interface EmployeeMapper {
 	// 리프레시 토큰 삭제
 	void removeRefreshToken(@Param("empNo") Integer empNo);
 
+	// 연차 차감
+	void updateAnnual(EmployeeDto empDto);
+
 	// 리프레시 토큰 정보 가져오기
 	Optional<EmployeeDto> loadByMiniEmpId(String empId);
 }

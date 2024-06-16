@@ -16,9 +16,6 @@
                 <!-- 내부 내용 -->
                 	<input type="hidden" id="empNo" th:value="${loggedEmp.empNo}">
                 	<div id="calendarOpt">
-                		<div id="profile-cal">
-                			<img src="/img/anonymous.png" id="profile-img" width="200px" height="200px">
-                		</div>
                 		<div id="allsche">
 						  <input class="form-check-input" type="checkbox" value="allsche" id="allscheChecked" checked onclick="fnClickCheckAll()">
 						  <label class="form-check-label" for="allscheChecked">전체보기</label>                		
@@ -33,7 +30,10 @@
 						  <label class="form-check-label" for="myscheChecked">내 일정</label>                    		
                 		</div>
                 		<hr>
-                		<a href="/crispy/trash" id="trashsche">휴지통</a>
+                		<a href="/crispy/trash" id="trashsche">
+							<i class="fa-regular fa-trash-can"></i>
+							휴지통
+						</a>
                 	</div>
     				<div id='calendar'></div>
                 

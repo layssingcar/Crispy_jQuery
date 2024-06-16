@@ -63,7 +63,7 @@ button {
 /* 에러 메시지 스타일 */
 .error-message {
 	display: none;
-	color: red;
+	color: tomato;
 	font-size: 1.5rem;
 	white-space: pre-wrap; /* 줄바꿈 적용 */
 }

@@ -16,11 +16,17 @@
 }
 
 /* 테이블 */
-.order-doc table {text-align: center;}
+.order-doc table {
+    text-align: center;
+    width: 147px;
+}
+.order-doc tbody {
+    width: 140px;
+}
 
 /* 가맹점 정보 테이블 */
 .order-doc .franchise-table {
-    width: 670px;
+    width: 665px;
     height: 120px;
 }
 
@@ -48,6 +54,9 @@
 /* 결재 행 */
 .order-doc #sign-tr {height: 100px;}
 
+.order-doc #sign-tr td {
+    height: 115px;
+}
 /* 결재 이미지 */
 .order-doc #sign-img {
     width: 100px;

@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface ApprovalMapper {
@@ -28,6 +29,9 @@ public interface ApprovalMapper {
     // 임시저장 내용 불러오기
     ApprovalDto getTimeOffTemp(@Param("empNo") int empNo, @Param("timeOffCtNo") int timeOffCtNo);
 
+    // 결재선 불러오기
+    List<ApprLineDto> getApprLine(@Param("frnNo") int frnNo, @Param("empNo") int empNo);
+
     // 휴가,휴직 신청 (전자결재 테이블)
     int insertApproval(ApprovalDto approvalDto);
 
@@ -45,5 +49,11 @@ public interface ApprovalMapper {
 
     // 결재 문서 상세 조회 (휴가,휴직 신청서)
     ApprovalDto getTimeOffApprDetail(@Param("empNo") int empNo, @Param("apprNo") int apprNo);
+
+    // 결재 문서 상세 조회 (발주 신청서)
+    ApprovalDto getStockOrderApprDetail(int apprNo);
+
+    // 문서 결재
+    int changeApprLineStat(Map<String, Object> map);
 
 }

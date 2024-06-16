@@ -67,7 +67,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             SELECT E.EMP_NO, E.EMP_PW, E.EMP_ID, E.EMP_NAME, E.EMP_PHONE
                  , E.EMP_ZIP, E.EMP_STREET, E.EMP_DETAIL, E.EMP_SIGN
                  , E.EMP_EMAIL, E.EMP_STAT, E.FRN_NO, E.EMP_PROFILE
-                 , F.FRN_NAME, F.FRN_OWNER
+                 , F.FRN_NAME, F.FRN_OWNER, F.FRN_NO
                  , P.POS_NAME, P.POS_NO
             FROM EMPLOYEE_T E
        LEFT JOIN FRANCHISE_T F
@@ -109,7 +109,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <!-- empNo로 해당 사원의 정보 찾기 -->
     <select id="findByEmployeeDetailsByEmpNo" parameterType="EmployeeDto">
             SELECT E.EMP_NO, E.EMP_ID, E.EMP_NAME, E.EMP_PHONE, E.EMP_ZIP, E.EMP_STREET
-                 , E.EMP_DETAIL, E.EMP_PROFILE, E.EMP_EMAIL, E.EMP_STAT
+                 , E.EMP_DETAIL, E.EMP_PROFILE, E.EMP_EMAIL, E.EMP_STAT, E.EMP_ANNUAL
                  , F.FRN_NO, F.FRN_NAME
                  , P.POS_NAME, P.POS_NO
             FROM EMPLOYEE_T E
@@ -287,6 +287,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="currentEmpNo != null">
                 AND E.EMP_NO != #{currentEmpNo}
             </if>
+            ORDER BY F.FRN_NAME, E.EMP_NAME
     </select>
 
     <!-- 직원 초대 -->
@@ -387,4 +388,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          WHERE 1 = 1
            AND E.EMP_NO = #{empNo}
     </update>
+    
+    <update id="updateAnnual"
+    		parameterType="EmployeeDto">
+    	UPDATE EMPLOYEE_T E
+          SET E.EMP_ANNUAL = #{empAnnual}
+         WHERE 1 = 1
+           AND E.EMP_NO = #{empNo}
+	</update>
 </mapper>

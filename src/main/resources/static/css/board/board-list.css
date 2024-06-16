@@ -23,11 +23,11 @@
 .board-list .container-1 .icon {
     position: absolute;
     left: 15px;
-    top: 22px;
+    top: 30px;
     transform: translateY(-50%);
     color: var(--main-color);
     font-size: 14px;
-    margin-top:10px;
+
 }
 
 /* 검색 창 */
