@@ -248,6 +248,16 @@ public class ApprovalController {
 		if (apprType.equals("stock-order")) approvalDto = approvalService.getStockOrderApprDetail(apprNo); // 발주 신청서
 		else approvalDto = approvalService.getTimeOffApprDetail(userDetails.getEmpNo(), apprNo);		   // 휴가,휴직 신청서
 
+		// 기안함에서 결재하기 버튼 숨기기
+		if (approvalDto.getEmpNo() == userDetails.getEmpNo())
+			model.addAttribute("apprBtn", "none");
+
+		// 결재함에서 결재 완료 상태일 때 결재하기 버튼 숨기기
+		approvalDto.getApprLineDtoList().forEach(apprLineDto -> {
+			if (apprLineDto.getEmpNo() == userDetails.getEmpNo() && apprLineDto.getApprLineStat() != 0)
+				model.addAttribute("apprBtn", "none");
+		});
+
 		model.addAttribute("approvalDto", approvalDto);
 		return "approval/approval-detail";
 

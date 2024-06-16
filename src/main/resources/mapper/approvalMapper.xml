@@ -289,8 +289,8 @@
 
     <!-- 결재선 조회 (결재 문서 상세 조회) -->
     <select id="getDetailApprLine" resultType="ApprLineDto">
-            SELECT L.APPR_LINE_STAT
-                 , E.EMP_NAME, E.EMP_SIGN
+            SELECT L.APPR_LINE_STAT, L.APPR_SIGN
+                 , E.EMP_NO, E.EMP_NAME, E.EMP_SIGN
                  , P.POS_NAME
               FROM APPR_LINE_T L
         INNER JOIN EMPLOYEE_T E
