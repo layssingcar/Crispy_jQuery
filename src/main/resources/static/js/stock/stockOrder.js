@@ -27,10 +27,25 @@ const sumOrderCostFn = () => {
     const stockOrderCost = document.querySelectorAll(".stock-order-cost");  // 금액 리스트
     let orderCost = 0;  // 합계금액
 
+    if (stockOrderCost.length === 0) {
+        document.querySelector("#order-cost").innerText = 0;
+        document.querySelector("#order-cost").nextElementSibling.value = 0;
+        return;
+    }
+
     stockOrderCost.forEach(cost => {
         orderCost += parseInt(cost.value === "" ? 0 : parseInt(cost.value));
         document.querySelector("#order-cost").innerText = orderCost.toLocaleString();
         document.querySelector("#order-cost").nextElementSibling.value = orderCost;
+    })
+}
+
+// 재고 항목 삭제
+const deleteItemFn = (btn) => {
+    btn.addEventListener("click", () => {
+        btn.parentElement.nextElementSibling.remove();
+        btn.parentElement.remove();
+        sumOrderCostFn();
     })
 }
 
@@ -130,10 +145,18 @@ document.querySelector("#temp-content").addEventListener("click", async () => {
     await getOrderTempFn();
     sumCostFn();
     sumOrderCostFn();
+
+    document.querySelectorAll(".delete-item").forEach(btn => {
+        deleteItemFn(btn);
+    })
 })
 
 // 초기화
 document.addEventListener("DOMContentLoaded", function () {
     sumCostFn();
     sumOrderCostFn();
+
+    document.querySelectorAll(".delete-item").forEach(btn => {
+        deleteItemFn(btn);
+    })
 })
