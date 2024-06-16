@@ -10,6 +10,7 @@ import com.mcp.crispy.notification.dto.NotifyCt;
 import com.mcp.crispy.notification.dto.NotifyDto;
 import com.mcp.crispy.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ApprovalService {
@@ -77,12 +79,14 @@ public class ApprovalService {
             apprLineDtoList.get(i).setCreator(approvalDto.getEmpNo());
         }
 
+
         // 결재선 테이블
         approvalMapper.insertApprLine(apprLineDtoList);
 
         // 첫 번째 결재자에게 알림 전송
         if (!apprLineDtoList.isEmpty()) {
-            ApprLineDto apprLineDto = apprLineDtoList.get(apprLineDtoList.size() - 1);
+            ApprLineDto apprLineDto = apprLineDtoList.get(0);
+            log.info("첫번째 결재자: {}", apprLineDto);
             EmployeeDto employee = employeeService.getEmployeeDetailsByEmpNo(approvalDto.getEmpNo());
             NotifyCt notifyCt = mapTimeOffCtToNotifyCt(approvalDto.getTimeOffCtNo());
             NotifyDto notifyDto = NotifyDto.builder()
@@ -148,21 +152,92 @@ public class ApprovalService {
     }
 
     // 문서 결재
+    @Transactional
     public int changeApprLineStat(Map<String, Object> map) throws IOException {
 
-        if (Integer.parseInt(map.get("apprLineStat").toString()) == 1) {
+        int apprLineStat = Integer.parseInt(map.get("apprLineStat").toString());
+        int empNo = Integer.parseInt(map.get("empNo").toString());
+        int apprNo = Integer.parseInt(map.get("apprNo").toString());
+        String apprType = map.get("apprType").toString(); // 결재 문서 타입 추가
 
+        // 결재 상태가 승인(1)인 경우 서명 데이터를 저장
+        if (apprLineStat == 1) {
             String signData = map.get("data").toString();
-            int empNo = Integer.parseInt(map.get("empNo").toString());
             String fileName = imageService.storeSignatureImage(signData, empNo);
-
             String path = "/emp_sign/";
             map.put("data", path + fileName);
-
         }
 
-        return approvalMapper.changeApprLineStat(map);
+        // 결재 상태 업데이트
+        int result = approvalMapper.changeApprLineStat(map);
 
+        // 결재선 목록 가져오기
+        List<ApprLineDto> detailApprLine = approvalMapper.getDetailApprLine(apprNo);
+        log.info("detailApprLine: {}", detailApprLine);
+        NotifyCt notifyCt;
+        ApprovalDto approvalDetail;
+
+        // 결재 문서 타입에 따라 상세 정보 및 알림 카테고리 설정
+        if (apprType.equals("time-off")) {
+            approvalDetail = approvalMapper.getTimeOffApprDetail(empNo, apprNo);
+            notifyCt = mapTimeOffCtToNotifyCt(approvalDetail.getTimeOffCtNo());
+        } else if (apprType.equals("stock-order")) {
+            approvalDetail = approvalMapper.getStockOrderApprDetail(apprNo);
+            notifyCt = NotifyCt.ORDER;
+        } else {
+            throw new IllegalArgumentException("알 수 없는 결재 타입입니다: " + apprType);
+        }
+
+        // 결재 상태가 승인(1)인 경우
+        if (apprLineStat == 1) { // 승인
+            if (detailApprLine.size() == 1) {
+                // 결재자가 1명인 경우 바로 최종 승인 알림 전송
+                int creatorEmpNo = detailApprLine.get(0).getCreator();
+                NotifyDto notifyDto = NotifyDto.builder()
+                        .notifyCt(NotifyCt.FINAL_APPROVAL)
+                        .notifyContent("결재가 승인 되었습니다.")
+                        .build();
+                notificationService.sendApprovalNotification(notifyDto, creatorEmpNo);
+                approvalDetail.setApprStat(ApprStat.APPROVING.getCode());
+
+                // 결재자가 여러명인 경우 다음 결재자에게 알림 전송
+            } else if (!detailApprLine.isEmpty()) {
+                ApprLineDto nextApprLineDto = detailApprLine.get(0);
+                EmployeeDto employee = employeeService.getEmployeeDetailsByEmpNo(nextApprLineDto.getCreator());
+                NotifyDto notifyDto = NotifyDto.builder()
+                        .notifyCt(NotifyCt.APPROVAL)
+                        .notifyContent(employee.getEmpName() + "님이 " + notifyCt.getDescription() + "결재를 요청했습니다.") // creator
+                        .build();
+                log.info("changeApprLineStat: {}", notifyDto);
+                notificationService.sendApprovalNotification(notifyDto, empNo);
+            }
+
+            // 모든 결재자가 승인했는지 확인
+            boolean allApproved = detailApprLine.stream()
+                    .allMatch(line -> line.getApprLineStat() == 1);
+
+            // 모든 결재자가 승인한 경우 최종 승인 알림 전송
+            if (allApproved) {
+                int creatorEmpNo = detailApprLine.get(0).getCreator();
+                log.info("creatorEmpNo: {}", creatorEmpNo);
+                NotifyDto notifyDto = NotifyDto.builder()
+                        .notifyCt(NotifyCt.FINAL_APPROVAL)
+                        .notifyContent("결재가 승인 되었습니다.")
+                        .build();
+                notificationService.sendApprovalNotification(notifyDto, creatorEmpNo);
+            }
+        }
+
+        // 반려 시 결재 올린 직원에게 반려 알림 전송
+        if (apprLineStat == 2) {
+            int creatorEmpNo = detailApprLine.get(0).getCreator();
+            NotifyDto notifyDto = NotifyDto.builder()
+                    .notifyCt(NotifyCt.REJECTION)
+                    .notifyContent("결재가 반려되었습니다.")
+                    .build();
+            notificationService.sendApprovalNotification(notifyDto, creatorEmpNo);
+        }
+        return result;
     }
 
 }

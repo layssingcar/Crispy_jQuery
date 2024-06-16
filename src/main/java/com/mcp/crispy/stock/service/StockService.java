@@ -103,18 +103,20 @@ public class StockService {
         stockMapper.insertApproval(approvalDto);
         int apprNo = approvalDto.getApprNo();
 
+        log.info("insertOrderAppr: {}", approvalDto.getEmpNo());
         stockMapper.insertOrder(approvalDto);
-
         // ApprLineDto 업데이트
-        ApprLineDto.builder()
+        ApprLineDto apprLineDto = ApprLineDto.builder()
                 .apprLineOrder(0)
                 .apprNo(apprNo)
+                .empNo(0)
                 .creator(approvalDto.getEmpNo())
                 .build();
+        log.info("apprLineDto: {}", approvalDto.getEmpNo());
 
         stockMapper.insertStockOrder(approvalDto);
 
-        stockMapper.insertApprLine(approvalDto);
+        stockMapper.insertApprLine(apprLineDto);
 
         // 결재자에게 알림 전송
         FranchiseDto frn = franchiseService.getFrnByEmpNo(approvalDto.getEmpNo());

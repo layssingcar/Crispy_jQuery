@@ -18,7 +18,7 @@ public class ApprovalDto {
     private String apprDt;          // 기안일
     private int apprStat;           // 문서상태번호
     private String apprStatName;    // 문서상태명
-    private int empNo;              // 직원번호
+    private Integer empNo;              // 직원번호
     private String empName;         // 직원명
     private int creator;            // 생성자
 

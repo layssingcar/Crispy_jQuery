@@ -1,5 +1,6 @@
 package com.mcp.crispy.stock.mapper;
 
+import com.mcp.crispy.approval.dto.ApprLineDto;
 import com.mcp.crispy.approval.dto.ApprOptionDto;
 import com.mcp.crispy.approval.dto.ApprovalDto;
 import com.mcp.crispy.stock.dto.StockDto;
@@ -49,7 +50,7 @@ public interface StockMapper {
     int insertStockOrder(ApprovalDto approvalDto);
 
     // 발주 신청 (결재선 테이블)
-    int insertApprLine(ApprovalDto approvalDto);
+    int insertApprLine(ApprLineDto apprLineDto);
 
     // 발주 신청 목록 수 조회
     int getOrderApprCount(ApprOptionDto apprOptionDto);

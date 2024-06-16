@@ -18,7 +18,8 @@ document.querySelector("#approval").addEventListener("click", ()=> {
             // 결재선 객체
             const apprLineobj = {
                 "apprNo": apprNo,
-                "apprLineStat": value
+                "apprLineStat": value,
+                "apprType": location.pathname.split("/")[3] // apprType 추가
             };
 
             // 승인: 결재서명 입력
