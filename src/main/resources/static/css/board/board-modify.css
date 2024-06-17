@@ -30,9 +30,11 @@
 	width: 60px;
 	height: 40px;
 	align-items: center;
-	/* justify-content: center; */
+	justify-content: center;
 	display: flex;
 	font-size: 1.7rem;
+	text-align: center; /* 텍스트 중앙 정렬 */
+	line-height: 40px; /* 높이와 동일하게 설정하여 텍스트 수직 중앙 정렬 */
 }
 .border-bottom {
 	font-size: 2rem;
@@ -100,3 +102,24 @@
 	display: flex;
 	font-size: 1.7rem;
 }
+ .form-control {
+	 width: 350px;
+ }
+
+
+
+#btn-add-boardFile{
+ 	margin-right: 10px;
+}
+
+ .fileform {
+	 display: flex;
+	 align-items: center;
+ }
+
+ .fileform .form-control {
+	 margin-right: 10px; /* 버튼과 간격 조정 (예: 15px) */
+ }
+ .note-editable {
+	 font-size: 16px; /* Adjust default font size */
+ }

@@ -37,13 +37,14 @@ public class BoardService {
     private final MyFileUtils myFileUtils;
 
     @Transactional
-    public int registerBoard(String title, String content, int empNo, int boardCtNo) {
+    public int registerBoard(String title, String content, int empNo, int boardCtNo, int creator) {
         // Create BoardDto instance
         BoardDto board = BoardDto.builder()
                 .boardCtNo(boardCtNo) // Assuming 자유게시판 카테고리가 1로 정의되어 있음
                 .boardTitle(title)
                 .boardContent(content)
                 .empNo(empNo)
+                .creator(empNo)
                 .build();
 
         // Insert board and retrieve generated boardNo
@@ -243,16 +244,6 @@ public class BoardService {
     }
 
 
-    public void removeTempFiles() {
-        File tempDir = new File(myFileUtils.getTempPath());
-        File[] tempFiles = tempDir.listFiles();
-        if (tempFiles != null) {
-            for (File tempFile : tempFiles) {
-                tempFile.delete();
-            }
-        }
-    }
-
     @Transactional(readOnly = true)
 
     public BoardDto getBoardByNo(int boardNo) {
@@ -321,21 +312,52 @@ public class BoardService {
         return ResponseEntity.ok(Map.of("boardFileResult", files.size() == boardFileCount));
 
     }
+//
+//    public ResponseEntity<Map<String, Object>> removeBoardFile(int boardFileNo) {
+//        // 삭제할 첨부 파일 정보를 DB에서 가져오기
+//        BoardFileDto boardFile = boardMapper.getBoardFileByNo(boardFileNo);
+//
+//        // 파일 삭제
+//        File file = new File(boardFile.getBoardPath(), boardFile.getBoardRename());
+//        if (file.exists()) {
+//            file.delete();
+//        }
+//
+//        // DB에서 첨부 파일 삭제
+//        int deleteCount = boardMapper.deleteBoardFile(boardFileNo);
+//
+//        return ResponseEntity.ok(Map.of("deleteCount", deleteCount));
+//    }
 
     public ResponseEntity<Map<String, Object>> removeBoardFile(int boardFileNo) {
-        // 삭제할 첨부 파일 정보를 DB에서 가져오기
+        // Retrieve boardFile object from the database using boardFileNo
         BoardFileDto boardFile = boardMapper.getBoardFileByNo(boardFileNo);
 
-        // 파일 삭제
-        File file = new File(boardFile.getBoardPath(), boardFile.getBoardRename());
-        if (file.exists()) {
-            file.delete();
+        if (boardFile == null) {
+            // Handle the case where boardFile is null, possibly log an error or return appropriate response
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Board file not found"));
         }
 
-        // DB에서 첨부 파일 삭제
-        int deleteCount = boardMapper.deleteBoardFile(boardFileNo);
+        // Now proceed with deleting the file and updating the database
+        if (boardFile.getBoardPath() != null && boardFile.getBoardRename() != null) {
+            String boardPath = boardFile.getBoardPath();
+            String boardRename = boardFile.getBoardRename();
 
-        return ResponseEntity.ok(Map.of("deleteCount", deleteCount));
+            // Delete the physical file from the file system
+            File file = new File(boardPath, boardRename);
+            if (file.exists()) {
+                file.delete();
+            }
+
+            // Delete the board file record from the database
+            int deleteCount = boardMapper.deleteBoardFile(boardFileNo);
+
+            // Return response indicating successful deletion
+            return ResponseEntity.ok(Map.of("deleteCount", deleteCount));
+        } else {
+            // Handle the case where boardPath or boardRename is null
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Board file path or name is null"));
+        }
     }
 
     public int removeBoard(int boardNo) {
@@ -358,37 +380,35 @@ public class BoardService {
                 boardMapper.deleteBoardFile(boardFile.getBoardFileNo());
             }
         }
+        removeLikesByBoardNo(boardNo);
 
         // Delete the board from the database
         return boardMapper.deleteBoard(boardNo);
     }
-
+    public void removeLikesByBoardNo(int boardNo) {
+        boardMapper.deleteLikesByBoardNo(boardNo);
+    }
     @Transactional
     public int updateHit(int boardNo) {
         return boardMapper.updateHit(boardNo);
     }
 
+    public int checkLikeStatus(int boardNo, int empNo) {
+        return boardMapper.checkLikeStatus(boardNo, empNo);
+    }
 
-    // 좋아요 처리 서비스
-    @Transactional(rollbackFor = Exception.class)
+    public int getLikeCount(int boardNo) {
+        return boardMapper.getLikeCount(boardNo);
+    }
 
     public int like(boolean check, int boardNo, int empNo) {
-        int result = 0;
-
-        if (check) { // 좋아요 상태 X
-            result = boardMapper.insertLike(boardNo, empNo);
-        } else { // 좋아요 상태 O
-            result = boardMapper.deleteLike(boardNo, empNo);
+        if (check) {
+            boardMapper.insertLike(boardNo, empNo);
+        } else {
+            boardMapper.deleteLike(boardNo, empNo);
         }
-
-        // SQL 수행 결과가 0 == DB 또는 파라미터에 문제가 있다.
-        // 1) 에러를 나타내는 임의의 값을 반환 (-1)
-//        if (result == 0) return -1;
-//
-//        // 현재 게시글의 좋아요 개수 조회
-////        int count = boardMapper.likeCheck("boardNo");
-//
-        return boardMapper.likeCheck(boardNo);
+        return boardMapper.getLikeCount(boardNo);
     }
+
 
 }

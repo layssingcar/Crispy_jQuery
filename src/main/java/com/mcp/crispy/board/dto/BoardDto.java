@@ -17,7 +17,7 @@ public class BoardDto {
     private int boardCtNo;
     private String boardTitle;
     private String boardContent;
-    private int boardHit;
+    private int boardHit = 0;
     private Date createDt; ;
     private int creator;
     private Date modifyDt;

@@ -10,7 +10,7 @@
 	<div>
 		<main>
 			<div class="board-list">
-				<h1>자유게시판</h1>
+				<h1>공지사항</h1>
 
 				<!-- 상단 영역 -->
 				<div class="top-area">
@@ -22,7 +22,8 @@
 							<input type="hidden" name="page" value="1"/>
 							<input type="text" name="search" id="search" class="form-control" placeholder="검색어를 입력하세요."
 								   th:value="${param.search}">
-							<button type="submit" class="search-btn"></button>
+
+							<button style="display: none;" type="submit" class="search-btn"></button>
 						</form>
 					</div>
 				</div>
@@ -105,12 +106,6 @@
 					window.location.href = '/crispy/board-add';
 				});
 
-		// document.querySelectorAll('tbody tr').forEach(row => {
-		// 	row.addEventListener('click', function() {
-		// 		const boardNo = this.getAttribute('data-boardNo');
-		// 		window.location.href = `/crispy/board-detail?boardNo=${boardNo}`;
-		// 	});
-		// });
 
 		// 전역 변수
 		var boardListSize = [[${freeList.size()}]];

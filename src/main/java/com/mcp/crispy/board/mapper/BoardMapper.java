@@ -43,5 +43,9 @@ public interface BoardMapper {
     int updateHit(int boardNo);
 
 
+    int checkLikeStatus(int boardNo, int empNo);
 
+    int getLikeCount(int boardNo);
+
+    void deleteLikesByBoardNo(int boardNo);
 }
