@@ -15,7 +15,7 @@ const Auth = {
     setupLogout: function() {
         const logoutButton = document.getElementById('logout-button');
         if (logoutButton) {
-            logoutButton.addEventListener('click', this.logout.bind(this));
+            logoutButton?.addEventListener('click', this.logout.bind(this));
         }
     },
 
@@ -27,17 +27,6 @@ const Auth = {
         const rememberMe = document.getElementById('remember-me').checked;
 
         this.clearErrorMessages();
-
-        if (!username) {
-            this.displayErrorMessages({username: "아이디를 입력해주세요."});
-            document.getElementById('username').focus();
-            return;
-        }
-        if (!password) {
-            this.displayErrorMessages({password: "비밀번호를 입력해주세요."});
-            document.getElementById('password').focus();
-            return;
-        }
 
         try {
             const response = await fetch('/api/auth/login/v1', {
@@ -54,15 +43,14 @@ const Auth = {
             });
 
             if (!response.ok) {
+                const errorData = await response.json();
                 const contentType = response.headers.get('content-type');
                 if (contentType && contentType.indexOf('application/json') !== -1) {
-                    const errorData = await response.json();
                     this.displayErrorMessages(errorData);
-                } else {
-                    const text = await response.text();
-
+                } else if (errorData.error) {
+                    console.log(errorData.error);
+                    alert(errorData.error)
                 }
-                throw new Error('로그인 실패');
             }
 
             const contentType = response.headers.get('content-type');
@@ -81,8 +69,6 @@ const Auth = {
                 throw new Error('Unexpected response format');
             }
         } catch (error) {
-            console.error('로그인 실패:', error);
-            alert("로그인 실패")
         }
     },
     displayErrorMessages: function(errors) {
@@ -90,11 +76,23 @@ const Auth = {
             const usernameError = document.getElementById('username-error');
             usernameError.textContent = errors.username;
             usernameError.style.display = 'block';
+            document.getElementById("username").focus();
+            return;
         }
         if (errors.password) {
             const passwordError = document.getElementById('password-error');
             passwordError.textContent = errors.password;
             passwordError.style.display = 'block';
+            document.getElementById("password").focus();
+            return;
+        }
+        if (errors.error) {
+            Swal.fire({
+                icon: "warning",
+                text: errors.error,
+                width: "365px",
+                timer: 1500,
+            })
         }
     },
 

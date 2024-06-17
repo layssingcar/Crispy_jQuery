@@ -6,9 +6,13 @@ const board = {
     },
 
     bindEvents: function() {
-        document.getElementById('modifyBtn')?.addEventListener('click', () => {
-            window.location.href = '/crispy/freeBoard/freeBoardModify/';
+        document.getElementById('btn-modify-board')?.addEventListener('click', () => {
+            const boardNo = document.querySelector(".board-no").value;
+            window.location.href = `/crispy/freeBoardModify/${boardNo}`;
         });
+        document.querySelector(".board-list")?.addEventListener("click", () => {
+            location.href = "/crispy/board-list/free";
+        })
 
         const addBoard = document.getElementById("addBtn");
         addBoard?.addEventListener("click", this.addBoard.bind(this));
@@ -107,6 +111,7 @@ const board = {
         });
     },
 
+    // 게시판 추가
     addBoard: function() {
         const form = document.getElementById('frm-board-add');
         const formData = new FormData(form);
@@ -147,6 +152,7 @@ const board = {
         });
     },
 
+    // 검증 메소드
     displayValidationErrors: function(errors) {
         Object.keys(errors).forEach(field => {
             const errorContainer = document.querySelector(`.${field}-error`);
@@ -157,6 +163,7 @@ const board = {
         });
     },
 
+    // 게시판 수정
     modifyBoard: function() {
         const form = document.getElementById('frm-board-modify');
         const formData = new FormData(form);
@@ -199,6 +206,7 @@ const board = {
         });
     },
 
+    // 게시판 삭제
     deleteBoard: function() {
         const boardNo = document.querySelector(".board-no").value;
         const empNo = document.querySelector(".emp-no")?.value;
@@ -218,6 +226,7 @@ const board = {
         });
     },
 
+    // 좋아요 토글
     toggleLike: function() {
         const boardNo = document.querySelector(".board-no").value;
 
@@ -235,6 +244,7 @@ const board = {
         });
     },
 
+    // 댓글 생성
     createComment: function() {
         const boardNo = document.querySelector(".board-no").value;
         const cmtContent = document.getElementById("cmt-comment").value;
@@ -271,51 +281,75 @@ const board = {
         const cmtModify = document.querySelectorAll('.comment-modify');
         cmtModify.forEach(button => {
             button.addEventListener("click", function() {
-                console.log(button)
-                const cmtNo = this.getAttribute("data-comment-no");
-                const commentDiv = this.closest(".comment-level-0, .comment-level-1"); // 댓글 블록 선택
-                console.log(commentDiv);
-                const originalContent = commentDiv.querySelector("p").innerHTML.replace(/<br\s*\/?>/gi, '\n');
-                const textarea = document.createElement("textarea");
-                textarea.classList.add("form-control");
-                textarea.value = originalContent;
+                const commentDiv = this.closest(".comment-level-1, .comment-level-2"); // 댓글 블록 선택
+                if (commentDiv) {
+                    // 기존 HTML 구조 저장
+                    const originalHTML = commentDiv.innerHTML;
 
-                const saveButton = document.createElement("button");
-                saveButton.type = "button";
-                saveButton.classList.add("btn", "btn-primary");
-                saveButton.innerText = "저장";
-                saveButton.addEventListener("click", function() {
-                    const updatedContent = textarea.value.replace(/\n/g, '<br>');
-                    const data = {
-                        boardNo: parseInt(document.querySelector(".board-no").value),
-                        cmtNo: parseInt(cmtNo),
-                        cmtContent: updatedContent
-                    };
-                    fetch(`/api/comments/v1`, {
-                        method: "PUT",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(data)
-                    }).then(response => {
-                        if (!response.ok) {
-                            return response.json().then(err => {
-                                this.displayValidationErrors(err);
-                            });
-                        } else {
-                            return response.json()
-                        }
-                    }).then(data => {
-                        alert(data.message);
-                        location.reload()
+                    const originalContent = commentDiv.querySelector(".cmt-content").innerHTML.replace(/<br\s*\/?>/gi, '\n');
+                    const profile = commentDiv.querySelector(".comment-profile") ? commentDiv.querySelector(".comment-profile").outerHTML : '';
+                    const name = commentDiv.querySelector("span") ? commentDiv.querySelector("span").outerHTML : '';
+                    const date = commentDiv.querySelector(".date") ? commentDiv.querySelector(".date").outerHTML : '';
+
+                    const cmtNo = this.getAttribute("data-comment-no");
+
+                    const cmtModifyWrapper = document.createElement("div");
+                    cmtModifyWrapper.className = "cmt-modify-wrapper";
+
+                    const textarea = document.createElement("textarea");
+                    textarea.classList.add("form-control");
+                    textarea.value = originalContent;
+
+                    const saveButton = document.createElement("button");
+                    saveButton.type = "button";
+                    saveButton.classList.add("btn", "btn-primary");
+                    saveButton.innerText = "저장";
+                    saveButton.addEventListener("click", function() {
+                        const updatedContent = textarea.value.replace(/\n/g, '<br>');
+                        const data = {
+                            boardNo: parseInt(document.querySelector(".board-no").value),
+                            cmtNo: parseInt(cmtNo),
+                            cmtContent: updatedContent
+                        };
+                        fetch(`/api/comments/v1`, {
+                            method: "PUT",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(data)
+                        }).then(response => {
+                            if (!response.ok) {
+                                return response.json().then(err => {
+                                    alert("댓글 수정에 실패했습니다.");
+                                });
+                            } else {
+                                return response.json();
+                            }
+                        }).then(data => {
+                            alert(data.message);
+                            location.reload();
                         }).catch(error => {
-                        alert("댓글 수정에 실패했습니다.");
+                            alert("댓글 수정에 실패했습니다.");
+                        });
                     });
-                });
 
-                commentDiv.innerHTML = '';
-                commentDiv.appendChild(textarea);
-                commentDiv.appendChild(saveButton);
+                    const cancelButton = document.createElement("button");
+                    cancelButton.type = "button";
+                    cancelButton.classList.add("btn", "btn-secondary");
+                    cancelButton.innerText = "취소";
+                    cancelButton.addEventListener("click", function() {
+                        commentDiv.innerHTML = originalHTML;
+                        board.bindCommentEvents(); // 이벤트 다시 바인딩
+                    });
+
+                    cmtModifyWrapper.appendChild(textarea);
+                    cmtModifyWrapper.appendChild(saveButton);
+                    cmtModifyWrapper.appendChild(cancelButton);
+
+                    commentDiv.innerHTML = '';
+                    commentDiv.appendChild(cmtModifyWrapper);
+                }
             });
         });
+
         const cmtDelete = document.querySelectorAll('.comment-delete');
         cmtDelete.forEach(button => {
             button.addEventListener("click", function() {
@@ -332,6 +366,7 @@ const board = {
                 });
             });
         });
+
         const replyButton = document.querySelectorAll('#reply-button');
         replyButton.forEach(button => {
             button.addEventListener("click", function() {

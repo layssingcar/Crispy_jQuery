@@ -26,7 +26,7 @@ public class FreeBoardDto {
     @NotBlank(message = "내용은 필수입니다.")
     private String boardContent;
     private int boardHit;
-    private Date createDt; ;
+    private Date createDt;
     private int creator;
     private Date modifyDt;
     private int modifier;

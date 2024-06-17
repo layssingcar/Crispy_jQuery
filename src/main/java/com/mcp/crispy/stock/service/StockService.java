@@ -36,6 +36,11 @@ public class StockService {
     // 재고 현황 조회
     public PageResponse<StockDto> getStockList(StockOptionDto stockOptionDto, int limit) {
 
+        if (limit == 0) {
+            List<StockDto> items = stockMapper.getStockList(stockOptionDto);
+            return new PageResponse<>(items, 0, 0, 0, 0);
+        }
+
         // 현재 페이지 번호
         int page = Math.max(stockOptionDto.getPageNo(), 1);
 
@@ -103,18 +108,19 @@ public class StockService {
         stockMapper.insertApproval(approvalDto);
         int apprNo = approvalDto.getApprNo();
 
+        log.info("insertOrderAppr: {}", approvalDto.getEmpNo());
         stockMapper.insertOrder(approvalDto);
-
         // ApprLineDto 업데이트
-        ApprLineDto.builder()
+        ApprLineDto apprLineDto = ApprLineDto.builder()
                 .apprLineOrder(0)
                 .apprNo(apprNo)
                 .creator(approvalDto.getEmpNo())
                 .build();
+        log.info("apprLineDto: {}", approvalDto.getEmpNo());
 
         stockMapper.insertStockOrder(approvalDto);
 
-        stockMapper.insertApprLine(approvalDto);
+        stockMapper.insertApprLine(apprLineDto);
 
         // 결재자에게 알림 전송
         FranchiseDto frn = franchiseService.getFrnByEmpNo(approvalDto.getEmpNo());
@@ -155,4 +161,5 @@ public class StockService {
         return new PageResponse<>(items, totalPage, startPage, endPage, page);
 
     }
+
 }

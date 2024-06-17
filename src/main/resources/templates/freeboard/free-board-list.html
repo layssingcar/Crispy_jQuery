@@ -42,14 +42,12 @@
 
 						<!-- 리스트 -->
 						<tbody>
-						<tr th:each="free : ${freeList.items}" th:data-boardNo="${free.boardNo}">
+						<tr th:each="free : ${freeList.items}" th:data-boardNo="${free.boardNo}" class="board-list">
 							<td th:text="${free.boardNo}">자유게시판 번호</td>
-							<td>
-							<a th:href="@{/crispy/freeBoardDetail(boardNo=${free.boardNo})}" th:text="${free.boardTitle}" class="board-title">제목</a>
-							</td>
+							<td th:text="${free.boardTitle}" class="board-title">제목</td>
 							<td><span th:text="${free.empName}"></span></td>
 							<td th:text="${free.createDt}">작성일</td>
-							<td >
+							<td>
 								<span th:text="${free.boardHit}"></span>
 							</td>
 						</tr>

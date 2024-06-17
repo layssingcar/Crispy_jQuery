@@ -24,6 +24,7 @@ public class FreeBoardFileService {
     private final FreeBoardMapper freeBoardMapper;
     private final MyFileUtils myFileUtils;
 
+    // 특정 파일 다운로드
     public FreeBoardFileDto getFileDownloadInfo(int boardFileNo, HttpServletRequest request) throws IOException {
         FreeBoardFileDto boardFile = freeBoardMapper.getFreeBoardFileByNo(boardFileNo);
 
@@ -54,6 +55,7 @@ public class FreeBoardFileService {
         return new FreeBoardFileDto(resource, boardOrigin, file.length());
     }
 
+    // 전체 파일 다운로드
     public FreeBoardFileDto getAllFilesDownloadInfo(int boardNo) throws IOException {
         List<FreeBoardFileDto> boardFileList = freeBoardMapper.getFreeBoardFileList(boardNo);
 

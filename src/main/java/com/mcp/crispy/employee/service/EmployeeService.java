@@ -118,7 +118,7 @@ public class EmployeeService {
         if (signData != null && !signData.isEmpty()) {
             try {
                 String fileName = imageService.storeSignatureImage(signData, empNo);
-                String storedUrl = "/upload/" + fileName;
+                String storedUrl = "/emp_sign/" + fileName;
                 employeeUpdateDto.setEmpSign(storedUrl);
             } catch (IOException e) {
                 throw new RuntimeException("서명 저장에 실패했습니다.", e);

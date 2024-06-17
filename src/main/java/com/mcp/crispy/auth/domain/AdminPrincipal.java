@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Getter
-public class AdminPrincipal implements UserDetails {
+public class AdminPrincipal implements UserDetails, CrispyUserPrincipal {
 
     private final AdminDto admin;
     private final List<GrantedAuthority> authorities;
@@ -32,6 +32,16 @@ public class AdminPrincipal implements UserDetails {
     @Override
     public String getUsername() {
         return admin.getAdminId();
+    }
+
+    @Override
+    public Integer getFrnNo() {
+        return 10001;
+    }
+
+    @Override
+    public Integer getEmpNo() {
+        return 0;
     }
 
     @Override

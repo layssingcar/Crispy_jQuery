@@ -34,7 +34,13 @@
 
                 <tr id="sign-tr">
                     <!-- 결재 이미지 -->
-                    <td><img src="" id="sign-img" alt="서명 이미지"></td>
+                    <td>
+                        <img id="sign-img" alt="서명 이미지"
+                             th:src="${approvalDto.apprSign}"
+                             th:if="${approvalDto.apprLineStat == 1}">
+                        <span th:if="${approvalDto.apprLineStat == 2}">반려</span>
+                        <span th:if="${approvalDto.apprLineStat == 0}">본사</span>
+                    </td>
                 </tr>
             </table>
         </div>

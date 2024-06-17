@@ -3,7 +3,7 @@
 <head>
 	<th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
 	<link rel="stylesheet" href="/css/summernote/summernote-lite.css">
-	<link href="/css/board/board-add.css" rel="stylesheet">
+	<link href="/css/freeboard/free-board-add.css" rel="stylesheet">
 </head>
 <body>
 <div class="crispy-container">
@@ -66,7 +66,7 @@
 				callbacks: {
 					onInit: function() {
 						$('#summernote').next().find('.note-placeholder').css('font-size', '16px');
-						$('#summernote').next().find('.note-editable').css('font-size', '20px');
+						$('#summernote').next().find('.note-editable').css('font-size', '16px');
 					}
 				},
 			});

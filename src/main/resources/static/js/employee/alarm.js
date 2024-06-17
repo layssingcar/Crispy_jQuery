@@ -13,11 +13,39 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    function addNotificationMessage(message) {
+    function addNotificationMessage(notification) {
         const li = document.createElement("li");
         li.className = 'my-menu-item';
-        li.innerHTML = `<span>${message.replace(' ', '<br>')}</span>`;
+
+        const a = document.createElement("a");
+        if(isAdmin) {
+            a.href = `/crispy/order-list/admin?notifyNo=${notification.notifyNo}`;
+        } else {
+            a.href = `/crispy/approval-list/sign?notifyNo=${notification.notifyNo}`;
+        }
+        a.innerHTML = notification.notifyContent.replace(' ', '<br>');
+        a.addEventListener('click', function() {
+            markAsRead(notification.notifyNo);
+        });
+
+        li.appendChild(a);
         notificationListElement.prepend(li); // 새 알림을 목록 상단에 추가
+    }
+
+    function markAsRead(notifyNo) {
+        fetch(`/api/notifications/read/${notifyNo}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(response => {
+            if (response.ok) {
+                // 알림 읽음 처리 후 할 동작 추가
+                console.log(`알림 ${notifyNo} 읽음 처리 완료`);
+            }
+        }).catch(error => {
+            console.error('알림 읽음 처리 실패:', error);
+        });
     }
 
     fetch(`/api/notifications/unreadCount/${currentEmpNo}`)
@@ -31,16 +59,15 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(response => response.json())
         .then(data => {
             data.forEach(notification => {
-                addNotificationMessage(notification.notifyContent);
+                addNotificationMessage(notification);
             });
         })
         .catch(error => {});
 
-
     eventSource.addEventListener('notification', function(event) {
-        const data = event.data
+        const data = JSON.parse(event.data);
         console.log(data);
-        alert(`새로운 알림: ${data}`);
+        alert(`새로운 알림: ${data.notifyContent}`);
         let currentCount = parseInt(notificationCountElement.textContent, 10);
         updateNotificationCount(currentCount + 1);
         addNotificationMessage(data);

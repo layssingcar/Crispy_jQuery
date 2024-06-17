@@ -4,22 +4,20 @@
     font-size: 2rem;
 }
 
-/* 폰트 설정 */
+ /*폰트 설정*/
 .employees a,
-.employees i,
 .employees button th, td,
-.employees table,
 .employees input{
-    font-size: 1.5rem;
+    font-size: 1.7rem;
 }
 
 /* 직원 등록 버튼 스타일 */
-.employees .btn-employee-register {
-    padding: 5px 25px 5px 25px;
-    border-radius: 30px;
-    background-color: var(--main-color);
-    --bs-btn-hover-color: #fff;
-    color: #fff;
+.employees .btn-employee-register,
+.employees .btn-delete-selected{
+    width: 100px;
+    height: 40px;
+    margin-left: 7px;
+    font-size: 1.5rem;
 }
 
 /* 상단 박스 스타일 */
@@ -76,6 +74,11 @@
     position: relative;
     padding: 10px !important;
     width: 120px;
+}
+
+.employees table a {
+    margin: 0 11px;
+    font-size: 2.2rem;
 }
 
 /* 테이블 호버 */

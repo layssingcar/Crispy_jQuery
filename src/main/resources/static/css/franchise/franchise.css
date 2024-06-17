@@ -377,6 +377,19 @@
     border-radius: 7px;
 }
 
+.franchise .form-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.franchise .form-buttons button {
+    width: 500px;
+    border-radius: 5px;
+    padding: 5px 10px;
+    border: 0;
+}
+
 #btn-frn-register {
     font-size: 1.5rem;
     margin-top: 20px;

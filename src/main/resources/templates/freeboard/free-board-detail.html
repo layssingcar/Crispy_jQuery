@@ -50,11 +50,11 @@
                     </div>
                     <div class="board-buttons">
                         <div>
-                            <a href="/crispy/board-list/free" role="button" class="btn board-list">목록으로</a>
+                            <button class="btn board-list">목록으로</button>
                         </div>
-                        <div>
-                            <a th:href="@{|/crispy/freeBoardModify/${board.boardNo}|}" role="button" class="btn" id="btn-modify-board">수정</a>
-                            <button type="button" id="btn-delete-board" class="board-delete">삭제</button>
+                        <div class="edit-button">
+                            <button type="button" id="btn-modify-board" class="btn">수정</button>
+                            <button type="button" id="btn-delete-board" class="btn board-delete">삭제</button>
                         </div>
                     </div>
                     <!-- 댓글 작성 부분 -->
@@ -63,7 +63,7 @@
                         <div>
                             <textarea type="text" name="cmtContent" id="cmt-comment"
                                       class="form-control" placeholder="내용은 300자 내외로 입력해주세요."
-                                      maxlength="500" wrap="hard" rows="5" cols="1"></textarea>
+                                      maxlength="300" wrap="hard" rows="3" cols="1"></textarea>
                             <div class="error-message cmtContent-error" style="display: none;"></div>
                             <button type="button" class="btn btn-primary" id="comment-add">등록</button>
                         </div>
@@ -77,7 +77,8 @@
                                         <input type="hidden" th:value="${comment.cmtNo}" class="cmt-no">
                                         <div>
                                             <div class="comment-emp">
-                                                <img class="comment-profile" th:src="${comment.empProfile}" alt="프로필 이미지">
+                                                <img class="comment-profile" th:src="${comment.empProfile}" th:if="${comment.empProfile != null}" alt="프로필 이미지">
+                                                <img class="comment-profile" th:src="@{/img/anonymous.png}" th:unless="${comment.empProfile != null}" alt="프로필 이미지">
                                                 <div>
                                                     <span th:text="${comment.empName}"></span>
                                                     <small><span class="date ms-4" th:text="${#temporals.format(comment.cmtCreateDt.toLocalDate(), 'yyyy-MM-dd')}">작성일</span></small>
@@ -99,7 +100,8 @@
                             </div>
                             <div th:class="'comment comment-level-' + ${comment.lvl} + ' deleted-comment'" th:if="${comment.cmtStat == 1}">
                                 <div class="comment-emp">
-                                    <img class="comment-profile" th:src="${comment.empProfile}" alt="프로필 이미지">
+                                    <img class="comment-profile" th:src="${comment.empProfile}" th:if="${comment.empProfile != null}" alt="프로필 이미지">
+                                    <img class="comment-profile" th:src="@{/img/anonymous.png}" th:unless="${comment.empProfile != null}" alt="프로필 이미지">
                                     <div>
                                         <small><span th:text="${comment.empName}"></span></small>
                                         <p class="cmt-content">삭제된 메시지입니다.</p>

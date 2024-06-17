@@ -31,10 +31,10 @@ public class FreeBoardController {
     private final CommentService commentService;
 
     /**
-     * 자유게시판 LIST
+     * 자유게시판 목록 페이지
      * 배영욱 (24. 06. 08)
-     * @param model
-     * @return forward (freeboard/free-board-list.html)
+     * @param model model
+     * @return forward (free-board-list.html)
      */
     @GetMapping("/board-list/free")
     public String boardList(Model model, FreeBoardDto freeBoardDto) {
@@ -49,6 +49,13 @@ public class FreeBoardController {
         return "freeboard/free-board-list";
     }
 
+    /**
+     * 게시판 항목 조회
+     * 배영욱 (24. 06. 08)
+     * @param model model
+     * @param freeBoardDto 자유게시판 DTO
+     * @return result
+     */
     @GetMapping("freeBoardItems")
     public String boardItems(Model model, FreeBoardDto freeBoardDto) {
         PageResponse<FreeBoardDto> freeList = freeBoardService.getFree2BoardList(freeBoardDto, 10);
@@ -61,12 +68,28 @@ public class FreeBoardController {
         return "freeboard/free-board-list :: board-list-container";
     }
 
+    /**
+     * 게시판 저장 페이지
+     * 배영욱 (24 .06 .08)
+     * @param model model
+     * @return forward (free-board-add)
+     */
     @GetMapping("/freeBoard/save")
     public String insertBoard(Model model) {
         model.addAttribute("board", new FreeBoardDto());
         return "freeboard/free-board-add";
     }
 
+    /**
+     * 게시판 상세 정보 페이지
+     * 배영욱 (24. 06. 08)
+     * @param boardNo 게시판 번호
+     * @param model model 객체
+     * @param authentication 현재 로그인된 유저 정보
+     * @param request 쿠키 가져오기
+     * @param response 쿠키 설정
+     * @return forward (free-board-detail)
+     */
     @GetMapping("/freeBoardDetail")
     public String detail(@RequestParam(value = "boardNo", required = false, defaultValue = "0") int boardNo,
                          Model model, Authentication authentication,
@@ -89,6 +112,14 @@ public class FreeBoardController {
         return "freeboard/free-board-detail";
     }
 
+    /**
+     * 게시판 수정 페이지
+     * 배영욱 (24. 06. 08)
+     * @param boardNo 게시판 번호
+     * @param model model 객체
+     * @param authentication 현재 로그인된 유저의 정보
+     * @return forward (free-board-modify)
+     */
     @GetMapping("/freeBoardModify/{boardNo}")
     public String modify(@PathVariable int boardNo,
                          Model model, Authentication authentication) {
