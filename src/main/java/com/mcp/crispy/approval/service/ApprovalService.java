@@ -246,7 +246,7 @@ public class ApprovalService {
                         .build();
                 notificationService.sendApprovalNotification(notifyDto, creatorEmpNo);
                 approvalDetail.setApprStat(ApprStat.APPROVING.getCode());
-
+                approvalMapper.updateApprovalStat(approvalDetail.getApprStat(), approvalDetail.getApprNo()); // DB 업데이트
                 // 결재자가 여러명인 경우 다음 결재자에게 알림 전송
             } else if (!detailApprLine.isEmpty()) {
                 ApprLineDto nextApprLineDto = detailApprLine.get(0);
@@ -257,6 +257,8 @@ public class ApprovalService {
                         .build();
                 log.info("changeApprLineStat: {}", notifyDto);
                 notificationService.sendApprovalNotification(notifyDto, empNo);
+                approvalDetail.setApprStat(ApprStat.ONGOING.getCode());
+                approvalMapper.updateApprovalStat(approvalDetail.getApprStat(), approvalDetail.getApprNo());
             }
 
             // 모든 결재자가 승인했는지 확인
@@ -272,6 +274,8 @@ public class ApprovalService {
                         .notifyContent("결재가 승인 되었습니다.")
                         .build();
                 notificationService.sendApprovalNotification(notifyDto, creatorEmpNo);
+                approvalDetail.setApprStat(ApprStat.APPROVING.getCode());
+                approvalMapper.updateApprovalStat(approvalDetail.getApprStat(), approvalDetail.getApprNo()); // DB 업데이트
             }
         }
 
@@ -283,6 +287,8 @@ public class ApprovalService {
                     .notifyContent("결재가 반려되었습니다.")
                     .build();
             notificationService.sendApprovalNotification(notifyDto, creatorEmpNo);
+            approvalDetail.setApprStat(ApprStat.RETURNING.getCode());
+            approvalMapper.updateApprovalStat(approvalDetail.getApprStat(), approvalDetail.getApprNo()); // DB 업데이트
         }
         return result;
     }
