@@ -240,9 +240,9 @@ public class ApprovalController {
 	 * 결재 문서 상세 조회
 	 * 우혜진 (24. 06. 11.)
 	 *
+	 * @param authentication
 	 * @param apprType
 	 * @param apprNo
-	 * @param authentication
 	 * @param model
 	 * @return forward (approval-detail.html)
 	 */
@@ -252,8 +252,9 @@ public class ApprovalController {
 									Authentication authentication,
 									Model model) {
 
+		log.info("apprType: {}", apprType);
 		ApprovalDto approvalDto;
-		
+
 		// 발주 신청서
 		if (apprType.equals("stock-order")) {
 			approvalDto = approvalService.getStockOrderApprDetail(apprNo);
@@ -276,7 +277,6 @@ public class ApprovalController {
 				if (apprLineDto.getEmpNo() == userDetails.getEmpNo() && apprLineDto.getApprLineStat() != 0)
 					model.addAttribute("apprBtn", "none");
 			});
-
 		}
 
 		model.addAttribute("approvalDto", approvalDto);
@@ -302,6 +302,7 @@ public class ApprovalController {
 
 		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
 		map.put("empNo", userDetails.getEmpNo());
+		log.info("map: {}", map);
 		return ResponseEntity.ok(approvalService.changeApprLineStat(map));
 
 	}

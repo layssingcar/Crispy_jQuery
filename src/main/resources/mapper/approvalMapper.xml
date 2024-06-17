@@ -293,9 +293,9 @@
                  , E.EMP_NO, E.EMP_NAME, E.EMP_SIGN
                  , P.POS_NAME
               FROM APPR_LINE_T L
-        LEFT OUTER JOIN EMPLOYEE_T E
+        INNER JOIN EMPLOYEE_T E
                 ON L.EMP_NO = E.EMP_NO
-        LEFT OUTER JOIN POSITION_T P
+        INNER JOIN POSITION_T P
                 ON E.POS_NO = P.POS_NO
              WHERE 1=1
                AND L.APPR_NO = #{apprNo}
@@ -353,6 +353,13 @@
                    <if test="apprType == 'time-off'">
                         AND EMP_NO = #{empNo}
                    </if>
+    </update>
+
+    <!-- 결재 상태 업데이트 -->
+    <update id="updateApprovalStat">
+        UPDATE APPROVAL_T
+           SET APPR_STAT = #{apprStat}
+         WHERE APPR_NO = #{apprNo}
     </update>
 
 </mapper>
