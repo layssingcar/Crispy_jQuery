@@ -4,6 +4,7 @@ import com.mcp.crispy.approval.dto.*;
 import com.mcp.crispy.approval.mapper.ApprovalMapper;
 import com.mcp.crispy.common.ImageService;
 import com.mcp.crispy.common.page.PageResponse;
+import com.mcp.crispy.common.utils.MyFileUtils;
 import com.mcp.crispy.employee.dto.EmployeeDto;
 import com.mcp.crispy.employee.service.EmployeeService;
 import com.mcp.crispy.notification.dto.NotifyCt;
@@ -12,10 +13,14 @@ import com.mcp.crispy.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.RowBounds;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +33,10 @@ public class ApprovalService {
     private final EmployeeService employeeService;
     private final NotificationService notificationService;
     private final ImageService imageService;
+    private final MyFileUtils myFileUtils;
+
+    @Value("${file.appr-dir.window}")
+    private String forderPath;
 
     // 직원 정보 조회
     public ApplicantDto getEmpInfo(int empNo) {
@@ -79,9 +88,47 @@ public class ApprovalService {
             apprLineDtoList.get(i).setCreator(approvalDto.getEmpNo());
         }
 
-
         // 결재선 테이블
         approvalMapper.insertApprLine(apprLineDtoList);
+
+        // 선택한 파일 X
+        if (approvalDto.getApprFile() == null
+                || approvalDto.getApprFile().isEmpty()
+                || approvalDto.getApprFile().get(0).isEmpty())
+            return 1;
+
+        List<ApprFileDto> fileDtoList = new ArrayList<>();
+
+        for (MultipartFile file : approvalDto.getApprFile()) {
+
+            String apprOrigin = file.getOriginalFilename();
+            String apprRename = myFileUtils.getBoardRename(apprOrigin);
+            String apprPath = "/appr_file/";
+
+            ApprFileDto fileDto = ApprFileDto.builder()
+                    .apprOrigin(apprOrigin)
+                    .apprRename(apprRename)
+                    .apprPath(apprPath)
+                    .apprNo(apprNo)
+                    .apprFile(file)
+                    .build();
+
+            fileDtoList.add(fileDto);
+
+        }
+
+        // 첨부파일 테이블
+        int result = approvalMapper.insertApprFile(fileDtoList);
+
+        if (result < fileDtoList.size())
+            throw new RuntimeException("전자 결재 파일 삽입 실패");
+
+        // 서버에 첨부파일 저장
+        for (ApprFileDto fileDto : fileDtoList) {
+            String rename = fileDto.getApprRename();
+            String path = forderPath;
+            fileDto.getApprFile().transferTo(new File(path + rename));
+        }
 
         // 첫 번째 결재자에게 알림 전송
         if (!apprLineDtoList.isEmpty()) {

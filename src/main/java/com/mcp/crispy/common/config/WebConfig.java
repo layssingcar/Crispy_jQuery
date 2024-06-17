@@ -29,7 +29,11 @@ public class WebConfig implements WebMvcConfigurer {
                 .addResourceLocations("file:///C:/GDJ77/mcp/crispy_img/")
                 .addResourceLocations("file:///Users/baeyeong-ug/Desktop/image/");
         registry.addResourceHandler("/emp_sign/**")
-                .addResourceLocations("file:///C:/GDJ77/mcp/crispy_img/emp_sign/")
+                .addResourceLocations("file:///C:/GDJ77/mcp/crispy_img/emp_sign/");
                 .addResourceLocations("file:///Users/baeyeong-ug/Desktop/image/signatures/");
+        registry.addResourceHandler("/appr_file/**")
+                .addResourceLocations("file:///C:/GDJ77/mcp/crispy_img/appr_file/");
+                .addResourceLocations("file:///C:/GDJ77/mcp/crispy_img/emp_sign/")
+               
     }
 }

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -37,6 +38,10 @@ public class ApprovalDto {
     private List<StockDto> stockOrderList;      // 발주재고 리스트
     private List<ApprLineDto> apprLineDtoList;  // 결재선 리스트
     private int apprLineStat;                   // 결재상태
+
+    /* 첨부파일 */
+    private List<MultipartFile> apprFile;
+    private List<ApprFileDto> apprFileDtoList;
 
     /* 임시저장 */
     private int timeOffTempNo;  // 휴가휴직임시번호
