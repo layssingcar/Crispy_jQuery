@@ -12,13 +12,10 @@
 		<main>
 			<div class="main">
 				<form id="frm-board-add" action="/crispy/add-form" method="POST" enctype="multipart/form-data" class="my-3">
-					<h1 class="border-bottom py-2">게시물 작성하기</h1>
+					<h1 class="border-bottom py-2">공지사항 </h1>
 					<div class="col-md-5">
-						<label for="cate" class="form-label">카테고리</label>
-						<select class="form-select" id="cate" name="boardCtNo" required>
-							<option value="">카테고리</option>
-							<option value="0">공지사항</option>
-							<option value="1">자유게시판</option>
+						<select style="display:none;" class="form-select" id="cate" name="boardCtNo" required>
+							<option value="1" selected>공지사항</option> <!-- 기본 선택 옵션 -->
 						</select>
 					</div>
 					<label for="boardTitle" class="form-label">제목</label>

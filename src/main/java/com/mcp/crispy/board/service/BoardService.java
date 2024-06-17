@@ -37,13 +37,14 @@ public class BoardService {
     private final MyFileUtils myFileUtils;
 
     @Transactional
-    public int registerBoard(String title, String content, int empNo, int boardCtNo) {
+    public int registerBoard(String title, String content, int empNo, int boardCtNo, int creator) {
         // Create BoardDto instance
         BoardDto board = BoardDto.builder()
                 .boardCtNo(boardCtNo) // Assuming 자유게시판 카테고리가 1로 정의되어 있음
                 .boardTitle(title)
                 .boardContent(content)
                 .empNo(empNo)
+                .creator(empNo)
                 .build();
 
         // Insert board and retrieve generated boardNo
@@ -155,14 +156,15 @@ public class BoardService {
 //    }
 
     @Transactional(readOnly = true)
-    public List<BoardDto> getFreeBoardList(Integer page,int cnt, String search) {
+    public List<BoardDto> getFreeBoardList(Integer page, int cnt, String search) {
         int totalCount = getTotalCount(search);
-        int total = totalCount/cnt + ((totalCount%cnt>0) ? 1:0);
+        int total = totalCount / cnt + ((totalCount % cnt > 0) ? 1 : 0);
         int begin = (page - 1) * cnt + 1;
         int end = begin + cnt - 1;
         if (search == null) {
             search = ""; // Set default value if null
-        }        Map<String,Object> map = Map.of("begin",begin, "end",end, "total", total, "search", search);
+        }
+        Map<String, Object> map = Map.of("begin", begin, "end", end, "total", total, "search", search);
 
         return boardMapper.getFreeBoardList(map);
     }
@@ -172,8 +174,6 @@ public class BoardService {
     public int getTotalCount(String search) {
         return boardMapper.getTotalCount(search);
     }
-
-
 
 
     public ResponseEntity<Resource> download(int boardFileNo, HttpServletRequest request) {
@@ -244,34 +244,24 @@ public class BoardService {
     }
 
 
-    public void removeTempFiles() {
-        File tempDir = new File(myFileUtils.getTempPath());
-        File[] tempFiles = tempDir.listFiles();
-        if(tempFiles != null) {
-            for(File tempFile : tempFiles) {
-                tempFile.delete();
-            }
-        }
-    }
-
-    @Transactional(readOnly=true)
+    @Transactional(readOnly = true)
 
     public BoardDto getBoardByNo(int boardNo) {
         return boardMapper.getBoardByNo(boardNo);
     }
-    @Transactional(readOnly=true)
+
+    @Transactional(readOnly = true)
     public void loadBoardByNo(int boardNo, Model model) {
         model.addAttribute("board", boardMapper.getBoardByNo(boardNo));
         model.addAttribute("boardFileList", boardMapper.getBoardFileList(boardNo));
     }
 
 
-
     public int modifyBoard(BoardDto board) {
         return boardMapper.updateBoard(board);
     }
 
-    @Transactional(readOnly=true)
+    @Transactional(readOnly = true)
 
     public ResponseEntity<Map<String, Object>> getBoardFileList(int boardNo) {
         return ResponseEntity.ok(Map.of("boardFileList", boardMapper.getBoardFileList(boardNo)));
@@ -279,22 +269,22 @@ public class BoardService {
 
     public ResponseEntity<Map<String, Object>> addBoardFile(MultipartHttpServletRequest multipartRequest) throws Exception {
 
-        List<MultipartFile> files =  multipartRequest.getFiles("files");
+        List<MultipartFile> files = multipartRequest.getFiles("files");
 
         int boardFileCount;
-        if(files.get(0).getSize() == 0) {
+        if (files.get(0).getSize() == 0) {
             boardFileCount = 1;
         } else {
             boardFileCount = 0;
         }
 
-        for(MultipartFile multipartFile : files) {
+        for (MultipartFile multipartFile : files) {
 
-            if(multipartFile != null && !multipartFile.isEmpty()) {
+            if (multipartFile != null && !multipartFile.isEmpty()) {
 
                 String boardPath = myFileUtils.getBoardPath();
                 File dir = new File(boardPath);
-                if(!dir.exists()) {
+                if (!dir.exists()) {
                     dir.mkdirs();
                 }
 
@@ -322,21 +312,52 @@ public class BoardService {
         return ResponseEntity.ok(Map.of("boardFileResult", files.size() == boardFileCount));
 
     }
+//
+//    public ResponseEntity<Map<String, Object>> removeBoardFile(int boardFileNo) {
+//        // 삭제할 첨부 파일 정보를 DB에서 가져오기
+//        BoardFileDto boardFile = boardMapper.getBoardFileByNo(boardFileNo);
+//
+//        // 파일 삭제
+//        File file = new File(boardFile.getBoardPath(), boardFile.getBoardRename());
+//        if (file.exists()) {
+//            file.delete();
+//        }
+//
+//        // DB에서 첨부 파일 삭제
+//        int deleteCount = boardMapper.deleteBoardFile(boardFileNo);
+//
+//        return ResponseEntity.ok(Map.of("deleteCount", deleteCount));
+//    }
 
     public ResponseEntity<Map<String, Object>> removeBoardFile(int boardFileNo) {
-        // 삭제할 첨부 파일 정보를 DB에서 가져오기
+        // Retrieve boardFile object from the database using boardFileNo
         BoardFileDto boardFile = boardMapper.getBoardFileByNo(boardFileNo);
 
-        // 파일 삭제
-        File file = new File(boardFile.getBoardPath(), boardFile.getBoardRename());
-        if (file.exists()) {
-            file.delete();
+        if (boardFile == null) {
+            // Handle the case where boardFile is null, possibly log an error or return appropriate response
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Board file not found"));
         }
 
-        // DB에서 첨부 파일 삭제
-        int deleteCount = boardMapper.deleteBoardFile(boardFileNo);
+        // Now proceed with deleting the file and updating the database
+        if (boardFile.getBoardPath() != null && boardFile.getBoardRename() != null) {
+            String boardPath = boardFile.getBoardPath();
+            String boardRename = boardFile.getBoardRename();
 
-        return ResponseEntity.ok(Map.of("deleteCount", deleteCount));
+            // Delete the physical file from the file system
+            File file = new File(boardPath, boardRename);
+            if (file.exists()) {
+                file.delete();
+            }
+
+            // Delete the board file record from the database
+            int deleteCount = boardMapper.deleteBoardFile(boardFileNo);
+
+            // Return response indicating successful deletion
+            return ResponseEntity.ok(Map.of("deleteCount", deleteCount));
+        } else {
+            // Handle the case where boardPath or boardRename is null
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Board file path or name is null"));
+        }
     }
 
     public int removeBoard(int boardNo) {
@@ -359,44 +380,35 @@ public class BoardService {
                 boardMapper.deleteBoardFile(boardFile.getBoardFileNo());
             }
         }
+        removeLikesByBoardNo(boardNo);
 
         // Delete the board from the database
         return boardMapper.deleteBoard(boardNo);
     }
-
+    public void removeLikesByBoardNo(int boardNo) {
+        boardMapper.deleteLikesByBoardNo(boardNo);
+    }
     @Transactional
     public int updateHit(int boardNo) {
         return boardMapper.updateHit(boardNo);
     }
 
+    public int checkLikeStatus(int boardNo, int empNo) {
+        return boardMapper.checkLikeStatus(boardNo, empNo);
+    }
 
-//    // 좋아요 여부 확인 서비스
-//    public int boardLikeCheck(Map<String, Object> map) {
-//        return BoardMapper.boardLikeCheck(map);
-//    }
+    public int getLikeCount(int boardNo) {
+        return boardMapper.getLikeCount(boardNo);
+    }
 
-//    // 좋아요 처리 서비스
-//    @Transactional(rollbackFor = Exception.class)
-//
-//    public int like(Map<String, Integer> paramMap) {
-//        int result = 0;
-//
-//        if(paramMap.get("check") == 0) { // 좋아요 상태 X
-//            // BOARD_LIKE 테이블 INSERT
-//            result = boardMapper.insertBoardLike(paramMap);
-//        } else { // 좋아요 상태 O
-//            // BOARD_LIKE 테이블 DELETE
-//            result = boardMapper.deleteBoardLike(paramMap);
-//        }
-//
-//        // SQL 수행 결과가 0 == DB 또는 파라미터에 문제가 있다.
-//        // 1) 에러를 나타내는 임의의 값을 반환 (-1)
-//        if(result == 0) return -1;
-//
-//        // 현재 게시글의 좋아요 개수 조회
-//        int count = boardMapper.countBoardLike(paramMap.get("boardNo"));
-//
-//        return count;
-//    }
+    public int like(boolean check, int boardNo, int empNo) {
+        if (check) {
+            boardMapper.insertLike(boardNo, empNo);
+        } else {
+            boardMapper.deleteLike(boardNo, empNo);
+        }
+        return boardMapper.getLikeCount(boardNo);
+    }
+
 
 }
