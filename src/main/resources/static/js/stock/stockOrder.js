@@ -197,18 +197,27 @@ function fetchCategories() {
         .then(response => response.json())
         .then(categories => {
             categoryButtonsContainer.innerHTML = ''; // 기존 버튼 지우기
-            categories.forEach(category => {
+            categories.forEach((category, index) => {
                 const button = document.createElement('button');
                 button.classList.add('btn', 'btn-primary', 'm-2');
+
                 button.textContent = category.stockCtName;
                 // button.addEventListener('click', () => fetchStockItemsByCategory(category.stockCtNo));
 
                 button.addEventListener('click', () => {
+                    // 선택된 카테고리 버튼에 메인 컬러 적용
+                    document.querySelector(".stock-order #category-buttons > .selected")?.classList.remove("selected");
+                    button.classList.add("selected");
+
                     optionObj.stockCtNo = category.stockCtNo;
                     getStockItemsFn(optionObj)
                 });
 
                 categoryButtonsContainer.appendChild(button);
+
+                // 모달 열릴 때 첫 번째 카테고리 선택
+                if (index === 0) button.click();
+
             });
         })
         .catch(error => console.error('Error fetching categories:', error));
