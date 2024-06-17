@@ -131,6 +131,11 @@
     background-color: rgba(200, 200, 200, 0.2);
 }
 
+/* 선택된 결재선 목록 중 클릭된 요소 */
+.appr-line #select-tree .selected {
+    background-color: #beebff;
+}
+
 .appr-line .bottom-area {
     display: flex;
     justify-content: center;

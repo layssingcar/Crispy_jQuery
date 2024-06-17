@@ -337,6 +337,28 @@ document.querySelector("#add-emp").addEventListener("click", () => {
 
     div.append(span, input);
     document.querySelector("#select-tree").append(div);
+
+    // 결재선에 추가된 요소(span)에 클릭 이벤트 추가
+    span.addEventListener("click", () => {
+        document.querySelector("#select-tree .selected")?.classList.remove("selected");
+        span.classList.add("selected");
+    })
+})
+
+// 결재선 제거
+document.querySelector("#remove-emp").addEventListener("click", () => {
+    const selectTarget = document.querySelector("#select-tree .selected");  // 선택된 요소(span)
+    const empNo = selectTarget.nextElementSibling.value;    // 선택된 직원 번호
+
+    if (!selectTarget) return;
+  
+    empNoSet.delete(Number(empNo));
+    selectTarget.parentElement.remove();
+
+    // hidden 태그 name 속성 인덱스 재설정
+    document.querySelectorAll("#select-tree input[type='hidden']").forEach((inp, idx) => {
+        inp.name = `apprLineDtoList[${idx}].empNo`;
+    })
 })
 
 // 화면 전환
