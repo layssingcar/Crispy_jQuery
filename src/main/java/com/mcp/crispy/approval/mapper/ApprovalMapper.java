@@ -59,4 +59,6 @@ public interface ApprovalMapper {
     // 결재선 조회 (결재 문서 상세 조회)
     List<ApprLineDto> getDetailApprLine(Integer apprNo);
 
+    // 결재 상태 업데이트
+    void updateApprovalStat(@Param("apprStat") int apprStat, @Param("apprNo") int apprNo);
 }
