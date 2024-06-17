@@ -1,6 +1,6 @@
 let empObj; // 선택된 결재선 객체
 const empNoSet = new Set();     // 선택된 결재선 목록
-const selectedFile = new Set(); // 선택된 파일 목록
+let selectFileList = [];            // 선택된 파일 목록
 
 // 휴가, 휴직 기간 계산
 const getPeriodFn = () => {
@@ -37,12 +37,11 @@ const changeDateFn = () => {
     document.querySelector("#end-dt").addEventListener("change", getPeriodFn);
 }
 
-const formFileMultiple = document.querySelector("#formFileMultiple");
-const fileContainer = document.querySelector(".file-list");
-let selectFileList = [];
-
 // 파일 선택
 const selectFileFn = () => {
+    const formFileMultiple = document.querySelector("#formFileMultiple");
+    selectFileList = [];
+
     formFileMultiple.addEventListener("change", e => {
         const files = e.target.files;
 
@@ -68,6 +67,8 @@ const convertFiles  = () => {
 }
 
 const displayFileNames = () => {
+    const fileContainer = document.querySelector(".file-list");
+
     fileContainer.innerHTML = "";
 
     selectFileList.forEach(item => {
