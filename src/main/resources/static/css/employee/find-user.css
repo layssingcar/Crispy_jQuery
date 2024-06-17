@@ -98,9 +98,14 @@
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
+.find-result-form .result-info span {
+    font-size: 2rem;
+}
+
 /* 아이디 찾기 결과 제목 */
-.find-result h4 {
+.find-result h2 {
     text-align: center;
+    color: var(--main-color);
 }
 
 /* 비밀번호 찾기 */
@@ -109,7 +114,8 @@
     margin-top: 30px;
 }
 
-.result-to-find-password a:hover {
+
+.result-to-find-password a {
     color: var(--main-color);
 }
 
@@ -118,7 +124,7 @@
     display: block;
     width: 100%;
     text-align: center;
-    font-size: 1.5rem;
+    font-size: 1.7rem;
     padding: 10px;
     border-radius: 7px;
     background-color: var(--main-color);

@@ -10,12 +10,26 @@ document.querySelector("#approval").addEventListener("click", ()=> {
         confirmButtonText: "선택 완료",
         cancelButtonText: "취소",
         width: "400px",
-        inputValidator: (value) => {
+        inputValidator: async (value) => {
             if (!value) return "결재 승인 여부가 선택되지 않았습니다.";
 
-            // 승인
-            if (value == 1) {
-                Swal.fire({
+            const apprType = location.pathname.split("/")[3];   // 문서타입
+            const apprNo = location.pathname.split("/")[4];     // 문서번호
+
+            // 결재선 객체
+            const apprLineobj = {
+                "apprNo": apprNo,
+                "apprLineStat": value,
+                "apprType": location.pathname.split("/")[3] // apprType 추가
+            };
+
+            // 발주 신청 승인: 결재서명 입력 X
+            if (apprType === 'stock-order' && value == 1)
+                apprLineobj.data = '/emp_sign/admin-sign.png';
+
+            // 휴가,휴직 신청 승인: 결재서명 입력
+            else if (value == 1) {
+                await Swal.fire({
                     text: "결재 서명을 입력하세요.",
                     html: "<div style='margin-bottom: 20px;'>결재 서명을 입력하세요.</div>" +
                           "<canvas id='signature-pad' width='250' height='250' style='border: 1px solid #ccc;'></canvas>",
@@ -29,19 +43,58 @@ document.querySelector("#approval").addEventListener("click", ()=> {
                     cancelButtonText: "취소",
                     width: "400px"
                 })
+                    .then(result => {
+                        if (result.isDismissed) return;
+                        const canvas = document.getElementById('signature-pad');
+                        const apprSign = canvas.toDataURL('image/png');
+                        apprLineobj.data = apprSign;
+                    })
             }
 
-            // 반려
-            if (value == 2) {
-                Swal.fire({
+            // 휴가,휴직 신청 반려: 반려사유 입력
+            else if (value == 2) {
+                await Swal.fire({
                     text: "반려 사유를 입력하세요.",
                     input: "textarea",
                     showCancelButton: true,
                     confirmButtonText: "결재하기",
                     cancelButtonText: "취소",
                     width: "400px"
-                });
+                })
+                    .then(result => {
+                        if (result.isDismissed) return;
+                        apprLineobj.data = result.value;
+                    })
             }
+
+            // 취소
+            if(!apprLineobj.data) return;
+
+            apprLineobj.apprType = apprType;    // 문서타입 추가
+
+            await fetch(`/crispy/change-appr-line-stat`, {
+                method : "PUT",
+                headers : {"Content-Type" : "application/json"},
+                body : JSON.stringify(apprLineobj)
+            })
+                .then(response => response.text())
+                .then(() => {
+                    let resultMsg;
+                    if (value === "1") resultMsg = "승인 처리가 완료되었습니다.";
+                    else resultMsg = "반려 처리가 완료되었습니다.";
+
+                    Swal.fire({
+                        icon: "success",
+                        title: resultMsg,
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                        .then(() => {
+                            location.reload();
+                        })
+
+                })
+                .catch(e => console.log(e));
         }
     })
 })

@@ -7,11 +7,12 @@ const boardList = {
     },
 
     init: function() {
-            this.addPageLinkEventFn(this.optionObj.pageNo);
-            this.addSortEventFn();
-            this.searchBoardTitle();
-            this.bindAddBoardEvent();
-            this.truncateText(20);
+        this.addPageLinkEventFn(this.optionObj.pageNo);
+        this.addSortEventFn();
+        this.searchBoardTitle();
+        this.bindAddBoardEvent();
+        this.truncateText(20);
+        this.addRowClickEvent();  // 각 행에 클릭 이벤트 추가
     },
 
     getBoardItemsFn: async function(optionObj) {
@@ -29,7 +30,6 @@ const boardList = {
         this.addPageLinkEventFn(optionObj.pageNo === undefined ? 1 : optionObj.pageNo);
         this.addSortEventFn();
         this.truncateText(20); // 텍스트 자르기 재적용
-
     },
 
     addPageLinkEventFn: function(pageNo) {
@@ -94,6 +94,18 @@ const boardList = {
                 e.textContent = e.textContent.slice(0, maxLength) + '...';
             }
         })
+    },
+    addRowClickEvent: function() {
+       document.querySelector(".board-list-container").addEventListener("click", (event) => {
+            const row = event.target.closest(".board-list");
+            this.rowEvent(row);
+        });
+    },
+
+    rowEvent: function (row) {
+        const boardNo =  row.getAttribute("data-boardNo");
+        console.log(boardNo)
+        location.href = `/crispy/freeBoardDetail?boardNo=${boardNo}`
     }
 };
 

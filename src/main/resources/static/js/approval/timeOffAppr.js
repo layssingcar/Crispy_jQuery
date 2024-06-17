@@ -37,41 +37,60 @@ const changeDateFn = () => {
     document.querySelector("#end-dt").addEventListener("change", getPeriodFn);
 }
 
+const formFileMultiple = document.querySelector("#formFileMultiple");
+const fileContainer = document.querySelector(".file-list");
+let selectFileList = [];
+
 // 파일 선택
 const selectFileFn = () => {
-    document.querySelector("#formFileMultiple").addEventListener("change", e => {
-        const fileList = document.querySelector(".file-list");  // 파일 리스트
-        const files = e.target.files;   // 선택된 파일 리스트
+    formFileMultiple.addEventListener("change", e => {
+        const files = e.target.files;
 
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-            const fileName = file.name;
+        for (let file of files) {
+            let flag = true;
 
-            if (!selectedFile.has(fileName)) {
-                selectedFile.add(fileName);
+            selectFileList.forEach(item => {
+                if (item.name === file.name) flag = false;
+            })
 
-                const div = document.createElement("div");
-                div.classList.add("file-item");
-
-                const a = document.createElement("a");
-                a.href = URL.createObjectURL(file);
-                a.download = fileName;
-                a.innerHTML = fileName;
-
-                const icon = document.createElement('i');
-                icon.classList.add('fa-regular', 'fa-circle-xmark');
-
-                // 파일 항목 삭제
-                icon.addEventListener("click", () => {
-                    selectedFile.delete(fileName);
-                    fileList.removeChild(div);
-                })
-
-                div.append(a);
-                div.append(icon);
-                fileList.append(div);
-            }
+            if (flag) selectFileList.push(file);
         }
+
+        convertFiles();
+        displayFileNames();
+    })
+}
+
+const convertFiles  = () => {
+    const dataTransfer = new DataTransfer();
+    for (let file of selectFileList) dataTransfer.items.add(file);
+    formFileMultiple.files = dataTransfer.files;
+}
+
+const displayFileNames = () => {
+    fileContainer.innerHTML = "";
+
+    selectFileList.forEach(item => {
+        const fileDiv = document.createElement("div");
+        fileDiv.classList.add("file-item");
+
+        const fileName = document.createElement("a");
+        fileName.innerHTML = item.name;
+
+        fileName.href = URL.createObjectURL(item);
+        fileName.download = item.name;
+
+        const deletnBtn = document.createElement("i");
+        deletnBtn.classList.add('fa-regular', 'fa-circle-xmark');
+
+        deletnBtn.addEventListener("click", e => {
+            selectFileList = selectFileList.filter(item => item.name !== e.target.previousElementSibling.innerHTML)
+            convertFiles();
+            displayFileNames();
+        })
+
+        fileDiv.append(fileName, deletnBtn);
+        fileContainer.append(fileDiv);
     })
 }
 

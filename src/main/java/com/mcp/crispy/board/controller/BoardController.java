@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -106,9 +107,16 @@ public class BoardController {
 		String boardContent = multipartRequest.getParameter("boardContent");
 		int empNo = Integer.parseInt(multipartRequest.getParameter("empNo"));
 		int boardCtNo = Integer.parseInt(multipartRequest.getParameter("boardCtNo"));
+		int creator = Integer.parseInt(multipartRequest.getParameter("empNo"));
+
+
 
 		// 게시글 등록
-		int boardNo = boardService.registerBoard(boardTitle, boardContent, empNo, boardCtNo);
+		int boardNo = boardService.registerBoard(boardTitle, boardContent, empNo, boardCtNo,creator);
+
+
+
+
 
 		// 첨부 파일 등록
 		boolean inserted = boardService.registerBoardFile(multipartRequest, boardNo);
@@ -118,10 +126,14 @@ public class BoardController {
 	}
 
 	@GetMapping("/board-detail")
-	public String detail(@RequestParam(value = "boardNo", required = false, defaultValue = "0") int boardNo, Model model) {
+	public String detail(@RequestParam(value = "boardNo", required = false, defaultValue = "0") int boardNo, Model model, Authentication authentication) {
 		boardService.loadBoardByNo(boardNo, model);
+		EmployeePrincipal principal = (EmployeePrincipal) authentication.getPrincipal();
+		model.addAttribute("empNo", principal.getEmpNo());
 		return "board/board-detail";
+
 	}
+
 
 	@GetMapping("/download")
 	public ResponseEntity<Resource> download(@RequestParam("boardFileNo") int boardFileNo, HttpServletRequest request) {
@@ -164,60 +176,74 @@ public class BoardController {
 		return boardService.addBoardFile(multipartRequest);
 	}
 
+	// BoardController.java
+
 	@PostMapping(value = "/removeBoardFile", produces = "application/json")
-	public ResponseEntity<Map<String, Object>> removeBoardFile(@RequestBody BoardFileDto boardFile) {
-		return boardService.removeBoardFile(boardFile.getBoardFileNo());
+	public ResponseEntity<Map<String, Object>> removeBoardFile(@RequestBody Map<String, Integer> requestBody) {
+		int boardFileNo = requestBody.get("boardFileNo");
+		return boardService.removeBoardFile(boardFileNo);
 	}
 
 	@PostMapping("/removeBoard")
-	public String removeBoard(@RequestParam(value = "boardNo", required = false, defaultValue = "0") int boardNo, RedirectAttributes redirectAttributes) {
-		// boardNo가 0 이하이거나 유효하지 않으면 삭제하지 않고 페이지를 리다이렉트합니다.
+	public String removeBoard(@RequestParam("boardNo") int boardNo, RedirectAttributes redirectAttributes) {
+		// 게시물 번호 유효성 검사
 		if (boardNo <= 0) {
 			redirectAttributes.addFlashAttribute("removeResult", "삭제할 게시물을 선택해주세요.");
 			return "redirect:/crispy/board-list";
 		}
 
-		// 게시물과 관련된 파일을 먼저 삭제합니다.
+		// 게시물과 관련된 파일 삭제
 		boardService.removeBoardFile(boardNo);
 
-		// 게시물을 삭제합니다.
+		// 게시물 삭제
 		int removeCount = boardService.removeBoard(boardNo);
 
-		// 삭제 결과에 따라 메시지를 설정합니다.
+		// 삭제 결과에 따라 메시지 설정
 		redirectAttributes.addFlashAttribute("removeResult", removeCount > 0 ? "게시물이 삭제되었습니다." : "게시물 삭제를 실패했습니다.");
 
-		// 게시물 목록 페이지로 리다이렉트합니다.
+		// 게시물 목록 페이지로 리다이렉트
 		return "redirect:/crispy/board-list";
 	}
 
+
+
 	@ResponseBody
-	@GetMapping("/putBoardHit")
-	public void updateHit(@RequestParam("boardNo") int boardNo, HttpServletResponse response) {
-		int updatedHits = boardService.updateHit(boardNo);
-		if (updatedHits > 0) {
-			response.setStatus(HttpServletResponse.SC_OK);
-		} else {
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-		}
+	@GetMapping(value = "/putBoardHit", produces = "application/json") // 조회수 늘릴때 쓰는거
+	public int updateHit(@RequestParam("boardNo") int boardNo) {
+		return boardService.updateHit(boardNo);
 	}
 
 
-//	@PostMapping("/putBoardHit")
-//	public void putBoardHit(@RequestBody Map<String, Integer> request, HttpServletResponse response) {
-//		int boardNo = request.get("boardNo");
-//		boardService.updateHit(boardNo);
-//		response.setStatus(HttpServletResponse.SC_OK); // 성공 상태코드 설정
-//	}
+	@GetMapping("/getLikeStatus")
+	@ResponseBody
+	public Map<String, Object> getLikeStatus(@RequestParam int boardNo, @RequestParam int empNo) {
+		Map<String, Object> result = new HashMap<>();
+		int check = boardService.checkLikeStatus(boardNo, empNo); // 0 or 1
+		int likeCount = boardService.getLikeCount(boardNo);
 
+		result.put("check", check);
+		result.put("likeCount", likeCount);
 
-//	// 좋아요 처리
-//	@PostMapping("/like")
-//	@ResponseBody // 반환되는 값이 비동기 요청한 곳으로 돌아가게 함
-//	public int like(@RequestBody Map<String, Integer> paramMap) {
-//		// System.out.println(paramMap);
-//
-//		return boardService.like(paramMap);
-//	}
+		return result;
+	}
+
+	// 좋아요 처리
+	@PostMapping("/like")
+	@ResponseBody
+	public int like(@RequestBody Map<String, Object> likeData, Model model, Authentication authentication) {
+		EmployeePrincipal principal = (EmployeePrincipal) authentication.getPrincipal();
+		model.addAttribute("empNo", principal.getEmpNo());
+
+		// 문자열을 정수로 변환
+		int check = Integer.parseInt(likeData.get("check").toString());
+		int boardNo = Integer.parseInt(likeData.get("boardNo").toString());
+		int empNo = Integer.parseInt(likeData.get("empNo").toString());
+
+		// check 값을 반대로 설정
+		boolean isLiked = check == 0;
+
+		return boardService.like(isLiked, boardNo, empNo);
+	}
 
 
 }

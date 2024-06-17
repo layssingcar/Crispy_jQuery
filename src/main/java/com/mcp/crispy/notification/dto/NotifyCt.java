@@ -9,7 +9,8 @@ public enum NotifyCt {
     VACATION(1, "휴가"),
     LEAVE_OF_ABSENCE(2, "휴직"),
     APPROVAL(3, "승인"),
-    REJECTION(4, "반려");
+    FINAL_APPROVAL(4, "최종승인"),
+    REJECTION(5, "반려");
 
     private final int value;
     private final String description;

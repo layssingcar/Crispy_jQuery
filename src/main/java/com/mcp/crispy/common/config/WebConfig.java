@@ -21,8 +21,6 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/upload/**")
-                .addResourceLocations("file:///Users/baeyeong-ug/Desktop/image/signatures/");
         registry.addResourceHandler("/profiles/**")
                 .addResourceLocations("file:///Users/baeyeong-ug/Desktop/image/profiles/");
         registry.addResourceHandler("/franchise/**")
@@ -30,5 +28,10 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/crispy_img/**")
                 .addResourceLocations("file:///C:/GDJ77/mcp/crispy_img/")
                 .addResourceLocations("file:///Users/baeyeong-ug/Desktop/image/");
+        registry.addResourceHandler("/emp_sign/**")
+                .addResourceLocations("file:///C:/GDJ77/mcp/crispy_img/emp_sign/")
+                .addResourceLocations("file:///Users/baeyeong-ug/Desktop/image/signatures/");
+        registry.addResourceHandler("/appr_file/**")
+                .addResourceLocations("file:///C:/GDJ77/mcp/crispy_img/appr_file/");
     }
 }

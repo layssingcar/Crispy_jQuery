@@ -20,16 +20,6 @@
         </association>
     </resultMap>
 
-    <!--    &lt;!&ndash; 자유게시판 LIST &ndash;&gt;-->
-    <!--    <select id="getFreeBoardList">-->
-    <!--        SELECT BOARD_NO-->
-    <!--             , BOARD_TITLE-->
-    <!--             , BOARD_CONTENT-->
-    <!--             , BOARD_HIT-->
-    <!--             , CREATE_DT-->
-    <!--        FROM BOARD_T-->
-    <!--        WHERE BOARD_CT_NO = 1-->
-    <!--    </select>-->
     <sql id="search">
         <if test="search != null and search != ''">
             AND (B.BOARD_TITLE LIKE '%' || #{search} || '%'
@@ -78,15 +68,17 @@
         , BOARD_CONTENT
         , EMP_NO
         , CREATE_DT
+        , BOARD_HIT
         , CREATOR
         ) VALUES (
-        #{boardNo}
+          #{boardNo}
         , #{boardCtNo}
         , #{boardTitle}
         , #{boardContent}
         , #{empNo}
         , CURRENT_TIMESTAMP
-        ,#{creator}
+        , 0
+        , #{empNo}
         )
     </insert>
 
@@ -112,23 +104,9 @@
         FROM BOARD_T
     </select>
 
-    <!--    <select id="getBoardList"-->
-    <!--            parameterType="Map"-->
-    <!--            resultMap="BoardMap">-->
-    <!--        SELECT-->
-    <!--            BOARD_NO, BOARD_CT_NO, BOARD_TITLE, BOARD_CONTENT, BOARD_HIT, CREATE_DT, MODIFY_DT, EMP_NO, CREATOR, MODIFIER-->
-    <!--        FROM (-->
-    <!--                 SELECT-->
-    <!--                     ROW_NUMBER() OVER (ORDER BY BOARD_NO ${sort}) AS RN,-->
-    <!--                         BOARD_NO, BOARD_CT_NO, BOARD_TITLE, BOARD_CONTENT, BOARD_HIT, CREATE_DT, MODIFY_DT, EMP_NO, CREATOR, MODIFIER-->
-    <!--                 FROM-->
-    <!--                     BOARD_T-->
-    <!--             )-->
-    <!--        WHERE RN BETWEEN #{begin} AND #{end}-->
-    <!--    </select>-->
-
     <select id="getBoardByNo" resultMap="BoardMap">
-        SELECT B.BOARD_NO, B.BOARD_CT_NO, B.BOARD_TITLE, B.BOARD_CONTENT, B.BOARD_HIT, B.CREATE_DT, B.MODIFY_DT, E.EMP_NO, F.BOARD_ORIGIN
+        SELECT B.BOARD_NO, B.BOARD_CT_NO, B.BOARD_TITLE, B.BOARD_CONTENT, B.BOARD_HIT, B.CREATE_DT,B.CREATOR, B.MODIFY_DT,B.EMP_NO
+             , F.BOARD_ORIGIN
         FROM BOARD_T B
                  left JOIN EMPLOYEE_T E ON E.EMP_NO = B.EMP_NO
                  left JOIN BOARD_FILE_T F ON B.BOARD_NO = F.BOARD_NO
@@ -148,12 +126,6 @@
         FROM BOARD_FILE_T
         WHERE BOARD_FILE_NO = #{boardFileNo}
     </select>
-
-    <!--    <update id="updateDownloadCount">-->
-    <!--        UPDATE BOARD_FILE_T-->
-    <!--        SET DOWNLOAD_COUNT = DOWNLOAD_COUNT + 1-->
-    <!--        WHERE BOARD_FILE_NO = #{boardFileNo}-->
-    <!--    </update>-->
 
     <update id="updateBoard"
             parameterType="BoardDto">
@@ -185,31 +157,42 @@
         WHERE BOARD_NO = #{boardNo}
     </delete>
 
-    <!--    <select id="boardLikeCheck" parameterType="map" resultType="int">-->
-    <!--        SELECT COUNT(*) FROM BOARD_BOARD_LIKE_T-->
-    <!--        WHERE BOARD_NO = #{boardNo}-->
-    <!--          AND EMP_NO = #{empNo}-->
-    <!--    </select>-->
 
-    <!--    <insert id="insertBoardLike" parameterType="map">-->
-    <!--        INSERT INTO BOARD_BOARD_LIKE_T (BOARD_NO, EMP_NO) VALUES (#{boardNo}, #{empNo})-->
-    <!--    </insert>-->
-
-    <!--    <delete id="deleteBoardLike" parameterType="map">-->
-    <!--        DELETE FROM BOARD_BOARD_LIKE_T-->
-    <!--        WHERE BOARD_NO = #{boardNo}-->
-    <!--          AND EMP_NO = #{empNo}-->
-    <!--    </delete>-->
-
-    <!--    <select id="countBoardLike" parameterType="int" resultType="int">-->
-    <!--        SELECT COUNT(*) FROM BOARD_BOARD_LIKE_T-->
-    <!--        WHERE BOARD_NO = #{boardNo}-->
-    <!--    </select>-->
 
     <update id="updateHit">
         UPDATE BOARD_T
         SET BOARD_HIT = BOARD_HIT + 1
         WHERE BOARD_NO = #{boardNo}
     </update>
+
+
+    <select id="checkLikeStatus">
+        SELECT COUNT(*)
+        FROM BOARD_LIKE_T
+        WHERE BOARD_NO = #{boardNo}
+          AND EMP_NO = #{empNo}
+    </select>
+
+    <select id="getLikeCount">
+        SELECT COUNT(*)
+        FROM BOARD_LIKE_T
+        WHERE BOARD_NO = #{boardNo}
+    </select>
+
+    <insert id="insertLike">
+        INSERT INTO BOARD_LIKE_T (BOARD_NO, EMP_NO)
+        VALUES (#{boardNo}, #{empNo})
+    </insert>
+
+    <delete id="deleteLike">
+        DELETE FROM BOARD_LIKE_T
+        WHERE BOARD_NO = #{boardNo}
+          AND EMP_NO = #{empNo}
+    </delete>
+    <delete id="deleteLikesByBoardNo">
+        DELETE FROM BOARD_LIKE_T
+        WHERE BOARD_NO = #{boardNo}
+    </delete>
+
 
 </mapper>

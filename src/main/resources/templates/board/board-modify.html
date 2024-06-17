@@ -16,17 +16,9 @@
 			<div class="main">
 				<form id="frm-board-modify" action="/crispy/modify-form" method="POST"  enctype="multipart/form-data" class="my-3" onsubmit="return fnModifyBoard()">
 					<input type="hidden" name="boardNo" th:value="${board.boardNo}" />
-					<h1 class="border-bottom py-2">게시물 수정하기</h1>
+					<h1 class="border-bottom py-2">공지사항 수정하기</h1>
 					<!-- 제목 -->
-					<div class="col-md-5">
-						<label for="cate" class="form-label">카테고리</label> <select
-							class="form-select" id="cate" required="">
-						<option value="">카테고리</option>
-						<option value="0" th:selected="${board.boardCtNo == 0}">공지사항</option>
-						<option value="1" th:selected="${board.boardCtNo == 1}">자유게시판</option>
 
-					</select>
-					</div>
 					<label for="boardTitle" class="form-label">제목</label> <input
 						type="text" name="boardTitle" id="boardTitle"
 						class="form-control" style="white-space: pre-line;" th:value="${board.boardTitle}"
@@ -41,12 +33,15 @@
 
 					<div>
 						<label for="files">첨부</label>
-						<input class="form-control" type="file" id="files" name="files" multiple>
-						<button type="button" id="btn-add-boardFile" class="btn btn-primary btn-lg ">첨부추가하기</button>
+						<div class="fileform" id="fileform">
+							<input class="form-control" type="file" id="files" name="files" multiple>
+							<button type="button" id="btn-add-boardFile" class="btn btn-primary btn-lg ">추가</button>
+						</div>
+
 					</div>
 					<div id="new-boardFile-list"></div>
 					<hr>
-					<h3>현재 첨부 목록</h3>
+					<h3>첨부 목록</h3>
 					<div id="boardFile-list"></div>
 
 
@@ -99,11 +94,9 @@
 
 
 		$('#cancelBtn').on('click', () => {
-			window.location.href="/board/board-detail";
+			window.history.back();
 		})
-		$('#addBtn').on('click', () => {
-			window.location.href="/board/board-detail";
-		})
+
 
 		function getBoardNoFromURL() {
 			var urlParams = new URLSearchParams(window.location.search);
@@ -125,14 +118,55 @@
 							const boardFile = boardFileList[i];
 							let str = '<div class="boardFile">';
 							str += '<span>' + boardFile.boardOrigin + '</span>';
-							if ('${empNo}' === '${board.empNo}') {
-								str += '<a style="margin-left: 10px;" class="remove-boardFile" data-boardFile-no="' + boardFile.boardFileNo + '">x</a>';
-							}
+							str += '<a style="margin-left: 10px;" class="remove-boardFile" data-boardFile-no="' + boardFile.boardFileNo + '">x</a>';
 							str += '</div>';
 							divBoardFileList.innerHTML += str;
 						}
+					})
+					.then(() => {
+						// 삭제 버튼에 이벤트 리스너 추가
+						addRemoveBoardFileEventListeners();
 					});
 		}
+
+		// 삭제 버튼에 이벤트 리스너 추가하는 함수
+		function addRemoveBoardFileEventListeners() {
+			const removeButtons = document.querySelectorAll('.remove-boardFile');
+			removeButtons.forEach(button => {
+				button.addEventListener('click', function() {
+					const boardFileNo = this.getAttribute('data-boardFile-no');
+					if (confirm('해당 첨부 파일을 삭제하시겠습니까?')) {
+						// 서버로 삭제 요청 보내기
+						fetch('/crispy/removeBoardFile', {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json'
+							},
+							body: JSON.stringify({
+								boardFileNo: boardFileNo
+							})
+						})
+								.then(response => response.json())
+								.then(resData => {
+									if (resData.deleteCount === 1) {
+										alert('첨부 파일이 삭제되었습니다.');
+										fnBoardFileList(); // 삭제 후 목록 다시 불러오기
+									} else {
+										alert('첨부 파일 삭제에 실패했습니다.');
+									}
+								})
+								.catch(error => {
+									console.error('Error removing board file:', error);
+									alert('첨부 파일 삭제 중 오류가 발생했습니다.');
+								});
+					}
+				});
+			});
+		}
+
+		// 페이지 로드 시 초기 호출
+		fnBoardFileList();
+
 		// 첨부 추가
 		const fnAddBoardFile = () => {
 			$('#btn-add-boardFile').on('click', () => {
@@ -143,8 +177,7 @@
 				$.each(files, (i, file) => {
 					formData.append('files', file);  // 폼에 포함된 파라미터명은 files이다. files는 여러 개의 파일을 가지고 있다.
 				})
-				// 현재 게시글 번호(uploadNo)를 FormData에 추가한다.
-				formData.append('boardNo', '${board.boardNo}');
+				formData.append('boardNo', '[[${board.boardNo}]]');
 				// FormData 객체를 보내서 저장한다.
 				$.ajax({
 					// 요청
@@ -170,32 +203,32 @@
 			})
 		}
 
-		// 첨부 삭제
-		const fnRemoveBoardFile = () => {
-			$(document).on('click', '.remove-boardFile', (evt) => {
-				if(!confirm('해당 첨부 파일을 삭제할까요?')) {
-					return;
-				}
-				fetch('/crispy/removeBoardFile', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					body: JSON.stringify({
-						'boardFileNo': evt.target.dataset.boardFileNo
-					})
-				})
-						.then(response => response.json())
-						.then(resData => {  // resData = {"deleteCount": 1}
-							if(resData.deleteCount === 1) {
-								alert('첨부 파일이 삭제되었습니다.');
-								fnBoardFileList();
-							} else {
-								alert('첨부 파일이 삭제되지 않았습니다.');
-							}
-						})
-			})
-		}
+		// // 첨부 삭제
+		// const fnRemoveBoardFile = () => {
+		// 	$(document).on('click', '.remove-boardFile', (evt) => {
+		// 		if(!confirm('해당 첨부 파일을 삭제할까요?')) {
+		// 			return;
+		// 		}
+		// 		fetch('/crispy/removeBoardFile', {
+		// 			method: 'POST',
+		// 			headers: {
+		// 				'Content-Type': 'application/json'
+		// 			},
+		// 			body: JSON.stringify({
+		// 				'boardFileNo': evt.target.dataset.boardFileNo
+		// 			})
+		// 		})
+		// 				.then(response => response.json())
+		// 				.then(resData => {  // resData = {"deleteCount": 1}
+		// 					if(resData.deleteCount === 1) {
+		// 						alert('첨부 파일이 삭제되었습니다.');
+		// 						fnBoardFileList();
+		// 					} else {
+		// 						alert('첨부 파일이 삭제되지 않았습니다.');
+		// 					}
+		// 				})
+		// 	})
+		// }
 
 		const fnModifyBoard = () => {
 			document.getElementById('frm-board-modify').addEventListener('submit', (evt) => {
@@ -208,7 +241,7 @@
 		}
 		fnBoardFileList();
 		fnAddBoardFile();
-		fnRemoveBoardFile();
+		// fnRemoveBoardFile();
 		fnModifyBoard();
 
 

@@ -2,6 +2,7 @@ package com.mcp.crispy.notification.mapper;
 
 
 import com.mcp.crispy.notification.dto.NotifyDto;
+import com.mcp.crispy.notification.dto.NotifyStat;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -23,5 +24,5 @@ public interface NotificationMapper {
     int countUnreadNotify(@Param("empNo") int empNo);
 
     // 읽음 상태 수정
-    void updateNotifyToRead(@Param("notifyNo") int notifyNo);
+    void updateNotifyToRead(@Param("notifyNo") int notifyNo, @Param("notifyStat") NotifyStat notifyStat);
 }

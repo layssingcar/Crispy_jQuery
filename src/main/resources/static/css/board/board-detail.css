@@ -81,13 +81,17 @@ main > div {
 	border: 1px solid #cccccc;
 }
 
-#btn-modify, #btn-delete {
+#btn-modify,#listBtn, #btn-delete {
 	width: 60px;
 	height: 40px;
 	align-items: center;
 	justify-content: center;
 	display: flex;
 	font-size: 1.7rem;
+}
+#listBtn{
+	margin-top: 10rem;
+	margin-right: 10rem;
 }
 
 .form-control {
@@ -96,8 +100,9 @@ main > div {
 
 #boardTitle {
 	height: 4rem;
-	font-size: 1.5rem;
-	margin-bottom: 10px;
+	font-size: 3rem;
+	margin-top: 2rem;
+	margin-bottom: 2rem;
 }
 
 #btn-delete {
@@ -106,7 +111,8 @@ main > div {
 
 #boardContent{
 	height: 32rem;
-	font-size: 1.5rem;
+	font-size: 3rem;
+	margin-top: 2rem;
 	margin-bottom: 10px;
 }
 
@@ -202,4 +208,7 @@ span#detail-writer {
 
 .btn-form {
 	margin-right: 10px;
+}
+.contents-detailinfo{
+	margin-left:80rem;
 }

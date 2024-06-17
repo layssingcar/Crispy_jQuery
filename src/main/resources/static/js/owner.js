@@ -15,6 +15,7 @@ const owner = {
         const searchRole = document.getElementById('search-role');
         const searchStatus = document.getElementById('search-status');
         const searchInput = document.querySelector(".search-employee");
+        const registerEmployee = document.querySelector(".btn-employee-register");
 
         if (myProfileElement) {
             myProfileElement.addEventListener('click', this.clearSelectedEmpNo.bind(this));
@@ -37,6 +38,13 @@ const owner = {
         if (searchInput) {
             searchInput.addEventListener("input", this.searchEmployees.bind(this));
         }
+        if (registerEmployee) {
+            registerEmployee.addEventListener("click", this.btnRegisterEmployee.bind(this));
+        }
+    },
+
+    btnRegisterEmployee: function () {
+      location.href = "/crispy/owner/employee/register"
     },
 
     resetSelectConditions: function() {

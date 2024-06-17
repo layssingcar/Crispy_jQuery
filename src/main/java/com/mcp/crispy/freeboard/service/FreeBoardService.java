@@ -189,6 +189,7 @@ public class FreeBoardService {
         return insertBoardFileCount == files.size();
     }
 
+    // 좋아요 토글
     @Transactional
     public void toggleFreeBoardLike(int boardNo, int empNo) {
         FreeBoardDto freeBoardDto = freeBoardMapper.getFreeBoardByNo(boardNo);

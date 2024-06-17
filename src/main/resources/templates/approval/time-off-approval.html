@@ -95,5 +95,19 @@
     </script>
 
     <script src="/js/approval/timeOffAppr.js"></script>
+
+    <!-- 휴가/휴직 신청 실패 alert  -->
+    <script th:inline="javascript">
+        const resultMsg = /*[[${resultMsg}]]*/ "결재 신청 실패";
+
+        if (resultMsg != null) {
+            Swal.fire({
+                icon: "error",
+                title: resultMsg,
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+    </script>
 </body>
 </html>
