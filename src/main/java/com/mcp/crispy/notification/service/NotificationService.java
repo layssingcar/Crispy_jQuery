@@ -34,6 +34,12 @@ public class NotificationService {
         sseService.sendNotification((long)empNo, notifyDto.getNotifyContent());
     }
 
+    // 알림 읽음 처리
+    @Transactional
+    public void markAsRead(Integer notifyNo) {
+        notificationMapper.updateNotifyToRead(notifyNo, NotifyStat.READ);
+    }
+
     @Transactional
     public int countUnreadNotificationsByEmpNo(int empNo) {
         return notificationMapper.countUnreadNotify(empNo);

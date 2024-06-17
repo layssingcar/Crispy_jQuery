@@ -1,4 +1,4 @@
-package com.mcp.crispy.board.utils;
+package com.mcp.crispy.common.utils;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

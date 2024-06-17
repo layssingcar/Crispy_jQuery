@@ -3,7 +3,7 @@ package com.mcp.crispy.board.service;
 import com.mcp.crispy.board.dto.BoardDto;
 import com.mcp.crispy.board.dto.BoardFileDto;
 import com.mcp.crispy.board.mapper.BoardMapper;
-import com.mcp.crispy.board.utils.MyFileUtils;
+import com.mcp.crispy.common.utils.MyFileUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.FileSystemResource;

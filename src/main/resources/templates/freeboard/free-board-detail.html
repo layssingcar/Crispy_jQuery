@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:insert="~{layout/header :: header('Crispy')}"></th:block>
+    <!-- 특정 페이지 css -->
+    <link href="/css/freeboard/free-board-detail.css" rel="stylesheet">
+</head>
+<body>
+<div>
+    <aside th:replace="~{layout/sidebar :: sidebar}"></aside>
+    <div>
+        <main>
+            <!-- 게시판 상세 -->
+            <div class="board-detail">
+                <h4 class="detail-title" id="detail-title">상세보기</h4>
+                <input type="hidden" class="board-no" th:value="${board.boardNo}">
+                <div class="body">
+                    <div class="detail-header">
+                        <div>
+                            <span>제목: <span class="writer" id="writer" th:text="${board.boardTitle}"></span></span>
+                            <span>작성자: <span class="detail-writer" id="detail-writer" th:text="${board.empName}">: 정은</span></span>
+                            <input type="hidden" class="emp-no" th:value="${board.empNo}">
+                        </div>
+                        <div class="board-info">
+                            <span>작성일: <span class="date me-4" th:text="${#temporals.format(board.createDt.toLocalDate(), 'yyyy-MM-dd')}">작성일</span></span>
+                            <span>조회수: <span class="detail-hit" id="detail-hit" th:text="${board.boardHit}"></span></span>
+                        </div>
+                        <hr>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="board-content">
+                        <span class="text" id="text" th:text="${board.boardContent}">내용</span>
+                    </div>
+                    <div id="board-like" class="board-like">
+                        <div>
+                            <img th:src="${board.isLiked ? '/img/heart2.png' : '/img/heart1.png'}" width="20px" id="like-button">
+                            <span id="like-count" th:text="${board.boardLikeCount}"></span>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="board-files">
+                        <div class="board-file" id="boardfile" th:if="${board.hasAttachment}"><span>* 첨부파일</span></div>
+                        <ul>
+                            <li th:each="file : ${files}">
+                                <a href="javascript:void(0);" th:data-file-no="${file.boardFileNo}" class="file-download" th:text="${file.boardOrigin}"></a>
+                            </li>
+                        </ul>
+                        <button type="button" id="downloadAllBtn" class="btn" th:if="${board.hasAttachment}">모든 파일 다운로드</button>
+                    </div>
+                    <div class="board-buttons">
+                        <div>
+                            <button class="btn board-list">목록으로</button>
+                        </div>
+                        <div class="edit-button">
+                            <button type="button" id="btn-modify-board" class="btn">수정</button>
+                            <button type="button" id="btn-delete-board" class="btn board-delete">삭제</button>
+                        </div>
+                    </div>
+                    <!-- 댓글 작성 부분 -->
+                    <div class="mt-4 mb-3 cmt-container">
+                        <label for="cmt-comment" class="form-label mt-2" id="comment">댓글</label>
+                        <div>
+                            <textarea type="text" name="cmtContent" id="cmt-comment"
+                                      class="form-control" placeholder="내용은 300자 내외로 입력해주세요."
+                                      maxlength="300" wrap="hard" rows="3" cols="1"></textarea>
+                            <div class="error-message cmtContent-error" style="display: none;"></div>
+                            <button type="button" class="btn btn-primary" id="comment-add">등록</button>
+                        </div>
+                    </div>
+                    <!-- 댓글 목록 부분 -->
+                    <div id="comment-list">
+                        <div th:each="comment : ${comments}">
+                            <div th:class="'comment-level-' + ${comment.lvl}" th:if="${comment.cmtStat != 1}">
+                                <div class="cmt-wrap">
+                                    <div>
+                                        <input type="hidden" th:value="${comment.cmtNo}" class="cmt-no">
+                                        <div>
+                                            <div class="comment-emp">
+                                                <img class="comment-profile" th:src="${comment.empProfile}" th:if="${comment.empProfile != null}" alt="프로필 이미지">
+                                                <img class="comment-profile" th:src="@{/img/anonymous.png}" th:unless="${comment.empProfile != null}" alt="프로필 이미지">
+                                                <div>
+                                                    <span th:text="${comment.empName}"></span>
+                                                    <small><span class="date ms-4" th:text="${#temporals.format(comment.cmtCreateDt.toLocalDate(), 'yyyy-MM-dd')}">작성일</span></small>
+                                                    <p class="cmt-content" th:text="${comment.cmtContent}"></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div th:if="${comment.creator == currentEmpNo}">
+                                        <button type="button" class="btn btn-primary comment-modify" th:data-comment-no="${comment.cmtNo}">수정</button>
+                                        <button type="button" class="btn btn-secondary comment-delete" th:data-comment-no="${comment.cmtNo}">삭제</button>
+                                    </div>
+                                </div>
+                                <div class="mb-3 reply-container">
+                                        <input type="hidden" class="cmt-no" name="cmtContent" th:value="${comment.cmtNo}">
+                                        <!-- 댓글에만 답글 버튼 보이게 하기 -->
+                                        <button type="button" class="btn" id="reply-button" th:if="${comment.lvl == 1}">답글</button>
+                                </div>
+                            </div>
+                            <div th:class="'comment comment-level-' + ${comment.lvl} + ' deleted-comment'" th:if="${comment.cmtStat == 1}">
+                                <div class="comment-emp">
+                                    <img class="comment-profile" th:src="${comment.empProfile}" th:if="${comment.empProfile != null}" alt="프로필 이미지">
+                                    <img class="comment-profile" th:src="@{/img/anonymous.png}" th:unless="${comment.empProfile != null}" alt="프로필 이미지">
+                                    <div>
+                                        <small><span th:text="${comment.empName}"></span></small>
+                                        <p class="cmt-content">삭제된 메시지입니다.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <footer th:replace="~{layout/footer :: footer}"></footer>
+</div>
+<!-- 특정 JS -->
+<script src="/js/board/board.js"></script>
+</body>
+</html>

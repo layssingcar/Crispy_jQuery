@@ -36,8 +36,8 @@
 .find-header {
     color: var(--main-color);
     text-align: center;
-    margin-bottom: 20px;
-    font-size: 3rem;
+    margin-bottom: 10px;
+    font-size: 2.5rem;
 }
 
 /* 아이디 찾기 input 영역 */
@@ -79,7 +79,7 @@
 /* 찾기 버튼  */
 .find-btn {
     width: 100%;
-    font-size: 1.3rem;
+    font-size: 1.5rem;
 }
 
 /* 아이디 찾기 결과*/
@@ -98,9 +98,14 @@
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
+.find-result-form .result-info span {
+    font-size: 2rem;
+}
+
 /* 아이디 찾기 결과 제목 */
-.find-result h4 {
+.find-result h2 {
     text-align: center;
+    color: var(--main-color);
 }
 
 /* 비밀번호 찾기 */
@@ -109,7 +114,8 @@
     margin-top: 30px;
 }
 
-.result-to-find-password a:hover {
+
+.result-to-find-password a {
     color: var(--main-color);
 }
 
@@ -118,7 +124,7 @@
     display: block;
     width: 100%;
     text-align: center;
-    font-size: 1.5rem;
+    font-size: 1.7rem;
     padding: 10px;
     border-radius: 7px;
     background-color: var(--main-color);

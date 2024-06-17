@@ -10,9 +10,9 @@ import com.mcp.crispy.common.exception.InvalidLoginRequestException;
 import com.mcp.crispy.common.utils.CookieUtil;
 import com.mcp.crispy.common.utils.JwtUtil;
 import com.mcp.crispy.employee.dto.EmployeeDto;
-import com.mcp.crispy.employee.service.EmployeeService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +30,6 @@ public class AuthController {
     private final AuthenticationService authenticationService;
     private final CrispyUserDetailsService crispyUserDetailsService;
     private final JwtUtil jwtUtil;
-    private final EmployeeService employeeService;
 
     /**
      * 로그인 요청 처리
@@ -40,7 +39,7 @@ public class AuthController {
      * @return ResponseEntity 로그인 성공 시 사용자 정보, 실패 시 에러 메시지
      */
     @PostMapping("/login/v1")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         log.info("로그인 요청 수신: {}", loginRequest.getUsername());
 
         try {
@@ -109,8 +108,10 @@ public class AuthController {
 
         if (userDetails instanceof EmployeePrincipal employeePrincipal) {
             String newAccessToken = jwtUtil.createAccessToken(employeePrincipal);
+            log.info("newAccessToken: {}", newAccessToken);
+            log.info("RefreshToken: {}", refreshToken);
             employeePrincipal.getEmployee().setAccessToken(newAccessToken);
-            employeePrincipal.getEmployee().setRefreshToken(refreshToken);
+
             return ResponseEntity.ok(employeePrincipal.getEmployee());
         } else if (userDetails instanceof AdminPrincipal adminPrincipal) {
             String newAccessToken = jwtUtil.createAccessToken(adminPrincipal);
@@ -120,6 +121,7 @@ public class AuthController {
 
         return ResponseEntity.status(401).body("Invalid user type");
     }
+
 
     /**
      * 로그아웃 처리

@@ -13,7 +13,7 @@
                     <td th:each="apprLineDto : *{apprLineDtoList}">
                         <th:block th:switch="${apprLineDto.apprLineStat}">
                             <span th:case="0" th:text="${apprLineDto.empName}"></span>
-                            <img th:case="1" th:src="${apprLineDto.empSign}" class="sign-img" alt="서명 이미지">
+                            <img th:case="1" th:src="${apprLineDto.apprSign}" class="sign-img" alt="서명 이미지">
                             <th:block th:case="2">반려</th:block>
                         </th:block>
                     </td>
@@ -44,7 +44,7 @@
                         <span>(</span>
 
                         <!-- 휴가 기간 출력 -->
-                        <span th:text="*{timeOffPeriod}"></span>
+                        <span th:text="*{timeOffPeriod < 10 ? '0' + timeOffPeriod : timeOffPeriod}"></span>
                         <span>일간 )</span>
                     </td>
                 </tr>
@@ -81,10 +81,14 @@
     
         <div class="attach-file">
             <div>첨부파일</div>
-            <!-- 첨부파일 목록 -->
             <div>
-                <a href="" download=""></a><!-- <span>,&nbsp;</span> -->
-                <a href="" download=""></a>
+                <!-- 첨부파일 목록 -->
+                <th:block th:each="af:${approvalDto.apprFileDtoList}">
+                    <a th:href="|${af.apprPath}${af.apprRename}|"
+                       th:download="${af.apprOrigin}"
+                       th:text="${af.apprOrigin}"></a>
+                    <br>
+                </th:block>
                 <!-- <a th:href="${변경명}" th:dowload="${원본명}" th:text="${원본명}"></a> -->
             </div>
         </div>

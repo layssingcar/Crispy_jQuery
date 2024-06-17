@@ -183,12 +183,14 @@
                     APPR_LINE_NO
                   , APPR_LINE_ORDER
                   , APPR_NO
+                  , EMP_NO
                   , CREATOR
            ) VALUES (
                     APPR_LINE_SEQ.NEXTVAL
                   , 0
                   , #{apprNo}
-                  , #{creator})
+                  , #{empNo}
+                  , #{empNo})
     </insert>
 
     <!-- 발주 신청 목록 수 조회 -->

@@ -7,21 +7,21 @@
                     <tr>
                         <th class="col top-col">가맹점명</th>
                         <!-- 가맹점명 -->
-                        <td colspan="3"></td>
+                        <td colspan="3" th:text="${approvalDto.frnName}"></td>
                     </tr>
                     <tr>
                         <th class="col top-col">대표자</th>
                         <!-- 기안자 -->
-                        <td></td>
+                        <td th:text="${approvalDto.frnOwner}"></td>
 
                         <th class="col top-col">전화번호</th>
                         <!-- 전화번호 -->
-                        <td></td>
+                        <td th:text="${approvalDto.frnTel}"></td>
                     </tr>
                     <tr>
                         <th class="col top-col">주소</th>
                         <!-- 주소 -->
-                        <td colspan="3"></td>
+                        <td colspan="3" th:text="|${approvalDto.frnStreet} ${approvalDto.frnDetail}|"></td>
                     </tr>
                 </tbody>
             </table>
@@ -34,7 +34,13 @@
 
                 <tr id="sign-tr">
                     <!-- 결재 이미지 -->
-                    <td><img src="" id="sign-img" alt="서명 이미지"></td>
+                    <td>
+                        <img id="sign-img" alt="서명 이미지"
+                             th:src="${approvalDto.apprSign}"
+                             th:if="${approvalDto.apprLineStat == 1}">
+                        <span th:if="${approvalDto.apprLineStat == 2}">반려</span>
+                        <span th:if="${approvalDto.apprLineStat == 0}">본사</span>
+                    </td>
                 </tr>
             </table>
         </div>
@@ -50,30 +56,31 @@
                     <th class="col">수량</th>
                     <th class="col">금액</th>
                 </tr>
-                <tr>
-                    <th class="col">1</th>
+
+                <tr th:each="stockOrder, status : ${approvalDto.stockOrderList}">
+                    <th class="col" th:text="${status.count}">1</th>
                     
                     <!-- 카테고리 -->
-                    <td></td>
+                    <td th:text="${stockOrder.stockCtName}"></td>
 
                     <!-- 재고명 -->
-                    <td></td>
+                    <td th:text="${stockOrder.stockName}"></td>
 
                     <td>
                         <div class="stock-flex">
                             <!-- 단가 -->
-                            <span></span>
+                            <span th:text="${stockOrder.stockPrice}"></span>
                             <span>원</span>
                             <span>&nbsp;/&nbsp;</span>
                             <!-- 단위 -->
-                            <span></span>
+                            <span th:text="${stockOrder.stockUnit}"></span>
                         </div>
                     </td>
 
                     <td>
                         <div class="stock-flex">
                             <!-- 수량 -->
-                            <span></span>
+                            <span th:text="${stockOrder.stockOrderCount}"></span>
                             <span>개</span>
                         </div>
                     </td>
@@ -81,89 +88,30 @@
                     <td>
                         <div class="stock-flex">
                             <!-- 금액 -->
-                            <span></span>
+                            <span th:text="${stockOrder.stockOrderCost}"></span>
                             <span>원</span>
                         </div>
                     </td>
                 </tr>
-                <tr>
-                    <th class="col">2</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <th class="col">3</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <th class="col">4</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <th class="col">5</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <th class="col">6</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <th class="col">7</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <th class="col">8</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <th class="col">9</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <th class="col">10</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
+
+
+                <th:block th:if="${approvalDto.stockOrderList.size() < 10}">
+                    <tr th:each="i : ${#numbers.sequence((approvalDto.stockOrderList.size() + 1), 10, 1)}">
+                        <th class="col" th:text="${i}"></th>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </th:block>
+
                 <tr>
                     <th colspan="3" class="col" id="ls">합계금액</th>
                     <td colspan="4" class="col">
                         <div class="stock-flex">
                             <!-- 합계금액 -->
-                            <span></span>
+                            <span th:text="${approvalDto.orderCost}"></span>
                             <span>원</span>
                         </div>
                     </td>
@@ -173,19 +121,19 @@
                         <div id="doc-cont">
                             <div>위와 같이 발주를 요청합니다.</div>
 
-                            <!-- 기안일 (2024년 05월 22일 수요일) -->
-                            <div></div>
+                            <!-- 기안일 -->
+                            <div th:text="${approvalDto.apprDt}"></div>
     
                             <div class="appr-emp">
                                 <div>신청인:&nbsp;</div>
     
                                 <!-- 기안자 -->
-                                <div id="emp-name"></div>
+                                <div id="emp-name" th:text="${approvalDto.frnOwner}"></div>
     
                                 <div id="emp-sign">
                                     <span>(인)</span>
                                     <!-- 서명 이미지 -->
-                                    <img src="" alt="서명 이미지">
+                                    <img th:src="${approvalDto.empSign}" alt="서명 이미지">
                                 </div>
                             </div>
                         </div>

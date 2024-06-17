@@ -141,36 +141,56 @@
 		}
 	    
 	  // 차트 영역
-      const ctx = document.querySelector('#myChart');
-
-		//만들위치, 설정값객체
-      new Chart(ctx, {
-          type: 'bar',  // bar, line, pie, doughnut, radar 등등...
-          data: {
-              labels: ['인천', '서울', '대구', '대전', '부산', '경기'],
-              datasets: [
-                  {
-                      label: '작년 매출',
-                      data: [10, 19, 13, 15, 12, 13],
-                      borderWidth: 1,
-                  },
-                  {
-                      label: '올해 매출',
-                      data: [9, 14, 10, 19, 22, 11],
-                      borderWidth: 1
-                  },
-                  {
-                      label: '내년 매출',
-                      data: [19, 4, 1, 9, 2, 1],
-                      borderWidth: 1
-                  }
-              ]
-          },
-          options: {
-              scales: {
-                  y: {
-                      beginAtZero: true
-                  }
-              }
-          }
-      });	  
+  const ctx = document.querySelector('#myChart');
+  let guList = [];
+  let avgSalesList = [];
+  
+	$.ajax({
+		type:'GET',
+		url: '/crispy/getGuAvgSales',
+        contentType: 'application/json',
+		data:'month=' + 6,
+		dataType:'json'
+    })
+	.done(function(data){
+		$(data).each(function(){
+			guList.push(this.frnGu);
+			avgSalesList.push(this.totalAvgSales);				
+		})
+		// alert("매출 성공");
+		      new Chart(ctx, {
+	          type: 'bar',  // bar, line, pie, doughnut, radar 등등...
+	          data: {
+	              labels: guList,
+	              datasets: [
+		            {
+		                type: 'bar', // 바 차트 데이터 세트
+		                label: 'Bar Dataset',
+		                data: avgSalesList,
+		                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+		                borderColor: 'rgba(75, 192, 192, 1)',
+		                borderWidth: 1
+		            },
+		            {
+		                type: 'line', // 라인 차트 데이터 세트
+		                label: 'Line Dataset',
+		                data: avgSalesList,
+		                fill: false,
+		                borderColor: 'rgba(153, 102, 255, 1)'
+		            }
+	              ]
+	          },
+	          options: {
+	              scales: {
+	                  y: {
+	                      beginAtZero: true
+	                  }
+	              }
+	          }
+	      });	  
+	})
+	.fail(function(jqXHR){
+		alert("매출 실패");
+		alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
+	})    
+		

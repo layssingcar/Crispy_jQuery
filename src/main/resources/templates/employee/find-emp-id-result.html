@@ -12,12 +12,14 @@
             <!-- 아이디 찾기 결과 -->
             <div class="find-result-form">
                 <div class="mb-5">
-                    <h4>해당 이메일로 가입된 아이디가 있습니다.</h4>
+                    <h2>해당 이메일로 가입된 아이디가 있습니다.</h2>
                 </div>
                 <div class="find-username">
-                        <p>아이디: <span th:text="${findEmp.empId}"></span></p>
-                    <div>
-                        <span>가입일 : <span th:text="${#temporals.format(findEmp.getCreateDtAsLocalDate(), 'yyyy-MM-dd')}"></span></span>
+                    <div class="result-info">
+                        <span>아이디: <span th:text="${findEmp.empId}"></span></span>
+                        <div class="mt-4">
+                            <span>가입일: <span th:text="${#temporals.format(findEmp.getCreateDtAsLocalDate(), 'yyyy-MM-dd')}"></span></span>
+                        </div>
                     </div>
                     <div class="result-to-find-password mb-3">
                         <span>비밀번호가 기억나지 않으세요?</span>

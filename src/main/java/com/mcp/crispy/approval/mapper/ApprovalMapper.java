@@ -1,14 +1,12 @@
 package com.mcp.crispy.approval.mapper;
 
-import com.mcp.crispy.approval.dto.ApplicantDto;
-import com.mcp.crispy.approval.dto.ApprLineDto;
-import com.mcp.crispy.approval.dto.ApprOptionDto;
-import com.mcp.crispy.approval.dto.ApprovalDto;
+import com.mcp.crispy.approval.dto.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface ApprovalMapper {
@@ -28,6 +26,9 @@ public interface ApprovalMapper {
     // 임시저장 내용 불러오기
     ApprovalDto getTimeOffTemp(@Param("empNo") int empNo, @Param("timeOffCtNo") int timeOffCtNo);
 
+    // 결재선 불러오기
+    List<ApprLineDto> getApprLine(@Param("frnNo") int frnNo, @Param("empNo") int empNo);
+
     // 휴가,휴직 신청 (전자결재 테이블)
     int insertApproval(ApprovalDto approvalDto);
 
@@ -36,6 +37,9 @@ public interface ApprovalMapper {
 
     // 휴가,휴직 신청 (결재선 테이블)
     int insertApprLine(List<ApprLineDto> apprLineDtoList);
+
+    // 휴가,휴직 신청 (첨부파일 테이블)
+    int insertApprFile(List<ApprFileDto> fileDtoList);
 
     // 결재 문서 목록 수 조회 (휴가,휴직 신청서)
     int getTimeOffApprCount(ApprOptionDto apprOptionDto);
@@ -46,4 +50,15 @@ public interface ApprovalMapper {
     // 결재 문서 상세 조회 (휴가,휴직 신청서)
     ApprovalDto getTimeOffApprDetail(@Param("empNo") int empNo, @Param("apprNo") int apprNo);
 
+    // 결재 문서 상세 조회 (발주 신청서)
+    ApprovalDto getStockOrderApprDetail(int apprNo);
+
+    // 문서 결재
+    int changeApprLineStat(Map<String, Object> map);
+
+    // 결재선 조회 (결재 문서 상세 조회)
+    List<ApprLineDto> getDetailApprLine(Integer apprNo);
+
+    // 결재 상태 업데이트
+    void updateApprovalStat(@Param("apprStat") int apprStat, @Param("apprNo") int apprNo);
 }

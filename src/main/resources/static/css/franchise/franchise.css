@@ -360,8 +360,13 @@
 }
 
 .franchise .frn-info hr {
-    width: 420px;
-    margin-left: 10px;
+    width: 150px;
+    /* margin-left: 10px; */
+    margin-top: 14px !important;
+}
+.franchise .frn-info span {
+    font-size: 2rem;
+    padding: 1px 13px;
 }
 
 .franchise .btn-save-profile {
@@ -370,6 +375,19 @@
     padding: 5px 25px;
     width: 150px;
     border-radius: 7px;
+}
+
+.franchise .form-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.franchise .form-buttons button {
+    width: 500px;
+    border-radius: 5px;
+    padding: 5px 10px;
+    border: 0;
 }
 
 #btn-frn-register {

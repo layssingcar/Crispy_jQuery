@@ -1,6 +1,5 @@
 package com.mcp.crispy.stock.controller;
 
-
 import com.mcp.crispy.auth.domain.EmployeePrincipal;
 import com.mcp.crispy.common.page.PageResponse;
 import com.mcp.crispy.stock.dto.StockDto;
@@ -13,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ public class StockApiController {
         EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
         stockOptionDto.setFrnNo(userDetails.getFrnNo());
 
-        PageResponse<StockDto> stockList = stockService.getStockList(stockOptionDto, 20);
+        PageResponse<StockDto> stockList = stockService.getStockList(stockOptionDto, 0);
         return ResponseEntity.ok(stockList);
     }
 
@@ -41,5 +41,10 @@ public class StockApiController {
         return ResponseEntity.ok(stockCtList);
     }
 
-}
+    @GetMapping("/get-stock")
+    public ResponseEntity<?> getStock(@RequestParam("stockNo") List<Integer> stockNos) {
+        List<StockDto> stocks = stockService.getStockList(stockNos);
+        return ResponseEntity.ok(stocks);
+    }
 
+}

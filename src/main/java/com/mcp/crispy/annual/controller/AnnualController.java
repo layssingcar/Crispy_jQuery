@@ -57,6 +57,13 @@ public class AnnualController {
 		return ResponseEntity.ok(deleteCount);
 	}
 	
+	@PostMapping(value="/revertAnn", produces = "application/json")
+	public ResponseEntity<Integer> revertAnnual(@RequestBody AnnualDto annualDto, Principal principal)
+	{	
+		int revertCount = annualService.revertAnnual(annualDto);
+		return ResponseEntity.ok(revertCount);
+	}
+	
 	@ResponseBody
 	@GetMapping(value="/getCountAnn", produces = "application/json")
 	public int getCountAnn() {

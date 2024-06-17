@@ -14,7 +14,7 @@
                     <div class="nav-profile-ui">
 
                         <!-- 프로필 이미지 -->
-                        <img th:src="${isAdmin ? '/img/anonymous.png' : (loggedEmp != null ? loggedEmp.empProfile : '/img/anonymous.png')}"
+                        <img th:src="${isAdmin ? '/img/anonymous.png' : (loggedEmp.empProfile != null ? loggedEmp.empProfile : '/img/anonymous.png')}"
                              id="nav-profile-img" class="nav-img">
 
                         <!-- 직원명 -->
@@ -52,7 +52,7 @@
                                 <i class="fa-solid fa-bell me-3 notification"></i>
 
                                 <!-- 알림 개수 -->
-                                <span id="notification-count" class="notification-badge">1</span>
+                                <span id="notification-count" class="notification-badge" style="display: none">0</span>
 
                                 <!-- 알림 드롭다운 -->
                                 <div class="menu-content notification-mc">
@@ -104,7 +104,7 @@
                 </li>
 
                 <!-- 휴가 관리 -->
-                <li class="mb-1">
+                <li class="mb-1" sec:authorize="!hasRole('ROLE_ADMIN')">
                     <div class="menu" data-bs-toggle="collapse" data-bs-target="#menu-4-collapse">
                         <a href="#">
                             <span>휴가 관리</span>
@@ -130,8 +130,8 @@
                     </div>
                     <div class="collapse" id="menu-5-collapse">
                         <ul class="">
-                            <li><a href="#" class="s-menu">공지사항</a></li>
-                            <li><a href="/crispy/board-list" class="s-menu">자유게시판</a></li>
+                            <li><a href="/crispy/board-list" class="s-menu">공지사항</a></li>
+                            <li><a href="/crispy/board-list/free" class="s-menu">자유게시판</a></li>
                         </ul>
                     </div>
                 </li>
@@ -165,9 +165,10 @@
                     </div>
                     <div class="collapse" id="menu-10-collapse">
                         <ul class="">
-                            <li><a href="/crispy/stock-list" class="s-menu">재고 현황</a></li>
-                            <li><a href="/crispy/stock-order" class="s-menu">발주 신청</a></li>
-                            <li><a href="/crispy/order-list/franchise" class="s-menu">신청 내역</a></li>
+                            <li sec:authorize="!hasRole('ROLE_ADMIN')"><a href="/crispy/stock-list" class="s-menu">재고 현황</a></li>
+                            <li sec:authorize="!hasRole('ROLE_ADMIN')"><a href="/crispy/stock-order" class="s-menu">발주 신청</a></li>
+                            <li sec:authorize="!hasRole('ROLE_ADMIN')"><a href="/crispy/order-list/franchise" class="s-menu">신청 내역</a></li>
+                            <li sec:authorize="hasRole('ROLE_ADMIN')"><a href="/crispy/order-list/admin" class="s-menu">신청 내역</a></li>
                         </ul>
                     </div>
                 </li>

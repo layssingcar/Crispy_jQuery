@@ -106,7 +106,37 @@
 /* 파일 선택 */
 .time-off .file-attach {
     display: flex;
+    flex-direction: column;
     margin-top: 20px;
 }
 
 .time-off form .mb-3 {width: 450px;}
+
+.time-off .file-attach input {width: 300px;}
+
+/* 파일 리스트 */
+.time-off .file-list {
+    display: flex;
+    flex-wrap: wrap;
+    width: 800px;
+    margin: 0 0 20px 15px;
+    font-size: 1.5rem;
+}
+
+/* 파일 항목 */
+.time-off .file-item {
+    display: flex;
+    align-items: center;
+    padding: 2px 0;
+}
+
+.time-off .file-item > a {
+    text-decoration: underline;
+    color: var(--bs-link-color);
+}
+
+.time-off .file-item > i {
+    margin: 0px 20px 0 10px;
+    color: #888888;
+    cursor: pointer;
+}

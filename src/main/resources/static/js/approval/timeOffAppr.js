@@ -1,5 +1,6 @@
 let empObj; // 선택된 결재선 객체
-const empNoSet = new Set(); // 선택된 결재선 목록
+const empNoSet = new Set();     // 선택된 결재선 목록
+const selectedFile = new Set(); // 선택된 파일 목록
 
 // 휴가, 휴직 기간 계산
 const getPeriodFn = () => {
@@ -34,6 +35,63 @@ const getPeriodFn = () => {
 const changeDateFn = () => {
     document.querySelector("#start-dt").addEventListener("change", getPeriodFn);
     document.querySelector("#end-dt").addEventListener("change", getPeriodFn);
+}
+
+const formFileMultiple = document.querySelector("#formFileMultiple");
+const fileContainer = document.querySelector(".file-list");
+let selectFileList = [];
+
+// 파일 선택
+const selectFileFn = () => {
+    formFileMultiple.addEventListener("change", e => {
+        const files = e.target.files;
+
+        for (let file of files) {
+            let flag = true;
+
+            selectFileList.forEach(item => {
+                if (item.name === file.name) flag = false;
+            })
+
+            if (flag) selectFileList.push(file);
+        }
+
+        convertFiles();
+        displayFileNames();
+    })
+}
+
+const convertFiles  = () => {
+    const dataTransfer = new DataTransfer();
+    for (let file of selectFileList) dataTransfer.items.add(file);
+    formFileMultiple.files = dataTransfer.files;
+}
+
+const displayFileNames = () => {
+    fileContainer.innerHTML = "";
+
+    selectFileList.forEach(item => {
+        const fileDiv = document.createElement("div");
+        fileDiv.classList.add("file-item");
+
+        const fileName = document.createElement("a");
+        fileName.innerHTML = item.name;
+
+        fileName.href = URL.createObjectURL(item);
+        fileName.download = item.name;
+
+        const deletnBtn = document.createElement("i");
+        deletnBtn.classList.add('fa-regular', 'fa-circle-xmark');
+
+        deletnBtn.addEventListener("click", e => {
+            selectFileList = selectFileList.filter(item => item.name !== e.target.previousElementSibling.innerHTML)
+            convertFiles();
+            displayFileNames();
+        })
+
+        fileDiv.append(fileName, deletnBtn);
+        fileContainer.append(fileDiv);
+    })
 }
 
 // 값 입력 여부 확인
@@ -122,7 +180,7 @@ document.querySelector("#temp").addEventListener("click", () => {
 // 임시저장 내용 불러오기
 document.querySelector("#temp-content").addEventListener("click", async () => {
     Swal.fire({
-        title: "문서를 선택해 주세요.",
+        text: "문서 종류를 선택하세요.",
         input: "select",
         inputOptions: {
             0: "휴가신청서",
@@ -132,8 +190,10 @@ document.querySelector("#temp-content").addEventListener("click", async () => {
         showCancelButton: true,
         confirmButtonText: "선택 완료",
         cancelButtonText: "취소",
-        width: "450px",
+        width: "400px",
         inputValidator: async (value) => {
+            if (!value) return "문서 종류가 선택되지 않았습니다.";
+            
             const response = await fetch(`/crispy/check-time-off-temp?timeOffCtNo=${value}`);
             const result = await response.text();
 
@@ -155,6 +215,7 @@ document.querySelector("#temp-content").addEventListener("click", async () => {
                     getEmpInfoFn();
                     getCurrentDateFn();
                     changeDateFn();
+                    selectFileFn();
                 })
         }
     })
@@ -174,6 +235,7 @@ document.querySelector("#time-off-ct").addEventListener("change", e => {
             getEmpInfoFn();
             getCurrentDateFn();
             changeDateFn();
+            selectFileFn();
             changeUIFn();
         })
 })
@@ -202,6 +264,43 @@ const getCurrentDateFn = () => {
     document.querySelector("#appr-dt").innerHTML = formattedDate;
 }
 
+// 결재선 불러오기
+const getApprLineFn = () => {
+    const tempList = [];        // 직책 기록을 위한 임시 리스트
+    const parentList =  [];     // 직책명 리스트
+    const childList = []        // 직원명 리스트
+    let managerOrder = 1;     // 매니저 id 번호 부여를 위한 변수
+
+    apprLineDtoList.forEach((item) => {
+        // 직책명
+        if (!tempList.includes(item.posNo)) {
+            const parentObj = {
+                "id": item.posNo === 1 ? "manager" : "owner",
+                "parent": "#",
+                "text": item.posName,
+                "icon": "glyphicon glyphicon-home",
+                "state": {"opened" : true}
+            };
+
+            parentList.push(parentObj);
+            tempList.push(item.posNo);
+        }
+
+        // 직원명
+        const childObj = {
+            "id": item.posNo === 1 ? "m" + managerOrder++ : "o1",
+            "parent": item.posNo === 1 ? "manager" : "owner",
+            "text": item.empName,
+            "icon": "glyphicon glyphicon-picture",
+            "a_attr": {"empNo" : item.empNo}
+        }
+
+        childList.push(childObj);
+    })
+
+    return [...parentList, ...childList];
+}
+
 // 결재선 목록
 $('#tree').on('changed.jstree', function (e, data) {
     const selectTarget = data.instance.get_node(data.selected[0]);
@@ -214,14 +313,7 @@ $('#tree').on('changed.jstree', function (e, data) {
 
 }).jstree({
     'core' : {
-        'data' : [
-            { "id" : "owner",   "parent" : "#",       "text" : "점주",   "icon" : "glyphicon glyphicon-home",    "state"  : {"opened" : true}},
-            { "id" : "manager", "parent" : "#",       "text" : "매니저", "icon" : "glyphicon glyphicon-home",    "state"  : {"opened" : true}},
-            { "id" : "o1",      "parent" : "owner",   "text" : "우혜진", "icon" : "glyphicon glyphicon-picture", "a_attr" : {"empNo" : 10}},
-            { "id" : "m1",      "parent" : "manager", "text" : "박종구", "icon" : "glyphicon glyphicon-picture", "a_attr" : {"empNo" : 7}},
-            { "id" : "m2",      "parent" : "manager", "text" : "배영욱", "icon" : "glyphicon glyphicon-picture", "a_attr" : {"empNo" : 8}},
-            { "id" : "m3",      "parent" : "manager", "text" : "최동환", "icon" : "glyphicon glyphicon-picture", "a_attr" : {"empNo" : 11}}
-        ]
+        'data' : getApprLineFn()
     }
 })
 
@@ -271,5 +363,7 @@ document.addEventListener("DOMContentLoaded", function () {
     getEmpInfoFn();
     getCurrentDateFn();
     changeDateFn();
+    selectFileFn();
     changeUIFn();
+    getApprLineFn();
 })

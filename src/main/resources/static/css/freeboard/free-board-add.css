@@ -1,0 +1,97 @@
+@charset "EUC-KR";
+
+#boardTitle {
+	height: 4rem;
+	font-size: 1.5rem;
+	margin-bottom: 10px;
+}
+
+#boardContent {
+	margin-top: 20px;
+	height: 20rem;
+	font-size: 1.5rem;
+	resize: none;
+}
+
+.form-control {
+	width: 1070px;
+}
+
+#cancelBtn {
+	margin-right: 5px;
+	box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+	background-color: #808080 !important;
+	border-color: #808080 !important;
+
+}
+
+.border-bottom {
+	font-size: 2rem;
+	margin-top: 5rem;
+}
+
+.form-label {
+	font-size: 2rem;
+	margin-top: 15px;
+}
+
+#cate {
+	height: 3rem;
+}
+
+/* 문서 작성 form */
+#content-form {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin-top: 25px;
+}
+
+.note-editor {
+	width: 1070px;
+}
+
+/* 에디터 상단 버튼 */
+.note-toolbar button {
+	color: initial !important;
+	background-color: #fff !important;
+	border-color: #ddd !important;
+}
+
+.note-editable {
+	height: 500px !important;
+}
+
+/* 파일 선택 */
+.file-attach {
+	display: flex;
+	width: 1000px;
+	margin-top: 20px;
+}
+
+.free-board-add .file-list {
+	font-size: 1.7rem;
+}
+
+.border-bottom {
+	font-size: 3rem;
+	margin-top: 5rem;
+}
+
+.form-select {
+	font-size: 1.5rem;
+}
+
+.form-control {
+	font-size: 1.7rem;
+}
+
+#cancelBtn, #addBtn {
+	width: 60px;
+	height: 40px;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	font-size: 1.7rem;
+}

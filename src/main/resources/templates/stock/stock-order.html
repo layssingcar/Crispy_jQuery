@@ -18,6 +18,8 @@
 						<button type="button" class="btn" id="add-list">+ 추가하기</button>
 					</div>
 					<hr>
+
+					<!-- 재고 추가 모달 -->
 					<div class="modal fade" id="stockModal" tabindex="-1" aria-labelledby="stockModalLabel" aria-hidden="true">
 						<div class="modal-dialog modal-xl">
 							<div class="modal-content">
@@ -26,36 +28,47 @@
 									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 								</div>
 								<div class="modal-body">
+
+									<!-- 카테고리 선택 -->
 									<div id="category-buttons" class="mb-3">
 										<!-- 카테고리 버튼이 여기에 추가됩니다. -->
 									</div>
-									<!-- 재고명 검색 -->
-									<div class="container-1">
-										<span class="icon"><i class="fa fa-search"></i></span>
-										<input type="text" name="stockNameSearch" id="search" class="form-control" placeholder="재고명을 입력하세요.">
-									</div>
+
 									<div class="stock-list-container">
+										<!-- 테이블 -->
 										<table class="table">
 											<thead>
 											<tr>
 												<th scope="col"><input type="checkbox" id="select-all"></th>
 												<th scope="col">재고 이미지</th>
-												<th scope="col">재고명</th>
+												<th scope="col" class="col-sort">
+													<span>재고명</span>
+													<i class="fa-solid fa-sort" id="stock-name-sort"></i>
+												</th>
 												<th scope="col" class="col-sort">
 													<span>수량</span>
 													<i class="fa-solid fa-sort" id="is-count-sort"></i>
 												</th>
 											</tr>
 											</thead>
+
+											<!-- 리스트 -->
 											<tbody id="stock-list">
-											<!-- 재고 항목이 여기에 추가됩니다. -->
+												<!-- 재고 항목이 여기에 추가됩니다. -->
 											</tbody>
 										</table>
 									</div>
 								</div>
 								<div class="modal-footer">
-									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+
+									<!-- 재고명 검색 -->
+									<div class="container-1">
+										<span class="icon"><i class="fa fa-search"></i></span>
+										<input type="text" name="stockNameSearch" id="search" class="form-control" placeholder="재고명을 입력하세요.">
+									</div>
+
 									<button type="button" class="btn btn-primary" id="add-selected-items">추가하기</button>
+									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
 								</div>
 							</div>
 						</div>
@@ -63,93 +76,67 @@
 
 					<!-- 발주재고 form -->
 					<form method="POST" action="/crispy/insert-order-appr" id="form-container">
-						<div class="order-list">
-
-							<!-- 카테고리 -->
-							<div>
-								<div class="m-right" id="stock-ct">카테고리</div>
-								<select class="form-select form-select-lg mb-3" aria-label="Large select example" name="stockCt">
-									<option value="">선택</option>
-									<option value="">카테고리 1</option>
-									<option value="">카테고리 2</option>
-									<option value="">카테고리 3</option>
-									<option value="">카테고리 4</option>
-									<option value="">카테고리 5</option>
-								</select>
-							</div>
-
-							<!-- 재고명 -->
-							<div>
-								<div class="m-right" id="stock-name">재고명</div>
-								<select class="form-select form-select-lg mb-3" aria-label="Large select example" name="stockName">
-									<option value="">선택</option>
-									<option value="">재고 1</option>
-									<option value="">재고 2</option>
-									<option value="">재고 3</option>
-									<option value="">재고 4</option>
-									<option value="">재고 5</option>
-								</select>
-							</div>
-
-							<!-- 단가 -->
-							<div>
-								<div class="m-right">단가</div>
-								<div class="stock-price">
-									<span>500</span>
-									<span>원</span>
-									<span>&nbsp;/&nbsp;</span>
-									<span>30g</span>
-								</div>
-							</div>
-
-							<!-- 수량 -->
-							<div>
-								<div class="m-right">수량</div>
-								<input type="text" class="form-control">
-								<div>개</div>
-							</div>
-
-							<!-- 합계금액 -->
-							<div class="total-cost">
-								<span class="strong">50,000</span>
-								<span>원</span>
-							</div>
-						</div>
-						<hr>
-
-						<!-- 테스트용 -->
 						<div id="stock-temp-container" th:fragment="stock-temp-container">
 							<th:block th:each="stockDto, stat : ${stockDtoList}">
-								<div class="select-stock">
-									<span>카테고리: </span>
-									<span th:text="${stockDto.stockCtName}"></span>
-									<span> | 재고명: </span>
-									<span th:text="${stockDto.stockName}"></span>
-									<span> | 단가: </span>
-									<span th:with="formattedPrice=${#numbers.formatDecimal(stockDto.stockPrice, 0, 'COMMA', 0, 'COMMA')}"
-										  th:text="${formattedPrice}" class="test-price"></span>
-									<span>원 / </span>
-									<span th:text="${stockDto.stockUnit}"></span>
-									<span> | 수량: </span>
-									<input type="text" class="test-count"
-										   th:name="|stockOrderList[${stat.index}].stockOrderCount|"
-										   th:value="${stockDto.stockOrderCount}">
-									<input type="hidden" class="stock-order-cost"
-										   th:name="|stockOrderList[${stat.index}].stockOrderCost|"
-										   th:value="${stockDto.stockOrderCost}">
-									<span>개 | 금액: </span>
-									<span class="test-cost"
-										  th:with="formattedCost=${#numbers.formatDecimal(stockDto.stockOrderCost, 0, 'COMMA', 0, 'COMMA')}"
-										  th:text="${formattedCost}">0</span>
-									<span>원</span>
-									<input type="hidden"
-										   th:name="|stockOrderList[${stat.index}].stockNo|"
-										   th:value="${stockDto.stockNo}">
-									<i class="fa-solid fa-x"></i>
-									<hr>
+								<div class="order-list">
+
+									<!-- 카테고리 -->
+									<div>
+										<div class="m-right" id="stock-ct">카테고리</div>
+										<div th:text="${stockDto.stockCtName}"></div>
+									</div>
+
+									<!-- 재고명 -->
+									<div>
+										<div class="m-right" id="stock-name">재고명</div>
+										<div th:text="${stockDto.stockName}"></div>
+									</div>
+
+									<!-- 단가 -->
+									<div>
+										<div class="m-right">단가</div>
+										<div class="stock-price">
+											<span th:with="formattedPrice=${#numbers.formatDecimal(stockDto.stockPrice, 0, 'COMMA', 0, 'COMMA')}"
+												  th:text="${formattedPrice}"></span>
+											<span>원</span>
+											<span>&nbsp;/&nbsp;</span>
+											<span th:text="${stockDto.stockUnit}"></span>
+										</div>
+									</div>
+
+									<!-- 수량 -->
+									<div>
+										<div class="m-right">수량</div>
+										<input type="text" class="form-control inp-count"
+											   th:name="|stockOrderList[${stat.index}].stockOrderCount|"
+											   th:value="${stockDto.stockOrderCount != 0 ? stockDto.stockOrderCount : ''}">
+										<input type="hidden" class="stock-order-cost"
+											   th:name="|stockOrderList[${stat.index}].stockOrderCost|"
+											   th:value="${stockDto.stockOrderCost}">
+										<div>개</div>
+									</div>
+
+									<!-- 합계금액 -->
+									<div class="total-cost">
+										<span class="strong"
+											  th:with="formattedCost=${#numbers.formatDecimal(stockDto.stockOrderCost, 0, 'COMMA', 0, 'COMMA')}"
+											  th:text="${formattedCost}"></span>
+										<span>원</span>
+										<input type="hidden"
+											   th:name="|stockOrderList[${stat.index}].stockNo|"
+											   th:value="${stockDto.stockNo}">
+									</div>
+
+									<!-- 삭제 버튼 -->
+									<div class="delete-item">
+										<i class="fa-regular fa-circle-xmark"></i>
+										<span>삭제</span>
+									</div>
 								</div>
+								<hr>
 							</th:block>
 						</div>
+
 						<!-- 하단 버튼 -->
 						<div class="bottom-btn">
 
@@ -175,7 +162,10 @@
 			<footer th:replace="~{layout/footer :: footer}"></footer>
 		</div>
 	</div>
+
 	<script src="/js/stock/stockOrder.js"></script>
+
+	<!-- 재고 추가 모달 -->
 	<script>
 		document.addEventListener("DOMContentLoaded", function () {
 			// 모달 띄우는 버튼

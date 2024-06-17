@@ -32,8 +32,8 @@
 
 /* 프로필 이미지 */
 .sidebar .nav-img {
-    width: 200px;
-    height: 200px;
+    width: 150px;
+    height: 150px;
     border: 1px solid #e6e7eb;
     border-radius: 100%;
     object-fit: cover;
@@ -54,12 +54,12 @@
 
 /* 프로필 드롭다운 */
 .sidebar .profile-mc {
-    top: 50px;
-    right: -145px;
+    position: absolute;
+    top: 160px;
 }
 
 .sidebar .profile-mc ul {
-    width: 130px;
+    width: 175px;
     text-align: center;
 }
 
@@ -129,7 +129,16 @@
     display: none;
 }
 
-.sidebar .notification-mc ul {width: 225px;}
+.sidebar .notification-mc ul {
+    width: 225px;
+    position: absolute;
+    top: 35px;
+    left: -12px;
+    border: 1px solid #efefef;
+    border-radius: 5px;
+    box-shadow: 0 5px 9px rgba(0, 0, 0, 0.15);
+    background: #fff;
+}
 
 /* 채팅 개수 */
 .sidebar .chat-menu > a {position: relative;}

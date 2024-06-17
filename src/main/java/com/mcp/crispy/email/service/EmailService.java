@@ -16,7 +16,8 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-//@PropertySource("classpath:email.properties")
+
+/*@PropertySource("classpath:email.properties")*/
 public class EmailService {
 
 //    @Value("${spring.mail.username}")

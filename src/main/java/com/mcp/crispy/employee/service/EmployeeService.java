@@ -34,9 +34,8 @@ public class EmployeeService {
     private final PasswordChangeValidator passwordChangeValidator;
 
 
-
     // 직원 아이디로 직원 정보 가져오기
-    public EmployeeDto getEmployeeName(String username) {
+     public EmployeeDto getEmployeeName(String username) {
         return employeeMapper.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("직원이 존재하지 않습니다."));
     }
@@ -119,7 +118,7 @@ public class EmployeeService {
         if (signData != null && !signData.isEmpty()) {
             try {
                 String fileName = imageService.storeSignatureImage(signData, empNo);
-                String storedUrl = "/upload/" + fileName;
+                String storedUrl = "/emp_sign/" + fileName;
                 employeeUpdateDto.setEmpSign(storedUrl);
             } catch (IOException e) {
                 throw new RuntimeException("서명 저장에 실패했습니다.", e);
@@ -214,6 +213,7 @@ public class EmployeeService {
         return employeeMapper.searchEmployees(employeeDto.getEmpName(), empNo);
     }
 
+    // 사용자 초대 메소드
     public List<EmployeeDto> getInviteEmployees(Integer chatRoomNo) {
         return employeeMapper.inviteEmployees(chatRoomNo);
     }
@@ -245,6 +245,14 @@ public class EmployeeService {
     // 로그아웃시 리프레시 토큰 삭제
     @Transactional
     public void removeRefreshToken(int empNo) {
+
         employeeMapper.removeRefreshToken(empNo);
     }
+    
+    // 직원 연차 차감
+    @Transactional
+    public void updateAnnual(EmployeeDto empDto) {
+    	employeeMapper.updateAnnual(empDto);
+    }
+
 }
