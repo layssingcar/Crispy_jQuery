@@ -36,25 +36,6 @@
   	        $('#city').append(city);
   	    }
   	})
-  	
-	// 달력 영역
-	  const calendarEl = document.getElementById('calendar');
-	  const calendarHeader = {
-	    left: 'prev,next',          
-	    center: 'title',
-	    right:'today'        
-	  }
-	
-	  const calendarOpt = {
-	    headerToolbar: calendarHeader,
-	    initialView: 'dayGridMonth',
-	    selectable:true,    // 달력 날짜 드래그
-	    locale:'kr',      // 달력 언어 설정
-	    dayMaxEventRows:true
-	  }
-	
-	  const calendar = new FullCalendar.Calendar(calendarEl, calendarOpt);
-	  calendar.render();
 	  
 	  // 출 퇴근 영역
 	  let startWorkTime, endWorkTime, workingTime;
@@ -144,6 +125,7 @@
   const ctx = document.querySelector('#myChart');
   let guList = [];
   let avgSalesList = [];
+  let totalSalesList = [];
   
 	$.ajax({
 		type:'GET',
@@ -155,7 +137,8 @@
 	.done(function(data){
 		$(data).each(function(){
 			guList.push(this.frnGu);
-			avgSalesList.push(this.totalAvgSales);				
+			avgSalesList.push(this.totalAvgSales);		
+			totalSalesList.push(this.totalSales);		
 		})
 		// alert("매출 성공");
 		      new Chart(ctx, {
@@ -165,7 +148,7 @@
 	              datasets: [
 		            {
 		                type: 'bar', // 바 차트 데이터 세트
-		                label: 'Bar Dataset',
+		                label: '구별 평균 매출',
 		                data: avgSalesList,
 		                backgroundColor: 'rgba(75, 192, 192, 0.2)',
 		                borderColor: 'rgba(75, 192, 192, 1)',
@@ -173,8 +156,8 @@
 		            },
 		            {
 		                type: 'line', // 라인 차트 데이터 세트
-		                label: 'Line Dataset',
-		                data: avgSalesList,
+		                label: '구별 총 매출',
+		                data: totalSalesList,
 		                fill: false,
 		                borderColor: 'rgba(153, 102, 255, 1)'
 		            }

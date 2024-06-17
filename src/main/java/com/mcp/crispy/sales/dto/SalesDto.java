@@ -40,4 +40,5 @@ public class SalesDto {
 
     /* 매출 총합 정보 */
     private Double totalAvgSales;
+    private Double totalSales;
 }

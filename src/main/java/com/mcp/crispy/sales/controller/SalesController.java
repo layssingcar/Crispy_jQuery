@@ -75,7 +75,7 @@ public class SalesController {
 
 	/* 구별 매출 조회 : 카테고리, 가맹점 테이블 */
 	@ResponseBody
-	@GetMapping(value = "/guAvgSales", produces = "application/json")
+	@GetMapping(value = "/getGuAvgSales", produces = "application/json")
 	public List<SalesDto> findGuAvgSales(@RequestParam("month") int month) {
 		return salesService.findGuAvgSales(month);
 	}
