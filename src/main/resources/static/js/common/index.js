@@ -43,7 +43,30 @@
   	  let hour = 0, minute = 0, second = 0;
   	  let perWork = 0;
   	  let h = 0, m = 0, s = 0;
-	  function updateClock() {
+	  document.addEventListener('DOMContentLoaded', function() {
+	      if(localStorage.getItem('startWorkTime') != null){
+			startWorkTime = localStorage.getItem('startWorkTime');
+			let endTime = moment();
+			
+			// 시간 차이 계산 (milliseconds)
+			let diffMilliseconds = endTime.diff(startWorkTime);
+			
+			// duration 객체로 변환하여 시, 분, 초로 접근할 수 있음
+			let duration = moment.duration(diffMilliseconds);
+			hour = duration.hours();
+			minute = duration.minutes();
+			second = duration.seconds();			
+			
+		  	$("#work-start").text("출근시간 : " + startWorkTime);			  
+		  	$("#btn-work").attr("disabled", true);
+		  	$("#btn-finish").attr("disabled", false);
+		  	
+		  	timer = setInterval(updateAtt, 1000);
+		  	updateAtt();
+		  }
+	  });  	  
+  	  
+	  function updateAtt() {
 		  	++second;
 		  	++perWork;
 		  	
@@ -67,17 +90,21 @@
 		    
 		    $("#work-time").text("근무시간 : " + h + ":" + m + ":" + s);	
 		  }
-
-	  function fnClickWork(){
+		  
+		function fnClickWork(){
 		  	startWorkTime = moment().format('HH:mm:ss');
- 		  	$("#work-start").text("출근시간 : " + startWorkTime);			  
- 		  	$("#btn-work").attr("disabled", true);
- 		  	$("#btn-finish").attr("disabled", false);
- 		  	
- 		  	timer = setInterval(updateClock, 1000);
- 		  	updateClock();
-	  }
+		  	localStorage.setItem('startWorkTime', startWorkTime);
+		  	
+		  	$("#work-start").text("출근시간 : " + startWorkTime);			  
+		  	$("#btn-work").attr("disabled", true);
+		  	$("#btn-finish").attr("disabled", false);
+		  	
+		  	timer = setInterval(updateAtt, 1000);
+		  	updateAtt();
+		}		  
+		  
 	  function fnClickFin(){
+			localStorage.removeItem('startWorkTime');
 		    // 현재 시간을 HH:mm:ss 형식으로 저장
 		    endWorkTime = moment().format('HH:mm:ss');
 
@@ -177,3 +204,45 @@
 		alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
 	})    
 		
+	// 시계
+	function updateClock() {
+	    const now = new Date();
+	    const daysOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
+	    const dayOfWeek = daysOfWeek[now.getDay()];
+	    const year = now.getFullYear();
+	    const month = (now.getMonth() + 1).toString().padStart(2, '0');
+	    const day = now.getDate().toString().padStart(2, '0');
+	    const hours = now.getHours();
+	    const minutes = now.getMinutes().toString().padStart(2, '0');
+	    const seconds = now.getSeconds().toString().padStart(2, '0');
+	    
+	    let ampm = 'AM';
+	    let displayHours = hours;
+	    
+	    if (hours >= 12) {
+	        ampm = 'PM';
+	        displayHours = hours % 12;
+	        if (displayHours === 0) {
+	        	displayHours = 12;
+	        }
+	    }
+	    
+	    const dateString = year + "년 " + month + "월 " + day + "일 " + "(" + dayOfWeek + ")"; 
+	    const timeString = displayHours + ":" + minutes + ":" + seconds + " " + ampm;
+	    document.getElementById('date').textContent = dateString;
+	    document.getElementById('time').textContent = timeString;
+	    
+        const secondsDegrees = ((seconds / 60) * 360) + 90;
+        document.getElementById('second').style.transform = `rotate(${secondsDegrees}deg)`;
+
+        const minutesDegrees = ((minutes / 60) * 360) + ((seconds/60)*6) + 90;
+        document.getElementById('minute').style.transform = `rotate(${minutesDegrees}deg)`;
+
+        const hoursDegrees = ((hours / 12) * 360) + ((minutes/60)*30) + 90;
+        document.getElementById('hour').style.transform = `rotate(${hoursDegrees}deg)`;
+	}
+	
+	// 매 초마다 시계 업데이트
+	setInterval(updateClock, 1000);
+	// 페이지 로드 시에도 시계 업데이트
+	updateClock();		
