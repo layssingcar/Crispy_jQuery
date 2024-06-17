@@ -95,9 +95,6 @@
     color: #0095f6;
 }
 
-/* 선택된 분류 */
-.message .left > div:nth-child(2) > div:first-child {border-bottom: 1px solid black;}
-
 /* 채팅방 목록 */
 .message .left > div:nth-child(3) {
     padding-top: 8px;

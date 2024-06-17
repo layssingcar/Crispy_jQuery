@@ -51,6 +51,7 @@ public class SecurityConfig {
 				.authorizeHttpRequests(config -> config
 						.requestMatchers("/api/auth/**").permitAll()
 						.requestMatchers("/crispy/sales/**").permitAll()
+						.requestMatchers("/api/email/verificationCode/verify/v1").permitAll()
 						.requestMatchers("/app/**").permitAll()
 						.requestMatchers("/user/**").permitAll()
 						.requestMatchers("/topic/**").permitAll()
