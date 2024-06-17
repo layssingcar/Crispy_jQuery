@@ -5,9 +5,9 @@
 	
 	<!-- 구 별 평균 매출 조회 결과-->
 	<resultMap type="SalesDto" id="SalesMapByGuAvg">
-		<id property="salNo" column="SAL_NO" />
-		<result property="frnGu" column="FRN_GU"/>
-		<result property="totalAvgSales" column="TOTAL_AVG_SALES"/>
+		   <id property="salNo" column="SAL_NO" />
+       <result property="frnGu" column="FRN_GU"/>
+       <result property="totalAvgSales" column="TOTAL_AVG_SALES"/>
 	</resultMap>
 
     <!-- 매출 INSERT -->
@@ -51,7 +51,7 @@
         INNER JOIN FRANCHISE_T F
                 ON S.FRN_NO = F.FRN_NO
              WHERE F.FRN_NO = #{frnNo}
-            GROUP BY TO_CHAR(TRUNC(TO_DATE(SAL_DT, 'yyyy-mm-dd')), 'dd')
+          GROUP BY TO_CHAR(TRUNC(TO_DATE(SAL_DT, 'yyyy-mm-dd')), 'dd')
     </select>
 
     <!-- 달별 매출 SELECT -->
@@ -88,19 +88,30 @@
 
     <!-- 구별 매출 조회 : 카테고리, 가맹점 테이블 -->
     <select id="findGuAvgSales">
-		SELECT
-		       F.FRN_GU,
-      		   SUM(S.SAL_PRICE) / COUNT(DISTINCT F.FRN_NO) AS TOTAL_AVG_SALES
-	    	FROM SALES_T S
-		    INNER JOIN FRANCHISE_T F 
-		    ON S.FRN_NO = F.FRN_NO
-		    WHERE EXTRACT(MONTH FROM S.SAL_DT) = #{month}
-		    GROUP BY F.FRN_GU
-		    ORDER BY F.FRN_GU ASC		
+		    SELECT F.FRN_GU
+      		     , SUM(S.SAL_PRICE) / COUNT(DISTINCT F.FRN_NO) AS TOTAL_AVG_SALES
+	    	  FROM SALES_T S
+		INNER JOIN FRANCHISE_T F
+		        ON S.FRN_NO = F.FRN_NO
+		     WHERE EXTRACT(MONTH FROM S.SAL_DT) = #{month}
+		  GROUP BY F.FRN_GU
+		  ORDER BY F.FRN_GU ASC
     </select>
 
     <!-- 이달의 매장 순위 -->
     <select id="findSalesRenk">
 
+    </select>
+
+    <select id="salesDetail" parameterType="map" resultType="SalesDto">
+            SELECT S.SAL_NO
+                 , S.SAL_DT
+                 , S.SAL_PRICE
+                 , F.FRN_NO
+                 , F.FRN_NAME
+              FROM SALES_T S
+        INNER JOIN FRANCHISE_T F
+                ON S.FRN_NO = F.FRN_NO
+             WHERE S.SAL_NO = #{salNo}
     </select>
 </mapper>

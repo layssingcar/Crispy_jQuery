@@ -11,6 +11,7 @@
 .franchise-list .top-area {
     display: flex;
     justify-content: flex-end;
+    margin-top: 30px;
 }
 
 /* 상단 공간 */
@@ -21,19 +22,23 @@
 
 /* 상단 영역 버튼 */
 .franchise-list .top-area button {
-    width: 100px;
+    width: 120px;
+    height: 40px;
     margin-left: 15px;
-    border-radius: 15px;
+    line-height: 45px;
+    font-size: 1.7rem;
+    border-radius: 5px;
     border: 0;
     background-color: var(--sub-color) !important;
 }
 
 /* 가맹점 등록 버튼 */
 .franchise-list .frnBtn {
-    width: 100px;
-    font-size: 1.5rem;
+    width: 125px;
+    height: 40px;
+    font-size: 1.7rem;
     line-height: 35px;
-    border-radius: 15px;
+    border-radius: 5px;
     background-color: var(--main-color);
     color: #fff;
 }
@@ -74,7 +79,12 @@
     text-align: center;
 }
 
-/* 기안일 정렬 */
+.franchise-list table a {
+    margin: 0 11px;
+    font-size: 2.2rem;
+}
+
+    /* 기안일 정렬 */
 .franchise-list .col-sort {position: relative;}
 
 /* 데이터 셀 */

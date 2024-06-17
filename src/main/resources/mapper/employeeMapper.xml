@@ -81,7 +81,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <!-- 로그인시에 필요한 정보만 -->
     <select id="loadByMiniEmpId" resultType="EmployeeDto">
         SELECT E.EMP_NO, E.REFRESH_TOKEN, E.EMP_PW, E.EMP_ID, E.EMP_NAME, E.REFRESH_TOKEN
-             , F.FRN_NO, F.FRN_OWNER
+             , F.FRN_NO, F.FRN_OWNER, F.FRN_NAME
              , P.POS_NAME, P.POS_NO
           FROM EMPLOYEE_T E
      LEFT JOIN FRANCHISE_T F
@@ -287,6 +287,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="currentEmpNo != null">
                 AND E.EMP_NO != #{currentEmpNo}
             </if>
+            ORDER BY F.FRN_NAME, E.EMP_NAME
     </select>
 
     <!-- 직원 초대 -->

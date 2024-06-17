@@ -60,10 +60,16 @@
 		}
 		.month-btn-group{
 			width:1250px;
-			margin-top: 20px;
+			margin: 20px;
 			display: flex;
 			justify-content: center;
 		}
+        .month {
+            text-align: center;
+        }
+        #monthtext {
+            margin: 0 20px;
+        }
     </style>
 </head>
 <body>
@@ -100,7 +106,7 @@
 	                </table>
                 </div>
 				<br>
-                <div><h1>월별 근로 시간 현황</h1></div>
+                <div><h1 class="month">월별 근로 시간 현황</h1></div>
 				<div class="chartarea">
 					<canvas id="myChart"></canvas>
 				</div>

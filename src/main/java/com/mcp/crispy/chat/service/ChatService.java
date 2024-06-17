@@ -148,8 +148,6 @@ public class ChatService {
                     messagingTemplate.convertAndSendToUser(participant.getEmpId(), "/queue/unreadCount", receiverUnread);
                 }
             }
-        } else {
-            log.error("인증상태가 잘못되었습니다.");
         }
     }
 
