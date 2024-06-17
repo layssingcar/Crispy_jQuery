@@ -67,7 +67,8 @@
 										<input type="text" name="stockNameSearch" id="search" class="form-control" placeholder="재고명을 입력하세요.">
 									</div>
 
-									<button type="button" class="btn btn-primary" id="add-selected-items">추가하기</button>
+									<button type="button" class="btn btn-primary" id="add-selected-items"
+											style="width: 100px">추가하기</button>
 									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
 								</div>
 							</div>
@@ -82,13 +83,13 @@
 
 									<!-- 카테고리 -->
 									<div>
-										<div class="m-right" id="stock-ct">카테고리</div>
+										<div class="m-right stock-ct">카테고리</div>
 										<div th:text="${stockDto.stockCtName}"></div>
 									</div>
 
 									<!-- 재고명 -->
 									<div>
-										<div class="m-right" id="stock-name">재고명</div>
+										<div class="m-right stock-name">재고명</div>
 										<div th:text="${stockDto.stockName}"></div>
 									</div>
 

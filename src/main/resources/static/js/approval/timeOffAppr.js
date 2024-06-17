@@ -363,7 +363,7 @@ document.querySelector("#remove-emp").addEventListener("click", () => {
 
 // 화면 전환
 const changeUIFn = () => {
-    const timeOffAppr = document.querySelector(".time-off-appr");   // 결재 신청 화면
+    const timeOffAppr = document.querySelector(".time-off-doc");   // 결재 신청 화면
     const apprLine = document.querySelector(".appr-line");          // 결재선 선택 화면
 
     // 결재 신청 -> 결재선 선택
