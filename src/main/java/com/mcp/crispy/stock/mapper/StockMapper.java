@@ -19,6 +19,9 @@ public interface StockMapper {
     // 재고 현황 조회
     List<StockDto> getStockList(StockOptionDto stockOptionDto, RowBounds rowBounds);
 
+    // 재고 현황 조회 (페이징 처리 X)
+    List<StockDto> getStockList(StockOptionDto stockOptionDto);
+
     // 재고 카테고리 목록 조회
     List<StockDto> getStockCtList();
 
