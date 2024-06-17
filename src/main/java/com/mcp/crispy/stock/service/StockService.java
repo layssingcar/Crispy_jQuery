@@ -114,6 +114,7 @@ public class StockService {
         ApprLineDto apprLineDto = ApprLineDto.builder()
                 .apprLineOrder(0)
                 .apprNo(apprNo)
+                .empNo(approvalDto.getEmpNo())
                 .creator(approvalDto.getEmpNo())
                 .build();
         log.info("apprLineDto: {}", approvalDto.getEmpNo());
@@ -128,6 +129,9 @@ public class StockService {
         NotifyDto notifyDto = NotifyDto.builder()
                 .notifyCt(notifyCt)
                 .notifyContent(frn.getFrnName() + "에서 " + notifyCt.getDescription() +"결재를 요청하였습니다.")
+                .notifyType("approval") // 추가
+                .status("sign") // 추가
+                .documentType("stock-order")
                 .build();
 
         // 알림 전송
