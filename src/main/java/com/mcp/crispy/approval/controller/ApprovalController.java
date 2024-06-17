@@ -161,7 +161,7 @@ public class ApprovalController {
 	@PostMapping("insert-time-off-appr")
 	public String insertTimeOffAppr(Authentication authentication,
 									@ModelAttribute ApprovalDto approvalDto,
-									RedirectAttributes ra) {
+									RedirectAttributes ra) throws IOException {
 
 		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
 		approvalDto.setEmpNo(userDetails.getEmpNo());

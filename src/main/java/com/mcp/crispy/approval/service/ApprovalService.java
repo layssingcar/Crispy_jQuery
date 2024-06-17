@@ -67,7 +67,7 @@ public class ApprovalService {
 
     // 휴가, 휴직 신청
     @Transactional
-    public int insertTimeOffAppr(ApprovalDto approvalDto) {
+    public int insertTimeOffAppr(ApprovalDto approvalDto) throws IOException {
 
         // 전자결재 테이블
         approvalMapper.insertApproval(approvalDto);
