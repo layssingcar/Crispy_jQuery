@@ -52,8 +52,8 @@
             <if test="searchKeyword != null and searchKeyword != ''">
                 AND (
                     B.BOARD_TITLE LIKE '%' || #{searchKeyword} || '%'
-                    OR B.BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%'
-                    OR E.EMP_NAME LIKE '%'|| #{searchKeyword} || '%')
+                OR COALESCE(B.BOARD_CONTENT, '') LIKE '%' || #{searchKeyword} || '%'
+                OR E.EMP_NAME LIKE '%'|| #{searchKeyword} || '%')
             </if>
     </select>
 

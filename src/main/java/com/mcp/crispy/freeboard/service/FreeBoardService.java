@@ -116,9 +116,13 @@ public class FreeBoardService {
         List<FreeBoardDto> items = freeBoardMapper.getFreeBoardList(freeBoardDto, rowBounds);
         items.forEach(item -> {
             String boardTitle = badWordFiltering.change(item.getBoardTitle());
-            String boardContent = badWordFiltering.change(item.getBoardContent());
+
+            if (item.getBoardContent() != null) {
+                String boardContent = badWordFiltering.change(item.getBoardContent());
+                item.setBoardContent(boardContent);
+            }
+
             item.setBoardTitle(boardTitle);
-            item.setBoardContent(boardContent);
         });
 
         // PageResponse 객체
@@ -138,7 +142,10 @@ public class FreeBoardService {
 
         // 게시판 제목과 내용을 필터링
         freeBoardDto.setBoardTitle(badWordFiltering.change(freeBoardDto.getBoardTitle()));
-        freeBoardDto.setBoardContent(badWordFiltering.change(freeBoardDto.getBoardContent()));
+
+        if (freeBoardDto.getBoardContent() != null) {
+            freeBoardDto.setBoardContent(badWordFiltering.change(freeBoardDto.getBoardContent()));
+        }
 
         boolean isLiked = freeBoardMapper.isLiked(boardNo, empNo) > 0;
         freeBoardDto.setLiked(isLiked);
