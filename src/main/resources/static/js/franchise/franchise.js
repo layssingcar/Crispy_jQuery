@@ -230,7 +230,7 @@ const franchise = {
         if (inputElement.tagName.toLowerCase() === 'input' || inputElement.tagName.toLowerCase() === 'select') {
             inputElement?.addEventListener("change", () => {
                 console.log("둘중에 어떤 게? change")
-                changeButton.disabled = inputElement.value.() === originalValue.();
+                changeButton.disabled = inputElement.value.trim() === originalValue.trim();
                 console.log(changeButton.disabled)
             });
         }

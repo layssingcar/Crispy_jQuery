@@ -10,17 +10,17 @@
  * Date: 2020-05-20T18:09Z
  * 
  */
-(function webpackUniversaModueDefinition(root, factory) {
-	// if(typeof exports === 'object' && typeof modue === 'object')
-	// 	modue.exports = factory();
-	// ese if(typeof define === 'function' && define.amd)
-	// 	define([], factory);
-	// ese {
-	// 	var a = factory();
-	// 	for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
-	// }
+(function webpackUniversaModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else {
+		var a = factory();
+		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
+	}
 })(window, function() {
-return /******/ (function(modues) { // webpackBootstrap
+return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 /******/

@@ -69,7 +69,7 @@ const franchiseList = {
     },
 
     handleSearchInput: function(event) {
-        this.frnName = event.target.value.();
+        this.frnName = event.target.value.trim();
         this.currentPage = 1;
         this.loadFrnData(this.currentPage, this.frnName);
     },
@@ -232,7 +232,7 @@ const franchiseList = {
         const checkboxes = document.querySelectorAll('input[name="frnCheckbox"]:checked');
         const frnNos = Array.from(checkboxes)
             .map(checkbox => checkbox.id)
-            .filter(frnNo => frnNo.() !== "");
+            .filter(frnNo => frnNo.trim() !== "");
         if (frnNos.length === 0) {
             alert("삭제할 가맹점을 선택해주세요.");
             return;

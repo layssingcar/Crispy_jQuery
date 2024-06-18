@@ -402,7 +402,7 @@ const board = {
                                     Swal.fire({
                                         icon: 'error',
                                         title: 'Error',
-                                        text: errorMessagel
+                                        text: errorMessage
                                     });
                                 });
                             } else {
