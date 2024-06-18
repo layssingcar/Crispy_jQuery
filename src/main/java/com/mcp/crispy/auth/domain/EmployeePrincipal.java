@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Getter
-public class EmployeePrincipal implements UserDetails, CrispyUserPrincipal {
+public class EmployeePrincipal implements UserDetails {
 
     private final EmployeeDto employee;
     private final List<GrantedAuthority> authorities;
@@ -40,16 +40,6 @@ public class EmployeePrincipal implements UserDetails, CrispyUserPrincipal {
     @Override
     public String getUsername() {
         return employee.getEmpId();
-    }
-
-    @Override
-    public Integer getEmpNo() {
-        return employee.getEmpNo();
-    }
-
-    @Override
-    public Integer getFrnNo() {
-        return employee.getFrnNo();
     }
 
     @Override
