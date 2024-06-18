@@ -162,7 +162,7 @@
 		type:'GET',
 		url: '/crispy/getGuAvgSales',
         contentType: 'application/json',
-		data:'month=' + 6,
+		data:'month=' + moment().format('M'),
 		dataType:'json'
     })
 	.done(function(data){
