@@ -1,5 +1,7 @@
 package com.mcp.crispy.notification.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mcp.crispy.notification.dto.NotifyDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -11,7 +13,7 @@ import java.util.Map;
 @Service
 public class SseService {
 
-    public static final int ADMIN_NO = 10001;
+    public static final int ADMIN_NO = 0;
 
 
     private final Map<Long, SseEmitter> emitters = new HashMap<>();
@@ -64,16 +66,19 @@ public class SseService {
         return emitter;
     }
 
-    public void sendNotification(Long empNo, String message) {
+    public void sendNotification(Long empNo, NotifyDto notifyDto) {
         SseEmitter emitter = emitters.get(empNo);
         log.info("sendNotification: {}", emitter);
         if (emitter != null) {
             try {
-                emitter.send(SseEmitter.event().name("notification").data(message));
+                // JSON 형식으로 변환하여 전송
+                String jsonData = new ObjectMapper().writeValueAsString(notifyDto);
+                emitter.send(SseEmitter.event().name("notification").data(jsonData));
                 log.info("전송됐나요?");
             } catch (Exception e) {
                 emitters.remove(empNo);
             }
         }
     }
+
 }

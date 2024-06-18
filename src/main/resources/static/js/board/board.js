@@ -13,6 +13,10 @@ const board = {
         document.querySelector(".board-list")?.addEventListener("click", () => {
             location.href = "/crispy/board-list/free";
         })
+        document.getElementById("btn-cancel")?.addEventListener("click", function () {
+            const boardNo = document.querySelector(".board-no").value;
+            location.href= `/crispy/freeBoardDetail/${boardNo}`;
+        })
 
         const addBoard = document.getElementById("addBtn");
         addBoard?.addEventListener("click", this.addBoard.bind(this));
@@ -146,7 +150,7 @@ const board = {
         }).then(data => {
             alert(data.message);
             const boardNo = data.boardNo;
-            location.href = `/crispy/freeBoardDetail?boardNo=${boardNo}`;
+            location.href = `/crispy/freeBoardDetail/${boardNo}`;
         }).catch(error => {
             console.error('Error:', error);
         });
@@ -200,7 +204,7 @@ const board = {
         }).then(data => {
             alert(data.message);
             const boardNo = data.boardNo;
-            location.href = `/crispy/freeBoardDetail?boardNo=${boardNo}`;
+            location.href = `/crispy/freeBoardDetail/${boardNo}`;
         }).catch(error => {
             console.error('Error:', error);
         });

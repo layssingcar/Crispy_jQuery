@@ -16,17 +16,33 @@
 			<main>
 				<div class="mainarea">
 					<!-- 내부 내용 -->
-					<div class="weather">
-						<div id="weather-icon"></div>
-						<div id="temp"></div>
-						<div id="weather-desc"></div>
-						<div id="city"></div>
-					</div>
-					<div class="maintop">
+					<div class="mainleft">
+						<div class="weather">
+							<div id="weather-icon"></div>
+							<div id="temp"></div>
+							<div id="weather-desc"></div>
+							<div id="city"></div>
+						</div>
 						<div class="area1">
-							<div class="area1-profile">
+							<div id="date"></div>
+							<hr id="line">
+							<div id="time"></div>
+							<div class="clock">
+							    <div class="hand hour-hand" id="hour"></div>
+							    <div class="hand minute-hand" id="minute"></div>
+							    <div class="hand second-hand" id="second"></div>
 							</div>
-							<div class="area1-info">
+						</div>
+						<div class="area2">
+							<div class="area2-info">
+								<div class="area2-inoutBtn">
+									<div class="btn-workfin">
+										<button type="button" class="btn btn-outline-primary btn-lg"
+											id="btn-work" onclick="fnClickWork()">출근</button>
+										<button type="button" class="btn btn-outline-danger btn-lg"
+											id="btn-finish" onclick="fnClickFin()" disabled>퇴근</button>
+									</div>
+								</div>
 								<div id="work-start">출근시간 : 00:00:00</div>
 								<div id="work-fin">퇴근시간 : 00:00:00</div>
 								<div class="progress">
@@ -37,177 +53,12 @@
 								</div>
 								<div id="work-time">근무시간 : 00:00:00</div>
 							</div>
-							<div class="area1-inoutBtn">
-								<div class="btn-workfin">
-									<button type="button" class="btn btn-outline-primary btn-lg"
-										id="btn-work" onclick="fnClickWork()">출근</button>
-									<button type="button" class="btn btn-outline-danger btn-lg"
-										id="btn-finish" onclick="fnClickFin()" disabled>퇴근</button>
-								</div>
-							</div>
-							<div class="area1-qr">
-							</div>
-						</div>
-						<div class="area2">
-							<div class="board-list">
-								<div class="top-area">
-									<h1>공지사항</h1>
-									<a href="/crispy/board-list2"><i class="fa-solid fa-plus"
-										id="noti"></i></a>
-								</div>
-								<!-- 테이블 -->
-								<table class="table">
-									<!-- 리스트 -->
-									<thead>
-										<tr>
-											<th scope="col">게시물 번호</th>
-											<th scope="col">작성자</th>
-											<th scope="col">제목</th>
-											<th scope="col">내용</th>
-											<th scope="col">조회수</th>
-											<th scope="col">작성일</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>1</td>
-											<td>1</td>
-											<td>제목</td>
-											<td>내용</td>
-											<td>20</td>
-											<td>2024-05-13</td>
-										</tr>
-										<tr>
-											<td>1</td>
-											<td>1</td>
-											<td>제목</td>
-											<td>내용</td>
-											<td>20</td>
-											<td>2024-05-13</td>
-										</tr>
-										<tr>
-											<td>1</td>
-											<td>1</td>
-											<td>제목</td>
-											<td>내용</td>
-											<td>20</td>
-											<td>2024-05-13</td>
-										</tr>
-										<tr>
-											<td>1</td>
-											<td>1</td>
-											<td>제목</td>
-											<td>내용</td>
-											<td>20</td>
-											<td>2024-05-13</td>
-										</tr>
-										<tr>
-											<td>1</td>
-											<td>1</td>
-											<td>제목</td>
-											<td>내용</td>
-											<td>20</td>
-											<td>2024-05-13</td>
-										</tr>
-										<tr>
-											<td>1</td>
-											<td>1</td>
-											<td>제목</td>
-											<td>내용</td>
-											<td>20</td>
-											<td>2024-05-13</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-						</div>
-						<div class="area3">
-							<div id='calendar'></div>
 						</div>
 					</div>
-					<div class="mainbottom">
-						<div class="area4">
-							<!-- 차트 크기는 부모 크기를 조절하면 거기에 맞게 자동으로 맹글어짐-->
-							<div style="width: 790px; height: 435px;">
-								<!-- 차트 그릴 위치 지정 canvas webGL(그래픽엔진) 사용 -->
+					<div class="mainright">
+						<div class="area3">
+							<div style="width: 790px; height: 700px;">
 								<canvas id="myChart"></canvas>
-							</div>
-						</div>
-
-						<!-- 미니 결재 목록 -->
-						<div class="area5">
-							<div class="approval-list">
-								<div class="top-area">
-									<h1>결재 문서</h1>
-									<a href="/crispy/approval-list"><i class="fa-solid fa-plus"></i></a>
-								</div>
-								<hr>
-
-								<!-- 테이블 -->
-								<table class="table">
-									<!-- 리스트 -->
-									<tbody>
-										<tr>
-											<td><span>휴직신청서</span> <span>( 박종구 )</span></td>
-											<td>2024-05-13</td>
-											<td>대기</td>
-										</tr>
-									</tbody>
-
-									<!-- 리스트 -->
-									<tbody>
-										<tr>
-											<td><span>휴가신청서</span> <span>( 배영욱 )</span></td>
-											<td>2024-05-17</td>
-											<td>진행중</td>
-										</tr>
-									</tbody>
-
-									<!-- 리스트 -->
-									<tbody>
-										<tr>
-											<td><span>휴직신청서</span> <span>( 오정은 )</span></td>
-											<td>2024-05-13</td>
-											<td>완료</td>
-										</tr>
-									</tbody>
-
-									<!-- 리스트 -->
-									<tbody>
-										<tr>
-											<td><span>휴가신청서</span> <span>( 우혜진 )</span></td>
-											<td>2024-05-18</td>
-											<td>완료</td>
-										</tr>
-									</tbody>
-
-									<!-- 리스트 -->
-									<tbody>
-										<tr>
-											<td><span>휴가신청서</span> <span>( 최동환 )</span></td>
-											<td>2024-05-17</td>
-											<td>진행중</td>
-										</tr>
-									</tbody>
-
-									<!-- 리스트 -->
-									<tbody>
-										<tr>
-											<td><span>휴직신청서</span> <span>( 박종구 )</span></td>
-											<td>2024-05-13</td>
-											<td>대기</td>
-										</tr>
-									</tbody>
-
-									<!-- 리스트 -->
-									<tbody>
-										<tr>
-											<td><span>휴가신청서</span> <span>( 배영욱 )</span></td>
-											<td>2024-05-17</td>
-											<td>진행중</td>
-										</tr>
-									</tbody>
-								</table>
 							</div>
 						</div>
 					</div>

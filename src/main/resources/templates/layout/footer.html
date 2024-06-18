@@ -5,7 +5,7 @@
     <script>
         const isAdmin = [[${isAdmin}]]
         const empNo = [[${loggedEmp != null ? loggedEmp.empNo : 'null'}]]
-        const currentEmpNo = isAdmin ? 10001 : empNo;
+        const currentEmpNo = isAdmin ? 0 : empNo;
         console.log("currentEmpNo: ", currentEmpNo);
     </script>
     <script src="/js/employee/alarm.js"></script>

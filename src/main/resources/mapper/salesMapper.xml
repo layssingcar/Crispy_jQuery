@@ -8,6 +8,7 @@
 		   <id property="salNo" column="SAL_NO" />
        <result property="frnGu" column="FRN_GU"/>
        <result property="totalAvgSales" column="TOTAL_AVG_SALES"/>
+       <result property="totalSales" column="TOTAL_SALES"/>
 	</resultMap>
 
     <!-- 매출 INSERT -->
@@ -90,6 +91,7 @@
     <select id="findGuAvgSales">
 		    SELECT F.FRN_GU
       		     , SUM(S.SAL_PRICE) / COUNT(DISTINCT F.FRN_NO) AS TOTAL_AVG_SALES
+      		     , SUM(S.SAL_PRICE) AS TOTAL_SALES
 	    	  FROM SALES_T S
 		INNER JOIN FRANCHISE_T F
 		        ON S.FRN_NO = F.FRN_NO

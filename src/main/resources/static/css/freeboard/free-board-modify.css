@@ -22,7 +22,7 @@
 	width: 1070px;
 }
 
-#cancelBtn {
+#btn-cancel {
 	margin-right: 5px;
 	box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 		background-color: #808080 !important;
