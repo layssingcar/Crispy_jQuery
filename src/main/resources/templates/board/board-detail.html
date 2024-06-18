@@ -75,11 +75,49 @@
     <script src="/js/summernote/summernote-lite.js"></script>
     <script src="/js/summernote/lang/summernote-ko-KR.js"></script>
     <script>
-        /*        document.getElementById('btn-delete').addEventListener('click', (evt) => {
-                    if (!confirm('해당 게시글을 삭제할까요?')) {
-                        evt.preventDefault();
-                    }
-                });*/
+
+        document.getElementById('frm-btn-delete').addEventListener('submit', function (event) {
+            event.preventDefault();
+            Swal.fire({
+                icon: "warning",
+                title: "해당 게시글을 삭제할까요?",
+                showCancelButton: true,
+                confirmButtonText: "삭제",
+                cancelButtonText: "취소",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = event.target;
+                    $.ajax({
+                        type: 'POST',
+                        url: form.action,
+                        data: $(form).serialize(),
+                        success: function (response) {
+                            Swal.fire({
+                                icon: "success",
+                                title: "게시물이 삭제되었습니다.",
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(() => {
+                                window.location.href = '/crispy/board-list';
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            Swal.fire({
+                                icon: "error",
+                                title: "오류가 발생했습니다. 다시 시도해 주세요.",
+                                showConfirmButton: true
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
+
+
+
+
+
 
         document.getElementById('listBtn').addEventListener('click',
             function () {
@@ -104,8 +142,7 @@
                     data: 'boardNo=' + boardNo,
                     dataType: 'json',
                     success: function (data) {
-                        // Update the board hit count on success
-                        // document.getElementById('board-hit').innerText = data.boardHit;
+
                     },
                     error: function (jqXHR) {
                         alert(jqXHR.statusText + '(' + jqXHR.status + ')');

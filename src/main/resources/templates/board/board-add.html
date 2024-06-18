@@ -15,7 +15,7 @@
 					<h1 class="border-bottom py-2">공지사항 </h1>
 					<div class="col-md-5">
 						<select style="display:none;" class="form-select" id="cate" name="boardCtNo" required>
-							<option value="1" selected>공지사항</option> <!-- 기본 선택 옵션 -->
+							<option value="1" selected>공지사항</option>
 						</select>
 					</div>
 					<label for="boardTitle" class="form-label">제목</label>
@@ -72,40 +72,51 @@
 
 		$('#frm-board-add').on('submit', function(evt) {
 			var content = $('#summernote').summernote('code').trim();
+			var resultMsg = "게시물이 등록되었습니다.";
 
 			if ($('#boardTitle').val().trim() === '') {
-				alert('제목 입력은 필수입니다.');
-				evt.preventDefault();
-			} else if (content === '') {
-				alert('내용 입력은 필수입니다.');
+				Swal.fire({
+					icon: "error",
+					title: "제목 입력은 필수입니다.",
+					showConfirmButton: true
+				});
 				evt.preventDefault();
 			} else {
-				// Remove <p> tags and keep text content
-				var cleanContent = content.replace(/<\/?p>/g, '');
+				var cleanContent = content.replace(/<\/?(p|br)[^>]*>/g, '');
 				$('#summernote').summernote('code', cleanContent);
 
-				alert("게시물이 등록되었습니다.");
-				// Prevent the default form submission to avoid navigation before saving
-				evt.preventDefault();
-				window.history.back();
+				Swal.fire({
+					icon: "success",
+					title: resultMsg,
+					showConfirmButton: false,
+					timer: 1500
+				}).then(() => {
+					evt.preventDefault();
+					window.history.back();
 
-
-				// Submit the form using AJAX to stay on the page for the alert
-				$.ajax({
-					type: 'POST',
-					url: $('#frm-board-add').attr('action'),
-					data: new FormData($('#frm-board-add')[0]),
-					processData: false,
-					contentType: false,
-					success: function(response) {
-						window.location.href = '/crispy/board-detail';
-					},
-					error: function(xhr, status, error) {
-						alert('오류가 발생했습니다. 다시 시도해 주세요.');
-					}
+					$.ajax({
+						type: 'POST',
+						url: $('#frm-board-add').attr('action'),
+						data: new FormData($('#frm-board-add')[0]),
+						processData: false,
+						contentType: false,
+						success: function(response) {
+							window.location.href = '/crispy/board-detail';
+						},
+						error: function(xhr, status, error) {
+							Swal.fire({
+								icon: "error",
+								title: "오류가 발생했습니다. 다시 시도해 주세요.",
+								showConfirmButton: true
+							});
+						}
+					});
 				});
 			}
 		});
+
+
+
 
 	</script>
 </div>
