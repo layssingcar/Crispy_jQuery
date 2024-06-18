@@ -257,9 +257,20 @@ public class ApprovalController {
 
 		// 발주 신청서
 		if (apprType.equals("stock-order")) {
+
 			approvalDto = approvalService.getStockOrderApprDetail(apprNo);
 			model.addAttribute("approvalDto", approvalDto);
+
+			// 가맹점주 신청 내역에서 결재하기 버튼 숨기기
+			if (authentication.getPrincipal() instanceof EmployeePrincipal)
+				model.addAttribute("apprBtn", "none");
+
+			// 관리자가 결재 완료 상태일 때 결재하기 버튼 숨기기
+			if (approvalDto.getApprLineStat() > 0)
+				model.addAttribute("apprBtn", "none");
+
 			return "approval/approval-detail";
+
 		}
 
 		// 휴가,휴직 신청서

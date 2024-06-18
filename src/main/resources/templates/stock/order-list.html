@@ -77,11 +77,20 @@
                                 </a>
                             </li>
 
-                            <!-- 페이지 이동 버튼 -->
-                            <th:block th:each="pageNo : ${#numbers.sequence(approvalDtoList.startPage, approvalDtoList.endPage)}">
-                                <li class="page-item">
-                                    <a class="page-link" href="#" th:text="${pageNo}" th:data-page-no="${pageNo}"></a>
+                            <!-- 조회 결과가 없을 때 -->
+                            <th:block th:if="${approvalDtoList.endPage == 0}">
+                                <li class="page-item active">
+                                    <a class="page-link" href="#" th:text="1" th:data-page-no="1"></a>
                                 </li>
+                            </th:block>
+
+                            <!-- 페이지 이동 버튼 -->
+                            <th:block th:unless="${approvalDtoList.endPage == 0}">
+                                <th:block th:each="pageNo : ${#numbers.sequence(approvalDtoList.startPage, approvalDtoList.endPage)}">
+                                    <li class="page-item">
+                                        <a class="page-link" href="#" th:text="${pageNo}" th:data-page-no="${pageNo}"></a>
+                                    </li>
+                                </th:block>
                             </th:block>
 
                             <li class="page-item">
@@ -99,5 +108,19 @@
 </div>
 
 <script src="/js/stock/orderList.js"></script>
+
+<!-- 발주 신청 성공 alert  -->
+<script th:inline="javascript">
+    const resultMsg = /*[[${resultMsg}]]*/ "발주 신청 성공";
+
+    if (resultMsg != null) {
+        Swal.fire({
+            icon: "success",
+            title: resultMsg,
+            showConfirmButton: false,
+            timer: 1500
+        })
+    }
+</script>
 </body>
 </html>

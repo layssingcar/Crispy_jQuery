@@ -27,6 +27,7 @@
 .time-off #appr {
     width: 65px;
     height: 170px;
+    padding-bottom: 15px;
     writing-mode: vertical-lr;
 }
 

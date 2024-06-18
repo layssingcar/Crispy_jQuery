@@ -84,10 +84,24 @@ const getApprItemsFn = async (optionObj) => {
     // 이벤트 재추가
     addPageLinkEventFn(optionObj.pageNo === undefined ? 1 : optionObj.pageNo);
     addSortEventFn();
+    addApprRowsEventFn();
 }
 
 // 초기화
 document.addEventListener("DOMContentLoaded", function () {
     addPageLinkEventFn(1);
     addSortEventFn();
+    addApprRowsEventFn();
 })
+
+// 결재 문서 항목
+const addApprRowsEventFn = () => {
+    const apprRows = document.querySelectorAll(".appr-row");
+
+    apprRows.forEach(apprRow => {
+        apprRow.addEventListener("click", () => {
+            const apprNo = apprRow.dataset.apprNo;
+            location.href = `/crispy/approval-detail/stock-order/${apprNo}`;
+        })
+    })
+}

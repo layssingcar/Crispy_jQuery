@@ -13,74 +13,75 @@
 		<aside th:replace="~{layout/sidebar :: sidebar}"></aside>
 		<div>
 			<main>
-                <!-- 문서 작성 form -->
-                <form method="post" action="insert-time-off-appr" id="form-container" enctype="multipart/form-data">
+                <div class="time-off-appr">
 
-                    <!-- 휴가/휴직 신청 -->
-                    <div class="time-off-appr">
-                        <h1>휴가/휴직 신청</h1>
+                    <!-- 문서 작성 form -->
+                    <form method="post" action="insert-time-off-appr" id="form-container" enctype="multipart/form-data">
+                        <div class="time-off-doc">
+                            <h1>휴가/휴직 신청</h1>
 
-                        <!-- 상단 영역 -->
-                        <div class="top-area">
+                            <!-- 상단 영역 -->
+                            <div class="top-area">
 
-                            <!-- 문서 선택 -->
-                            <select class="form-select form-select-lg mb-3 m-left" aria-label="Large select example" id="time-off-ct">
-                                <option value="">문서 선택</option>
-                                <option value="0">휴가신청서</option>
-                                <option value="1">휴직신청서</option>
-                            </select>
+                                <!-- 문서 선택 -->
+                                <select class="form-select form-select-lg mb-3 m-left" aria-label="Large select example" id="time-off-ct">
+                                    <option value="">문서 선택</option>
+                                    <option value="0">휴가신청서</option>
+                                    <option value="1">휴직신청서</option>
+                                </select>
 
-                            <!-- 임시저장 내용 불러오기 -->
-                            <button type="button" class="btn" id="temp-content">임시저장 내용 불러오기</button>
-                        </div>
-
-                        <!-- 문서 양식 -->
-                        <div id="time-off-doc" th:replace="~{document/vacation-req :: vacation-req}"></div>
-                        <input type="hidden" name="timeOffCtNo" value="0" id="time-off-ct-no">
-
-                        <!-- 하단 버튼 -->
-                        <div class="bottom-btn">
-
-                            <!-- 임시저장 -->
-                            <div><button type="button" class="btn" id="temp">임시저장</button></div>
-
-                            <div>
-                                <button type="button" class="btn" id="cancel-1st">취소</button>
-                                <button type="button" class="btn" id="next-btn">다음</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 결재선 선택 -->
-                    <div class="appr-line d-none">
-                        <h1>결재선 선택</h1>
-
-                        <!-- 메인 영역 -->
-                        <div class="main-area">
-                            <!-- 결재선 선택 -->
-                            <div class="tree-box" id="tree"></div>
-                            <div id="select">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" id="add-emp"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" id="remove-emp"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/></svg>
+                                <!-- 임시저장 내용 불러오기 -->
+                                <button type="button" class="btn" id="temp-content">임시저장 내용 불러오기</button>
                             </div>
 
-                            <!-- 선택한 결재선 목록 -->
-                            <div class="tree-box" id="select-tree"></div>
-                        </div>
+                            <!-- 문서 양식 -->
+                            <div id="time-off-doc" th:replace="~{document/vacation-req :: vacation-req}"></div>
+                            <input type="hidden" name="timeOffCtNo" value="0" id="time-off-ct-no">
 
-                        <div class="bottom-area">
                             <!-- 하단 버튼 -->
                             <div class="bottom-btn">
-                                <div><button type="button" class="btn" id="rollback">뒤로가기</button></div>
+
+                                <!-- 임시저장 -->
+                                <div><button type="button" class="btn" id="temp">임시저장</button></div>
 
                                 <div>
-                                    <button type="button" class="btn" id="cancel-2nd">취소</button>
-                                    <button class="btn" id="request">신청하기</button> <!--approval-->
+                                    <button type="button" class="btn" id="cancel-1st">취소</button>
+                                    <button type="button" class="btn" id="next-btn">다음</button>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </form>
+
+                        <!-- 결재선 선택 -->
+                        <div class="appr-line d-none">
+                            <h1>결재선 선택</h1>
+
+                            <!-- 메인 영역 -->
+                            <div class="main-area">
+                                <!-- 결재선 선택 -->
+                                <div class="tree-box" id="tree"></div>
+                                <div id="select">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" id="add-emp"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" id="remove-emp"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/></svg>
+                                </div>
+
+                                <!-- 선택한 결재선 목록 -->
+                                <div class="tree-box" id="select-tree"></div>
+                            </div>
+
+                            <div class="bottom-area">
+                                <!-- 하단 버튼 -->
+                                <div class="bottom-btn">
+                                    <div><button type="button" class="btn" id="rollback">뒤로가기</button></div>
+
+                                    <div>
+                                        <button type="button" class="btn" id="cancel-2nd">취소</button>
+                                        <button class="btn" id="request">신청하기</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
 			</main>
 			<footer th:replace="~{layout/footer :: footer}"></footer>
 		</div>
