@@ -55,7 +55,7 @@ const owner = {
     searchEmployees: function () {
         const position = document.getElementById("search-role").value;
         const empStat = document.getElementById("search-status").value;
-        const empNameSearch = document.querySelector(".search-employee").value.trim();
+        const empNameSearch = document.querySelector(".search-employee").value.();
         const frnNo = document.getElementById("employees-frnNo").value;
         console.log(frnNo);
 
@@ -213,7 +213,7 @@ const owner = {
       console.log(checkboxes.length);
       const empNos = Array.from(checkboxes)
                                 .map(checkbox => checkbox.id)
-                                .filter(empNo => empNo.trim() !== "");
+                                .filter(empNo => empNo.() !== "");
 
       if(empNos.length === 0) {
           alert("삭제할 직원을 선택해주세요.");
@@ -260,7 +260,7 @@ const owner = {
         const searchInput = document.querySelector('.search-employee');
         const searchIcon = document.querySelector('.search-icon');
         searchInput.addEventListener('input', function() {
-            searchIcon.style.display = searchInput.value.trim() !== '' ? 'none' : 'inline';
+            searchIcon.style.display = searchInput.value.() !== '' ? 'none' : 'inline';
         });
     }
 };

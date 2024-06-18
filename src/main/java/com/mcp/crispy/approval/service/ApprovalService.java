@@ -35,7 +35,7 @@ public class ApprovalService {
     private final ImageService imageService;
     private final MyFileUtils myFileUtils;
 
-    @Value("${file.appr-dir.window}")
+//    @Value("${file.appr-dir.window}")
     private String forderPath;
 
     // 직원 정보 조회

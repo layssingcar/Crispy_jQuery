@@ -12,7 +12,7 @@ const createChatRoom = {
         let debounceTimeout;
 
         inviteUserInput.addEventListener("input", (event) => {
-            const searchTerm = event.target.value.trim();
+            const searchTerm = event.target.value.();
             clearTimeout(debounceTimeout);
             debounceTimeout = setTimeout(() => {
                 if (searchTerm.length > 0) {
