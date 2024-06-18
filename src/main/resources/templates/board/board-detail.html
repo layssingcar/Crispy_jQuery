@@ -220,6 +220,30 @@
             loadLikeStatus();
         });
     </script>
+    <script th:inline="javascript">
+        const addMsg = /*[[${addMsg}]]*/ "게시글이 등록되었습니다";
+        console.log(addMsg)
+        if (addMsg != null) {
+            Swal.fire({
+                icon: "success",
+                title: addMsg,
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+    </script>
+    <script th:inline="javascript">
+        const modifyResult = /*[[${modifyResult}]]*/ "수정되었습니다";
+        console.log(modifyResult)
+        if (modifyResult != null) {
+            Swal.fire({
+                icon: "success",
+                title: modifyResult,
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+    </script>
 </div>
 </body>
 </html>

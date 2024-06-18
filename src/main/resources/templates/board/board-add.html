@@ -72,7 +72,6 @@
 
 		$('#frm-board-add').on('submit', function(evt) {
 			var content = $('#summernote').summernote('code').trim();
-			var resultMsg = "게시물이 등록되었습니다.";
 
 			if ($('#boardTitle').val().trim() === '') {
 				Swal.fire({
@@ -84,40 +83,8 @@
 			} else {
 				var cleanContent = content.replace(/<\/?(p|br)[^>]*>/g, '');
 				$('#summernote').summernote('code', cleanContent);
-
-				Swal.fire({
-					icon: "success",
-					title: resultMsg,
-					showConfirmButton: false,
-					timer: 1500
-				}).then(() => {
-					evt.preventDefault();
-					window.history.back();
-
-					$.ajax({
-						type: 'POST',
-						url: $('#frm-board-add').attr('action'),
-						data: new FormData($('#frm-board-add')[0]),
-						processData: false,
-						contentType: false,
-						success: function(response) {
-							window.location.href = '/crispy/board-detail';
-						},
-						error: function(xhr, status, error) {
-							Swal.fire({
-								icon: "error",
-								title: "오류가 발생했습니다. 다시 시도해 주세요.",
-								showConfirmButton: true
-							});
-						}
-					});
-				});
 			}
 		});
-
-
-
-
 	</script>
 </div>
 </body>

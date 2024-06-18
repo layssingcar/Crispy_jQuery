@@ -233,7 +233,11 @@
 		const fnModifyBoard = () => {
 			document.getElementById('frm-board-modify').addEventListener('submit', (evt) => {
 				if (document.getElementById('boardTitle').value === '') { // 수정이 필요한 부분
-					alert('제목은 필수입니다.');
+					Swal.fire({
+						icon: "error",
+						title: "제목 입력은 필수입니다.",
+						showConfirmButton: true
+					});
 					evt.preventDefault();
 					return;
 				}
