@@ -41,12 +41,16 @@ const emailVerify = {
                 console.log(data)
                 if (data.message === "인증 코드가 발송되었습니다.") {
                     document.getElementById('verify-code-div').style.display = 'block';
-                    alert(data.message); // 사용자에게 인증 코드 발송 메시지를 표시
+                    Swal.fire({
+                        icon: "success",
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
                 } else {
-                    alert(data.error); // 일치하는 회원 정보가 없다는 메시지를 경고 창으로 표시
+                    alert(data.error);
                 }
             }).catch((error) => {
-            console.error('Error:', error);
         });
     },
 
@@ -64,18 +68,19 @@ const emailVerify = {
             .then(data => {
                 if (data.message === "인증 성공") {
                     stateManager.setIsVerified(true);
-                    console.log(data.message);
-                    this.showMessage(data.message, 'success')
+                    Swal.fire({
+                        icon: "success",
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
                     document.querySelector(".check-verify-code").disabled = true;
                 } else {
-                    this.showMessage(data.error, 'error');
                     stateManager.setIsVerified(false);
                     console.log(data.message);
                 }
             })
             .catch(error => {
-                console.error("Error:", error);
-                this.showMessage("인증번호 검증에 실패했습니다.", 'error'); // 에러 메시지 표시
             })
     },
 }

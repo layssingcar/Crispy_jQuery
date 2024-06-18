@@ -26,12 +26,16 @@ public class NotificationService {
                 .notifyCt(notifyDto.getNotifyCt())
                 .notifyContent(notifyDto.getNotifyContent())
                 .notifyStat(NotifyStat.NOT_READ) //읽음 안 읽음
+                .notifyType(notifyDto.getNotifyType())
+                .status(notifyDto.getStatus())
+                .documentType(notifyDto.getDocumentType())
                 .empNo(empNo)
                 .build();
 
         log.info("notifyDto: {}", notify);
         notificationMapper.insertNotification(notify);
-        sseService.sendNotification((long)empNo, notifyDto.getNotifyContent());
+        notifyDto.setNotifyNo(notify.getNotifyNo());  // notifyNo를 notifyDto에 설정
+        sseService.sendNotification((long)empNo, notifyDto);
     }
 
     // 알림 읽음 처리

@@ -96,8 +96,8 @@ const boardList = {
         })
     },
     addRowClickEvent: function() {
-       document.querySelector(".board-list-container").addEventListener("click", (event) => {
-            const row = event.target.closest(".board-list");
+       document.querySelector(".board-list-container tbody").addEventListener("click", (event) => {
+           const row = event.target.closest("tr");
             this.rowEvent(row);
         });
     },
@@ -105,7 +105,7 @@ const boardList = {
     rowEvent: function (row) {
         const boardNo =  row.getAttribute("data-boardNo");
         console.log(boardNo)
-        location.href = `/crispy/freeBoardDetail?boardNo=${boardNo}`
+        location.href = `/crispy/freeBoardDetail/${boardNo}`
     }
 };
 

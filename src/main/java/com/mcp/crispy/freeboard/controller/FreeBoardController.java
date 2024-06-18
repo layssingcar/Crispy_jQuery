@@ -17,7 +17,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -90,8 +89,8 @@ public class FreeBoardController {
      * @param response 쿠키 설정
      * @return forward (free-board-detail)
      */
-    @GetMapping("/freeBoardDetail")
-    public String detail(@RequestParam(value = "boardNo", required = false, defaultValue = "0") int boardNo,
+    @GetMapping("/freeBoardDetail/{boardNo}")
+    public String detail(@PathVariable("boardNo") int boardNo,
                          Model model, Authentication authentication,
                          HttpServletRequest request, HttpServletResponse response) {
         log.info("boardNo: " + boardNo);
