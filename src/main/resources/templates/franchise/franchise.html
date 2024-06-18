@@ -47,11 +47,6 @@
                                                    placeholder="가맹점 이름" autocomplete="on" th:value="${owner.frnName}">
                                             <div class="error-message frnName-error" id="frnName-error" style="display: none;"></div>
                                         </div>
-                                        <!-- 관리자만 볼 수 있는 버튼 -->
-                                        <div sec:authorize="hasRole('ROLE_ADMIN')">
-                                        <button type="button" id="btn-edit-frnName">수정</button>
-                                        <button type="button" id="btn-change-frnName" style="display: none;">변경</button>
-                                        </div>
                                     </div>
                                     <!-- 대표자 이름 -->
                                     <div class="frn-modify-btn">

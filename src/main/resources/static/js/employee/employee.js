@@ -477,7 +477,6 @@ const employee = {
         }
         document.querySelector(".empId").value = employee.empId;
         document.querySelector('.empNo').value = employee.empNo;
-        document.querySelector('.frnName').textContent = employee.frnName;
         document.querySelector('.empName-span').textContent = employee.empName;
         document.querySelector('.empName').value = employee.empName;
         document.querySelector('.posName').textContent = employee.posName;

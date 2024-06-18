@@ -46,7 +46,6 @@ const franchise = {
             changeOperatingTimeButton.addEventListener("click", this.changeOperatingTime.bind(this));
         }
 
-        this.setupFrnEditBtn("btn-edit-frnName", "frn-frnName", "btn-change-frnName");
         this.setupFrnEditBtn("btn-edit-frnOwner", "frn-frnOwner", "btn-change-frnOwner");
         this.setupFrnEditBtn("btn-edit-frnTel", "frn-frnTel", "btn-change-frnTel");
         this.setupFrnEditBtn("btn-edit-operating-time", "frn-start-time", "btn-change-operating-time");
@@ -64,7 +63,6 @@ const franchise = {
     toggleEditMode: function(editMode) {
         const inputs = document.querySelectorAll('.form-control');
         const buttons = [
-            {edit: "#btn-edit-frnName", change: "#btn-change-frnName"},
             {edit: "#btn-edit-frnOwner", change: "#btn-change-frnOwner"},
             {edit: "#btn-edit-frnTel", change: "#btn-change-frnTel"},
             {edit: ".btn-change-address", change: ".btn-change-address"},
@@ -162,16 +160,26 @@ const franchise = {
             })
             .then(data => {
                 if (data.message) {
-                    alert(data.message);
-                    this.toggleEditMode(false);
-                    location.reload();
+                    Swal.fire({
+                        icon: "success",
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        this.toggleEditMode(false);
+                        location.reload();
+                    })
                 }
             })
             .catch(error => {
                 if (error.message === "Validation errors") {
-                    console.error('Validation errors:', error);
                 } else {
-                    alert(error)
+                    Swal.fire({
+                        icon: "warning",
+                        title: error,
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
                 }
             });
     },
@@ -213,6 +221,12 @@ const franchise = {
         const inputElement = document.getElementById(inputId);
         const changeButton = document.getElementById(changeButtonId);
 
+        if (!editButton || !inputElement || !changeButton) {
+            console.warn(`Missing element for IDs: ${editButtonId}, ${inputId}, ${changeButtonId}`);
+            return;
+        }
+
+
         let originalValue = inputElement?.value;
 
         editButton?.addEventListener("click", () => {
@@ -229,9 +243,7 @@ const franchise = {
 
         if (inputElement.tagName.toLowerCase() === 'input' || inputElement.tagName.toLowerCase() === 'select') {
             inputElement?.addEventListener("change", () => {
-                console.log("둘중에 어떤 게? change")
                 changeButton.disabled = inputElement.value.trim() === originalValue.trim();
-                console.log(changeButton.disabled)
             });
         }
     },
@@ -270,11 +282,16 @@ const franchise = {
             }
             return response.json();
         }).then(data => {
-            alert(data.message);
-            location.reload();
+            Swal.fire({
+                icon: "success",
+                title: data.message,
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                location.reload();
+            })
         }).catch(error => {
             if (error.message === "Validation errors") {
-                console.error('Validation errors:', error);
             }
         });
     },
@@ -320,10 +337,15 @@ const franchise = {
                 return response.json()
             }
         }).then(data => {
-            alert(data.message);
-            location.reload();
+            Swal.fire({
+                icon: "success",
+                title: data.message,
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                location.reload();
+            })
         }).catch(error => {
-            console.error('Error:', error);
         });
     },
 
@@ -366,10 +388,15 @@ const franchise = {
             }
             throw new Error('Failed to update profile image');
         }).then(data => {
-            alert(data.message);
-            return location.reload();
+            Swal.fire({
+                icon: "success",
+                title: data.message,
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                location.reload();
+            })
         }).catch(error => {
-            console.error('Error:', error);
         });
     },
 
@@ -394,10 +421,15 @@ const franchise = {
                 return response.json()
             }
         }).then(data => {
-            alert(data.message);
-            location.reload();
+            Swal.fire({
+                icon: "success",
+                title: data.message,
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                location.reload();
+            })
         }).catch(error => {
-            console.error('Error:', error);
         });
     },
 
@@ -421,16 +453,21 @@ const franchise = {
             }
             return response.json();
         }).then(data => {
-            alert(data.message);
-            return location.reload();
+            Swal.fire({
+                icon: "success",
+                title: data.message,
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                location.reload();
+            })
         }).catch(error => {
-            console.error('Error updating address:', error);
-            alert('운영시간 변경에 실패하였습니다.');
         });
     },
 
     updateFranchiseProfile: function(frn) {
     const frnJoinDt = this.formatDate(frn.frnJoinDt);
+    console.log(frn);
     document.querySelector('.frn-img').src = frn.frnImg || '';
     document.querySelector('.frnNo').value = frn.frnNo || '';
     document.querySelector(".empNo").value = frn.empNo || '';

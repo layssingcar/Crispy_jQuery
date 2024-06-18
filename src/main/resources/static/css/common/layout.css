@@ -1,5 +1,6 @@
 /* 사이드바 스크롤바 숨김 */
-aside::-webkit-scrollbar{
+aside::-webkit-scrollbar,
+body::-webkit-scrollbar {
 	display: none;
 }
 

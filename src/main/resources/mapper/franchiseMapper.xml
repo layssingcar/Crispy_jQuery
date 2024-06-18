@@ -177,7 +177,7 @@
               , F.FRN_JOIN_DT, F.CREATE_DT, F.CREATOR, F.MODIFY_DT
               , F.MODIFIER, E.EMP_NO, E.POS_NO
         FROM FRANCHISE_T F
-        INNER JOIN EMPLOYEE_T E ON F.FRN_NO = E.FRN_NO
+        LEFT JOIN EMPLOYEE_T E ON F.FRN_NO = E.FRN_NO
         WHERE 1 = 1
           AND F.FRN_NO = #{frnNo} AND E.POS_NO = 0
     </select>

@@ -34,7 +34,7 @@
 							</div>
 						</div>
 						<div class="area2">
-							<div class="area2-info">
+							<div class="area2-info" th:if="${!isAdmin}">
 								<div class="area2-inoutBtn">
 									<div class="btn-workfin">
 										<button type="button" class="btn btn-outline-primary btn-lg"
@@ -52,6 +52,11 @@
 									<span class="progress-text"></span>
 								</div>
 								<div id="work-time">근무시간 : 00:00:00</div>
+							</div>
+							<div class="area2-info" th:if="${isAdmin}">
+								<div>
+									<span>총 가맹점 수 : <span th:text="${frnCount}"></span></span>
+								</div>
 							</div>
 						</div>
 					</div>

@@ -1,5 +1,6 @@
 package com.mcp.crispy;
 
+import com.mcp.crispy.franchise.service.FranchiseService;
 import jakarta.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,9 +17,13 @@ import java.security.Principal;
 @RequiredArgsConstructor
 public class MainController {
 
+	private final FranchiseService franchiseService;
+
 	@GetMapping("/main")
 	public String index(Principal principal, Model model) {
 		if (principal != null) {
+			int frnCount = franchiseService.getFrnCount();
+			model.addAttribute("frnCount", frnCount);
 			return "index";
 		} else {
 			return "redirect:/crispy/login";
