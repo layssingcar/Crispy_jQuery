@@ -35,7 +35,7 @@
             C.MODIFY_DT,
             C.MODIFIER
         FROM CHAT_ROOM_T C
-        LEFT JOIN CR_EMP_T P ON C.CHAT_ROOM_NO = P.CHAT_ROOM_NO
+                 LEFT JOIN CR_EMP_T P ON C.CHAT_ROOM_NO = P.CHAT_ROOM_NO
         WHERE 1 = 1
           AND P.EMP_NO = #{empNo}
           AND P.ENTRY_STAT = 0
@@ -46,13 +46,13 @@
     <select id="getChatRoom" resultMap="ChatRoomMap">
         SELECT C.CHAT_ROOM_NO, C.CHAT_ROOM_TITLE , C.CHAT_ROOM_STAT, C.CREATE_DT, C.CREATOR,
                C.MODIFY_DT, C.MODIFIER, P.EMP_NO, P.ENTRY_STAT, E.EMP_NAME
-          FROM CHAT_ROOM_T C
-          LEFT JOIN CR_EMP_T P ON C.CHAT_ROOM_NO = P.CHAT_ROOM_NO
-          LEFT JOIN EMPLOYEE_T E ON P.EMP_NO = E.EMP_NO
-         WHERE C.CHAT_ROOM_NO = #{chatRoomNo}
-           AND (
-               (SELECT COUNT(*) FROM CR_EMP_T WHERE CHAT_ROOM_NO = C.CHAT_ROOM_NO) = 2
-            OR P.ENTRY_STAT = 0
+        FROM CHAT_ROOM_T C
+                 LEFT JOIN CR_EMP_T P ON C.CHAT_ROOM_NO = P.CHAT_ROOM_NO
+                 LEFT JOIN EMPLOYEE_T E ON P.EMP_NO = E.EMP_NO
+        WHERE C.CHAT_ROOM_NO = #{chatRoomNo}
+          AND (
+            (SELECT COUNT(*) FROM CR_EMP_T WHERE CHAT_ROOM_NO = C.CHAT_ROOM_NO) = 2
+                OR P.ENTRY_STAT = 0
             )
     </select>
 
@@ -62,32 +62,32 @@
             SELECT CM.MSG_NO, CM.CHAT_ROOM_NO, CM.EMP_NO, CM.MSG_CONTENT, CM.MSG_DT,
                    CM.CREATOR, CM.CREATE_DT, CM.MODIFIER, CM.MODIFY_DT, CM.MSG_STAT,
                    E.EMP_PROFILE, E.EMP_NAME
-              FROM CHAT_MESSAGE_T CM
+            FROM CHAT_MESSAGE_T CM
                      LEFT JOIN EMPLOYEE_T E ON CM.EMP_NO = E.EMP_NO
-             WHERE CM.CHAT_ROOM_NO = #{chatRoomNo}
-               AND CM.MSG_DT > (SELECT MAX(ENTRY_DT) FROM ENTRY_EXIT_T WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo})
-          ORDER BY CM.MSG_DT DESC
-          FETCH FIRST 50 ROWS ONLY
+            WHERE CM.CHAT_ROOM_NO = #{chatRoomNo}
+              AND CM.MSG_DT > (SELECT MAX(ENTRY_DT) FROM ENTRY_EXIT_T WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo})
+            ORDER BY CM.MSG_DT DESC
+                FETCH FIRST 50 ROWS ONLY
         )
-          SELECT LM.CHAT_ROOM_NO, LM.EMP_NO, LM.MSG_CONTENT, LM.MSG_DT,
-                 LM.EMP_PROFILE, LM.EMP_NAME, LM.MSG_NO, LM.MSG_STAT
-            FROM Last50Messages LM
+        SELECT LM.CHAT_ROOM_NO, LM.EMP_NO, LM.MSG_CONTENT, LM.MSG_DT,
+               LM.EMP_PROFILE, LM.EMP_NAME, LM.MSG_NO, LM.MSG_STAT
+        FROM Last50Messages LM
         ORDER BY MSG_DT ASC
     </select>
 
-     <!-- 특정 채팅방의 스크롤이 상단에 닿았을 시 이전 메시지 50개 호출 -->
+    <!-- 특정 채팅방의 스크롤이 상단에 닿았을 시 이전 메시지 50개 호출 -->
     <select id="getMoreMessages" resultType="ChatMessageDto">
         WITH MessagesBefore AS (
-        SELECT CM.MSG_NO, CM.CHAT_ROOM_NO, CM.EMP_NO, CM.MSG_CONTENT, CM.MSG_DT,
-               CM.CREATOR, CM.CREATE_DT, CM.MODIFIER, CM.MODIFY_DT, CM.MSG_STAT,
-               E.EMP_PROFILE, E.EMP_NAME
-        FROM CHAT_MESSAGE_T CM
-        LEFT JOIN EMPLOYEE_T E ON CM.EMP_NO = E.EMP_NO
-        WHERE CM.CHAT_ROOM_NO = #{chatRoomNo}
-        AND CM.MSG_DT &lt;= #{beforeTimeStamp}
-        AND CM.MSG_DT > (SELECT MAX(ENTRY_DT) FROM ENTRY_EXIT_T WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo})
-        ORDER BY CM.MSG_DT DESC
-        OFFSET 0 ROWS FETCH NEXT 50 ROWS ONLY
+            SELECT CM.MSG_NO, CM.CHAT_ROOM_NO, CM.EMP_NO, CM.MSG_CONTENT, CM.MSG_DT,
+                   CM.CREATOR, CM.CREATE_DT, CM.MODIFIER, CM.MODIFY_DT, CM.MSG_STAT,
+                   E.EMP_PROFILE, E.EMP_NAME
+            FROM CHAT_MESSAGE_T CM
+                     LEFT JOIN EMPLOYEE_T E ON CM.EMP_NO = E.EMP_NO
+            WHERE CM.CHAT_ROOM_NO = #{chatRoomNo}
+              AND CM.MSG_DT &lt;= #{beforeTimeStamp}
+              AND CM.MSG_DT > (SELECT MAX(ENTRY_DT) FROM ENTRY_EXIT_T WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo})
+            ORDER BY CM.MSG_DT DESC
+            OFFSET 0 ROWS FETCH NEXT 50 ROWS ONLY
         )
         SELECT M.MSG_NO, M.CHAT_ROOM_NO, M.EMP_NO, M.MSG_CONTENT,
                M.MSG_DT, M.EMP_PROFILE, M.EMP_NAME, M.MSG_STAT
@@ -130,8 +130,8 @@
     <!-- 특정 채팅방의 참가자 정보 조회 -->
     <select id="getParticipant" parameterType="map" resultType="CrEmpDto">
         SELECT CHAT_ROOM_NO, EMP_NO, ENTRY_STAT, ALARM_STAT
-          FROM CR_EMP_T
-         WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo}
+        FROM CR_EMP_T
+        WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo}
     </select>
 
     <!-- 채팅방에 참가자 추가 -->
@@ -145,8 +145,8 @@
     <!-- 채팅방 초대할 때 사용하는 메소드 -->
     <update id="updateParticipantEntryStat">
         UPDATE CR_EMP_T
-           SET ENTRY_STAT = #{entryStat, typeHandler=com.mcp.crispy.common.typeHandler.EntryStatTypeHandler},
-               ALARM_STAT = #{alarmStat, typeHandler=com.mcp.crispy.common.typeHandler.AlarmStatTypeHandler}
+        SET ENTRY_STAT = #{entryStat, typeHandler=com.mcp.crispy.common.typeHandler.EntryStatTypeHandler},
+            ALARM_STAT = #{alarmStat, typeHandler=com.mcp.crispy.common.typeHandler.AlarmStatTypeHandler}
         WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo}
     </update>
 
@@ -154,8 +154,8 @@
     <!-- 채팅방 나갈 때 사용하는 메소드 -->
     <update id="updateEntryStat">
         UPDATE CR_EMP_T
-           SET ENTRY_STAT = #{entryStat, typeHandler=com.mcp.crispy.common.typeHandler.EntryStatTypeHandler},
-               ALARM_STAT = #{alarmStat, typeHandler=com.mcp.crispy.common.typeHandler.AlarmStatTypeHandler}
+        SET ENTRY_STAT = #{entryStat, typeHandler=com.mcp.crispy.common.typeHandler.EntryStatTypeHandler},
+            ALARM_STAT = #{alarmStat, typeHandler=com.mcp.crispy.common.typeHandler.AlarmStatTypeHandler}
         WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo}
     </update>
 
@@ -163,7 +163,7 @@
     <select id="getParticipantsByRoom" resultType="CrEmpDto">
         SELECT DISTINCT P.CHAT_ROOM_NO, P.EMP_NO, P.ENTRY_STAT, E.EMP_NAME, E.EMP_PROFILE, E.EMP_ID
         FROM CR_EMP_T P
-     LEFT JOIN EMPLOYEE_T E ON P.EMP_NO = E.EMP_NO
+                 LEFT JOIN EMPLOYEE_T E ON P.EMP_NO = E.EMP_NO
         WHERE P.CHAT_ROOM_NO = #{chatRoomNo}
     </select>
 
@@ -176,15 +176,15 @@
     <!-- 기존 접속 기록을 업데이트 -->
     <update id="updateAccessRecord">
         UPDATE CR_ACCESS_T
-           SET ACCESS_DT = CURRENT_TIMESTAMP
-         WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo}
+        SET ACCESS_DT = CURRENT_TIMESTAMP
+        WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo}
     </update>
 
     <!-- 특정 채팅방의 접속 기록 존재 여부 확인 -->
     <select id="checkAccessExists">
         SELECT COUNT(*)
-          FROM  CR_ACCESS_T
-         WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo}
+        FROM  CR_ACCESS_T
+        WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo}
     </select>
 
     <!-- 새로운 입장 기록을 추가 -->
@@ -217,15 +217,15 @@
     <!-- 사용자의 읽지 않은 메시지 개수를 조회 -->
     <select id="countUnreadMessages" resultType="UnreadMessageCountDto">
         SELECT CR.CHAT_ROOM_NO, COUNT(*) as unread_count
-          FROM CHAT_ROOM_T CR
-          JOIN CR_EMP_T CE ON CR.CHAT_ROOM_NO = CE.CHAT_ROOM_NO
-          LEFT JOIN CHAT_MESSAGE_T m ON CR.CHAT_ROOM_NO = m.CHAT_ROOM_NO
-          LEFT JOIN CR_ACCESS_T a ON CR.CHAT_ROOM_NO = a.CHAT_ROOM_NO AND CE.EMP_NO = a.EMP_NO
-         WHERE CE.EMP_NO = #{empNo}
-           AND (m.MSG_DT > a.ACCESS_DT OR a.ACCESS_DT IS NULL)
-           AND CE.ALARM_STAT = 0  -- 알림이 활성화된 경우만 계산
-           AND CE.ENTRY_STAT = 0 -- 입장 상태가 활성화된 경우만 계산
-           AND M.EMP_NO != #{empNo}
+        FROM CHAT_ROOM_T CR
+                 JOIN CR_EMP_T CE ON CR.CHAT_ROOM_NO = CE.CHAT_ROOM_NO
+                 LEFT JOIN CHAT_MESSAGE_T m ON CR.CHAT_ROOM_NO = m.CHAT_ROOM_NO
+                 LEFT JOIN CR_ACCESS_T a ON CR.CHAT_ROOM_NO = a.CHAT_ROOM_NO AND CE.EMP_NO = a.EMP_NO
+        WHERE CE.EMP_NO = #{empNo}
+          AND (m.MSG_DT > a.ACCESS_DT OR a.ACCESS_DT IS NULL)
+          AND CE.ALARM_STAT = 0  -- 알림이 활성화된 경우만 계산
+          AND CE.ENTRY_STAT = 0 -- 입장 상태가 활성화된 경우만 계산
+          AND M.EMP_NO != #{empNo}
         GROUP BY CR.CHAT_ROOM_NO
     </select>
 
@@ -233,8 +233,8 @@
     <update id="toggleAlarmStat">
         UPDATE CR_EMP_T
         SET ALARM_STAT = CASE ALARM_STAT
-            WHEN 0 THEN 1
-            ELSE 0
+                             WHEN 0 THEN 1
+                             ELSE 0
             END
         WHERE CHAT_ROOM_NO = #{chatRoomNo} AND EMP_NO = #{empNo}
     </update>
@@ -242,38 +242,38 @@
     <!-- 사용자의 마지막 접속 시간을 조회 -->
     <select id="getLastAccessTime" resultType="java.util.Date">
         SELECT MAX(ACCESS_DT)
-          FROM CR_ACCESS_T
-         WHERE CHAT_ROOM_NO = #{chatRoomNo}
-           AND EMP_NO = #{empNo}
+        FROM CR_ACCESS_T
+        WHERE CHAT_ROOM_NO = #{chatRoomNo}
+          AND EMP_NO = #{empNo}
     </select>
 
     <!-- 마지막 접속시간 이후의 읽지 않은 메시지 조회 -->
     <select id="getUnreadMessages" resultType="ChatMessageDto">
         SELECT CM.CHAT_ROOM_NO, CM.MSG_CONTENT, CM.MSG_DT, CM.EMP_NO
-          FROM CHAT_MESSAGE_T CM
-         WHERE CM.CHAT_ROOM_NO = #{chatRoomNo}
-           AND CM.MSG_DT > (SELECT COALESCE(MAX(ACCESS_DT), TO_TIMESTAMP('1970-01-01 00:00:00'))
+        FROM CHAT_MESSAGE_T CM
+        WHERE CM.CHAT_ROOM_NO = #{chatRoomNo}
+          AND CM.MSG_DT > (SELECT COALESCE(MAX(ACCESS_DT), TO_TIMESTAMP('1970-01-01 00:00:00'))
                            FROM CR_ACCESS_T
                            WHERE CHAT_ROOM_NO = #{chatRoomNo}
                              AND EMP_NO = #{empNo}
-            )
-         ORDER BY CM.MSG_DT
+        )
+        ORDER BY CM.MSG_DT
     </select>
 
     <!-- 채팅 삭제 ( 비활성화 ) -->
     <update id="removeMsgStat">
         UPDATE CHAT_MESSAGE_T CM
-           SET CM.MSG_STAT = #{msgStat, typeHandler=com.mcp.crispy.common.typeHandler.MsgStatTypeHandler},
-               CM.MODIFIER = #{modifier},
-               CM.MODIFY_DT = CURRENT_TIMESTAMP
-         WHERE MSG_NO = #{msgNo}
-           AND CM.EMP_NO = #{modifier}
+        SET CM.MSG_STAT = #{msgStat, typeHandler=com.mcp.crispy.common.typeHandler.MsgStatTypeHandler},
+            CM.MODIFIER = #{modifier},
+            CM.MODIFY_DT = CURRENT_TIMESTAMP
+        WHERE MSG_NO = #{msgNo}
+          AND CM.EMP_NO = #{modifier}
     </update>
 
     <!-- 메시지 번호로 채팅방 번호 가져오기 -->
     <select id="getChatRoomNoByMsgNo" resultType="int">
-            SELECT CHAT_ROOM_NO
-              FROM CHAT_MESSAGE_T C
-             WHERE C.MSG_NO = #{msgNo}
+        SELECT CHAT_ROOM_NO
+        FROM CHAT_MESSAGE_T C
+        WHERE C.MSG_NO = #{msgNo}
     </select>
 </mapper>

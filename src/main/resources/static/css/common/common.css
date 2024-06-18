@@ -69,10 +69,10 @@ button {
 }
 
 /* sweetAlert 팝업 */
-.swal2-popup {font-size: 1.5rem;}
+.2-popup {font-size: 1.5rem;}
 
 /* cancel 버튼 */
-.swal2-cancel {
+.2-cancel {
 	background-color: var(--sub-color) !important;
 	border-color: var(--sub-color) !important;
 }

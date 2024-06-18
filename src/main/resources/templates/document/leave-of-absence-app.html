@@ -30,7 +30,7 @@
                 <tr>
                     <th class="col inp-col">주소</th>
                     <!-- 주소 출력 (도로명주소 + 상세주소) -->
-                    <td colspan="7" th:text="*{empStreet}"></td>
+                    <td colspan="7" th:text="|*{empStreet}, *{empDetail}|"></td>
                 </tr>
                 <tr>
                     <th class="col inp-col">휴직 기간</th>

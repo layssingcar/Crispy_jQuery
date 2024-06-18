@@ -22,4 +22,7 @@ public class NotifyDto {
     private Date modifyDt;
     private int modifier;
     private int empNo;
+    private String notifyType;
+    private String status;
+    private String documentType; // 문서 타입 추가: time-off or stock-order
 }

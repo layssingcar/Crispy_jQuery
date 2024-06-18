@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -175,17 +176,27 @@ public class StockController {
 	 *
 	 * @param authentication
 	 * @param approvalDto
-	 * @return
+	 * @param ra
+	 * @return redirect (orderApprList()) or redirect (stockOrder())
 	 */
 	@PostMapping("insert-order-appr")
 	public String insertOrderAppr(Authentication authentication,
-								  @ModelAttribute ApprovalDto approvalDto) {
+								  @ModelAttribute ApprovalDto approvalDto,
+								  RedirectAttributes ra) {
 
 		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
 		approvalDto.setEmpNo(userDetails.getEmpNo());
 
-		stockService.insertOrderAppr(approvalDto);
-		return "redirect:/crispy/stock-list";
+		int result = stockService.insertOrderAppr(approvalDto);
+
+		if (result == 1) {
+			ra.addFlashAttribute("resultMsg", "발주 신청이 완료되었습니다.");
+			return "redirect:/crispy/order-list/franchise";
+
+		} else {
+			ra.addFlashAttribute("resultMsg", "발주 신청이 완료되지 않았습니다.");
+			return "redirect:/crispy/stock-order";
+		}
 
 	}
 

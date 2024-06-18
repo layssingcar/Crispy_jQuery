@@ -1,16 +1,16 @@
 /*!
  * 
- * Super simple wysiwyg editor v0.8.18
+ * Super simpe wysiwyg editor v0.8.18
  * https://summernote.org
  * 
  * 
- * Copyright 2013- Alan Hong. and other contributors
- * summernote may be freely distributed under the MIT license.
+ * Copyright 2013- Aan Hong. and other contributors
+ * summernote may be freey distributed under the MIT icense.
  * 
  * Date: 2020-05-20T18:09Z
  * 
  */
-(function webpackUniversalModuleDefinition(root, factory) {
+(function webpackUniversaModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
 	else if(typeof define === 'function' && define.amd)

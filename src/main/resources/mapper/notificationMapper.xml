@@ -11,6 +11,9 @@
         NOTIFY_NO
         , NOTIFY_CT
         , NOTIFY_CONTENT
+        , NOTIFY_TYPE
+        , STATUS
+        , DOCUMENT_TYPE
         , CREATOR
         , CREATE_DT
         , EMP_NO
@@ -18,6 +21,9 @@
         #{notifyNo}
         , #{notifyCt.value}
         , #{notifyContent}
+        , #{notifyType}
+        , #{status}
+        , #{documentType}
         , #{empNo}
         , CURRENT_DATE
         , #{empNo})
@@ -34,7 +40,7 @@
     </select>
 
     <select id="selectUnreadNotify" resultMap="NotifyResultMap">
-        SELECT N.NOTIFY_NO, N.NOTIFY_CT, N.NOTIFY_CONTENT, N.NOTIFY_STAT, N.EMP_NO
+        SELECT N.NOTIFY_NO, N.NOTIFY_CT, N.NOTIFY_CONTENT, N.NOTIFY_STAT, N.EMP_NO, N.NOTIFY_TYPE, N.STATUS, N.DOCUMENT_TYPE
         FROM NOTIFICATION_T N
         WHERE 1 = 1
           AND N.EMP_NO = #{empNo}
@@ -48,6 +54,9 @@
         <result column="NOTIFY_CONTENT" property="notifyContent"/>
         <result column="NOTIFY_STAT" property="notifyStat" typeHandler="com.mcp.crispy.common.typeHandler.NotifyStatTypeHandler"/>
         <result column="EMP_NO" property="empNo"/>
+        <result column="NOTIFY_TYPE" property="notifyType"/>
+        <result column="STATUS" property="status"/>
+        <result column="DOCUMENT_TYPE" property="documentType"/>
     </resultMap>
 
     <update id="updateNotifyToRead">

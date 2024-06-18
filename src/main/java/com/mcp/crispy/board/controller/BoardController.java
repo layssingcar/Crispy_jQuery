@@ -2,12 +2,11 @@ package com.mcp.crispy.board.controller;
 
 import com.mcp.crispy.auth.domain.EmployeePrincipal;
 import com.mcp.crispy.board.dto.BoardDto;
-import com.mcp.crispy.board.dto.BoardFileDto;
 import com.mcp.crispy.board.mapper.BoardMapper;
 import com.mcp.crispy.board.service.BoardService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -21,6 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+@Slf4j
 @RequestMapping("/crispy")
 @RequiredArgsConstructor
 @Controller
@@ -102,14 +103,13 @@ public class BoardController {
 
 
 	@PostMapping("/add-form")
-	public String boardAddForm(MultipartHttpServletRequest multipartRequest, RedirectAttributes redirectAttributes) {
+	public String boardAddForm(MultipartHttpServletRequest multipartRequest,
+							   RedirectAttributes redirectAttributes) {
 		String boardTitle = multipartRequest.getParameter("boardTitle");
 		String boardContent = multipartRequest.getParameter("boardContent");
 		int empNo = Integer.parseInt(multipartRequest.getParameter("empNo"));
 		int boardCtNo = Integer.parseInt(multipartRequest.getParameter("boardCtNo"));
 		int creator = Integer.parseInt(multipartRequest.getParameter("empNo"));
-
-
 
 		// 게시글 등록
 		int boardNo = boardService.registerBoard(boardTitle, boardContent, empNo, boardCtNo,creator);
@@ -121,8 +121,8 @@ public class BoardController {
 		// 첨부 파일 등록
 		boolean inserted = boardService.registerBoardFile(multipartRequest, boardNo);
 
-		redirectAttributes.addFlashAttribute("inserted", inserted);
-		return "redirect:/crispy/board-list";
+		redirectAttributes.addFlashAttribute("addMsg", "게시글이 등록되었습니다");
+		return "redirect:/crispy/board-detail?boardNo=" + boardNo;
 	}
 
 	@GetMapping("/board-detail")
