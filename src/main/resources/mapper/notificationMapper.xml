@@ -11,8 +11,8 @@
         NOTIFY_NO
         , NOTIFY_CT
         , NOTIFY_CONTENT
-        , NOTIFY_TYPE
-        , STATUS
+        , APPR_TYPE
+        , TIME_OFF_TYPE
         , DOCUMENT_TYPE
         , CREATOR
         , CREATE_DT
@@ -21,8 +21,8 @@
         #{notifyNo}
         , #{notifyCt.value}
         , #{notifyContent}
-        , #{notifyType}
-        , #{status}
+        , #{apprType}
+        , #{timeOffType}
         , #{documentType}
         , #{empNo}
         , CURRENT_DATE
@@ -40,7 +40,7 @@
     </select>
 
     <select id="selectUnreadNotify" resultMap="NotifyResultMap">
-        SELECT N.NOTIFY_NO, N.NOTIFY_CT, N.NOTIFY_CONTENT, N.NOTIFY_STAT, N.EMP_NO, N.NOTIFY_TYPE, N.STATUS, N.DOCUMENT_TYPE
+        SELECT N.NOTIFY_NO, N.NOTIFY_CT, N.NOTIFY_CONTENT, N.NOTIFY_STAT, N.EMP_NO, N.APPR_TYPE, N.TIME_OFF_TYPE, N.DOCUMENT_TYPE
         FROM NOTIFICATION_T N
         WHERE 1 = 1
           AND N.EMP_NO = #{empNo}
