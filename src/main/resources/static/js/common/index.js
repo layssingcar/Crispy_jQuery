@@ -39,25 +39,27 @@
 	  
 	  // 출 퇴근 영역
 	  let startWorkTime, endWorkTime, workingTime;
+	  let strStartTime, strEndTime;
 	  let timer;
   	  let hour = 0, minute = 0, second = 0;
   	  let perWork = 0;
   	  let h = 0, m = 0, s = 0;
 	  document.addEventListener('DOMContentLoaded', function() {
 	      if(localStorage.getItem('startWorkTime') != null){
-			startWorkTime = localStorage.getItem('startWorkTime');
-			let endTime = moment();
+			startWorkTime = moment(localStorage.getItem('startWorkTime'));
+			let currentTime  = moment();
 			
 			// 시간 차이 계산 (milliseconds)
-			let diffMilliseconds = endTime.diff(startWorkTime);
+			let diffMilliseconds = currentTime .diff(startWorkTime);
 			
 			// duration 객체로 변환하여 시, 분, 초로 접근할 수 있음
 			let duration = moment.duration(diffMilliseconds);
 			hour = duration.hours();
 			minute = duration.minutes();
-			second = duration.seconds();			
+			second = duration.seconds();
+			perWork = (hour * 3600) + (minute * 60) + (second);			
 			
-		  	$("#work-start").text("출근시간 : " + startWorkTime);			  
+		  	$("#work-start").text("출근시간 : " + startWorkTime.format('HH:mm:ss'));			  
 		  	$("#btn-work").attr("disabled", true);
 		  	$("#btn-finish").attr("disabled", false);
 		  	
@@ -92,10 +94,12 @@
 		  }
 		  
 		function fnClickWork(){
-		  	startWorkTime = moment().format('HH:mm:ss');
-		  	localStorage.setItem('startWorkTime', startWorkTime);
+		  	startWorkTime = moment();
+		  	localStorage.setItem('startWorkTime', startWorkTime.toISOString());
+		  	strStartTime = startWorkTime.format('HH:mm:ss');
 		  	
-		  	$("#work-start").text("출근시간 : " + startWorkTime);			  
+		  	
+		  	$("#work-start").text("출근시간 : " + strStartTime);			  
 		  	$("#btn-work").attr("disabled", true);
 		  	$("#btn-finish").attr("disabled", false);
 		  	
@@ -108,7 +112,7 @@
 		    // 현재 시간을 HH:mm:ss 형식으로 저장
 		    endWorkTime = moment().format('HH:mm:ss');
 
-		    // 근무 시간 계산 (여기서는 단순히 예시로 사용됨)
+		    // 근무 시간 계산
 		    workingTime = h + ":" + m + ":" + s;
 
 		    // 화면에 퇴근 시간 표시 및 버튼 상태 변경

@@ -7,6 +7,7 @@
       const currentDate = moment().format('YYYY-MM-DD');
       let selectScheduleId;
       let idCount = 0;
+      let calDate, newDate;
     	  
       myModal.on("hidden.bs.modal", function () {
         $("#form-modal")[0].reset();
@@ -16,41 +17,52 @@
 	 	endOpt.eq(0).prop('selected', true);		// 종료시간 초기화
       });
       
-      myModal.on("show.bs.modal", function(){
+      myModal.off("show.bs.modal").on("show.bs.modal", function(){
 		    // 초기 체크 상태에 따라 show/hide 설정
 		    if ($("#radio-notice").is(':checked')) {
 	            $("#vac-type, #vac-elem").hide();
-            	$(".form-group-start, .form-group-end").show();
+	            $("#start, #end").show();
+//            	$(".form-group-start, .form-group-end").show();
 		    }
 		    
 		    $("input[name='notice-or-vac']").off('click').on('click', function() {		// 공지, 휴가 라디오 버튼 눌렀을 때 
 		        if ($("#radio-notice").is(':checked') || $("#radio-mysche").is(':checked')) {		// 공지
 		            $("#vac-type, #vac-elem").hide();
 	            	$(".form-group-start, .form-group-end").show();
+	            	$("#startDate, #endDate").show();
             	 	$("#start").off();									// 일정구분 라디오 초기화	
             	 	startOpt.eq(0).prop('selected', true);	// 시작시간 초기화
             	 	endOpt.eq(0).prop('selected', true);		// 종료시간 초기화
             	 	$("#end").attr("disabled", false);
 		            $("#vac-all").prop("checked", true);
+		            $("#start, #end").show();
             	 	
 	        	} else if ($("#radio-vac").is(':checked')) {		// 휴가
 		            $("#vac-type, #vac-elem").show();
+		             $("#start, #end").hide();
 		            
 		            if($("#vac-all").is(':checked')){	// 연차
-		            	$(".form-group-start, .form-group-end").hide();
+		            	$(".form-group-start, .form-group-end").show();
 		            	$("#end").attr("disabled", false);
+		            	$("#startDate, #endDate").show();
 		            }
 		            $("input[name='var-elem-radio']").off('click').on('click', function(){		// 휴가 종류 라디오 버튼 눌렀을 때 
 		            	 if ($("#vac-all").is(':checked')) {	// 연차
-		            		 $(".form-group-start, .form-group-end").hide();
+		            		 $(".form-group-start, .form-group-end").show();
+		            		 $("#startDate, #endDate").show();
+		            		 $("#start, #end").hide();
 		 		        } else if ($("#vac-half").is(':checked')){	// 반차
 		 		        	$(".form-group-start, .form-group-end").show();
+		 		        	$("#startDate, #endDate").hide();
 			            	$("#end").attr("disabled", true);
+			            	 $("#start, #end").show();
 			            	radioControl(7);
 			            	
 		 		        } else if($("#vac-quat").is(':checked')){	// 반반차
 		 		        	$(".form-group-start, .form-group-end").show();
+		 		        	$("#startDate, #endDate").hide();
 			            	$("#end").attr("disabled", true);
+			            	 $("#start, #end").show();
 			            	radioControl(3);
 		 		        }
 		            })
@@ -85,12 +97,21 @@
 		});
 		updateAMPM(num);	  
       }
-
       
       function fnRegistSchedule() {		// 일정 등록 처리 함수
       let selectScheType = $("input:radio[name=notice-or-vac]:checked").val();	// 공지,개인,연차
       let selectVacType = $("input:radio[name=var-elem-radio]:checked").val();	// 연차,반차,반반차,
       let schedule;
+      
+	      if($("#startDate").val() != "" && $("#endDate").val() != ""){
+	      	startDt = $("#startDate").val();
+	      	endDt = $("#endDate").val();
+		  }
+		  else{
+			calDate = moment(endDt, 'YYYY-MM-DD');
+			newDate = calDate.subtract(1, 'days').format('YYYY-MM-DD');
+			endDt = newDate;
+		  }
       
       	if(selectScheType == 'notice' || selectScheType == 'mysche'){
 	         schedule = {
@@ -98,7 +119,6 @@
 	              title: $("#sch-title").val(),
 	              start: startDt + "T" + $("#start option:selected").val(),
 	              end : endDt + "T" + $("#end option:selected").val(),
-	              allDay: true, 
 	              backgroundColor : (selectScheType == 'notice') ? "rgba(255, 0, 0, 0.7)" : "rgba(0, 0, 255, 0.7)",
 	              borderColor: (selectScheType == 'notice') ? "rgba(255, 0, 0, 0.7)" : "rgba(0, 0, 255, 0.7)"
 	          };			
@@ -107,9 +127,8 @@
 	         schedule = {
 				  id: (selectVacType == 'all') ? "연차" + crypto.randomUUID() : ((selectVacType == 'half') ? "반차" + crypto.randomUUID() : "반반" + crypto.randomUUID()),
 	              title: $("#sch-title").val(),
-	              start: (selectVacType == 'all') ? startDt : startDt + "T" + $("#start option:selected").val(),
-	              end : (selectVacType == 'all') ? endDt : startDt + "T" + $("#end option:selected").val(),
-	              allDay: (selectVacType == 'all') ? true : false, 
+	              start: startDt + "T" + $("#start option:selected").val(),
+	              end : endDt + "T" + $("#end option:selected").val(),
 	              backgroundColor : "rgba(0, 135, 0, 0.7)",
 	              borderColor: "rgba(0, 135, 0, 0.7)"
 	          };
@@ -195,13 +214,23 @@
 		        data: data
 		    })
 			.done(function(data){
-				alert("연차 삭제 성공");
+	            Swal.fire({
+	                icon: "success",
+	                title: "연차 삭제 성공",
+	                showConfirmButton: false,
+	                timer: 1500
+	            })
 				myModal.modal('hide');
 				calendar.getEventById(selectScheduleId).remove();
 				calendar.refetchEvents();
 			})
 			.fail(function(jqXHR){
-				alert("연차 삭제 실패");
+	            Swal.fire({
+	                icon: "warning",
+	                title: "연차 삭제 실패",
+	                showConfirmButton: false,
+	                timer: 1500
+	            })
 				alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
 			})  	
 	  }
@@ -225,12 +254,22 @@
 		        data: data
 		    })
 			.done(function(data){
-				alert("연차 수정 성공");
+	            Swal.fire({
+	                icon: "success",
+	                title: "연차 수정 성공",
+	                showConfirmButton: false,
+	                timer: 1500
+	            })
 				myModal.modal('hide');
 				location.reload();
 			})
 			.fail(function(jqXHR){
-				alert("연차 수정 실패");
+	            Swal.fire({
+	                icon: "warning",
+	                title: "연차 수정 성공",
+	                showConfirmButton: false,
+	                timer: 1500
+	            })
 				alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
 			})  
 			calendar.render();		
@@ -260,12 +299,22 @@
 		        data: data
 		    })
 			.done(function(data){
-				alert("연차 저장 성공");
+	            Swal.fire({
+	                icon: "success",
+	                title: "연차 저장 성공",
+	                showConfirmButton: false,
+	                timer: 1500
+	            })
 				myModal.modal('hide');
 				calendar.refetchEvents();
 			})
 			.fail(function(jqXHR){
-				alert("연차 저장 실패");
+	            Swal.fire({
+	                icon: "warning",
+	                title: "연차 저장 실패",
+	                showConfirmButton: false,
+	                timer: 1500
+	            })
 				alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
 			})    		
 	  }
@@ -312,12 +361,22 @@
 			        data: data
 			    })
 				.done(function(data){
-					alert("일정 저장 성공");
+		            Swal.fire({
+		                icon: "success",
+		                title: "일정 저장 성공",
+		                showConfirmButton: false,
+		                timer: 1500
+		            })
 					myModal.modal('hide');
 					calendar.refetchEvents();
 				})
 				.fail(function(jqXHR){
-					alert("일정 저장 실패");
+		            Swal.fire({
+		                icon: "warning",
+		                title: "일정 저장 실패",
+		                showConfirmButton: false,
+		                timer: 1500
+		            })
 					alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
 				})     			
 			}
@@ -354,13 +413,23 @@
 			        data: data
 			    })
 				.done(function(data){
-					alert("일정 삭제 성공");
+		            Swal.fire({
+		                icon: "success",
+		                title: "일정 삭제 성공",
+		                showConfirmButton: false,
+		                timer: 1500
+		            })
 					myModal.modal('hide');
 					calendar.getEventById(selectScheduleId).remove();
 					calendar.refetchEvents();
 				})
 				.fail(function(jqXHR){
-					alert("일정 삭제 실패");
+		            Swal.fire({
+		                icon: "warning",
+		                title: "일정 삭제 실패",
+		                showConfirmButton: false,
+		                timer: 1500
+		            })
 					alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
 				})     			
 			}				
@@ -376,6 +445,11 @@
 			annCt = 0;
 		else
 			annCt = (selectVacType == 'half') ? 1 : 2;
+			
+	    if($("#startDate").val() != "" && $("#endDate").val() != ""){
+	      	startDt = $("#startDate").val();
+	      	endDt = $("#endDate").val();
+		}			
 			
 		if(selectScheType == 'vac'){
 			if(selectVacType == 'all')
@@ -403,12 +477,28 @@
 			        data: data
 			    })
 				.done(function(data){
-					alert("일정 수정 성공");
+		            Swal.fire({
+		                icon: "success",
+		                title: "일정 수정 성공",
+		                showConfirmButton: false,
+		                timer: 1500
+		            })
+			      	let event = calendar.getEventById(selectScheduleId);
+					calDate = moment(endDt, 'YYYY-MM-DD');
+					newDate = calDate.add(1, 'days').format('YYYY-MM-DD');
+					endDt = newDate;
+		      	    event.setEnd(endDt);
+		      	    
 					myModal.modal('hide');
-					location.reload();
+					calendar.refetchEvents();
 				})
 				.fail(function(jqXHR){
-					alert("일정 수정 실패");
+		            Swal.fire({
+		                icon: "warning",
+		                title: "일정 수정 실패",
+		                showConfirmButton: false,
+		                timer: 1500
+		            })
 					alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
 				})     			
 			}

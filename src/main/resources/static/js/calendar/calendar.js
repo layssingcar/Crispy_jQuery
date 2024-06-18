@@ -48,7 +48,6 @@
 						title:this.scheTitle,
 						start:this.scheStartTime,
 						end:this.scheEndTime,
-		              	allDay: true, 
 		              	backgroundColor : (this.scheDiv == 0) ? "rgba(255, 0, 0, 0.7)" : "rgba(0, 0, 255, 0.7)",
 		              	borderColor: (this.scheDiv == 0) ? "rgba(255, 0, 0, 0.7)" : "rgba(0, 0, 255, 0.7)"			
 					});
@@ -59,7 +58,6 @@
 						title:this.annTitle,
 						start:this.annStartTime,
 						end:this.annEndTime,
-		              	allDay: (this.annCtNo == 0) ? true : false, 
       		  			backgroundColor : "rgba(0, 135, 0, 0.7)",
               			borderColor: "rgba(0, 135, 0, 0.7)"								
 					});
@@ -70,11 +68,21 @@
 				calendar.refetchEvents();
 			})
 			.fail(function(){
-				alert("연차 불러오기 실패");	
+	            Swal.fire({
+	                icon: "warning",
+	                title: "연차 불러오기 실패",
+	                showConfirmButton: false,
+	                timer: 1500
+	            })
 			})
 		})
 		.fail(function(){
-			alert("일정 불러오기 실패");
+            Swal.fire({
+                icon: "warning",
+                title: "일정 불러오기 실패",
+                showConfirmButton: false,
+                timer: 1500
+            })
 		})
 	 }
       
@@ -93,7 +101,8 @@
 			$("#start, #end").prop("disabled", state);
 		  	$("input[name='notice-or-vac']").prop("disabled", state);
 		  	$("input[name='var-elem-radio']").prop("disabled", state);			
-		  	$("input[name='btnradio']").prop("disabled", state);			
+		  	$("input[name='btnradio']").prop("disabled", state);
+		  	$("#startDate, #endDate").prop("disabled", state);			
 		}
 		
 		function fnShowSelectEvent(info){
@@ -112,10 +121,17 @@
 				  	fnSetSelectByValue(endOpt, data.scheEndTime.substring(11, 17));
 					fnSetModalDetailToggle(1);
 					radioBtnsByNotiorVac[data.scheDiv].checked = true;
+					$("#startDate").val(data.scheStartTime.substring(0, 10));
+					$("#endDate").val(data.scheEndTime.substring(0, 10));
 			 	  	myModal.modal('show');
 				})
 				.fail(function(jqXHR){
-					alert("실패");
+		            Swal.fire({
+		                icon: "warning",
+		                title: "일정 불러오기 실패",
+		                showConfirmButton: false,
+		                timer: 1500
+		            })
 					alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
 				})    
 			}
@@ -135,16 +151,23 @@
 					fnSetModalDetailToggle(1);
 					radioBtnsByNotiorVac[2].checked = true;
 					radioBtnsByVacType[data.annCtNo].checked = true;
+					$("#startDate").val(data.annStartTime.substring(0, 10));
+					$("#endDate").val(data.annEndTime.substring(0, 10));
 			 	  	
 			 	  	if(data.annCtNo != 0)
-						$("#vac-type, #vac-elem").show();
+						$("#vac-type, #vac-elem, #end, #start").show();
 					else
-						$("#vac-type, #vac-elem").hide();
+						$("#vac-type, #end, #start").hide();
 						
 			 	  	myModal.modal('show');
 				})
 				.fail(function(jqXHR){
-					alert("실패");
+		            Swal.fire({
+		                icon: "warning",
+		                title: "일정 불러오기 실패",
+		                showConfirmButton: false,
+		                timer: 1500
+		            })
 					alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
 				})    			
 			}			
