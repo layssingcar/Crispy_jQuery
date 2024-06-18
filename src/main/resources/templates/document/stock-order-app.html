@@ -21,7 +21,7 @@
                     <tr>
                         <th class="col top-col">주소</th>
                         <!-- 주소 -->
-                        <td colspan="3" th:text="|${approvalDto.frnStreet} ${approvalDto.frnDetail}|"></td>
+                        <td colspan="3" th:text="|${approvalDto.frnStreet}, ${approvalDto.frnDetail}|"></td>
                     </tr>
                 </tbody>
             </table>
@@ -69,7 +69,8 @@
                     <td>
                         <div class="stock-flex">
                             <!-- 단가 -->
-                            <span th:text="${stockOrder.stockPrice}"></span>
+                            <span th:with="formattedPrice=${#numbers.formatDecimal(stockOrder.stockPrice, 0, 'COMMA', 0, 'COMMA')}"
+                                  th:text="${formattedPrice}"></span>
                             <span>원</span>
                             <span>&nbsp;/&nbsp;</span>
                             <!-- 단위 -->
@@ -80,7 +81,8 @@
                     <td>
                         <div class="stock-flex">
                             <!-- 수량 -->
-                            <span th:text="${stockOrder.stockOrderCount}"></span>
+                            <span th:with="formattedOrderCount=${#numbers.formatDecimal(stockOrder.stockOrderCount, 0, 'COMMA', 0, 'COMMA')}"
+                                  th:text="${formattedOrderCount}"></span>
                             <span>개</span>
                         </div>
                     </td>
@@ -88,7 +90,8 @@
                     <td>
                         <div class="stock-flex">
                             <!-- 금액 -->
-                            <span th:text="${stockOrder.stockOrderCost}"></span>
+                            <span th:with="formattedCost=${#numbers.formatDecimal(stockOrder.stockOrderCost, 0, 'COMMA', 0, 'COMMA')}"
+                                  th:text="${formattedCost}"></span>
                             <span>원</span>
                         </div>
                     </td>
@@ -111,7 +114,8 @@
                     <td colspan="4" class="col">
                         <div class="stock-flex">
                             <!-- 합계금액 -->
-                            <span th:text="${approvalDto.orderCost}"></span>
+                            <span th:with="formattedOrderCost=${#numbers.formatDecimal(approvalDto.orderCost, 0, 'COMMA', 0, 'COMMA')}"
+                                  th:text="${formattedOrderCost}"></span>
                             <span>원</span>
                         </div>
                     </td>

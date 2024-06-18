@@ -324,9 +324,9 @@
                  , E.EMP_NO, E.EMP_NAME, E.EMP_SIGN
                  , P.POS_NAME
               FROM APPR_LINE_T L
-        INNER JOIN EMPLOYEE_T E
+   LEFT OUTER JOIN EMPLOYEE_T E
                 ON L.EMP_NO = E.EMP_NO
-        INNER JOIN POSITION_T P
+   LEFT OUTER JOIN POSITION_T P
                 ON E.POS_NO = P.POS_NO
              WHERE 1=1
                AND L.APPR_NO = #{apprNo}

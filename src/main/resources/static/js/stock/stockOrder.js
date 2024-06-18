@@ -197,18 +197,27 @@ function fetchCategories() {
         .then(response => response.json())
         .then(categories => {
             categoryButtonsContainer.innerHTML = ''; // 기존 버튼 지우기
-            categories.forEach(category => {
+            categories.forEach((category, index) => {
                 const button = document.createElement('button');
                 button.classList.add('btn', 'btn-primary', 'm-2');
+
                 button.textContent = category.stockCtName;
                 // button.addEventListener('click', () => fetchStockItemsByCategory(category.stockCtNo));
 
                 button.addEventListener('click', () => {
+                    // 선택된 카테고리 버튼에 메인 컬러 적용
+                    document.querySelector(".stock-order #category-buttons > .selected")?.classList.remove("selected");
+                    button.classList.add("selected");
+
                     optionObj.stockCtNo = category.stockCtNo;
                     getStockItemsFn(optionObj)
                 });
 
                 categoryButtonsContainer.appendChild(button);
+
+                // 모달 열릴 때 첫 번째 카테고리 선택
+                if (index === 0) button.click();
+
             });
         })
         .catch(error => console.error('Error fetching categories:', error));
@@ -298,7 +307,15 @@ const getStockItemsFn = async (optionObj) => {
 
                 // 재고 수량 생성
                 const countCell = document.createElement("td");
-                countCell.textContent = `${stock.isCount}개`
+                const strong = document.createElement("span");
+                const span = document.createElement("span");
+
+                strong.innerHTML = stock.isCount;
+                strong.className = "strong";
+                span.innerHTML = "개";
+
+                countCell.append(strong);
+                countCell.append(span);
 
                 row.appendChild(checkboxCell);
                 row.appendChild(imageCell);
@@ -394,8 +411,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     const ctDivChild1 = document.createElement("div")
                     ctDivChild1.innerText = "카테고리";
-                    ctDivChild1.className = "m-right";
-                    // ctDivChild1.id = "stock-ct"; // 아이디는 중복되니까 제외
+                    ctDivChild1.classList.add("m-right", "stock-ct");
 
                     const ctDivChild2 = document.createElement("div")
                     ctDivChild2.innerText = stock.stockCtName;
@@ -407,8 +423,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     const nameDivChild1 = document.createElement("div")
                     nameDivChild1.innerText = "재고명";
-                    nameDivChild1.className = "m-right";
-                    // ctDivChild1.id = "stock-name"; // 아이디는 중복되니까 제외
+                    nameDivChild1.classList.add("m-right", "stock-name");
 
                     const nameDivChild2 = document.createElement("div")
                     nameDivChild2.innerText = stock.stockName;
