@@ -203,12 +203,13 @@ public class ApprovalService {
     public int changeApprLineStat(Map<String, Object> map) throws IOException {
 
         int apprLineStat = Integer.parseInt(map.get("apprLineStat").toString());
-        int empNo = Integer.parseInt(map.get("empNo").toString());
+        int empNo = 0;
         int apprNo = Integer.parseInt(map.get("apprNo").toString());
         String apprType = map.get("apprType").toString(); // 결재 문서 타입 추가
      
         // 결재 상태가 승인(1)인 경우 서명 데이터를 저장
         if (apprType.equals("time-off") && apprLineStat == 1) {
+            empNo = Integer.parseInt(map.get("empNo").toString());
             String signData = map.get("data").toString();
             String fileName = imageService.storeSignatureImage(signData, empNo);
             String path = "/emp_sign/";
