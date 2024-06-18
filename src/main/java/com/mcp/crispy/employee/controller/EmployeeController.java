@@ -141,7 +141,8 @@ public class EmployeeController {
 	 * @return forward (change-emp-pw)
 	 */
 	@GetMapping("/changeEmpPw")
-	public String changePassword(@CookieValue(value = "accessToken", required = false) String token, HttpSession session, Model model) {
+	public String changePassword(@CookieValue(value = "accessToken", required = false) String token,
+								 HttpSession session, Model model) {
 		log.info("changePassword method called");
 		log.info("JWT Token: {}", token);
 

@@ -17,15 +17,8 @@
 				<form id="frm-board-modify" method="POST" class="my-3" enctype="multipart/form-data">
 					<input type="hidden" id="boardNo" class="board-no" th:value="${board.boardNo}">
 					<!-- 제목 -->
+					<h2>자유게시판</h2>
 					<h1 class="border-bottom py-2">게시물 수정하기</h1>
-					<div class="col-md-5">
-						<label for="cate" class="form-label">카테고리</label>
-						<select class="form-select board-ct-no" id="cate" required="" th:value="${board.boardCtNo}">
-							<option value="" th:selected="${board.boardCtNo == null}">카테고리</option>
-							<option value="0" th:selected="${board.boardCtNo == 0}">공지사항</option>
-							<option value="1" th:selected="${board.boardCtNo == 1}">자유게시판</option>
-						</select>
-					</div>
 					<label for="boardTitle" class="form-label">제목</label>
 					<input type="text" name="boardTitle" id="boardTitle"
 						class="form-control  board-title" th:value="${board.boardTitle}"/>
@@ -61,7 +54,7 @@
 					</div>
 					<div class="d-flex justify-content-end" id="btn">
 						<a type="submit" id="btn-cancel" class="btn btn-primary btn-lg">취소</a>
-						<button type="button" class="btn btn-primary btn-lg btn-modify">등록</button>
+						<button type="button" class="btn btn-primary btn-lg btn-modify">수정</button>
 					</div>
 				</form>
 			</div>

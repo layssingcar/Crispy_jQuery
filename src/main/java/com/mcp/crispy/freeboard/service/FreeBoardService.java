@@ -42,11 +42,9 @@ public class FreeBoardService {
                 .empNo(empNo)
                 .boardTitle(freeBoardDto.getBoardTitle())
                 .boardContent(freeBoardDto.getBoardContent())
-                .boardCtNo(freeBoardDto.getBoardCtNo())
                 .build();
         freeBoardMapper.insertFreeBoard(board);
 
-        log.info("insertBoard: {}", board.getBoardCtNo());
 
         if (files != null && !files.isEmpty()) {
             registerFreeBoardFile(files, board.getBoardNo());

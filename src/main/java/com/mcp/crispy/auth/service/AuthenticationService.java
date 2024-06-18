@@ -36,7 +36,7 @@ public class AuthenticationService {
         UserDetails userDetails = crispyUserDetailsService.loadUserByUsername(username);
 
         if (!passwordEncoder.matches(password, userDetails.getPassword())) {
-            throw new IllegalArgumentException("인증되지 않은 정보입니다.");
+            throw new IllegalArgumentException("비밀번호를 확인해주세요.");
         }
 
         if (userDetails instanceof EmployeePrincipal employeePrincipal) {
