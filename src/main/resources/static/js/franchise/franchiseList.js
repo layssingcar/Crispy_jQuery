@@ -179,7 +179,7 @@ const franchiseList = {
 
     confirmDeleteFrn: function(frnNo) {
         Swal.fire({
-            title: '정말로 삭제하시겠습니까?',
+            title: '가맹점 정보를 정말로 삭제하시겠습니까?',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -195,7 +195,7 @@ const franchiseList = {
 
     confirmDeleteSelectedFrns: function() {
         Swal.fire({
-            title: '정말로 삭제하시겠습니까?',
+            title: '선택한 가맹점의 정보를 정말로 삭제하시겠습니까?',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',

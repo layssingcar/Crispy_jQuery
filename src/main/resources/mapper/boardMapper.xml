@@ -34,7 +34,7 @@
         FROM BOARD_T B
         INNER JOIN EMPLOYEE_T E
         ON B.EMP_NO = E.EMP_NO
-        WHERE BOARD_CT_NO = 1
+        WHERE BOARD_CT_NO = 0
         <include refid="search"></include>
     </select>
 
@@ -50,7 +50,7 @@
         , E.EMP_NAME
         FROM BOARD_T B
         INNER JOIN EMPLOYEE_T E ON B.EMP_NO = E.EMP_NO
-        WHERE BOARD_CT_NO = 1
+        WHERE BOARD_CT_NO = 0
         <include refid="search"></include>
         ) a
         WHERE RN BETWEEN #{begin} AND #{end}

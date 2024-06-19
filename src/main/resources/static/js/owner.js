@@ -252,7 +252,7 @@ const owner = {
 
     confirmDeleteEmployee: function(empNo) {
         Swal.fire({
-            title: '직원을 정말로 삭제하시겠습니까?',
+            title: '직원 정보를 정말로 삭제하시겠습니까?',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: '네, 삭제하겠습니다!',
@@ -266,7 +266,7 @@ const owner = {
     },
     confirmDeleteSelectedEmployees: function() {
         Swal.fire({
-            title: '선택한 직원들을 정말로 삭제하시겠습니까?',
+            title: '선택한 직원들의 정보를 정말로 삭제하시겠습니까?',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: '네, 삭제하겠습니다!',
