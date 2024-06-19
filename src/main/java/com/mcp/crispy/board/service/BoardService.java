@@ -107,53 +107,6 @@ public class BoardService {
         // Ensure all files were successfully inserted
         return insertBoardFileCount == files.size();
     }
-//    @Transactional(readOnly=true)
-//    public void loadBoardList(Model model) {
-//
-//
-//        Map<String, Object> modelMap = model.asMap();
-//        HttpServletRequest request = (HttpServletRequest) modelMap.get("request");
-//
-//        int total = boardMapper.getBoardCount();
-//
-//        Optional<String> optDisplay = Optional.ofNullable(request.getParameter("display"));
-//        int display = Integer.parseInt(optDisplay.orElse("20"));
-//
-//        Optional<String> optPage = Optional.ofNullable(request.getParameter("page"));
-//        int page = Integer.parseInt(optPage.orElse("1"));
-//
-//        myPageUtils.setPaging(total, display, page);
-//
-//        Optional<String> optSort = Optional.ofNullable(request.getParameter("sort"));
-//        String sort = optSort.orElse("DESC");
-//
-//        Map<String, Object> map = Map.of("begin", myPageUtils.getBegin()
-//                , "end", myPageUtils.getEnd()
-//                , "sort", sort);
-//
-//        /*
-//         * total = 100, display = 20
-//         *
-//         * page  beginNo
-//         * 1     100
-//         * 2     80
-//         * 3     60
-//         * 4     40
-//         * 5     20
-//         */
-//        model.addAttribute("beginNo", total - (page - 1) * display);
-//        model.addAttribute("boardList", boardMapper.getBoardList(map));
-//        model.addAttribute("paging", myPageUtils.getPaging(request.getContextPath() + "/board/list.do", sort, display));
-//        model.addAttribute("display", display);
-//        model.addAttribute("sort", sort);
-//        model.addAttribute("page", page);
-//
-//    }
-
-//    // 자유게시판 LIST
-//    public List<BoardDto> getFreeBoardList() {
-//        return boardMapper.getFreeBoardList();
-//    }
 
     @Transactional(readOnly = true)
     public List<BoardDto> getFreeBoardList(Integer page, int cnt, String search) {
@@ -247,12 +200,15 @@ public class BoardService {
     @Transactional(readOnly = true)
 
     public BoardDto getBoardByNo(int boardNo) {
+
+        updateHit(boardNo);
         return boardMapper.getBoardByNo(boardNo);
     }
 
     @Transactional(readOnly = true)
     public void loadBoardByNo(int boardNo, Model model) {
         model.addAttribute("board", boardMapper.getBoardByNo(boardNo));
+        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" + boardMapper.getBoardByNo(boardNo));
         model.addAttribute("boardFileList", boardMapper.getBoardFileList(boardNo));
     }
 
