@@ -45,6 +45,7 @@
   	  let perWork = 0;
   	  let h = 0, m = 0, s = 0;
 	  document.addEventListener('DOMContentLoaded', function() {
+			fnCheckChangeEmp();
 	      if(localStorage.getItem('startWorkTime') != null){
 			startWorkTime = moment(localStorage.getItem('startWorkTime'));
 			let currentTime  = moment();
@@ -96,6 +97,7 @@
 		function fnClickWork(){
 		  	startWorkTime = moment();
 		  	localStorage.setItem('startWorkTime', startWorkTime.toISOString());
+		  	localStorage.setItem('empNo', empNo);
 		  	strStartTime = startWorkTime.format('HH:mm:ss');
 		  	
 		  	
@@ -207,6 +209,16 @@
 		alert("매출 실패");
 		alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
 	})    
+		
+	function fnCheckChangeEmp(){
+		if(localStorage.getItem('empNo') != null){
+			if(empNo != localStorage.getItem('empNo')){
+				localStorage.removeItem('startWorkTime');
+			    $("#btn-work").attr("disabled", false);
+		    	$("#btn-finish").attr("disabled", true);
+			}
+		}
+	}		
 		
 	// 시계
 	function updateClock() {

@@ -204,14 +204,16 @@ document.addEventListener('DOMContentLoaded', function() {
 			                tablestr += '<td>' + this.attWorkTime + '</td>';
 			                tablestr += (this.annCtNo == 1) ? '<td>반차</td>' : '<td>반반차</td>';
 			                if(this.attWorkTime != null)
-								fnCalWorkTimeByChart(this.attWorkTime);
+								fnCalWorkTimeByChart(this.attWorkTime, this.annCtNo);
 		            	}
 						else if(this.category == 0){
 							tablestr += '<td></td>';
 							tablestr += '<td></td>';
 							tablestr += '<td></td>';
 							tablestr += '<td></td>';
-							tablestr += '<td>연차</td>';							
+							tablestr += '<td>연차</td>';	
+							chartcount.push(9);
+							overcount.push(0);						
 						}
 		            	else{
 			                tablestr += '<td>정상</td>';
@@ -252,11 +254,16 @@ document.addEventListener('DOMContentLoaded', function() {
 		chartInstance.update();		
 	}
   
-  function fnCalWorkTimeByChart(attWorkTime){
+  function fnCalWorkTimeByChart(attWorkTime, annCtNo){
 	let workTime, overWorkTime;
 	workTime = parseFloat(attWorkTime.substring(0, 2));
 	overWorkTime = ((parseFloat(attWorkTime.substring(3, 5)) * 60) + parseFloat(attWorkTime.substring(6, 8))) / 3600;
 
+	if(annCtNo == 1)
+		workTime += 4;
+	else if(annCtNo == 2)
+		workTime += 2;
+		
 	if(workTime + overWorkTime >= 9.00){
 		if(workTime > 9){
 			chartcount.push(workTime - (workTime - 9));
