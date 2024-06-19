@@ -44,7 +44,7 @@
                                         <div>
                                             <label for="frn-frnName" class="form-label">가맹점 이름</label>
                                             <input type="text" id="frn-frnName" name="frnName" class="form-control frnName"
-                                                   placeholder="가맹점 이름" autocomplete="on" th:value="${owner.frnName}">
+                                                   placeholder="가맹점 이름" autocomplete="on" th:value="${owner.frnName}" readonly>
                                             <div class="error-message frnName-error" id="frnName-error" style="display: none;"></div>
                                         </div>
                                     </div>
@@ -53,7 +53,7 @@
                                         <div>
                                             <label for="frn-frnOwner" class="form-label">대표자</label>
                                             <input type="text" id="frn-frnOwner" name="frnOwner" class="form-control frnOwner"
-                                                   placeholder="성함을 입력하세요." autocomplete="on" th:value="${owner.frnOwner}">
+                                                   placeholder="성함을 입력하세요." autocomplete="on" th:value="${owner.frnOwner}" readonly>
                                             <div class="error-message frnOwner-error" id="frnOwner-error" style="display: none;"></div>
                                         </div>
                                         <button type="button" id="btn-edit-frnOwner">수정</button>
@@ -64,7 +64,7 @@
                                         <div>
                                             <label for="frn-frnTel" class="form-label">가맹점번호</label>
                                             <input type="text" class="form-control frnTel" id="frn-frnTel" name="frnTel"
-                                                   placeholder="- 제외하고 입력해주세요." th:value="${owner.frnTel}">
+                                                   placeholder="- 제외하고 입력해주세요." th:value="${owner.frnTel}" readonly>
                                             <div class="error-message frnTel-error" id="frnTel-error" style="display: none;"></div>
                                         </div>
                                         <!-- 관리자만 볼 수 있는 버튼 -->
@@ -80,14 +80,14 @@
                                             <div>
                                                 <div class="d-flex">
                                                     <input type="text" id="frn-frnZip" name="frnZip" class="form-control zipcode mb-2"
-                                                           placeholder="우편번호" th:value="${owner.frnZip}">
+                                                           placeholder="우편번호" th:value="${owner.frnZip}" readonly>
                                                     <!-- 관리자만 볼 수 있는 버튼 -->
                                                     <div sec:authorize="hasRole('ROLE_ADMIN')">
                                                         <button type="button" class="mt-0 search-address" onclick="execPostCode(false)">주소 찾기</button>
                                                     </div>
                                                 </div>
                                                 <input type="text" id="frn-frnStreet" name="frnStreet" class="form-control frnStreet street-address mb-2"
-                                                       placeholder="도로명주소" th:value="${owner.frnStreet}">
+                                                       placeholder="도로명주소" th:value="${owner.frnStreet}" readonly>
                                                 <div class="detail-wrap">
                                                     <input type="text" id="frn-frnDetail" name="frnDetail" class="form-control detail-address mb-2"
                                                            placeholder="상세주소" th:value="${owner.frnDetail}">
@@ -117,9 +117,9 @@
                                             <label class="form-label mt-3">운영시간</label>
                                             <div class="operating-time">
                                                 <input type="text" class="form-control frnStartTime me-3" id="frn-start-time" name="frnStartTime"
-                                                       placeholder="시작 시간" th:value="${owner.frnStartTime}"> ~
+                                                       placeholder="시작 시간" th:value="${owner.frnStartTime}" readonly> ~
                                                 <input type="text" class="form-control frnEndTime ms-3" name="frnEndTime"
-                                                       placeholder="종료 시간" th:value="${owner.frnEndTime}">
+                                                       placeholder="종료 시간" th:value="${owner.frnEndTime}" readonly>
                                             </div>
                                         </div>
                                         <button type="button" id="btn-edit-operating-time">수정</button>

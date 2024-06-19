@@ -40,7 +40,8 @@
     </select>
 
     <select id="selectUnreadNotify" resultMap="NotifyResultMap">
-        SELECT N.NOTIFY_NO, N.NOTIFY_CT, N.NOTIFY_CONTENT, N.NOTIFY_STAT, N.EMP_NO, N.APPR_TYPE, N.TIME_OFF_TYPE, N.DOCUMENT_TYPE
+        SELECT N.NOTIFY_NO, N.NOTIFY_CT, N.NOTIFY_CONTENT, N.NOTIFY_STAT,
+               N.EMP_NO, N.APPR_TYPE, N.TIME_OFF_TYPE, N.DOCUMENT_TYPE
         FROM NOTIFICATION_T N
         WHERE 1 = 1
           AND N.EMP_NO = #{empNo}

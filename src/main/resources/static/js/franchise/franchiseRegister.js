@@ -9,7 +9,7 @@ const franchiseRegister = {
         });
 
         // 운영 시간 검증 이벤트 리스너 추가
-        document.getElementById("frnStartTime").addEventListener("change", function () {
+        document.getElementById("frnStartTime")?.addEventListener("change", function () {
             _this.validateOperatingHours();
         });
         document.getElementById("frnEndTime").addEventListener("change", function () {
@@ -143,9 +143,10 @@ const franchiseRegister = {
             body: JSON.stringify(requestData)
         }).then(response => response.json())
             .then(data => {
-                if (data.success) {
-                    alert('가맹점 및 점주 등록이 완료되었습니다.');
-                    // window.location.href = '/successPage'; // 성공 페이지로 이동
+                console.log(data)
+                if (data.message) {
+                    alert(data.message);
+                    window.location.href = '/crispy/franchiseList'; // 성공 페이지로 이동
                 } else {
                     this.displayErrorMessages(data);
                 }

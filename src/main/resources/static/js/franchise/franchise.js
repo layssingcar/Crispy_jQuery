@@ -46,6 +46,7 @@ const franchise = {
             changeOperatingTimeButton.addEventListener("click", this.changeOperatingTime.bind(this));
         }
 
+
         this.setupFrnEditBtn("btn-edit-frnOwner", "frn-frnOwner", "btn-change-frnOwner");
         this.setupFrnEditBtn("btn-edit-frnTel", "frn-frnTel", "btn-change-frnTel");
         this.setupFrnEditBtn("btn-edit-operating-time", "frn-start-time", "btn-change-operating-time");
@@ -221,12 +222,6 @@ const franchise = {
         const inputElement = document.getElementById(inputId);
         const changeButton = document.getElementById(changeButtonId);
 
-        if (!editButton || !inputElement || !changeButton) {
-            console.warn(`Missing element for IDs: ${editButtonId}, ${inputId}, ${changeButtonId}`);
-            return;
-        }
-
-
         let originalValue = inputElement?.value;
 
         editButton?.addEventListener("click", () => {
@@ -253,7 +248,6 @@ const franchise = {
         const sigungu = document.querySelector(".frn-gu").value;
         const gu = sigungu.split(' ');
         const guName = gu[gu.length - 1]; // ex "분당구"
-
         const frnNo = document.querySelector(".frnNo").value;
         const zipCode = document.querySelector('.zipcode').value;
         const street = document.querySelector('.street-address').value;
@@ -401,6 +395,7 @@ const franchise = {
     },
 
     changeFrnOwner: function () {
+        console.log(document.querySelector(".empNo"))
         const data = {
             frnNo: parseInt(document.querySelector(".frnNo").value),
             empNo: parseInt(document.querySelector(".empNo").value),
