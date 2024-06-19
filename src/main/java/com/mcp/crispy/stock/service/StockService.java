@@ -51,8 +51,8 @@ public class StockService {
         int totalPage = totalCount / limit + ((totalCount % limit > 0) ? 1 : 0);
 
         // 페이지 내비게이션 범위
-        int startPage = Math.max(page - 2, 1);
-        int endPage = Math.min(page + 2,  totalPage);
+        int startPage = ((page - 1) / limit) * limit + 1;
+        int endPage = Math.min(startPage + limit - 1, totalPage);
 
         /*
         * 조회 범위
@@ -147,8 +147,8 @@ public class StockService {
         int page = Math.max(apprOptionDto.getPageNo(), 1);
         int totalCount = stockMapper.getOrderApprCount(apprOptionDto);
         int totalPage = totalCount / limit + ((totalCount % limit > 0) ? 1 : 0);
-        int startPage = Math.max(page - 2, 1);
-        int endPage = Math.min(page + 2,  totalPage);
+        int startPage = ((page - 1) / limit) * limit + 1;
+        int endPage = Math.min(startPage + limit - 1, totalPage);
 
         RowBounds rowBounds = new RowBounds(limit * (page - 1), limit);
         List<ApprovalDto> items = stockMapper.getOrderApprList(apprOptionDto, rowBounds);
