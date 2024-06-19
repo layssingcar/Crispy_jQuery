@@ -16,7 +16,6 @@
             , EMP_NAME
             , EMP_EMAIL
             , EMP_PHONE
-            , EMP_PROFILE
             , POS_NO
             , FRN_NO
         ) VALUES (
@@ -26,7 +25,6 @@
             , #{empName}
             , #{empEmail}
             , #{empPhone}
-            , #{empProfile}
             , #{posNo}
             , #{frnNo}
         )

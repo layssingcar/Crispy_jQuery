@@ -42,7 +42,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 , EMP_NAME
                 , EMP_EMAIL
                 , EMP_PHONE
-                , EMP_PROFILE
                 , EMP_IN_DT
                 , EMP_STAT
                 , FRN_NO
@@ -54,7 +53,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 , #{empName}
                 , #{empEmail}
                 , #{empPhone}
-                , #{empProfile}
                 , #{empInDt, jdbcType=DATE}
                 , #{empStat, typeHandler=com.mcp.crispy.common.typeHandler.EmpStatusTypeHandler}
                 , #{frnNo}

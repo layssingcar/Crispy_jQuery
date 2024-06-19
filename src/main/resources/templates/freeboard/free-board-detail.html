@@ -51,8 +51,8 @@
                         <div>
                             <button class="btn board-list">목록으로</button>
                         </div>
-                        <div class="edit-button">
-                            <button type="button" id="btn-modify-board" class="btn">수정</button>
+                        <div class="edit-button" th:if="${currentEmpNo == board.empNo}">
+                        <button type="button" id="btn-modify-board" class="btn">수정</button>
                             <button type="button" id="btn-delete-board" class="btn board-delete">삭제</button>
                         </div>
                     </div>

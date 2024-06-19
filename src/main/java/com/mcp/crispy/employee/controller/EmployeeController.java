@@ -125,7 +125,7 @@ public class EmployeeController {
 			cookie.setPath("/"); // 모든 경로에서 접근 가능
 			response.addCookie(cookie);
 
-			return "redirect:/crispy/employee/changeEmpPw";
+			return "redirect:/crispy/employee/newEmpPw";
 		} else {
 			ra.addFlashAttribute("error", "일치하는 회원 정보가 없습니다.");
 			return "redirect:/crispy/employee/findEmpPw";
@@ -152,6 +152,23 @@ public class EmployeeController {
 			session.setAttribute("empId", userDetails.getUsername());
 			model.addAttribute("empId", userDetails.getUsername());
 			return "employee/change-emp-pw";
+		} else {
+			return "redirect:/crispy/employee/findEmpPw?error=invalid_token";
+		}
+	}
+
+	@GetMapping("/newEmpPw")
+	public String newPassword(@CookieValue(value = "accessToken", required = false) String token,
+								 HttpSession session, Model model) {
+		log.info("changePassword method called");
+		log.info("JWT Token: {}", token);
+
+		if (token != null && jwtUtil.validateToken(token)) {
+			UserDetails userDetails = jwtUtil.getUserDetailsFromToken(token);
+			log.info("changePassword userDetails: {}", userDetails);
+			session.setAttribute("empId", userDetails.getUsername());
+			model.addAttribute("empId", userDetails.getUsername());
+			return "employee/new-emp-pw";
 		} else {
 			return "redirect:/crispy/employee/findEmpPw?error=invalid_token";
 		}

@@ -1,6 +1,7 @@
 package com.mcp.crispy.employee.service;
 
 import com.mcp.crispy.common.ImageService;
+import com.mcp.crispy.common.validator.NewPasswordValidator;
 import com.mcp.crispy.common.validator.PasswordChangeValidator;
 import com.mcp.crispy.email.service.EmailService;
 import com.mcp.crispy.employee.dto.*;
@@ -32,6 +33,7 @@ public class EmployeeService {
     @Lazy
     private final PasswordEncoder passwordEncoder;
     private final PasswordChangeValidator passwordChangeValidator;
+    private final NewPasswordValidator newPasswordValidator;
 
 
     // 직원 아이디로 직원 정보 가져오기
@@ -67,6 +69,18 @@ public class EmployeeService {
         passwordChangeValidator.validatePassword(passwordChangeDto, employeeDto);
 
         String encodedPassword = passwordEncoder.encode(passwordChangeDto.getNewPassword());
+        employeeMapper.updateEmpPw(empId, encodedPassword, modifier);
+    }
+
+    // 비밀번호 변경 ( 자신이 변경하는 거 )
+    @Transactional
+    public void updateNewEmpPassword(String empId, NewPasswordDto newPasswordDto, Integer modifier) {
+        EmployeeDto employeeDto = employeeMapper.findByUsername(empId)
+                .orElseThrow(() -> new UsernameNotFoundException("직원이 존재하지 않습니다."));
+
+        newPasswordValidator.validatePassword(newPasswordDto, employeeDto);
+
+        String encodedPassword = passwordEncoder.encode(newPasswordDto.getNewPassword());
         employeeMapper.updateEmpPw(empId, encodedPassword, modifier);
     }
 
