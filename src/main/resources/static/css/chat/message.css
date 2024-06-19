@@ -73,7 +73,10 @@
     align-items: center;
 }
 
-.message .left > div:nth-child(2) > * {height: 100%;}
+.message .left > div:nth-child(2) > * {
+    height: 100%;
+    flex-grow: 1;
+}
 
 .message .left > div:nth-child(2) a {
     display: flex;
@@ -760,7 +763,7 @@
 }
 .unread-count-badge {
     display: none;
-    background-color: red;
+    background-color: var(--main-color);
     color: white;
     border-radius: 50%;
     padding: 5px 10px;
