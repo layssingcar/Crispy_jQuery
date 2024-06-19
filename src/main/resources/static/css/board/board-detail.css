@@ -88,6 +88,7 @@ main > div {
 	justify-content: center;
 	display: flex;
 	font-size: 1.7rem;
+
 }
 #listBtn{
 	margin-top: 10rem;
@@ -111,7 +112,7 @@ main > div {
 
 #boardContent{
 	height: 32rem;
-	font-size: 3rem;
+	font-size: 2rem;
 	margin-top: 2rem;
 	margin-bottom: 10px;
 }
@@ -211,4 +212,8 @@ span#detail-writer {
 }
 .contents-detailinfo{
 	margin-left:80rem;
+}
+#btn-delete{
+	background-color: #888888 !important;
+	border: #888888 !important;
 }
