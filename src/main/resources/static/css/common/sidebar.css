@@ -138,6 +138,8 @@
     border-radius: 5px;
     box-shadow: 0 5px 9px rgba(0, 0, 0, 0.15);
     background: #fff;
+    max-height: 250px;
+    overflow: auto;
 }
 
 /* 채팅 개수 */

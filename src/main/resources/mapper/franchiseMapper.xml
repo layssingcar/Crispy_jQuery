@@ -179,7 +179,7 @@
         FROM FRANCHISE_T F
         LEFT JOIN EMPLOYEE_T E ON F.FRN_NO = E.FRN_NO
         WHERE 1 = 1
-          AND F.FRN_NO = #{frnNo} AND E.POS_NO = 0
+          AND F.FRN_NO = #{frnNo}
     </select>
 
     <!-- 폼 정보 수정 -->

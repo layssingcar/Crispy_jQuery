@@ -177,18 +177,36 @@ const franchiseList = {
         return cell;
     },
 
-    confirmDeleteFrn: function (frnNo) {
-        const confirmed = confirm("정말로 삭제하시겠습니까?");
-        if (confirmed) {
-            this.deleteFranchise(frnNo);
-        }
+    confirmDeleteFrn: function(frnNo) {
+        Swal.fire({
+            title: '정말로 삭제하시겠습니까?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '네, 삭제하겠습니다.',
+            cancelButtonText: '아니요'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.deleteFranchise(frnNo);
+            }
+        });
     },
 
-    confirmDeleteSelectedFrns: function () {
-        const confirmed = confirm("정말로 삭제하시겠습니까?");
-        if (confirmed) {
-            this.deleteSelectedFrns();
-        }
+    confirmDeleteSelectedFrns: function() {
+        Swal.fire({
+            title: '정말로 삭제하시겠습니까?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '네, 삭제하겠습니다.',
+            cancelButtonText: '아니요'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.deleteSelectedFrns();
+            }
+        });
     },
 
     setupClickableRows: function() {
@@ -216,15 +234,20 @@ const franchiseList = {
             headers: {'Content-Type': 'application/json'},
         }).then(response => {
             if (response.ok) {
-                alert("삭제되었습니다.");
-                this.loadFrnData(this.currentPage, this.pageSize);
+                Swal.fire({
+                    icon: 'success',
+                    title: '삭제되었습니다.',
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    this.loadFrnData(this.currentPage, this.pageSize);
+                })
             } else {
                 return response.json().then(data => {
                     throw new Error(data.message);
                 });
             }
         }).catch(error => {
-            alert("삭제 중 오류가 발생했습니다.");
         });
     },
 
@@ -234,7 +257,12 @@ const franchiseList = {
             .map(checkbox => checkbox.id)
             .filter(frnNo => frnNo.trim() !== "");
         if (frnNos.length === 0) {
-            alert("삭제할 가맹점을 선택해주세요.");
+            Swal.fire({
+                icon: 'warning',
+                title: "삭제할 가맹점을 선택해주세요.",
+                showCancelButton: false,
+                timer: 1500
+            })
             return;
         }
 
@@ -244,8 +272,14 @@ const franchiseList = {
             body: JSON.stringify(frnNos)
         }).then(response => {
             if (response.ok) {
-                alert("삭제되었습니다.");
-                this.loadFrnData(this.currentPage);
+                Swal.fire({
+                    icon: 'success',
+                    title: '삭제되었습니다.',
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    this.loadFrnData(this.currentPage);
+                })
             } else {
                 return response.json().then(data => {
                     throw new Error(data.message);
