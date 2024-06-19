@@ -36,8 +36,8 @@
 						<th scope="col">제목</th>
 						<th scope="col">내용</th>
 						<th scope="col">조회수</th>
-						<th scope="col">작성일</th>
 						<th scope="col">작성자</th>
+						<th scope="col">작성일</th>
 					</tr>
 					</thead>
 
@@ -62,11 +62,11 @@
 									   th:text="${free.boardHit}"></a></td>
 								<td class="tab align-middle">
 									<a th:href="@{/crispy/board-detail(boardNo=${free.boardNo})}"
-									   th:text="${free.createDt}"></a></td>
-								<td class="tab align-middle">
-									<a th:href="@{/crispy/board-detail(boardNo=${free.boardNo})}"
 									   th:text="${free.empName}"></a>
 								</td>
+								<td class="tab align-middle">
+									<a th:href="@{/crispy/board-detail(boardNo=${free.boardNo})}"
+									   th:text="${free.createDt}"></a></td>
 							</tr>
 						</th:block>
 					</th:block>

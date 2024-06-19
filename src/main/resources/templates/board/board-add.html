@@ -19,7 +19,7 @@
 						</select>
 					</div>
 					<label for="boardTitle" class="form-label">제목</label>
-					<input type="text" name="boardTitle" id="boardTitle" class="form-control" style="white-space: pre-line;" placeholder="제목은 15자 내외로 입력해주세요." maxlength="15"/>
+					<input type="text" name="boardTitle" id="boardTitle" class="form-control" style="white-space: pre-line;" placeholder="제목은 30자 내외로 입력해주세요." maxlength="30"/>
 					<div class="mb-3">
 						<label for="summernote" class="form-label mt-2">내용</label>
 						<textarea th:utext="${boardContent}" id="summernote" name="boardContent" class="boardContent"></textarea>
@@ -34,7 +34,6 @@
 						<a id="cancelBtn" class="btn btn-primary btn-lg">취소</a>
 						<button type="submit" id="addBtn" class="btn btn-primary btn-lg">등록</button>
 					</div>
-
 				</form>
 			</div>
 		</main>
@@ -43,6 +42,27 @@
 	<script src="/js/summernote/summernote-lite.js"></script>
 	<script src="/js/summernote/lang/summernote-ko-KR.js"></script>
 	<script>
+		function stripHtmlTagsAndEntities(content) {
+			var tempDiv = document.createElement("div");
+			tempDiv.innerHTML = content;
+			var textContent = tempDiv.textContent || tempDiv.innerText || "";
+
+			// Decode HTML entities
+			var textarea = document.createElement("textarea");
+			textarea.innerHTML = textContent;
+			textContent = textarea.value;
+
+			// Replace entities
+			textContent = textContent.replace(/&nbsp;/g, ' ')
+					.replace(/&lt;/g, '<')
+					.replace(/&gt;/g, '>')
+					.replace(/\s+/g, ' ');
+
+			// Preserve new lines
+			textContent = textContent.replace(/<br>/g, '\n').replace(/<\/p>/g, '\n').replace(/<\/?[^>]+(>|$)/g, "");
+
+			return textContent;
+		}
 
 		$(document).ready(function() {
 			$('#summernote').summernote({
@@ -70,7 +90,6 @@
 			window.location.href="/crispy/board-list";
 		});
 
-
 		$('#frm-board-add').on('submit', function(evt) {
 			var content = $('#summernote').summernote('code').trim();
 
@@ -82,8 +101,9 @@
 				});
 				evt.preventDefault(); // Prevent form submission
 			} else {
-				var cleanContent = content.replace(/<\/?(p|br)[^>]*>/g, '');
-				$('#summernote').summernote('code', cleanContent);
+				// Strip all HTML tags and decode HTML entities
+				var plainTextContent = stripHtmlTagsAndEntities(content);
+				$('#summernote').summernote('code', plainTextContent);
 			}
 		});
 	</script>
