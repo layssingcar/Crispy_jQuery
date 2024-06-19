@@ -34,12 +34,23 @@ const empRegister = {
             return response.json();
         }).then(data => {
             if (data.message) {
-                alert("직원 등록이 완료되었습니다.");
-                window.location.href = "/crispy/owner/employees"; // 성공 페이지로 이동
+                Swal.fire({
+                    icon: "success",
+                    title: data.message,
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    window.location.href = "/crispy/owner/employees"; // 성공 페이지로 이동
+                })
             }
         }).catch(error => {
             if (error.message !== "Validation errors") {
-                alert("등록에 실패했습니다.");
+                Swal.fire({
+                    icon: "error",
+                    title: "등록에 실패했습니다.",
+                    showConfirmButton: false,
+                    timer: 1500
+                })
             }
         });
     },

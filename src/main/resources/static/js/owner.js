@@ -9,7 +9,7 @@ const owner = {
 
     bindEvents: function() {
         const myProfileElement = document.getElementById('my-profile');
-        const resetPasswordButton = document.querySelector('.btn-reset-password');
+        const resetPasswordButton = document.getElementById('btn-reset-password');
         const selectAllCheckbox = document.querySelector('th input[type=checkbox]');
         const deleteSelectedButton = document.getElementById('btn-delete-selected');
         const searchRole = document.getElementById('search-role');
@@ -91,7 +91,12 @@ const owner = {
                 empEmail: email})
         }).then(response => response.json())
             .then(data => {
-                alert(data.message)
+                Swal.fire({
+                    icon: "success",
+                    title: data.message,
+                    showConfirmButton: false,
+                    timer: 1500
+                })
             })
             .catch(error => console.error("Error:", error));
     },
@@ -195,8 +200,14 @@ const owner = {
             method: 'DELETE',
         }).then(response => {
             if (response.ok) {
-                alert('삭제되었습니다.')
-                this.loadEmployeeData();
+                Swal.fire({
+                    icon: "success",
+                    title: "삭제되었습니다",
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    this.loadEmployeeData();
+                })
             } else {
                 return response.json().then(data => {
                     throw new Error(data.message);
@@ -240,16 +251,32 @@ const owner = {
     },
 
     confirmDeleteEmployee: function(empNo) {
-        const confirmed = confirm('정말로 삭제하시겠습니까?');
-        if (confirmed) {
-            this.deleteEmployee(empNo);
-        }
+        Swal.fire({
+            title: '직원을 정말로 삭제하시겠습니까?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '네, 삭제하겠습니다!',
+            cancelButtonText: '아니요, 취소합니다',
+            width: "400px"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.deleteEmployee(empNo);
+            }
+        });
     },
     confirmDeleteSelectedEmployees: function() {
-        const confirmed = confirm('선택한 직원들을 정말로 삭제하시겠습니까?');
-        if (confirmed) {
-            this.deleteSelectedEmployees();
-        }
+        Swal.fire({
+            title: '선택한 직원들을 정말로 삭제하시겠습니까?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '네, 삭제하겠습니다!',
+            cancelButtonText: '아니요, 취소합니다',
+            width: "400px"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.deleteSelectedEmployees();
+            }
+        });
     },
 
     clearSelectedEmpNo: function() {

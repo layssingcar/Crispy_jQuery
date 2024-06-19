@@ -501,8 +501,14 @@ const message = {
                 return response.json();
             })
             .then(data => {
-                alert(data.message);
-                location.reload();
+                Swal.fire({
+                    icon: "success",
+                    title: data.message,
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    location.reload();
+                })
             })
             .catch(error => console.error("Error: " + error));
     },
@@ -587,11 +593,21 @@ const message = {
                 });
 
                 profileMenu.querySelector('.chat-delete').addEventListener('click', () => {
-                    const confirmed = confirm("정말 삭제 하시겠습니까?");
-                    if(confirmed) {
-                        this.deleteMessage(msg.msgNo, msg.chatRoomNo);
-                    }
+                    Swal.fire({
+                        title: '정말 삭제 하시겠습니까?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: '네, 삭제하겠습니다.',
+                        cancelButtonText: '아니요'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            this.deleteMessage(msg.msgNo, msg.chatRoomNo);
+                        }
+                    });
                 });
+
 
                 messageElement.appendChild(profileMenu);
                 messageElement.appendChild(ellipsisIcon);
@@ -636,7 +652,12 @@ const message = {
         })
             .then(response => response.json())
             .then(data => {
-                alert(data.message);
+                Swal.fire({
+                    icon: "success",
+                    title: data.message,
+                    showConfirmButton: false,
+                    timer: 1500
+                })
                 const messageElement = document.querySelector(`.output[data-msg-no="${msgNo}"] .chat`);
                 const chatDropdown = document.querySelector(`.output[data-msg-no="${msgNo}"] .chat-dropdown`);
                 if (messageElement) {

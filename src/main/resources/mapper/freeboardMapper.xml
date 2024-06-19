@@ -52,8 +52,8 @@
             <if test="searchKeyword != null and searchKeyword != ''">
                 AND (
                     B.BOARD_TITLE LIKE '%' || #{searchKeyword} || '%'
-                    OR B.BOARD_CONTENT LIKE '%' || #{searchKeyword} || '%'
-                    OR E.EMP_NAME LIKE '%'|| #{searchKeyword} || '%')
+                OR COALESCE(B.BOARD_CONTENT, '') LIKE '%' || #{searchKeyword} || '%'
+                OR E.EMP_NAME LIKE '%'|| #{searchKeyword} || '%')
             </if>
     </select>
 
@@ -73,7 +73,7 @@
         , CREATOR
         ) VALUES (
           #{boardNo}
-        , #{boardCtNo}
+        , 1
         , #{boardTitle}
         , #{boardContent}
         , #{empNo}
@@ -137,7 +137,7 @@
         UPDATE BOARD_T B
         SET B.BOARD_TITLE = #{boardTitle}
           , B.BOARD_CONTENT = #{boardContent}
-          , B.BOARD_CT_NO = #{boardCtNo}
+          , B.BOARD_CT_NO = 1
           , B.MODIFY_DT = CURRENT_DATE
           , B.MODIFIER = #{modifier}
         WHERE B.BOARD_NO = #{boardNo}

@@ -245,9 +245,9 @@
                        , L.APPR_LINE_NO
                    </if>
               FROM APPROVAL_T A
-        INNER JOIN TIME_OFF_T T
+        LEFT JOIN TIME_OFF_T T
                 ON A.APPR_NO = T.APPR_NO
-        INNER JOIN EMPLOYEE_T E
+        LEFT JOIN EMPLOYEE_T E
                 ON A.EMP_NO = E.EMP_NO
                 <choose>
                     <when test="type == 'draft'">

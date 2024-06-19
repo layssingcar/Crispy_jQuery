@@ -129,7 +129,7 @@ const board = {
         const boardContent = tempDiv.innerHTML.replace(/<br\s*\/?>/gi, "\n");
 
         const data = {
-            boardCtNo: form.boardCtNo.value,
+
             boardTitle: form.boardTitle.value,
             boardContent: boardContent
         };
@@ -148,11 +148,16 @@ const board = {
                 return response.json();
             }
         }).then(data => {
-            alert(data.message);
-            const boardNo = data.boardNo;
-            location.href = `/crispy/freeBoardDetail/${boardNo}`;
+            Swal.fire({
+                icon: "success",
+                title: data.message,
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                const boardNo = data.boardNo;
+                location.href = `/crispy/freeBoardDetail/${boardNo}`;
+            })
         }).catch(error => {
-            console.error('Error:', error);
         });
     },
 
@@ -180,7 +185,6 @@ const board = {
 
         const data = {
             boardNo: parseInt(document.querySelector(".board-no").value),
-            boardCtNo: parseInt(document.querySelector(".board-ct-no").value),
             boardTitle: document.querySelector(".board-title").value,
             boardContent: summernoteContent
         };
@@ -202,33 +206,63 @@ const board = {
                 return response.json();
             }
         }).then(data => {
-            alert(data.message);
-            const boardNo = data.boardNo;
-            location.href = `/crispy/freeBoardDetail/${boardNo}`;
+            Swal.fire({
+                icon: "success",
+                title: data.message,
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                const boardNo = data.boardNo;
+                location.href = `/crispy/freeBoardDetail/${boardNo}`;
+            })
         }).catch(error => {
-            console.error('Error:', error);
         });
     },
+
 
     // 게시판 삭제
     deleteBoard: function() {
         const boardNo = document.querySelector(".board-no").value;
         const empNo = document.querySelector(".emp-no")?.value;
 
-        fetch(`/api/freeBoard/${boardNo}/v1`, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ boardNo: boardNo, empNo: empNo })
-        }).then(response => response.json())
-            .then(data => {
-                alert(data.message);
-                location.href = "/crispy/board-list";
-            }).catch(error => {
-            alert("삭제에 실패했습니다.");
+        Swal.fire({
+            title: '정말로 이 게시글을 삭제하시겠습니까?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '네, 삭제하겠습니다!',
+            cancelButtonText: '아니요, 취소합니다'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/api/freeBoard/${boardNo}/v1`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ boardNo: boardNo, empNo: empNo })
+                }).then(response => response.json())
+                    .then(data => {
+                        Swal.fire({
+                            icon: "success",
+                            title: data.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            location.href = "/crispy/board-list/free";
+                        });
+                    }).catch(error => {
+                    Swal.fire({
+                        icon: "error",
+                        title: "삭제에 실패했습니다.",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                });
+            }
         });
     },
+
 
     // 좋아요 토글
     toggleLike: function() {
@@ -274,8 +308,14 @@ const board = {
                 return response.json()
             }
         }).then(data => {
-            alert(data.message);
-            location.reload()
+            Swal.fire({
+                icon: "success",
+                title: data.message,
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                location.reload()
+            })
         }).catch(error => {
             console.error('Error:', error);
         });
@@ -328,16 +368,21 @@ const board = {
                                 return response.json();
                             }
                         }).then(data => {
-                            alert(data.message);
-                            location.reload();
+                            Swal.fire({
+                                icon: "success",
+                                title: data.message,
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(() => {
+                                location.reload();
+                            })
                         }).catch(error => {
-                            alert("댓글 수정에 실패했습니다.");
                         });
                     });
 
                     const cancelButton = document.createElement("button");
                     cancelButton.type = "button";
-                    cancelButton.classList.add("btn", "btn-secondary");
+                    cancelButton.classList.add("btn", "btn-cmt-cancel");
                     cancelButton.innerText = "취소";
                     cancelButton.addEventListener("click", function() {
                         commentDiv.innerHTML = originalHTML;
@@ -358,15 +403,40 @@ const board = {
         cmtDelete.forEach(button => {
             button.addEventListener("click", function() {
                 const cmtNo = this.getAttribute("data-comment-no");
-                fetch(`/api/comments/${cmtNo}/v1`, {
-                    method: "DELETE",
-                    headers: { "Content-Type": "application/json" }
-                }).then(response => response.json())
-                    .then(data => {
-                        alert(data.message);
-                        location.reload();
-                    }).catch(error => {
-                    alert("댓글 삭제에 실패했습니다.");
+
+                // SweetAlert Confirm
+                Swal.fire({
+                    title: '댓글을 삭제하시겠습니까?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: '네, 삭제하겠습니다',
+                    cancelButtonText: '취소'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch(`/api/comments/${cmtNo}/v1`, {
+                            method: "DELETE",
+                            headers: { "Content-Type": "application/json" }
+                        }).then(response => response.json())
+                            .then(data => {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: data.message,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            }).catch(error => {
+                            Swal.fire({
+                                icon: 'error',
+                                title: '댓글 삭제에 실패했습니다.',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        });
+                    }
                 });
             });
         });
@@ -413,8 +483,14 @@ const board = {
                                 return response.json();
                             }
                         }).then(data => {
-                            alert(data.message);
-                            location.reload();
+                            Swal.fire({
+                                icon: "success",
+                                title: data.message,
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(() => {
+                                location.reload();
+                            })
                         }).catch(error => {
                         });
                     });

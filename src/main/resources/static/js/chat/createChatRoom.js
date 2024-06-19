@@ -186,15 +186,19 @@ const createChatRoom = {
         })
             .then(response => response.json())
             .then(data => {
-                alert(data.message);
-                location.reload();
+                Swal.fire({
+                    icon: 'success',
+                    title: data.message,
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    location.reload();
+                })
                 const createChatRoomModal = bootstrap.Modal.getInstance(document.getElementById('createChatRoomModal'));
                 createChatRoomModal.hide();
                 this.loadUserList();
             })
             .catch(error => {
-                console.error('Error creating chat room:', error);
-                alert('Failed to create chat room.');
             });
     }
 };

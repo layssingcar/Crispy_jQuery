@@ -21,9 +21,9 @@ document.addEventListener("DOMContentLoaded", function() {
         if (isAdmin) {
             a.href = `/crispy/order-list/admin?notifyNo=${notification.notifyNo}`;
         } else if (notification.documentType === 'time-off') {
-            if (notification.status === 'sign') {
+            if (notification.timeOffType === 'sign') {
                 a.href = `/crispy/approval-list/sign?notifyNo=${notification.notifyNo}`;
-            } else if (notification.status === 'final') {
+            } else if (notification.timeOffType === 'final') {
                 a.href = `/crispy/approval-list/draft?notifyNo=${notification.notifyNo}`;
             }
         } else if (notification.documentType === 'stock-order') {

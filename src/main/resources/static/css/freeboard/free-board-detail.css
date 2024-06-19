@@ -206,8 +206,15 @@
 /* 댓글 수정창 설정 */
 .board-detail .cmt-modify-wrapper {
 	display: flex;
+	align-items: flex-end;
 }
 
 .cmt-modify-wrapper button {
 	width: 55px;
+}
+
+.board-detail .cmt-modify-wrapper .btn-cmt-cancel {
+	background-color: var(--sub-color) !important;
+	border-color: var(--sub-color) !important;
+	margin-left: 2px;
 }

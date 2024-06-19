@@ -129,8 +129,8 @@ public class StockService {
         NotifyDto notifyDto = NotifyDto.builder()
                 .notifyCt(notifyCt)
                 .notifyContent(frn.getFrnName() + "에서 " + notifyCt.getDescription() +"결재를 요청하였습니다.")
-                .notifyType("approval") // 추가
-                .status("sign") // 추가
+                .apprType("approval") // 추가
+                .timeOffType("sign") // 추가
                 .documentType("stock-order")
                 .build();
 

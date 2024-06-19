@@ -11,7 +11,7 @@
         <div class="change-password-wrap">
             <h1 class="mb-4">변경하실 비밀번호를 입력해 주세요.</h1>
             <form id="passwordForm">
-
+                <input type="hidden" id="emp-id" class="emp-id" th:value="${empId}">
                 <!-- 현재 비밀번호 -->
                 <div class="col-12">
                     <label class="col-form-label">현재 비밀번호</label>
