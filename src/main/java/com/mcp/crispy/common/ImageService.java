@@ -87,18 +87,4 @@ public class ImageService {
 
         return fileName;
     }
-
-    public String storeDefaultProfileImage() throws IOException {
-        Path defaultImagePath = Paths.get(getDefaultProfileImagePath(), "anonymous.png");
-
-        if (!Files.exists(defaultImagePath)) {
-            throw new IllegalStateException("기본 프로필 이미지 파일이 없습니다.");
-        }
-
-        String storedFileName = UUID.randomUUID() + "_default_profile.png";
-        Path destinationPath = Paths.get(getProfilePath()).resolve(storedFileName);
-
-        Files.copy(defaultImagePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
-        return storedFileName;
-    }
 }

@@ -14,7 +14,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.List;
 
 import static com.mcp.crispy.common.utils.RandomCodeUtils.generateTempPassword;
@@ -40,28 +39,17 @@ public class OwnerService {
         EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
         int frnNo = userDetails.getFrnNo(); // 프랜차이즈 번호 가져오기
 
-        String storedUrl;
-        try {
-            String storedProfileImage = imageService.storeDefaultProfileImage();
-            storedUrl = "/profiles/" + storedProfileImage; // 기본 프로필 이미지 저장
-
-        } catch (IOException e) {
-            throw new IllegalStateException("기본 프로필 이미지를 저장하는 중 오류가 발생했습니다.", e);
-        }
-        employeeRegisterDto.setEmpProfile(storedUrl);
         EmployeeRegisterDto employee = EmployeeRegisterDto.builder()
                 .empId(employeeRegisterDto.getEmpId())
                 .empPw(encodedPassword)
                 .empName(employeeRegisterDto.getEmpName())
                 .empEmail(employeeRegisterDto.getEmpEmail())
                 .empPhone(employeeRegisterDto.getEmpPhone())
-                .empProfile(employeeRegisterDto.getEmpProfile())
                 .empStat(EmpStatus.EMPLOYED)
                 .empInDt(employeeRegisterDto.getEmpInDt())
                 .frnNo(frnNo)
                 .posNo(Position.of(employeeRegisterDto.getPosNo().getCode()))
                 .build();
-        log.info("이미지: {}", employeeRegisterDto.getEmpProfile());
         log.info("EmployeeRegisterDto: {}", employee); // DTO 객체 로깅
         employeeMapper.insertEmployee(employee); // 직원 정보 삽입
 
@@ -77,21 +65,12 @@ public class OwnerService {
         ownerRegisterDto.setFrnNo(frnNo);
         ownerRegisterDto.setEmpName(frnOwner);
 
-        try {
-            String storedProfileImage = imageService.storeDefaultProfileImage();
-            String storedUrl = "/profiles/" + storedProfileImage;
-            ownerRegisterDto.setEmpProfile(storedUrl);
-        } catch (IOException e) {
-            throw new IllegalStateException("기본 프로필 이미지를 저장하는 중 오류가 발생했습니다.", e);
-        }
-
         OwnerRegisterDto registerDto = OwnerRegisterDto.builder()
                 .empId(ownerRegisterDto.getEmpId())
                 .empPw(encodedPassword)
                 .empName(ownerRegisterDto.getEmpName())
                 .empEmail(ownerRegisterDto.getEmpEmail())
                 .empPhone(ownerRegisterDto.getEmpPhone())
-                .empProfile(ownerRegisterDto.getEmpProfile())
                 .posNo(Position.OWNER.getCode())
                 .frnNo(ownerRegisterDto.getFrnNo())
                 .build();
