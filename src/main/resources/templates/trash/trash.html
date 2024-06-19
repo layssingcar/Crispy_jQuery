@@ -95,7 +95,7 @@
 			    		  data: data
 			    	  })
 					  .done(function(data){
-						alert("일정 삭제 성공");
+						location.reload();
 					  })
 					  .fail(function(jqXHR){
 						alert("일정 삭제 실패");
@@ -103,7 +103,6 @@
 					  })     
     			  }
     		  })
-    		  location.reload();
 	      }
 	      
 	      function fnrevert(){
@@ -128,7 +127,7 @@
 			    		  data: data
 			    	  })
 					  .done(function(data){
-						alert("일정 복구 성공");
+						location.reload(); 
 					  })
 					  .fail(function(jqXHR){
 						alert("일정 복구 실패");
@@ -136,7 +135,6 @@
 					  })     
     			  }
     		  })
-    		  location.reload();   	  
 	      }
 	</script>
 </div>
