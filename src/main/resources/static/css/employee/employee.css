@@ -45,13 +45,20 @@
 /* 프로필 이미지 크기 설정 */
 .employee-profile .profile-img{
     float: right;
-    width: 150px;
-    height: 150px;
+    width: 120px;
+    height: 120px;
     margin-bottom: 10px;
     border: 1px solid #e6e7eb;
     border-radius: 100%;
     object-fit: cover;
     cursor: pointer;
+}
+
+.employee-profile-form {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: flex-end;
 }
 
 .employee-profile-form .emp-profile > div:first-child {position: relative;}
@@ -82,7 +89,7 @@
     align-self: center;
     border: 0;
     padding: 5px 25px;
-    width: 150px;
+    width: 120px;
     border-radius: 7px;
 }
 
@@ -138,6 +145,46 @@
     border: 0;
     margin-bottom: 10px;
     background-color: var(--sub-color) !important;
+}
+
+/* 결재 서명 모달 스타일 */
+.employee-profile #signature-modal .modal-content {
+    width: 300px;
+}
+
+.employee-profile #signature-modal .modal-content .close {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+}
+
+.employee-profile #signature-modal .modal-content .close button {
+    --bs-btn-close-opacity: 1;
+    --bs-btn-close-hover-opacity: 1;
+    --bs-btn-close-focus-shadow: none;
+    width: 0;
+    background-color: #fff !important;
+}
+
+.employee-profile #signature-modal .modal-content button {
+    width: 70px;
+    border-radius: 7px;
+    padding: 5px 15px;
+    border: 0;
+}
+
+.employee-profile #signature-modal .modal-content #clear-signature {
+    width: 80px;
+    background-color: var(--sub-color) !important;
+    border-color: var(--sub-color) !important;
+}
+
+.employee-profile #signature-pad {
+    border: 1px solid rgb(204, 204, 204);
+    width: 200px;
+    height: 200px;
+    touch-action: none;
+    margin: 0 0 20px 30px;
 }
 
 /* 구분 영역 */
@@ -328,3 +375,4 @@
     padding: 5px 10px;
     border: 0;
 }
+

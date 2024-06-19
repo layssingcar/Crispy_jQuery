@@ -95,8 +95,14 @@ const employee = {
             }
             return response.json();
         }).then(data => {
-            alert(data.message);
-            location.reload();
+            Swal.fire({
+                icon: "success",
+                title: data.message,
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                location.reload();
+            })
         }).catch(error => {
             if (error.message === "Validation errors") {
                 console.error('Validation errors:', error);
@@ -136,8 +142,14 @@ const employee = {
                 return response.json()
             }
         }).then(data => {
-            alert(data.message);
-            location.reload();
+            Swal.fire({
+                icon: "success",
+                title: data.message,
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                location.reload();
+            })
         }).catch(error => {
             console.error('Error:', error);
         });
@@ -167,8 +179,14 @@ const employee = {
             }
             return response.json();
         }).then(data => {
-            alert(data.message);
-            return location.reload();
+            Swal.fire({
+                icon: "success",
+                title: data.message,
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                location.reload();
+            })
         }).catch(error => {
             alert(error);
         });
@@ -212,8 +230,14 @@ const employee = {
             }
             throw new Error('Failed to update profile image');
         }).then(data => {
-            alert(data.message);
-            return location.reload();
+            Swal.fire({
+                icon: "success",
+                title: data.message,
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                location.reload();
+            })
         }).catch(error => {
             console.error('Error:', error);
         });
@@ -239,8 +263,14 @@ const employee = {
                 return response.json()
             }
         }).then(data => {
-            alert(data.message);
-            location.reload();
+            Swal.fire({
+                icon: "success",
+                title: data.message,
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                location.reload();
+            })
         }).catch(error => {
             console.error('Error:', error);
         });
@@ -265,8 +295,14 @@ const employee = {
                 return response.json()
             }
         }).then(data => {
-            alert(data.message);
-            location.reload();
+            Swal.fire({
+                icon: "success",
+                title: data.message,
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                location.reload();
+            })
         }).catch(error => {
             console.error('Error:', error);
         });
@@ -289,8 +325,14 @@ const employee = {
             }
             return response.json();
         }).then(data => {
-            alert(data.message);
-            return location.reload();
+            Swal.fire({
+                icon: "success",
+                title: data.message,
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                location.reload();
+            })
         }).catch(error => {
             console.error('Error updating address:', error);
             alert('직책 변경에 실패하였습니다.');
@@ -314,8 +356,14 @@ const employee = {
             }
             return response.json();
         }).then(data => {
-            alert(data.message);
-            return location.reload();
+            Swal.fire({
+                icon: "success",
+                title: data.message,
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                location.reload();
+            })
         }).catch(error => {
             console.error('Error updating address:', error);
             alert('재직 상태 변경에 실패하였습니다.');
@@ -429,7 +477,6 @@ const employee = {
         }
         document.querySelector(".empId").value = employee.empId;
         document.querySelector('.empNo').value = employee.empNo;
-        document.querySelector('.frnName').textContent = employee.frnName;
         document.querySelector('.empName-span').textContent = employee.empName;
         document.querySelector('.empName').value = employee.empName;
         document.querySelector('.posName').textContent = employee.posName;

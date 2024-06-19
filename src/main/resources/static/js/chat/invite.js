@@ -30,13 +30,25 @@ const invite = {
         this.inviteForm.addEventListener('submit', (event) => {
             event.preventDefault();
             if (!this.currentChatRoomNo) {
-                alert("채팅방을 선택하세요.");
-                return;
+                Swal.fire({
+                    icon: "warning",
+                    title: "채팅방을 선택하세요.",
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    return;
+                })
             }
 
             if (this.selectedUserIds.size === 0) {
-                alert("초대할 사용자를 선택하세요.");
-                return;
+                Swal.fire({
+                    icon: "warning",
+                    title: "초대할 사용자를 선택하세요.",
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    return;
+                })
             }
 
             // 선택된 모든 사용자를 초대
@@ -158,9 +170,15 @@ const invite = {
                 return response.json();
             })
             .then(data => {
-                alert(data.message);
-                const inviteModal = bootstrap.Modal.getInstance(document.getElementById('invite-modal'));
-                inviteModal.hide();
+                Swal.fire({
+                    icon: "success",
+                    title: data.message,
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    const inviteModal = bootstrap.Modal.getInstance(document.getElementById('invite-modal'));
+                    inviteModal.hide();
+                })
             })
             .catch(error => console.error('사용자 초대 중 오류 발생:', error));
     },

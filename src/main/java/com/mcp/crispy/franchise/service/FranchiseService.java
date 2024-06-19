@@ -220,4 +220,10 @@ public class FranchiseService {
     public FranchiseDto getFrnByEmpNo(Integer empNo) {
         return franchiseMapper.getFrnByEmpNo(empNo);
     }
+
+    // 가맹점 수
+    @Transactional(readOnly = true)
+    public int getFrnCount() {
+        return franchiseMapper.getFrnCount();
+    }
 }

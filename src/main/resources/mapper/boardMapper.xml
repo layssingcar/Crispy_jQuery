@@ -12,6 +12,8 @@
         <result property="creator" column="CREATOR" />
         <result property="modifyDt" column="MODIFY_DT" />
         <result property="modifier" column="MODIFIER" />
+        <result property="empNo" column="EMP_NO"/>
+        <result property="empName" column="EMP_NAME" />
         <association property="employee" javaType="EmployeeDto">
             <id property="empNo" column="EMP_NO" />
             <result property="empId" column="EMP_ID" />
@@ -45,6 +47,7 @@
         , B.BOARD_CONTENT
         , B.BOARD_HIT
         , B.CREATE_DT
+        , E.EMP_NAME
         FROM BOARD_T B
         INNER JOIN EMPLOYEE_T E ON B.EMP_NO = E.EMP_NO
         WHERE BOARD_CT_NO = 1
@@ -71,14 +74,14 @@
         , BOARD_HIT
         , CREATOR
         ) VALUES (
-          #{boardNo}
+        #{boardNo}
         , #{boardCtNo}
         , #{boardTitle}
         , #{boardContent}
         , #{empNo}
         , CURRENT_TIMESTAMP
         , 0
-        , #{empNo}
+        , #{creator}
         )
     </insert>
 
@@ -105,7 +108,7 @@
     </select>
 
     <select id="getBoardByNo" resultMap="BoardMap">
-        SELECT B.BOARD_NO, B.BOARD_CT_NO, B.BOARD_TITLE, B.BOARD_CONTENT, B.BOARD_HIT, B.CREATE_DT,B.CREATOR, B.MODIFY_DT,B.EMP_NO
+        SELECT B.BOARD_NO, B.BOARD_CT_NO, B.BOARD_TITLE, B.BOARD_CONTENT, B.BOARD_HIT, B.CREATE_DT,B.CREATOR, B.MODIFY_DT,E.EMP_NO,E.EMP_NAME
              , F.BOARD_ORIGIN
         FROM BOARD_T B
                  left JOIN EMPLOYEE_T E ON E.EMP_NO = B.EMP_NO

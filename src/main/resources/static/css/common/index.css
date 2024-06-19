@@ -61,6 +61,15 @@
 	justify-content: center;
 }
 
+.area2-info-admin {
+	width: 240px;
+	height: 200px;
+	font-size: 20px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
 .area2-inoutBtn {
 	width: 240px;
 	height: 60px;
@@ -156,7 +165,7 @@
     background-color: red;
     transform-origin: 100%;
     transform: rotate(90deg) translateX(-200%);
-    transition: transform 0.1s ease-in-out;
+    transition: transform 0.001s ease-in-out;
 }
 
 .minute-hand {
@@ -168,19 +177,20 @@
     left: 0%;
     transform-origin: 100%;
     transform: rotate(90deg) translateX(-200%);
-    transition: transform 0.1s ease-in-out;
+    transition: transform 0.001s ease-in-out;
+    z-index: -1;
 }
 
 .hour-hand {
     width: 35%;
     height: 6px;
-    background-color: black;
+    background-color: grey;
     position: absolute;
     top: 50%;
     left: 15%;
     transform-origin: 100%;
     transform: rotate(90deg) translateX(-200%);
-    transition: transform 0.1s ease-in-out;
+    transition: transform 0.001s ease-in-out;
 }
 
 #date{

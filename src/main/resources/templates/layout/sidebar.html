@@ -115,7 +115,7 @@
                         <ul class="">
                             <li><a href="/crispy/time-off-approval" class="s-menu">휴가/휴직 신청</a></li>
                             <li><a href="/crispy/approval-list/draft" class="s-menu">기안함</a></li>
-                            <li><a href="/crispy/approval-list/sign" class="s-menu">결재함</a></li>
+                            <li sec:authorize="!hasRole('ROLE_EMPLOYEE')"><a href="/crispy/approval-list/sign" class="s-menu" >결재함</a></li>
                         </ul>
                     </div>
                 </li>
@@ -137,7 +137,7 @@
                 </li>
 
                 <!-- 관리자, 가맹점주 메뉴 구분 선 -->
-                <li class="border-top my-3" sec:authorize="!hasRole('ROLE_ADMIN')"></li>
+                <li class="border-top my-3" sec:authorize="hasRole('ROLE_OWNER')"></li>
 
                 <!-- 직원 관리 -->
                 <li class="mb-1">
@@ -156,7 +156,7 @@
                 </li>
 
                 <!-- 재고 관리 -->
-                <li class="mb-1">
+                <li class="mb-1" sec:authorize="!hasAnyRole('ROLE_EMPLOYEE', 'ROLE_MANAGER')">
                     <div class="menu" data-bs-toggle="collapse" data-bs-target="#menu-10-collapse">
                         <a href="#">
                             <span>재고 관리</span>

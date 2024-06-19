@@ -22,12 +22,7 @@
 	width: 1070px;
 }
 
-#btn-cancel {
-	margin-right: 5px;
-	box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-		background-color: #808080 !important;
-	border-color: #808080 !important;
-}
+#btn-cancel,
 .btn-modify {
 	width: 60px;
 	height: 40px;
@@ -36,6 +31,13 @@
 	display: flex;
 	font-size: 1.7rem;
 }
+
+#btn-cancel {
+	background-color: #808080 !important;
+	border-color: #808080 !important;
+	margin-right: 5px;
+}
+
 .border-bottom {
 	font-size: 2rem;
 	margin-top: 5rem;

@@ -19,7 +19,7 @@
 						</select>
 					</div>
 					<label for="boardTitle" class="form-label">제목</label>
-					<input type="text" name="boardTitle" id="boardTitle" class="form-control" style="white-space: pre-line;" placeholder="제목은 15자 내외로 입력해주세요." maxlength="15" required />
+					<input type="text" name="boardTitle" id="boardTitle" class="form-control" style="white-space: pre-line;" placeholder="제목은 15자 내외로 입력해주세요." maxlength="15"/>
 					<div class="mb-3">
 						<label for="summernote" class="form-label mt-2">내용</label>
 						<textarea th:utext="${boardContent}" id="summernote" name="boardContent" class="boardContent"></textarea>
@@ -70,6 +70,7 @@
 			window.location.href="/board/board-list";
 		});
 
+
 		$('#frm-board-add').on('submit', function(evt) {
 			var content = $('#summernote').summernote('code').trim();
 
@@ -79,7 +80,7 @@
 					title: "제목 입력은 필수입니다.",
 					showConfirmButton: true
 				});
-				evt.preventDefault();
+				evt.preventDefault(); // Prevent form submission
 			} else {
 				var cleanContent = content.replace(/<\/?(p|br)[^>]*>/g, '');
 				$('#summernote').summernote('code', cleanContent);

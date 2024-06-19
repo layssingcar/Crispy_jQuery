@@ -26,8 +26,8 @@ public class NotificationService {
                 .notifyCt(notifyDto.getNotifyCt())
                 .notifyContent(notifyDto.getNotifyContent())
                 .notifyStat(NotifyStat.NOT_READ) //읽음 안 읽음
-                .notifyType(notifyDto.getNotifyType())
-                .status(notifyDto.getStatus())
+                .apprType(notifyDto.getApprType())
+                .timeOffType(notifyDto.getTimeOffType())
                 .documentType(notifyDto.getDocumentType())
                 .empNo(empNo)
                 .build();

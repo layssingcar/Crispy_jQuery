@@ -50,13 +50,9 @@ public class SecurityConfig {
 						.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
 				.authorizeHttpRequests(config -> config
 						.requestMatchers("/api/auth/**").permitAll()
-						.requestMatchers("/crispy/sales/**").permitAll()
 						.requestMatchers("/api/email/verificationCode/verify/v1").permitAll()
-						.requestMatchers("/app/**").permitAll()
-						.requestMatchers("/user/**").permitAll()
-						.requestMatchers("/topic/**").permitAll()
-						.requestMatchers("/error/**").permitAll()
 						.requestMatchers("/api/employee/verify/email/v1").permitAll()
+						.requestMatchers("/app/**", "/user/**", "/topic/**", "/error/**").permitAll()
 						.requestMatchers("/css/**", "/js/**", "/img/**", "/resources/**",
 								"/profiles/**", "/upload/**", "/franchise/**", "/crispy_img/**").permitAll()  // 인증 없이 접근 가능
 						.requestMatchers("/", "/crispy", "/crispy/", "/CRISPY", "/CRISPY/").permitAll()

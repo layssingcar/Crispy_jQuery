@@ -23,6 +23,7 @@ public class BoardDto {
     private Date modifyDt;
     private int modifier;
     private int empNo;
+    private String empName;
     private EmployeeDto employee;
 
     /* 파일 이름*/

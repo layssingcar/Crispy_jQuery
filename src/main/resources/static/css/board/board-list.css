@@ -60,7 +60,9 @@
 .board-list .fa-sort {
     position: absolute;
     top: 7px;
-    right: 163px;
+    left: 90px;
+    margin-left: 10rem;
+    cursor: pointer;
 }
 
 /* 데이터 셀 */
@@ -81,6 +83,8 @@
     display: flex;
     justify-content: center;
     margin-top: 50px;
+    margin-left: 5px;
+    cursor: pointer;
 }
 
 .board-list .page-link {color: var(--main-color);}

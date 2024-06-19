@@ -14,19 +14,18 @@
             <div class="main">
                 <div>
                     <h2>공지사항</h2>
+                </div> <br>
+                <div>
+                    <span>작성자:<span class="detail-writer" id="detail-writer" th:text="${board.empName}"></span></span>
                 </div>
-
-
                 <div class="detail-contentinfo" id="detail-contentinfo">
                     <input type="hidden" id="hidden-empNo" th:value="${board.empNo}">
                     <div class="image-writer"></div>
-                    <div class="contents-block">
-                        <a class="contents-writer" id="contents-writer"></a>
-                    </div>
                 </div>
                 <span type="text" name="boardTitle" id="boardTitle" class="form-control"
                       style="white-space: pre-line; border:none;" placeholder="제목은 15자 내외로 입력해주세요."
                       th:text="${board.boardTitle}"></span>
+
                 <div class="contents-detailinfo">
                     <i class="fa-regular fa-clock"></i>&nbsp;<span id="create-dt" th:text="${board.createDt}"></span>
                     &nbsp;&nbsp;<i class="fa-regular fa-eye"></i>&nbsp;<span id="board-hit"
@@ -36,6 +35,7 @@
 
                     </span>
                 </div>
+                <hr>
                 <div class="mb-3">
                     <span id="boardContent" style="border:none;" name="boardContent" class="form-control" readonly
                           th:text="${board.boardContent}"></span>
@@ -49,22 +49,23 @@
                 </div>
                 <div th:if="${#lists.isEmpty(boardFileList)}" class="file-attach">
                     <input type="hidden" name="empNo" th:value="${empNo}"/>
-                    <div>첨부 파일 없음</div>
+                    <hr>
+                    <div> * 첨부 파일 없음</div>
                 </div>
-                <button type="button" id="listBtn" class="btn btn-primary btn-lg">목록</button>
 
-                <span th:if="${empNo} == ${board.creator}">
-                    <div class="d-flex justify-content-end" id="btn">
-                        <form id="frm-btn-delete" method="POST" action="/crispy/removeBoard">
-                            <input type="hidden" name="boardNo" th:value="${board.boardNo}">
-                            <button type="submit" id="btn-delete" class="btn btn-primary btn-lg">삭제</button>
-                        </form>
-                        <form id="frm-btn-modify" method="GET" action="/crispy/board-modify">
-                            <input type="hidden" name="boardNo" th:value="${board.boardNo}">
-                            <button type="submit" id="btn-modify" class="btn btn-primary btn-lg">수정</button>
-                        </form>
-                    </div>
-                </span>
+                <button type="button" id="listBtn" class="btn btn-primary btn-lg" onclick="window.location.href = '/crispy/board-list';">목록</button>
+
+                <div class="d-flex justify-content-end" id="btn">
+                    <form id="frm-btn-delete" method="POST" action="/crispy/removeBoard">
+                        <input type="hidden" name="boardNo" th:value="${board.boardNo}">
+                        <button type="submit" id="btn-delete" class="btn btn-primary btn-lg">삭제</button>
+                    </form>
+                    <form id="frm-btn-modify" method="GET" action="/crispy/board-modify">
+                        <input type="hidden" name="boardNo" th:value="${board.boardNo}">
+                        <button type="submit" id="btn-modify" class="btn btn-primary btn-lg">수정</button>
+                    </form>
+                </div>
+
                 <div th:if="${board == null}">
                     <p>해당 게시물을 찾을 수 없습니다.</p>
                 </div>
@@ -113,44 +114,10 @@
             });
         });
 
-
-
-
-
-
-
-        document.getElementById('listBtn').addEventListener('click',
-            function () {
-                window.location.href = '/crispy/board-list';
-            });
-
         document.getElementById('frm-btn-modify').addEventListener('submit', function (event) {
             event.preventDefault();
             const boardNo = document.querySelector('input[name="boardNo"]').value;
             window.location.href = '/crispy/board-modify?boardNo=' + boardNo;
-        });
-
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const boardNo = document.querySelector('input[name="boardNo"]').value;
-
-            // Function to increment board hit via AJAX
-            const fnAddBoardHit = () => {
-                $.ajax({
-                    type: 'GET',
-                    url: '/crispy/putBoardHit',
-                    data: 'boardNo=' + boardNo,
-                    dataType: 'json',
-                    success: function (data) {
-
-                    },
-                    error: function (jqXHR) {
-                        alert(jqXHR.statusText + '(' + jqXHR.status + ')');
-                    }
-                });
-            };
-
-            fnAddBoardHit();
         });
 
         $(document).ready(function () {
@@ -218,6 +185,27 @@
             };
 
             loadLikeStatus();
+        });
+        $(document).ready(function () {
+            // Function to handle file download
+            $('.attach a').on('click', function (event) {
+                event.preventDefault();
+                const downloadUrl = $(this).attr('href');
+                const fileName = $(this).text().trim();
+
+                Swal.fire({
+                    icon: 'question',
+                    title: '파일을 다운로드 하시겠습니까?',
+                    text: fileName,
+                    showCancelButton: true,
+                    confirmButtonText: '다운로드',
+                    cancelButtonText: '취소'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = downloadUrl;
+                    }
+                });
+            });
         });
     </script>
     <script th:inline="javascript">

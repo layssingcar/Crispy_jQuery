@@ -69,11 +69,19 @@
     background-color: unset;
 }
 
+.employee-list thead th:nth-child(1) {width: 40px;}
+.employee-list thead th:nth-child(2) {width: 60px;}
+.employee-list thead th:nth-child(3) {width: 100px;}
+.employee-list thead th:nth-child(4) {width: 140px;}
+.employee-list thead th:nth-child(5) {width: 70px;}
+.employee-list thead th:nth-child(6) {width: 150px;}
+.employee-list thead th:nth-child(7) {width: 35px;}
+.employee-list thead th:nth-child(8) {width: 90px;}
+
 /* 테이블 데이터 셀 스타일 */
 .employees table td {
     position: relative;
     padding: 10px !important;
-    width: 120px;
 }
 
 .employees table a {

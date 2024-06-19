@@ -9,7 +9,7 @@ const changePw = {
                 e.preventDefault();
 
                 const data = {
-                    empId: document.querySelector(".empId").value,
+                    empId: document.querySelector(".emp-id").value,
                     currentPassword: document.getElementById("current-pw").value,
                     newPassword: document.getElementById("new-pw").value,
                     confirmPassword: document.getElementById("confirm-pw").value
@@ -34,9 +34,15 @@ const changePw = {
                             errorField.style.display = 'none';
                             errorField.textContent = '';
                         });
-
-                        alert("비밀번호가 성공적으로 변경되었습니다.");
-                        location.href = "/crispy/login";
+                        const resultMsg = "비밀번호가 성공적으로 변경되었습니다."
+                        Swal.fire({
+                            icon: "success",
+                            title: resultMsg,
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            location.href = "/crispy/login";
+                        })
                     })
                     .catch(error => {
                         // 검증 실패 시 에러 메시지 표시

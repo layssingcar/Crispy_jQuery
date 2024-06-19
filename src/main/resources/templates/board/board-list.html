@@ -10,19 +10,16 @@
 	<div>
 		<main>
 			<div class="board-list">
-        
 				<h1>공지사항</h1>
 				<!-- 상단 영역 -->
 				<div class="top-area">
 					<button type="submit" id="addBtn" class="btn btn-primary btn-lg">등록</button>
 					<div class="container-1">
 						<span class="icon"><i class="fa fa-search"></i></span>
-						<form action="/crispy/board-list?search=${param.search}" method="GET" name="searchform"
-							  onsubmit="return searchformaction(this,1)">
+						<form action="/crispy/board-list" method="GET" name="searchform" onsubmit="return searchformaction(this,1)">
 							<input type="hidden" name="page" value="1"/>
 							<input type="text" name="search" id="search" class="form-control" placeholder="검색어를 입력하세요."
 								   th:value="${param.search}">
-
 							<button style="display: none;" type="submit" class="search-btn"></button>
 						</form>
 					</div>
@@ -30,36 +27,46 @@
 
 				<!-- 테이블 -->
 				<table class="table">
-					<thead>
+					<thead id="table-header">
 					<tr>
+						<th scope="col" class="col-sort board-no">
+							<span>게시물번호</span>
+							<i class="fa-solid fa-sort" id="board-no-sort" th:attr="data-order='DESC'"></i>
+						</th>
 						<th scope="col">제목</th>
 						<th scope="col">내용</th>
 						<th scope="col">조회수</th>
 						<th scope="col">작성일</th>
+						<th scope="col">작성자</th>
 					</tr>
 					</thead>
 
 					<!-- 리스트 -->
-					<tbody>
+					<tbody id="boardList">
 					<th:block th:if="${#lists.size(freeList) > 0}">
 						<th:block th:each="free : ${freeList}">
 							<tr>
 								<td class="tab align-middle">
+									<a th:href="@{/crispy/board-detail(boardNo=${free.boardNo})}"
+									   th:text="${free.boardNo}"></a></td>
+								<td class="tab align-middle">
 									<!-- Thymeleaf의 th:attr 디렉티브를 사용하여 데이터 속성에 boardNo 설정 -->
 									<a th:href="@{/crispy/board-detail(boardNo=${free.boardNo})}"
-									   th:text="${free.boardTitle}"
-									   th:attr="data-boardNo=${free.boardNo}"
-									   class="board-title"></a>
+									   th:text="${free.boardTitle}"></a>
 								</td>
-								<td class="tab align-middle"><a
-										th:href="@{/crispy/board-detail(boardNo=${free.boardNo})}"
-										th:text="${free.boardContent}"></a></td>
-								<td class="tab align-middle"><a
-										th:href="@{/crispy/board-detail(boardNo=${free.boardNo})}"
-										th:text="${free.boardHit}"></a></td>
-								<td class="tab align-middle"><a
-										th:href="@{/crispy/board-detail(boardNo=${free.boardNo})}"
-										th:text="${free.createDt}"></a></td>
+								<td class="tab align-middle">
+									<a th:href="@{/crispy/board-detail(boardNo=${free.boardNo})}"
+									   th:text="${free.boardContent}"></a></td>
+								<td class="tab align-middle">
+									<a th:href="@{/crispy/board-detail(boardNo=${free.boardNo})}"
+									   th:text="${free.boardHit}"></a></td>
+								<td class="tab align-middle">
+									<a th:href="@{/crispy/board-detail(boardNo=${free.boardNo})}"
+									   th:text="${free.createDt}"></a></td>
+								<td class="tab align-middle">
+									<a th:href="@{/crispy/board-detail(boardNo=${free.boardNo})}"
+									   th:text="${free.empName}"></a>
+								</td>
 							</tr>
 						</th:block>
 					</th:block>
@@ -145,38 +152,34 @@
 			f.submit();
 		}
 
-		// $(document).ready(function () {
-		//     $('.board-link').click(function (event) {
-		//         event.preventDefault(); // 기본 링크 동작 방지
-		//         var boardNo = $(this).attr('href').match(/\d+$/)[0]; // href 속성에서 boardNo 추출
-		//         updateBoardHit(boardNo); // boardHit 업데이트 함수 호출
-		//     });
-		// });
-		// $(document).ready(function() {
-		//     $('.board-title').on('click', function(event) {
-		//         event.preventDefault();
-		//         var boardNo = $(this).attr('data-boardNo');
-		//         var url = $(this).attr('href'); // 클릭된 링크의 URL을 가져옴
-		//         updateBoardHit(boardNo, url); // updateBoardHit 함수 호출 시 URL 전달
-		//     });
-		// });
+		document.addEventListener('DOMContentLoaded', function () {
+			var sortOrder = 'DESC';
+			document.querySelector("#board-no-sort").addEventListener("click", function () {
+				sortOrder = (sortOrder === 'ASC') ? 'DESC' : 'ASC';
+				sortBoardList(sortOrder);
+			});
 
-		// function updateBoardHit(boardNo, url) {
-		//     $.ajax({
-		//         url: '/crispy/putBoardHit',
-		//         type: 'POST',
-		//         contentType: 'application/json',
-		//         data: JSON.stringify({ 'boardNo': boardNo }),
-		//         success: function(response) {
-		//             // 조회수가 업데이트된 후에 URL로 이동하도록 변경
-		//             window.location.href = url;
-		//         },
-		//         error: function(xhr, status, error) {
-		//             console.error("게시물 조회수 업데이트 중 오류가 발생했습니다.");
-		//             console.error(xhr.responseText);
-		//         }
-		//     });
-		// }
+			function sortBoardList(order) {
+				var boardList = $('#boardList');
+				var rows = boardList.find('tr').get();
+
+				rows.sort(function (a, b) {
+					var keyA = parseInt($(a).find('td:first a').text());
+					var keyB = parseInt($(b).find('td:first a').text());
+
+					if (order === 'ASC') {
+						return keyA - keyB;
+					} else {
+						return keyB - keyA;
+					}
+				});
+
+				$.each(rows, function (index, row) {
+					boardList.append(row);
+				});
+			}
+		});
 	</script>
 </div>
 </body>
+</html>
