@@ -73,12 +73,20 @@ document.addEventListener("DOMContentLoaded", function() {
 
     eventSource.addEventListener('notification', function(event) {
         const data = JSON.parse(event.data);
-        alert(`새로운 알림: ${data.notifyContent}`);
+
+        Swal.fire({
+            title: '새로운 알림',
+            text: data.notifyContent,
+            icon: 'info',
+            showConfirmButton: false,
+            timer: 1500
+        });
+
         let currentCount = parseInt(notificationCountElement.textContent, 10);
         updateNotificationCount(currentCount + 1);
         addNotificationMessage(data);
-
     });
+
 
     eventSource.onerror = function(event) {
         eventSource.close();

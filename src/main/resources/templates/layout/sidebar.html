@@ -95,7 +95,7 @@
                 </li>
 
                 <!-- 근태 관리 -->
-                <li class="mb-1" sec:authorize="!hasRole('ROLE_ADMIN')">
+                <li class="mb-1" sec:authorize="!hasAnyRole('ROLE_ADMIN', 'ROLE_OWNER')">
                     <div class="menu" data-bs-toggle="collapse" data-bs-target="#menu-3-collapse">
                         <a href="/crispy/attend">
                             <span>근태 관리</span>
@@ -113,7 +113,7 @@
                     </div>
                     <div class="collapse" id="menu-4-collapse">
                         <ul class="">
-                            <li><a href="/crispy/time-off-approval" class="s-menu">휴가/휴직 신청</a></li>
+                            <li sec:authorize="!hasRole('ROLE_OWNER')"><a href="/crispy/time-off-approval" class="s-menu">휴가/휴직 신청</a></li>
                             <li><a href="/crispy/approval-list/draft" class="s-menu">기안함</a></li>
                             <li sec:authorize="!hasRole('ROLE_EMPLOYEE')"><a href="/crispy/approval-list/sign" class="s-menu" >결재함</a></li>
                         </ul>
@@ -139,15 +139,30 @@
                 <!-- 관리자, 가맹점주 메뉴 구분 선 -->
                 <li class="border-top my-3" sec:authorize="hasRole('ROLE_OWNER')"></li>
 
-                <!-- 직원 관리 -->
                 <li class="mb-1">
                     <div class="menu" data-bs-toggle="collapse" data-bs-target="#menu-9-collapse" sec:authorize="hasRole('ROLE_OWNER')">
+                        <a href="#">
+                            <span>가맹점</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </a>
+                    </div>
+                    <div class="collapse" id="menu-9-collapse">
+                        <ul class="">
+                            <li><a href="/crispy/franchise" class="s-menu">가맹점 정보</a></li>
+                            <li><a href="/crispy/franchise-map" class="s-menu">가맹점 검색</a></li>
+                        </ul>
+                    </div>
+                </li>
+
+                <!-- 직원 관리 -->
+                <li class="mb-1">
+                    <div class="menu" data-bs-toggle="collapse" data-bs-target="#menu-10-collapse" sec:authorize="hasRole('ROLE_OWNER')">
                         <a href="#">
                             <span>직원 관리</span>
                             <i class="fa-solid fa-chevron-down"></i>
                         </a>
                     </div>
-                    <div class="collapse" id="menu-9-collapse">
+                    <div class="collapse" id="menu-10-collapse">
                         <ul class="">
                             <li><a href="/crispy/owner/employee/register" class="s-menu">직원 등록</a></li>
                             <li><a href="/crispy/owner/employees" class="s-menu">직원 관리</a></li>
@@ -157,13 +172,13 @@
 
                 <!-- 재고 관리 -->
                 <li class="mb-1" sec:authorize="!hasAnyRole('ROLE_EMPLOYEE', 'ROLE_MANAGER')">
-                    <div class="menu" data-bs-toggle="collapse" data-bs-target="#menu-10-collapse">
+                    <div class="menu" data-bs-toggle="collapse" data-bs-target="#menu-11-collapse">
                         <a href="#">
                             <span>재고 관리</span>
                             <i class="fa-solid fa-chevron-down"></i>
                         </a>
                     </div>
-                    <div class="collapse" id="menu-10-collapse">
+                    <div class="collapse" id="menu-11-collapse">
                         <ul class="">
                             <li sec:authorize="!hasRole('ROLE_ADMIN')"><a href="/crispy/stock-list" class="s-menu">재고 현황</a></li>
                             <li sec:authorize="!hasRole('ROLE_ADMIN')"><a href="/crispy/stock-order" class="s-menu">발주 신청</a></li>
@@ -175,13 +190,13 @@
 
                 <!-- 가맹점 관리 -->
                 <li class="mb-1">
-                    <div class="menu" data-bs-toggle="collapse" data-bs-target="#menu-11-collapse" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <div class="menu" data-bs-toggle="collapse" data-bs-target="#menu-12-collapse" sec:authorize="hasRole('ROLE_ADMIN')">
                         <a href="#">
                             <span>가맹점 관리</span>
                             <i class="fa-solid fa-chevron-down"></i>
                         </a>
                     </div>
-                    <div class="collapse" id="menu-11-collapse">
+                    <div class="collapse" id="menu-12-collapse">
                         <ul class="">
                             <li><a href="/crispy/franchiseList" class="s-menu">가맹점 관리</a></li>
                             <li><a href="/crispy/franchise/register" class="s-menu">가맹점 등록</a></li>

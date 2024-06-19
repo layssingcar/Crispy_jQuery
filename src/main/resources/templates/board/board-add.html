@@ -15,7 +15,7 @@
 					<h1 class="border-bottom py-2">공지사항 </h1>
 					<div class="col-md-5">
 						<select style="display:none;" class="form-select" id="cate" name="boardCtNo" required>
-							<option value="1" selected>공지사항</option>
+							<option value="0" selected>공지사항</option>
 						</select>
 					</div>
 					<label for="boardTitle" class="form-label">제목</label>
@@ -67,7 +67,7 @@
 		});
 
 		$('#cancelBtn').on('click', () => {
-			window.location.href="/board/board-list";
+			window.location.href="/crispy/board-list";
 		});
 
 
