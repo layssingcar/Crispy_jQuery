@@ -50,10 +50,19 @@ public class ChatService {
     public ChatRoomDto getChatRoom(Integer chatRoomNo) {
         ChatRoomDto chatRoom = chatMapper.getChatRoom(chatRoomNo);
         List<CrEmpDto> participants = chatMapper.getParticipantsByRoom(chatRoomNo);
+        log.info("participants: {}", participants.size());
+        if (participants.size() > 2) {
+            participants = participants.stream()
+                    .filter(p -> p.getEntryStat().equals(EntryStat.ACTIVE))
+                    .collect(Collectors.toList());
+            log.info("participants: {}", participants);
+        }
+
         chatRoom.setParticipants(participants);
         log.info("chatRoom: {}", chatRoom.toString());
         return chatRoom;
     }
+
 
     // 채팅방 인원 호출
     public List<CrEmpDto> getParticipants(Integer chatRoomNo) {
