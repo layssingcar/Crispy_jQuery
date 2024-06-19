@@ -112,6 +112,37 @@ public class EmployeeApiController {
     }
 
     /**
+     * 비밀번호 찾기시 비밀번호 변경
+     * 배영욱 (24. 06. 19)
+     * @param newPasswordDto
+     * @param bindingResult
+     * @param response
+     * @return
+     */
+    @PutMapping("/newEmpPw/v1")
+    public ResponseEntity<Map<String, String>> newEmployeePassword(@Valid @RequestBody NewPasswordDto newPasswordDto,
+                                                                      BindingResult bindingResult,
+                                                                      HttpServletResponse response) {
+
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                String field = error.getField();
+                String message = error.getDefaultMessage();
+                errors.put(field, message);
+            }
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        EmployeeDto employee = employeeService.getEmployeeName(auth.getName());
+        employeeService.updateNewEmpPassword(newPasswordDto.getEmpId(), newPasswordDto, employee.getEmpNo());
+        CookieUtil.deleteCookie(response, "accessToken");
+        CookieUtil.deleteCookie(response, "refreshToken");
+        return ResponseEntity.ok(Map.of("message", "비밀번호가 성공적으로 변경 되었습니다"));
+    }
+
+    /**
      * 주소 변경
      * 배영욱 (24. 06. 02)
      * @param empAddressUpdateDto 직원 주소 업데이트 DTO

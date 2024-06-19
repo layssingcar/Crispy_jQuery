@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:insert="~{layout/header :: header('비밀번호 변경')}"></th:block>
+    <link href="/css/employee/change-pw.css" rel="stylesheet">
+</head>
+<body>
+<div class="main">
+    <div class="change-pw-container">
+        <div class="change-password-wrap">
+            <h1 class="mb-4">변경하실 비밀번호를 입력해 주세요.</h1>
+            <form class="passwordForm">
+                <input type="hidden" id="emp-id" class="emp-id" th:value="${empId}">
+
+                <!-- 신규 비밀번호 -->
+                <div class="col-12 pw-mg">
+                    <label for="new-pw" class="col-form-label">신규 비밀번호</label>
+                    <input type="password" class="form-control" id="new-pw" placeholder="최소 8자 이상(알파벳, 숫자 필수)">
+                    <div class="error-message" id="sameAsOld-error" style="display: none;"></div>
+                    <div class="error-message" id="newPassword-error" style="display: none;"></div>
+                </div>
+
+                <!-- 신규 비밀번호 확인 -->
+                <div class="col-12 pw-mg">
+                    <label class="col-form-label">신규 비밀번호 확인</label>
+                    <input type="password" class="form-control" id="confirm-pw">
+                    <div class="error-message" id="confirmPassword-error" style="display: none;"></div>
+                    <div class="error-message" id="NotMatchPassword-error" style="display: none;"></div>
+                </div>
+                <button type="submit" class="w-100 btn btn-primary btn-lg mt-4">비밀번호 변경</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="/js/employee/changePw.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.1/dist/sweetalert2.all.min.js"></script>
+</body>
+</html>
