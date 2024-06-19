@@ -181,8 +181,8 @@ public class ApprovalService {
         int page = Math.max(apprOptionDto.getPageNo(), 1);
         int totalCount = approvalMapper.getTimeOffApprCount(apprOptionDto);
         int totalPage = totalCount / limit + ((totalCount % limit > 0) ? 1 : 0);
-        int startPage = Math.max(page - 2, 1);
-        int endPage = Math.min(page + 2,  totalPage);
+        int startPage = ((page - 1) / limit) * limit + 1;
+        int endPage = Math.min(startPage + limit - 1, totalPage);
 
         RowBounds rowBounds = new RowBounds(limit * (page - 1), limit);
         List<ApprovalDto> items = approvalMapper.getTimeOffApprList(apprOptionDto, rowBounds);
