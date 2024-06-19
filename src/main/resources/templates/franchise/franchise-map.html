@@ -319,8 +319,16 @@
 			// Adjust map bounds to fit all markers
 			map.setBounds(bounds);
 		} else {
-			// Handle case where frnList is empty or undefined
-			alert("검색한 가맹점은 존재하지 않습니다.");
+			const addMsg = /*[[${addMsg}]]*/ "검색된 가맹점이 없습니다.";
+			console.log(addMsg)
+			if (addMsg != null) {
+				Swal.fire({
+					icon: "error",
+					title: addMsg,
+					showConfirmButton: false,
+					timer: 1500
+				})
+			}
 		}
 	}
 

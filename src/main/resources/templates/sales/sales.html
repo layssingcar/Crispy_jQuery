@@ -131,12 +131,11 @@
         // 페이지 로드시 초기 데이터 로드
         loadSalesData();
 
-        if(sales.salPrice === ""){
-            // 매출 등록 버튼 클릭 시 Modal 호출
-            $('#salesAdd').on('click', function () {
-                $('.modal').modal('show');
-            });
-        }
+        // 매출 등록 버튼 클릭 시 Modal 호출
+        $('#salesAdd').on('click', function () {
+            $('.modal').modal('show');
+        });
+
         $(document).ready(function () {
             $('tbody').on('click', 'tr', function () {
                 $('#salesDetailModal').modal('show');
@@ -157,7 +156,18 @@
                 contentType: 'application/json',
                 data: JSON.stringify(salesDto),
                 success: function (response) {
-                    alert(response); // 성공 메시지 표시
+
+                    const addMsg = /*[[${addMsg}]]*/ "매출이 등록되었습니다";
+                    console.log(addMsg)
+                    if (addMsg != null) {
+                        Swal.fire({
+                            icon: "success",
+                            title: addMsg,
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    }
+
                     $('.modal').modal('hide');
                     loadSalesData(); // 데이터 재로드
                 },
