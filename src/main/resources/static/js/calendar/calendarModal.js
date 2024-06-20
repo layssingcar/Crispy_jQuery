@@ -214,15 +214,33 @@
 		        data: data
 		    })
 			.done(function(data){
-	            Swal.fire({
-	                icon: "success",
-	                title: "연차 삭제 성공",
-	                showConfirmButton: false,
-	                timer: 1500
-	            })
-				myModal.modal('hide');
-				calendar.getEventById(selectScheduleId).remove();
-				calendar.refetchEvents();
+					$.ajax({
+						type:'GET',
+						url: '/crispy/employee/getEmpNameAnn',
+				        contentType: 'application/json',
+						data:'empNo=' + empNo,
+						dataType:'json'
+				    })
+				    .done(function(empData){
+			            Swal.fire({
+			                icon: "success",
+			                title: "연차 삭제 성공! " + empData.empName + "님의 남은 연차일수는 " + empData.empAnnual + "일입니다.",
+			                showConfirmButton: true,
+			                timer: 2500
+			            })
+						myModal.modal('hide');
+						calendar.getEventById(selectScheduleId).remove();
+						calendar.refetchEvents();
+					})
+					.fail(function(jqXHR){
+			            Swal.fire({
+			                icon: "warning",
+			                title: "연차 삭제 실패",
+			                showConfirmButton: false,
+			                timer: 1500
+			            })
+						alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
+					})    	
 			})
 			.fail(function(jqXHR){
 	            Swal.fire({
@@ -277,12 +295,16 @@
       
       
       function fnAddAnnAjax(idNum, endTime, ctNo){
+		let diffMilliseconds = moment(startDt).diff(moment(endTime));
+		let duration = moment.duration(diffMilliseconds);
+		let days = duration.days();
+		
 	    const data = JSON.stringify({
 		        'annId': idNum,
 		        'annCtNo': ctNo,
 		        'annTitle': $("#sch-title").val(),
 		        'annContent': $("#sch-content").val(),
-		        'annTotal': 15,
+		        'annTotal': days,
 		        'annStartTime':  startDt + "T" + $("#start option:selected").val(),
 		        'annEndTime':  endTime + "T" + $("#end option:selected").val(),
 		        'createDt': currentDate,
@@ -299,14 +321,32 @@
 		        data: data
 		    })
 			.done(function(data){
-	            Swal.fire({
-	                icon: "success",
-	                title: "연차 저장 성공",
-	                showConfirmButton: false,
-	                timer: 1500
-	            })
-				myModal.modal('hide');
-				calendar.refetchEvents();
+					$.ajax({
+						type:'GET',
+						url: '/crispy/employee/getEmpNameAnn',
+				        contentType: 'application/json',
+						data:'empNo=' + empNo,
+						dataType:'json'
+				    })
+				    .done(function(empData){
+			            Swal.fire({
+			                icon: "success",
+			                title: "연차 등록 성공! " + empData.empName + "님의 남은 연차일수는 " + empData.empAnnual + "일입니다.",
+			                showConfirmButton: true,
+			                timer: 2500
+			            })
+						myModal.modal('hide');
+						calendar.refetchEvents();
+					})
+					.fail(function(jqXHR){
+			            Swal.fire({
+			                icon: "warning",
+			                title: "연차 저장 실패",
+			                showConfirmButton: false,
+			                timer: 1500
+			            })
+						alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
+					})    		
 			})
 			.fail(function(jqXHR){
 	            Swal.fire({

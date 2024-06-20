@@ -23,7 +23,7 @@ public class AnnualService {
 		EmployeeDto emp = employeeService.getEmployeeDetailsByEmpNo(annualDto.getEmpNo());
 		
 		if(annualDto.getAnnCtNo() == 0) {
-			emp.setEmpAnnual(emp.getEmpAnnual() - 1);
+			emp.setEmpAnnual(emp.getEmpAnnual() - 1 + annualDto.getAnnTotal());
 		}
 		else if(annualDto.getAnnCtNo() == 1) {
 			emp.setEmpAnnual(emp.getEmpAnnual() - 0.5);
@@ -53,6 +53,20 @@ public class AnnualService {
 	}
 	@Transactional
 	public int deleteAnnual(AnnualDto annualDto){
+		EmployeeDto emp = employeeService.getEmployeeDetailsByEmpNo(annualDto.getEmpNo());
+		AnnualDto ann = annualMapper.getAnnById(annualDto.getAnnId());
+		
+		if(ann.getAnnCtNo() == 0) {
+			emp.setEmpAnnual(emp.getEmpAnnual() + 1 - ann.getAnnTotal());
+		}
+		else if(ann.getAnnCtNo() == 1) {
+			emp.setEmpAnnual(emp.getEmpAnnual() + 0.5);
+		}
+		else if(ann.getAnnCtNo() == 2){
+			emp.setEmpAnnual(emp.getEmpAnnual() + 0.25);
+		}
+		employeeService.updateAnnual(emp);
+		
 		return annualMapper.deleteAnnual(annualDto);
 	}
 	@Transactional

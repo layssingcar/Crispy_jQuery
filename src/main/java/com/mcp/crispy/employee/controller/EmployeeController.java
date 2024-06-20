@@ -21,6 +21,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+
 @Slf4j
 @Controller
 @RequestMapping("/crispy/employee")
@@ -197,4 +198,9 @@ public class EmployeeController {
 		return "employee/employee-profile";
 	}
 
+	@ResponseBody
+	@GetMapping(value = "/getEmpNameAnn", produces = "application/json")
+	public EmployeeDto getEmpNameAnn(@RequestParam("empNo") int empNo) {
+		return employeeService.getEmployeeDetailsByEmpNo(empNo);
+	}
 }
