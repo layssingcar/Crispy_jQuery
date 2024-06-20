@@ -54,16 +54,17 @@
                 </div>
 
                 <button type="button" id="listBtn" class="btn btn-primary btn-lg" onclick="window.location.href = '/crispy/board-list';">목록</button>
-
-                <div class="d-flex justify-content-end" id="btn">
-                    <form id="frm-btn-delete" method="POST" action="/crispy/removeBoard">
-                        <input type="hidden" name="boardNo" th:value="${board.boardNo}">
-                        <button type="submit" id="btn-delete" class="btn btn-primary btn-lg">삭제</button>
-                    </form>
-                    <form id="frm-btn-modify" method="GET" action="/crispy/board-modify">
-                        <input type="hidden" name="boardNo" th:value="${board.boardNo}">
-                        <button type="submit" id="btn-modify" class="btn btn-primary btn-lg">수정</button>
-                    </form>
+                <div th:if="${empNo == board.creator}">
+                    <div class="d-flex justify-content-end" id="btn">
+                        <form id="frm-btn-delete" method="POST" action="/crispy/removeBoard">
+                            <input type="hidden" name="boardNo" th:value="${board.boardNo}">
+                            <button type="submit" id="btn-delete" class="btn btn-primary btn-lg">삭제</button>
+                        </form>
+                        <form id="frm-btn-modify" method="GET" action="/crispy/board-modify">
+                            <input type="hidden" name="boardNo" th:value="${board.boardNo}">
+                            <button type="submit" id="btn-modify" class="btn btn-primary btn-lg">수정</button>
+                        </form>
+                    </div>
                 </div>
 
                 <div th:if="${board == null}">
@@ -76,49 +77,6 @@
     <script src="/js/summernote/summernote-lite.js"></script>
     <script src="/js/summernote/lang/summernote-ko-KR.js"></script>
     <script>
-
-        document.getElementById('frm-btn-delete').addEventListener('submit', function (event) {
-            event.preventDefault();
-            Swal.fire({
-                icon: "warning",
-                title: "해당 게시글을 삭제할까요?",
-                showCancelButton: true,
-                confirmButtonText: "삭제",
-                cancelButtonText: "취소",
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const form = event.target;
-                    $.ajax({
-                        type: 'POST',
-                        url: form.action,
-                        data: $(form).serialize(),
-                        success: function (response) {
-                            Swal.fire({
-                                icon: "success",
-                                title: "게시물이 삭제되었습니다.",
-                                showConfirmButton: false,
-                                timer: 1500
-                            }).then(() => {
-                                window.location.href = '/crispy/board-list';
-                            });
-                        },
-                        error: function (xhr, status, error) {
-                            Swal.fire({
-                                icon: "error",
-                                title: "오류가 발생했습니다. 다시 시도해 주세요.",
-                                showConfirmButton: true
-                            });
-                        }
-                    });
-                }
-            });
-        });
-
-        document.getElementById('frm-btn-modify').addEventListener('submit', function (event) {
-            event.preventDefault();
-            const boardNo = document.querySelector('input[name="boardNo"]').value;
-            window.location.href = '/crispy/board-modify?boardNo=' + boardNo;
-        });
 
         $(document).ready(function () {
             const boardNo = '[[${board.boardNo}]]';
@@ -186,6 +144,52 @@
 
             loadLikeStatus();
         });
+
+
+        document.getElementById('frm-btn-delete').addEventListener('submit', function (event) {
+            event.preventDefault();
+            Swal.fire({
+                icon: "warning",
+                title: "해당 게시글을 삭제할까요?",
+                showCancelButton: true,
+                confirmButtonText: "삭제",
+                cancelButtonText: "취소",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = event.target;
+                    $.ajax({
+                        type: 'POST',
+                        url: form.action,
+                        data: $(form).serialize(),
+                        success: function (response) {
+                            Swal.fire({
+                                icon: "success",
+                                title: "게시물이 삭제되었습니다.",
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(() => {
+                                window.location.href = '/crispy/board-list';
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            Swal.fire({
+                                icon: "error",
+                                title: "오류가 발생했습니다. 다시 시도해 주세요.",
+                                showConfirmButton: true
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
+        document.getElementById('frm-btn-modify').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const boardNo = document.querySelector('input[name="boardNo"]').value;
+            window.location.href = '/crispy/board-modify?boardNo=' + boardNo;
+        });
+
+
         $(document).ready(function () {
             // Function to handle file download
             $('.attach a').on('click', function (event) {
