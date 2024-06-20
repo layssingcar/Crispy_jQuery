@@ -36,12 +36,13 @@
     <!-- 등록된 직원 가맹점의 매출 목록-->
     <select id="getSalesList" parameterType="map" resultType="SalesDto">
             SELECT S.SAL_DT
+                 , S.SAL_NO
                  , SUM(S.SAL_PRICE) AS SAL_PRICE
               FROM SALES_T S
         INNER JOIN FRANCHISE_T F
                 ON S.FRN_NO = F.FRN_NO
              WHERE F.FRN_NO = #{frnNo}
-          GROUP BY S.SAL_DT
+          GROUP BY S.SAL_DT, S.SAL_NO
     </select>
 
     <!-- 일별 매출 SELECT-->
