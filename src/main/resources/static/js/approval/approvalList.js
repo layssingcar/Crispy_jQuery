@@ -72,15 +72,15 @@ const getApprItemsFn = async (optionObj) => {
 
     // 이벤트 재추가
     addPageLinkEventFn(optionObj.pageNo === undefined ? 1 : optionObj.pageNo);
-    addApprRowsEventFn();
     addSortEventFn();
+    addApprRowsEventFn();
 }
 
 // 초기화
 document.addEventListener("DOMContentLoaded", function () {
     addPageLinkEventFn(1);
-    addApprRowsEventFn();
     addSortEventFn();
+    addApprRowsEventFn();
 })
 
 // 결재 문서 항목
