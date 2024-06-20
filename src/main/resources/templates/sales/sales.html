@@ -34,16 +34,10 @@
                     <table class="table">
                         <thead>
                         <tr>
-                            <th scope="col" class="col-sort">
-                                <span>가맹점 명</span>
-                                <i class="fa-solid fa-sort" id="sales-name-sort"></i>
-                            </th>
+                            <th scope="col" class="col-sort">가맹점 명</th>
                             <th scope="col">매출 등록자</th>
                             <th scope="col">매출일</th>
-                            <th scope="col" class="col-sort">
-                                <span>매출액</span>
-                                <i class="fa-solid fa-sort" id="is-count-sort"></i>
-                            </th>
+                            <th scope="col" class="col-sort">매출액</th>
                         </tr>
                         </thead>
                         <!-- 가맹점 매출 목록 -->
@@ -57,16 +51,50 @@
                 </div>
             </div>
 
-            <!-- Modal structure -->
-            <div class="modal" id="salesDetailModal" tabindex="-1">
+            <!-- 등록 Modal 호출 -->
+            <div class="modal" tabindex="-1" id="salesDetailModal">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h3 class="modal-title">매출 상세 정보</h3>
+                            <h3 class="modal-title">매출 등록</h3>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body" id="salesDetailModalBody">
-                            <!-- Placeholder content or leave empty -->
+
+                        <div class="modal-body">
+                                <div class="row g-3">
+                                    <!-- 해당 가맹점 번호 -->
+                                    <input type="hidden" id="2" name="frnNo" th:value="${frnNo}"/>
+                                    <div class="col-sm-6">
+                                        <label for="frnOwner" class="form-label">매출 등록자</label>
+                                        <input type="text" class="form-control" id="1" placeholder=""
+                                               th:value="${emp.empName}" disabled>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <label for="frnName" class="form-label">가맹점 명</label>
+                                        <input type="text" class="form-control" id="3" placeholder=""
+                                               th:value="${emp.frnName}" disabled>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <label for="salDt" class="form-label">매출일</label>
+                                        <input type="date" class="form-control" id="4" placeholder="" value=""
+                                               required="">
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <label for="salPrice" class="form-label">매출액</label>
+                                        <input type="text" class="form-control" id="5" placeholder=""
+                                               value="" required="">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" id="6-close" data-bs-dismiss="modal">
+                                취소
+                            </button>
+                            <button type="button" class="btn btn-primary" id="7-add">저장</button>
                         </div>
                     </div>
                 </div>
@@ -157,7 +185,7 @@
                 data: JSON.stringify(salesDto),
                 success: function (response) {
 
-                    const addMsg = /*[[${addMsg}]]*/ "매출이 등록되었습니다";
+                    const addMsg = "매출이 등록되었습니다";
                     console.log(addMsg)
                     if (addMsg != null) {
                         Swal.fire({
@@ -172,8 +200,16 @@
                     loadSalesData(); // 데이터 재로드
                 },
                 error: function (xhr, status, error) {
-                    console.error(xhr.responseText);
-                    alert("매출 등록에 실패하였습니다.");
+                    const addMsg = /*[[${addMsg}]]*/ "검색된 가맹점이 없습니다.";
+                    console.log(addMsg)
+                    if (addMsg != null) {
+                        Swal.fire({
+                            icon: "error",
+                            title: addMsg,
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    }
                 }
             });
         });
@@ -235,6 +271,7 @@
 
         $.each(data, function (index, sales) {
             if (sales.salDt !== null) {
+
                 salesList.append(`
                 <tr>
                     <td>${frnName}</td>
