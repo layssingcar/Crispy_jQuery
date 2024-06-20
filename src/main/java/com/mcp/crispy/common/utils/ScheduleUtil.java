@@ -20,8 +20,8 @@ public class ScheduleUtil {
 	private final ScheduleService scheduleService;
 	private final AnnualService annualService;
 	
-//	@Scheduled(fixedRate = 30000)
 //	@Scheduled(cron = "0 0 0 * * *")
+	@Scheduled(fixedRate = 10000)
 	public void deleteExpirationScheduleandAnnual() {
 		List<ScheduleDto> scheList = scheduleService.getAllScheList();
 		List<AnnualDto> annList = annualService.getAllAnnList();

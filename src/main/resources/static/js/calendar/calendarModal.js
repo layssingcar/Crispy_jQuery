@@ -15,6 +15,7 @@
         fnSetModalDetailToggle(0);
 	 	startOpt.eq(0).prop('selected', true);	// 시작시간 초기화
 	 	endOpt.eq(0).prop('selected', true);		// 종료시간 초기화
+	 	$("input[name='notice-or-vac']").prop("disabled", false);
       });
       
       myModal.off("show.bs.modal").on("show.bs.modal", function(){
@@ -102,10 +103,33 @@
       let selectScheType = $("input:radio[name=notice-or-vac]:checked").val();	// 공지,개인,연차
       let selectVacType = $("input:radio[name=var-elem-radio]:checked").val();	// 연차,반차,반반차,
       let schedule;
+      let selectedstartTimeIndex = $('#start')[0].selectedIndex;
+      let selectedendTimeIndex = $('#end')[0].selectedIndex;
+      
+      	  if(selectedendTimeIndex < selectedstartTimeIndex){
+            Swal.fire({
+                icon: "warning",
+                title: "시작 시간과 종료 시간을 확인하세요",
+                showConfirmButton: true,
+                timer: 1500
+            })
+            return;
+		  }
       
 	      if($("#startDate").val() != "" && $("#endDate").val() != ""){
-	      	startDt = $("#startDate").val();
-	      	endDt = $("#endDate").val();
+			if($("#startDate").val() > $("#endDate").val() != ""){
+	            Swal.fire({
+	                icon: "warning",
+	                title: "시작 시간과 종료 시간을 확인하세요",
+	                showConfirmButton: true,
+	                timer: 1500
+	            })
+	            return;
+			}
+			else{
+		      	startDt = $("#startDate").val();
+		      	endDt = $("#endDate").val();
+			}
 		  }
 		  else{
 			calDate = moment(endDt, 'YYYY-MM-DD');
@@ -228,9 +252,11 @@
 			                showConfirmButton: true,
 			                timer: 2500
 			            })
-						myModal.modal('hide');
-						calendar.getEventById(selectScheduleId).remove();
-						calendar.refetchEvents();
+			            .then(()=>{
+							myModal.modal('hide');
+							calendar.getEventById(selectScheduleId).remove();
+							calendar.refetchEvents();
+						})
 					})
 					.fail(function(jqXHR){
 			            Swal.fire({
@@ -254,11 +280,15 @@
 	  }
       
       function fnModifyAnnAjax(endTime, ctNo){
+		let diffMilliseconds = moment(startDt).diff(moment(endTime));
+		let duration = moment.duration(diffMilliseconds);
+		let days = duration.days();
 	    const data = JSON.stringify({
 		        'annId': selectScheduleId,
 		        'annCtNo': ctNo,
 		        'annTitle': $("#sch-title").val(),
 		        'annContent': $("#sch-content").val(),
+		        'annTotal': days,
 		        'annStartTime':  startDt + "T" + $("#start option:selected").val(),
 		        'annEndTime':  endTime + "T" + $("#end option:selected").val(),
 		        'modifyDt': currentDate, 
@@ -272,19 +302,40 @@
 		        data: data
 		    })
 			.done(function(data){
-	            Swal.fire({
-	                icon: "success",
-	                title: "연차 수정 성공",
-	                showConfirmButton: false,
-	                timer: 1500
-	            })
-				myModal.modal('hide');
-				location.reload();
+					$.ajax({
+						type:'GET',
+						url: '/crispy/employee/getEmpNameAnn',
+				        contentType: 'application/json',
+						data:'empNo=' + empNo,
+						dataType:'json'
+				    })
+				    .done(function(empData){
+			            Swal.fire({
+			                icon: "success",
+			                title: "연차 수정 성공! " + empData.empName + "님의 남은 연차일수는 " + empData.empAnnual + "일입니다.",
+			                showConfirmButton: true,
+			                timer: 2500
+			            })
+			            .then(()=>{
+							myModal.modal('hide');
+							calendar.refetchEvents();
+							location.reload();
+						})
+					})
+					.fail(function(jqXHR){
+			            Swal.fire({
+			                icon: "warning",
+			                title: "연차 수정 실패",
+			                showConfirmButton: false,
+			                timer: 1500
+			            })
+						alert(jqXHR.statusText + '(' + jqXHR.status + ')');  					
+					})    
 			})
 			.fail(function(jqXHR){
 	            Swal.fire({
 	                icon: "warning",
-	                title: "연차 수정 성공",
+	                title: "연차 수정 실패",
 	                showConfirmButton: false,
 	                timer: 1500
 	            })
@@ -292,7 +343,6 @@
 			})  
 			calendar.render();		
 	  }
-      
       
       function fnAddAnnAjax(idNum, endTime, ctNo){
 		let diffMilliseconds = moment(startDt).diff(moment(endTime));
@@ -335,8 +385,10 @@
 			                showConfirmButton: true,
 			                timer: 2500
 			            })
-						myModal.modal('hide');
-						calendar.refetchEvents();
+			            .then(()=>{
+							myModal.modal('hide');
+							calendar.refetchEvents();
+						})
 					})
 					.fail(function(jqXHR){
 			            Swal.fire({
@@ -407,8 +459,10 @@
 		                showConfirmButton: false,
 		                timer: 1500
 		            })
-					myModal.modal('hide');
-					calendar.refetchEvents();
+		            .then(()=>{
+						myModal.modal('hide');
+						calendar.refetchEvents();
+					})
 				})
 				.fail(function(jqXHR){
 		            Swal.fire({
@@ -459,9 +513,12 @@
 		                showConfirmButton: false,
 		                timer: 1500
 		            })
-					myModal.modal('hide');
-					calendar.getEventById(selectScheduleId).remove();
-					calendar.refetchEvents();
+		            .then(()=>{
+						myModal.modal('hide');
+						calendar.getEventById(selectScheduleId).remove();
+						calendar.refetchEvents();
+						location.reload();
+					})
 				})
 				.fail(function(jqXHR){
 		            Swal.fire({
@@ -479,6 +536,18 @@
 	  function fnUpdateSchedule(){
 	  	let selectScheType = $("input:radio[name=notice-or-vac]:checked").val();	// 공지,개인,연차
 	  	let selectVacType = $("input:radio[name=var-elem-radio]:checked").val();	// 연차,반차,반반차,
+      	let selectedstartTimeIndex = $('#start')[0].selectedIndex;
+      	let selectedendTimeIndex = $('#end')[0].selectedIndex;
+      
+      	  if(selectedendTimeIndex < selectedstartTimeIndex){
+            Swal.fire({
+                icon: "warning",
+                title: "시작 시간과 종료 시간을 확인하세요",
+                showConfirmButton: true,
+                timer: 1500
+            })
+            return;
+		  }
 	 	
 		let annCt, schDiv;
 		if(selectVacType == 'all')
@@ -487,8 +556,19 @@
 			annCt = (selectVacType == 'half') ? 1 : 2;
 			
 	    if($("#startDate").val() != "" && $("#endDate").val() != ""){
-	      	startDt = $("#startDate").val();
-	      	endDt = $("#endDate").val();
+			if($("#startDate").val() > $("#endDate").val() != ""){
+	            Swal.fire({
+	                icon: "warning",
+	                title: "시작 시간과 종료 시간을 확인하세요",
+	                showConfirmButton: true,
+	                timer: 1500
+	            })
+	            return;
+			}
+			else{
+		      	startDt = $("#startDate").val();
+		      	endDt = $("#endDate").val();
+			}
 		}			
 			
 		if(selectScheType == 'vac'){
@@ -523,14 +603,17 @@
 		                showConfirmButton: false,
 		                timer: 1500
 		            })
-			      	let event = calendar.getEventById(selectScheduleId);
-					calDate = moment(endDt, 'YYYY-MM-DD');
-					newDate = calDate.add(1, 'days').format('YYYY-MM-DD');
-					endDt = newDate;
-		      	    event.setEnd(endDt);
-		      	    
-					myModal.modal('hide');
-					calendar.refetchEvents();
+		            .then(()=>{
+				      	let event = calendar.getEventById(selectScheduleId);
+						calDate = moment(endDt, 'YYYY-MM-DD');
+						newDate = calDate.add(1, 'days').format('YYYY-MM-DD');
+						endDt = newDate;
+			      	    event.setEnd(endDt);
+			      	    
+						myModal.modal('hide');
+						calendar.refetchEvents();
+						location.reload();
+					})
 				})
 				.fail(function(jqXHR){
 		            Swal.fire({

@@ -97,12 +97,21 @@
 		}
 		
 		function fnSetModalDetailToggle(state){
+			let selectScheType = $("input:radio[name=notice-or-vac]:checked").val();
+			
 			$("#sch-title, #sch-content").prop("disabled", state);
 			$("#start, #end").prop("disabled", state);
 		  	$("input[name='notice-or-vac']").prop("disabled", state);
 		  	$("input[name='var-elem-radio']").prop("disabled", state);			
 		  	$("input[name='btnradio']").prop("disabled", state);
-		  	$("#startDate, #endDate").prop("disabled", state);			
+		  	$("#startDate, #endDate").prop("disabled", state);
+		  	
+		  	if(selectScheType == 'notice' || selectScheType == 'mysche'){
+				$("#radio-vac").prop("disabled", true);
+			}
+			else{
+				$("#radio-mysche, #radio-notice").prop("disabled", true);
+			}			
 		}
 		
 		function fnShowSelectEvent(info){
@@ -115,6 +124,7 @@
 					dataType:'json'
 			    })
 				.done(function(data){
+					console.log(2);
 					$("#sch-title").val(data.scheTitle);
 					$("#sch-content").val(data.scheContent);
 				  	fnSetSelectByValue(startOpt, data.scheStartTime.substring(11, 17));
@@ -123,6 +133,7 @@
 					radioBtnsByNotiorVac[data.scheDiv].checked = true;
 					$("#startDate").val(data.scheStartTime.substring(0, 10));
 					$("#endDate").val(data.scheEndTime.substring(0, 10));
+					$("#vac-type, #vac-elem").hide();
 			 	  	myModal.modal('show');
 				})
 				.fail(function(jqXHR){
