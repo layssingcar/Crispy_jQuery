@@ -5,7 +5,6 @@ import com.mcp.crispy.email.dto.VerifyStat;
 import com.mcp.crispy.email.mapper.EmailVerificationMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,9 +23,9 @@ public class EmailVerificationService {
     private final EmailService emailService;
 
     //인증번호 전송 및 인증테이블에 저장
-    @Async
+//    @Async
     @Transactional
-    public void sendAndSaveVerificationCode(String verifyEmail) {
+    public EmailVerificationDto sendAndSaveVerificationCode(String verifyEmail) {
 
         //기존 인증코드 만료
         emailVerificationMapper.expiredPreviousCodes(verifyEmail, VerifyStat.NEW, VerifyStat.EXPIRED);
@@ -40,6 +39,8 @@ public class EmailVerificationService {
 
         emailVerificationMapper.insertVerification(emailVerificationDto);
         emailService.sendVerificationEmail(verifyEmail, verificationCode);
+
+        return emailVerificationDto;
     }
 
 

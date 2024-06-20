@@ -28,8 +28,8 @@ public class EmailApiController {
     public ResponseEntity<?> sendVerificationCode(@Valid @RequestBody EmailSendDto emailSendDto) {
         String verifyEmail = emailSendDto.getVerifyEmail();
         try {
-            emailVerificationService.sendAndSaveVerificationCode(verifyEmail);
-            return ResponseEntity.ok().body(Map.of("message", "인증번호가 전송되었습니다."));
+            EmailVerificationDto emailVerificationDto = emailVerificationService.sendAndSaveVerificationCode(verifyEmail);
+            return ResponseEntity.ok().body(Map.of("message", "인증번호가 전송되었습니다.", "email", emailVerificationDto));
         } catch (Exception ex) {
             log.error("인증번호 전송 중 오류 발생: {}", ex.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "인증번호 전송 중 오류가 발생했습니다."));

@@ -105,7 +105,6 @@ const Auth = {
     },
 
     logout: async function() {
-        console.log("로그아웃 요청 호출됨");
         try {
             const response = await fetch('/api/auth/logout', {
                 method: 'POST',
@@ -116,15 +115,12 @@ const Auth = {
             });
 
             if (response.ok) {
-                console.log('로그아웃 성공');
                 localStorage.removeItem('rememberMe'); // 자동 로그인 설정 제거
                 // 로그인 페이지로 리다이렉트
                 window.location.href = '/crispy/login';
             } else {
-                console.error('로그아웃 실패');
             }
         } catch (error) {
-            console.error('로그아웃 요청 중 오류 발생:', error);
         }
     },
 

@@ -17,7 +17,6 @@ const emailVerify = {
     handleVerificationCode: function (empEmail, action) {
         let apiUrl = "/api/email/verificationCode/verify/v1";
         let requestBody = {empEmail: empEmail, action: action};
-        console.log(empEmail);
 
         if (action === "verify-user") {
             apiUrl = "/api/employee/verify/email/v1";
@@ -40,7 +39,7 @@ const emailVerify = {
             return response.json();
         })
             .then(data => {
-                console.log(data)
+                console.log(data.email.verifyCode)
                 if (data.message === "인증 코드가 발송되었습니다.") {
                     document.getElementById('verify-code-div').style.display = 'block';
                     Swal.fire({
