@@ -68,7 +68,7 @@ document.querySelector("#approval").addEventListener("click", ()=> {
             }
 
             // 취소
-            if(!apprLineobj.data) return;
+            if (!apprLineobj.data) return;
 
             apprLineobj.apprType = apprType;    // 문서타입 추가
 

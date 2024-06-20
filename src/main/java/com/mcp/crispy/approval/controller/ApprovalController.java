@@ -32,6 +32,8 @@ public class ApprovalController {
 	 * 휴가, 휴직 신청 페이지
 	 * 우혜진 (24. 05. 20.)
 	 *
+	 * @param authentication
+	 * @param model
 	 * @return forward (time-off-approval.html)
 	 */
 	@GetMapping("time-off-approval")
@@ -288,6 +290,7 @@ public class ApprovalController {
 				if (apprLineDto.getEmpNo() == userDetails.getEmpNo() && apprLineDto.getApprLineStat() != 0)
 					model.addAttribute("apprBtn", "none");
 			});
+
 		}
 
 		model.addAttribute("approvalDto", approvalDto);
@@ -313,7 +316,6 @@ public class ApprovalController {
 
 		EmployeePrincipal userDetails = (EmployeePrincipal) authentication.getPrincipal();
 		map.put("empNo", userDetails.getEmpNo());
-		log.info("map: {}", map);
 		return ResponseEntity.ok(approvalService.changeApprLineStat(map));
 
 	}
