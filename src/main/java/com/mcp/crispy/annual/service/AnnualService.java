@@ -49,6 +49,14 @@ public class AnnualService {
 	
 	@Transactional
 	public int modifyAnnual(AnnualDto annualDto){
+		EmployeeDto emp = employeeService.getEmployeeDetailsByEmpNo(annualDto.getEmpNo());
+		AnnualDto ann = annualMapper.getAnnById(annualDto.getAnnId());
+		
+		if(ann.getAnnCtNo() == 0) {
+			emp.setEmpAnnual(emp.getEmpAnnual() + 1 - (ann.getAnnTotal() - annualDto.getAnnTotal() + 1));
+		}
+
+		employeeService.updateAnnual(emp);
 		return annualMapper.modifyAnnual(annualDto);
 	}
 	@Transactional

@@ -76,6 +76,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			ANN_CT_NO = #{annCtNo},
 			ANN_TITLE = #{annTitle},
 			ANN_CONTENT = #{annContent},
+			ANN_TOTAL = #{annTotal},
 			ANN_START_TIME = #{annStartTime},
 			ANN_END_TIME = #{annEndTime},
 			MODIFY_DT = CURRENT_DATE
