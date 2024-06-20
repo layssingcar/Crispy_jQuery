@@ -26,7 +26,7 @@
                     <div class="email-wrap mb-3">
                         <div>
                             <label for="find-username-email" class="form-label">이메일</label>
-                            <input type="text" id="find-username-email" th:field="*{empEmail}" class="form-control emp-email" placeholder="이메일"
+                            <input type="text" id="find-username-email" th:field="*{empEmail}" class="form-control emp-email" placeholder="이메일을 입력하세요"
                                    autocomplete="on">
                             <div class="error-message empEmail-error" th:if="${#fields.hasErrors('empEmail')}" th:errors="*{empEmail}" style="display: block"></div>
                         </div>

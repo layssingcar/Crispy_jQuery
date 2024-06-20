@@ -104,32 +104,13 @@ const franchiseList = {
         this.setupClickableRows();
     },
 
-    formatTelNumber(telNumber) {
-
-        if(!telNumber) {
-            return 'N/A';
-        }
-
-        if (telNumber.length === 8) { // 1234-5678
-            return telNumber.replace(/(\d{4})(\d{4})/, '$1-$2');
-        } else if (telNumber.length === 9) { // 02-123-5678
-            return telNumber.replace(/(\d{2})(\d{3})(\d{4})/, '$1-$2-$3');
-        } else if (telNumber.length === 11) { // 010-1234-5678
-            return telNumber.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
-        } else {
-            return telNumber; // 형식에 맞지 않으면 원본 반환
-        }
-    },
-
     appendFranchiseRow: function(tr, franchise) {
         const frnJoinDt = formatDate(franchise.frnJoinDt);
-        const formattedTel = this.formatTelNumber(franchise.frnTel);
-        console.log(formattedTel);
         tr.appendChild(this.createCell('checkbox', franchise.frnNo));
         tr.appendChild(this.createCell('text', franchise.frnName));
         tr.appendChild(this.createCell('text', franchise.frnOwner));
         tr.appendChild(this.createCell('text', franchise.frnStreet));
-        tr.appendChild(this.createCell('text', formattedTel));
+        tr.appendChild(this.createCell('text', franchise.frnTel));
         tr.appendChild(this.createCell('text', frnJoinDt));
         tr.appendChild(this.createActionsCell(franchise.frnNo));
     },

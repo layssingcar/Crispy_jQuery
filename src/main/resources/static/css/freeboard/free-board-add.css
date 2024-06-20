@@ -17,12 +17,16 @@
 	width: 1070px;
 }
 
-#cancelBtn {
+#btn-cancel {
 	margin-right: 5px;
-	box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+	width: 60px;
+	height: 40px;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	font-size: 1.7rem;
 	background-color: #808080 !important;
 	border-color: #808080 !important;
-
 }
 
 .border-bottom {

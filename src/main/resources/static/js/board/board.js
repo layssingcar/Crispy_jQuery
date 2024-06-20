@@ -267,6 +267,8 @@ const board = {
     // 좋아요 토글
     toggleLike: function() {
         const boardNo = document.querySelector(".board-no").value;
+        const likeButton = document.getElementById("like-button");
+        const likeCountElement = document.getElementById("like-count");
 
         fetch(`/api/freeBoard/${boardNo}/like/v1`, {
             method: "POST",
@@ -276,10 +278,26 @@ const board = {
             body: JSON.stringify({ boardNo: parseInt(boardNo) })
         }).then(response => response.json())
             .then(data => {
-                location.reload();
-            }).catch(error => {
-            alert("좋아요 상태 변경에 실패했습니다.");
-        });
+                if (data.message) {
+                    const isLiked = likeButton.getAttribute("src") === '/img/heart2.png';
+                    if (isLiked) {
+                        likeButton.setAttribute("src", "/img/heart1.png");
+                        likeCountElement.textContent = (parseInt(likeCountElement.textContent) - 1).toString();
+                    } else {
+                        likeButton.setAttribute("src", "/img/heart2.png");
+                        likeCountElement.textContent =(parseInt(likeCountElement.textContent) + 1).toString();
+                    }
+                } else {
+                    throw new Error("Failed to toggle like");
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "좋아요 상태 변경에 실패했습니다."
+                });
+            });
     },
 
     // 댓글 생성

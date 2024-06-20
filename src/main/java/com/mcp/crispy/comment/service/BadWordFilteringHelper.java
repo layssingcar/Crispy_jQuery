@@ -10,7 +10,7 @@ public class BadWordFilteringHelper {
 
     public static BadWordFiltering getBadWordFiltering() {
         com.vane.badwordfiltering.BadWordFiltering badWordFiltering1 = new com.vane.badwordfiltering.BadWordFiltering();
-        String[] badWords = new String[]{"에이라이퉷", "에이퉷", "시바"};
+        String[] badWords = new String[]{"에이라이퉷", "에이퉷", "시바", "나쁜말"};
         badWordFiltering1.addAll(Arrays.asList(badWords));
         badWordFiltering1.remove("공지");
         badWordFiltering1.remove("공지사항");

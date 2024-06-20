@@ -33,7 +33,9 @@ const emailVerify = {
             body: JSON.stringify(requestBody)
         }).then(response => {
             if (!response.ok) {
-                throw response
+                return response.json().then(errorData => {
+                    throw new Error(errorData.message || "Unknown error occurred");
+                });
             }
             return response.json();
         })
@@ -48,9 +50,18 @@ const emailVerify = {
                         timer: 1500
                     })
                 } else {
-                    alert(data.error);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: data.error || "Unknown error occurred"
+                    });
                 }
-            }).catch((error) => {
+            }).catch(error => {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: error.message || "Unknown error occurred"
+            });
         });
     },
 

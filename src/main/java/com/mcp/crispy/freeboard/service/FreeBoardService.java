@@ -24,6 +24,8 @@ import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.util.List;
 
+import static com.mcp.crispy.comment.service.BadWordFilteringHelper.getBadWordFiltering;
+
 
 @Slf4j
 @Service
@@ -32,7 +34,6 @@ public class FreeBoardService {
 
     private final FreeBoardMapper freeBoardMapper;
     private final MyFileUtils myFileUtils;
-    private final BadWordFiltering badWordFiltering;
 
     // 게시판 생성
     @Transactional
@@ -92,6 +93,7 @@ public class FreeBoardService {
 
     // 자유게시판 LIST
     public PageResponse<FreeBoardDto> getFree2BoardList(FreeBoardDto freeBoardDto, int limit) {
+        BadWordFiltering badWordFiltering = getBadWordFiltering();
         // 현재 페이지 번호
         int page = Math.max(freeBoardDto.getPageNo(), 1);
 
@@ -131,6 +133,7 @@ public class FreeBoardService {
 
     @Transactional(readOnly=true)
     public FreeBoardDto loadFreeBoardByNo(int boardNo, int empNo) {
+        BadWordFiltering badWordFiltering = getBadWordFiltering();
         log.info("Load board by no: {}", boardNo);
         FreeBoardDto freeBoardDto = freeBoardMapper.getFreeBoardByNo(boardNo);
         log.info("Load Board : {}", freeBoardDto);

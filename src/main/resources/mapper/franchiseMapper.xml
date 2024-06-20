@@ -67,6 +67,12 @@
         FROM FRANCHISE_T F
     </select>
 
+    <select id="getFrnCountBySearch" resultType="int">
+        SELECT COUNT(*)
+        FROM FRANCHISE_T
+        WHERE FRN_NAME LIKE '%' || #{frnName} || '%'
+    </select>
+
     <!-- 가맹점 번호 수정 -->
     <update id="updateFrnTel" parameterType="FrnTelUpdateDto">
         UPDATE FRANCHISE_T F
@@ -154,7 +160,7 @@
                   AND F.FRN_NAME LIKE '%' || #{frnName} || '%'
               </if>
           </where>
-          ORDER BY F.FRN_NO ASC
+          ORDER BY F.FRN_NO DESC
     </select>
 
     <!-- 직원번호로 가맹점 정보 가져오기 ( 대표 이름 수정 용 ) -->

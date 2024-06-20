@@ -22,7 +22,7 @@ public class FrnUpdateDto {
     @NotBlankAndPattern(
             notBlankMessage = "가맹점 이름을 입력하세요.",
             patternMessage = "가맹점 이름에는 숫자를 포함할 수 없습니다.",
-            pattern = "^[가-힣a-zA-Z\\s]+$"
+            pattern = "^[가-힣a-zA-Z0-9\\s]+$"
     )
     private String frnName;
     private String empName;

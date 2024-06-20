@@ -43,7 +43,7 @@ public class EmployeeApiController {
     public ResponseEntity<Map<String, String>> verifyEmployee(@RequestBody FindEmployeeDto findEmployeeDto) {
         boolean employeeExists = employeeService.checkEmployeeExists(findEmployeeDto.getEmpName(), findEmployeeDto.getEmpEmail(), findEmployeeDto.getEmpId());
         if(!employeeExists) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "일치하는 회원 정보가 없습니다."));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "일치하는 회원 정보가 없습니다."));
         }
         emailVerificationService.sendAndSaveVerificationCode(findEmployeeDto.getEmpEmail());
         return ResponseEntity.ok().body(Map.of("message", "인증 코드가 발송되었습니다."));

@@ -24,7 +24,7 @@ const franchiseRegister = {
             _this.validateField("frn-frnOwner", "frnOwner-error", "대표자 이름을 입력해주세요.");
         });
         document.getElementById("frn-frnTel").addEventListener("input", function () {
-            _this.validatePhoneField("frn-frnTel", "frnTel-error", "올바른 전화번호 형식을 입력해주세요.", /^\d{2,3}-\d{3,4}-\d{4}$/);
+            _this.validatePhoneField("frn-frnTel", "frnTel-error", "올바른 전화번호 형식을 입력해주세요.", /^\d{2,3}\d{3,4}\d{4}$/);
         });
         document.getElementById("frn-frnZip").addEventListener("input", function () {
             _this.validateField("frn-frnZip", "frnZip-error", "우편번호는 5자리여야 합니다.", /^\d{5}$/);
@@ -201,7 +201,7 @@ const franchiseRegister = {
             document.getElementById("frnOwner-error").style.display = "none";
         }
 
-        if (frnTel && !/^010\d{4}\d{4}$/.test(frnTel)) {
+        if (frnTel && !/^\d{2,3}\d{3,4}\d{4}$/.test(frnTel)) {
             console.log(frnTel.value)
             document.getElementById("frnTel-error").textContent = "올바른 전화번호 형식을 입력해주세요.";
             document.getElementById("frnTel-error").style.display = "block";
