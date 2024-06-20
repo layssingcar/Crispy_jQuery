@@ -192,8 +192,13 @@ public class FranchiseService {
 
     // 가맹점 페이징
     public PageResponse<FranchiseDto> getFranchiseList(int page, int limit, String frnName) {
+        int totalCount;
+        if (frnName == null || frnName.isEmpty()) {
+            totalCount = franchiseMapper.getFrnCount();
+        } else {
+            totalCount = franchiseMapper.getFrnCountBySearch(frnName);
+        }
 
-        int totalCount = franchiseMapper.getFrnCount();
         log.info("totalCount: {}", totalCount);
         // 전체 페이지 수
         int totalPage = totalCount / limit + ((totalCount % limit > 0) ? 1 : 0);

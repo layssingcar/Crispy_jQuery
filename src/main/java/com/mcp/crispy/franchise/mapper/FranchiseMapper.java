@@ -48,6 +48,10 @@ public interface FranchiseMapper {
     // 가맹점 수 호출
     int getFrnCount();
 
+    // 검색된 가맹점 호출
+    int getFrnCountBySearch(@Param("frnName") String frnName);
+
+
     // 가맹점 번호로 가맹점 상세 정보 가져오기
     Optional<FranchiseDto> findFrnDetailsByFrnNo(Integer frnNo);
 
