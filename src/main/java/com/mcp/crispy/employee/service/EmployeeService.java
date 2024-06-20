@@ -9,7 +9,6 @@ import com.mcp.crispy.employee.mapper.EmployeeMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -87,9 +86,8 @@ public class EmployeeService {
 
 
     // 임시 비밀번호로 변경 ( 관리자가 변경해주는 거)
-    @Async
     @Transactional
-    public void resetEmployeePassword(String email, String empName, Integer modifier) {
+    public String resetEmployeePassword(String email, String empName, Integer modifier) {
         FindEmployeeDto employee = employeeMapper.findByEmpEmail(email, empName)
                 .orElseThrow(() -> new UsernameNotFoundException("이메일이 존재하지 않습니다."));
         log.info("employee: {}", employee.getEmpEmail());
@@ -98,6 +96,7 @@ public class EmployeeService {
         employee.setEmpPw(encodedPassword);
         employeeMapper.updateEmpPw(employee.getEmpId(), encodedPassword, modifier);
         emailService.sendTempPasswordEmail(email, tempPassword);
+        return tempPassword;
     }
 
     //  파라미터에 empId가 존재하면 비밀번호 찾기, empId가 존재하지 않으면 아이디 찾기

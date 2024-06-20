@@ -1,6 +1,7 @@
 package com.mcp.crispy.employee.controller;
 
 import com.mcp.crispy.common.utils.CookieUtil;
+import com.mcp.crispy.email.dto.EmailVerificationDto;
 import com.mcp.crispy.email.service.EmailVerificationService;
 import com.mcp.crispy.employee.dto.*;
 import com.mcp.crispy.employee.service.EmployeeService;
@@ -40,13 +41,13 @@ public class EmployeeApiController {
      * @return ResponseEntity
      */
     @PostMapping("/verify/email/v1")
-    public ResponseEntity<Map<String, String>> verifyEmployee(@RequestBody FindEmployeeDto findEmployeeDto) {
+    public ResponseEntity<Map<String, Object>> verifyEmployee(@RequestBody FindEmployeeDto findEmployeeDto) {
         boolean employeeExists = employeeService.checkEmployeeExists(findEmployeeDto.getEmpName(), findEmployeeDto.getEmpEmail(), findEmployeeDto.getEmpId());
         if(!employeeExists) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "일치하는 회원 정보가 없습니다."));
         }
-        emailVerificationService.sendAndSaveVerificationCode(findEmployeeDto.getEmpEmail());
-        return ResponseEntity.ok().body(Map.of("message", "인증 코드가 발송되었습니다."));
+        EmailVerificationDto emailVerificationDto = emailVerificationService.sendAndSaveVerificationCode(findEmployeeDto.getEmpEmail());
+        return ResponseEntity.ok().body(Map.of("message", "인증 코드가 발송되었습니다.", "email", emailVerificationDto));
     }
 
     /**

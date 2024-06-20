@@ -14,6 +14,7 @@ public class BadWordFilteringHelper {
         badWordFiltering1.addAll(Arrays.asList(badWords));
         badWordFiltering1.remove("공지");
         badWordFiltering1.remove("공지사항");
+        badWordFiltering1.remove("게이");
         return badWordFiltering1;
     }
 }
